@@ -3,14 +3,24 @@
 	"prefer-stable"     : true,
 	"minimum-stability" : "dev",
 	"config"            : {
+		"platform"      : {
+			"php-64bit" : "7.4.0"
+		},
 		"allow-plugins" : {
 			"dealerdirect/phpcodesniffer-composer-installer" : true,
 			"composer/package-versions-deprecated"           : true
 		}
 	},
+	"require"           : {
+		"clevercanyon/utilities" : "dev-main"
+	},
+	"autoload"          : {
+		"psr-4" : {
+			"Clever_Canyon\\Skeleton\\" : [ "./src/classes" ]
+		}
+	},
 	"require-dev"       : {
-		"clevercanyon/wpgroove-framework"     : "dev-main",
-		"clevercanyon/wpgroove-framework-dev" : "dev-main"
+		"clevercanyon/utilities-dev" : "dev-main"
 	},
 	"autoload-dev"      : {
 		"psr-4" : {
