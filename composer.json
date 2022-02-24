@@ -1,0 +1,43 @@
+{
+	"name"              : "clevercanyon/skeleton",
+	"prefer-stable"     : true,
+	"minimum-stability" : "dev",
+	"config"            : {
+		"allow-plugins" : {
+			"dealerdirect/phpcodesniffer-composer-installer" : true,
+			"composer/package-versions-deprecated"           : true
+		}
+	},
+	"require-dev"       : {
+		"clevercanyon/wpgroove-framework"     : "dev-main",
+		"clevercanyon/wpgroove-framework-dev" : "dev-main"
+	},
+	"autoload-dev"      : {
+		"psr-4" : {
+			"Clever_Canyon\\Utilities\\Tests\\" : [ "./vendor/clevercanyon/utilities/tests/classes" ],
+			"Clever_Canyon\\Skeleton\\Tests\\"  : [ "./tests/classes" ]
+		}
+	},
+	"scripts"           : {
+		"compile"          : "./vendor/clevercanyon/utilities/dev/cli-tools/composer/compile",
+		"post-install-cmd" : "[ $COMPOSER_DEV_MODE -eq 0 ] || ./vendor/clevercanyon/utilities/dev/cli-tools/composer/on-post-install-cmd",
+		"post-update-cmd"  : "[ $COMPOSER_DEV_MODE -eq 0 ] || ./vendor/clevercanyon/utilities/dev/cli-tools/composer/on-post-update-cmd"
+	},
+	"extra"             : {
+		"clevercanyon" : {
+			"$extends-packages" : [ "clevercanyon/utilities" ],
+			"&"                 : {
+				"project" : {
+					"data" : {
+						"version"        : "1.0.0",
+						"stable_tag"     : "1.0.0",
+
+						"layout"         : "library",
+						"namespace_crux" : "Clever_Canyon\\Skeleton",
+						"name"           : "{{name: Skeleton}}"
+					}
+				}
+			}
+		}
+	}
+}
