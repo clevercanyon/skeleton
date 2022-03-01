@@ -23,8 +23,8 @@ if [[ -f "${c10n_utilities_path}"/dev/utilities/load.bash ]]; then
 	. "${c10n_utilities_path}"/dev/utilities/bash/partials/require-root;
 	. "${c10n_utilities_path}"/dev/utilities/bash/partials/require-wp-docker;
 else
-	echo 'Missing required dependency: `'"${c10n_utilities_path}"'`';
-	echo 'Have you run `composer install` yet?';
+	echo -e "\e[38;5;255m\e[48;5;124m\e[1mMissing required dependency: '${c10n_utilities_path}'\e[0m\e[49m\e[39m";
+	echo -e "\e[38;5;255m\e[48;5;124m\e[1mHave you run 'composer install' yet?\e[0m\e[49m\e[39m";
 	exit 1; # Exit w/ error status.
 fi;
 # ---------------------------------------------------------------------------------------------------------------------

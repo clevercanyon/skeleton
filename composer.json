@@ -4,7 +4,7 @@
 	"minimum-stability" : "dev",
 	"config"            : {
 		"platform"      : {
-			"php-64bit" : "7.4.0"
+			"php" : "7.4.0"
 		},
 		"allow-plugins" : {
 			"dealerdirect/phpcodesniffer-composer-installer" : true,

@@ -12,3 +12,4 @@
 ##
 
 disable=SC2016 # We use a lot of backticks.
+disable=SC1003 # Don't offer this single-quote escape tip.
