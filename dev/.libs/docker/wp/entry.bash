@@ -20,8 +20,8 @@ else c10n_utilities_path="${WP_DOCKER_HOST_PROJECT_DIR}"/vendor/clevercanyon/uti
 
 if [[ -f "${c10n_utilities_path}"/dev/utilities/load.bash ]]; then
 	. "${c10n_utilities_path}"/dev/utilities/load.bash;
-	. "${c10n_utilities_path}"/dev/utilities/bash/partials/require-root;
-	. "${c10n_utilities_path}"/dev/utilities/bash/partials/require-wp-docker;
+	. "${c10n_utilities_path}"/dev/utilities/bash/partials/require-root.bash;
+	. "${c10n_utilities_path}"/dev/utilities/bash/partials/require-wp-docker.bash;
 else
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mMissing required dependency: '${c10n_utilities_path}'\e[0m\e[49m\e[39m";
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mHave you run 'composer install' yet?\e[0m\e[49m\e[39m";

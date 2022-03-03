@@ -45,7 +45,7 @@ if [[ ! -d ./vendor/bin || ! -d ./node_modules/.bin ]]; then
 	exit 1; # Exit w/ error status.
 fi;
 . "${c10n_utilities_dir}"/dev/utilities/load.bash; # Loads utilities.
-. "${c10n_utilities_dir}"/dev/utilities/bash/partials/loose-mode;
+. "${c10n_utilities_dir}"/dev/utilities/bash/partials/loose-mode.bash;
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Runs command in one of two ways; depending on requestion action.
