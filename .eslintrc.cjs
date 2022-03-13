@@ -22,6 +22,9 @@ module.exports = {
 		ecmaFeatures : {
 			jsx : true,
 		},
+		babelOptions : {
+			configFile : './dev/.libs/webpack/babel.cjs',
+		},
 	},
 	parser        : '@babel/eslint-parser',
 

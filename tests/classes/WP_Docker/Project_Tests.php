@@ -34,7 +34,7 @@ namespace Clever_Canyon\Skeleton\Tests\WP_Docker;
  * @since 2021-12-15
  */
 use Clever_Canyon\{Utilities as U};
-use Clever_Canyon\Utilities\{Tests as UT};
+use Clever_Canyon\Utilities\{Tests as U_Tests};
 
 /**
  * Current project.
@@ -51,7 +51,7 @@ use Clever_Canyon\{Skeleton as S};
  * @since 2021-12-15
  * @coversDefaultClass \Clever_Canyon\Skeleton\Project
  */
-final class Project_Tests extends UT\A6t\Tests {
+final class Project_Tests extends U_Tests\A6t\Base {
 	/**
 	 * @covers ::instance()
 	 */

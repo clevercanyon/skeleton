@@ -24,7 +24,6 @@ namespace Clever_Canyon\Skeleton;
  * @since 2021-12-15
  */
 use Clever_Canyon\{Utilities as U};
-use Clever_Canyon\Utilities\{Tests as UT};
 
 /**
  * Current project.

@@ -46,6 +46,9 @@
 						"namespace_crux" : "Clever_Canyon\\Skeleton",
 						"name"           : "{{name: Skeleton}}"
 					}
+				},
+				"webpack" : {
+					"assetDirs" : [ "../../../src/assets" ]
 				}
 			}
 		}

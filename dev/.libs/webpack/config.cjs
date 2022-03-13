@@ -52,9 +52,7 @@ module.exports = ( env, argv ) => {
 	const configs = [];
 	const config  = mc.merge(
 		{
-			assetDirs : fs.existsSync( '../../../trunk' )
-				? [ '../../../trunk/src/assets' ]
-				: [ '../../../src/assets' ],
+			assetDirs : [ '../../../src/assets' ],
 			config    : {}, // Merges into all base config values.
 		},
 		file[ 'composer.json' ]?.extra?.clevercanyon?.[ '&' ]?.webpack || {},

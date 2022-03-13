@@ -21,7 +21,7 @@
 
 if ! cd "$(dirname "${BASH_SOURCE[0]}")"; then
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mFailed to CD into: ${BASH_SOURCE[0]}\e[0m\e[49m\e[39m";
-	exit 1; # Exit w/ error status.
+	false; # Exit w/ error status.
 fi;
 if [[ -f ./.c10n-utilities ]]; then c10n_utilities_dir=.;
 else c10n_utilities_dir=./vendor/clevercanyon/utilities; fi;
@@ -29,12 +29,12 @@ else c10n_utilities_dir=./vendor/clevercanyon/utilities; fi;
 if [[ ! -f "${c10n_utilities_dir}"/dev/utilities/load.bash ]]; then
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mMissing required dependency: '${c10n_utilities_dir}/dev/utilities/load.bash'\e[0m\e[49m\e[39m";
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mHave you run 'composer install' yet?\e[0m\e[49m\e[39m";
-	exit 1; # Exit w/ error status.
+	false; # Exit w/ error status.
 fi;
 if [[ ! -d ./vendor/bin || ! -d ./node_modules/.bin ]]; then
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mMissing required dependency: './vendor/bin | ./node_modules/.bin'\e[0m\e[49m\e[39m";
 	echo -e "\e[38;5;255m\e[48;5;124m\e[1mHave you run 'composer install' yet?\e[0m\e[49m\e[39m";
-	exit 1; # Exit w/ error status.
+	false; # Exit w/ error status.
 fi;
 . "${c10n_utilities_dir}"/dev/utilities/load.bash; # Loads utilities.
 . "${c10n_utilities_dir}"/dev/utilities/bash/partials/loose-mode.bash;
@@ -79,7 +79,7 @@ case "${1:-}" in
 	'phpunit~coverage')
 		if is-wp-docker; then
 			echo 'Not supported in a WP Docker environment. Please run locally.';
-			exit 1; # Exit w/ error status.
+			false; # Exit w/ error status.
 
 		elif can-run phpunit; then
 			XDEBUG_MODE=coverage phpunit \
@@ -94,11 +94,11 @@ case "${1:-}" in
 	'php-scoper-config-file-update')
 		if is-wp-docker; then
 			echo 'Not supported in a WP Docker environment. Please run locally.';
-			exit 1; # Exit w/ error status.
+			false; # Exit w/ error status.
 
 		elif ! is-c10n-utilities; then
 			echo 'Unexpected context. Please run from `clevercanyon/utilities`.';
-			exit 1; # Exit w/ error status.
+			false; # Exit w/ error status.
 		else
 			./dev/cli-tools/php-scoper/config-file update;
 		fi;;
@@ -149,7 +149,7 @@ case "${1:-}" in
 		echo;
 		echo 'e.g., ./.run-script phpunit;';
 
-		exit 1; # Exit w/ error status.
+		false; # Exit w/ error status.
 esac;
 
 # ---------------------------------------------------------------------------------------------------------------------

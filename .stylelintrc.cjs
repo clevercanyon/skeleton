@@ -25,8 +25,8 @@ module.exports = {
 		'no-duplicate-selectors'    : false,
 		'selector-type-no-unknown'  : false,
 		'no-descending-specificity' : false,
-		'selector-class-pattern'    : '^([a-z][a-z0-9]*)(-{1,2}[a-z0-9]+)*$',
-		'selector-id-pattern'       : '^([a-z][a-z0-9]*)(-{1,2}[a-z0-9]+)*$',
+		'selector-class-pattern'    : '^-?[a-z][a-z0-9]*(?:-{1,2}[a-z0-9]+)*$',
+		'selector-id-pattern'       : '^[a-z][a-z0-9]*(?:-{1,2}[a-z0-9]+)*$',
 		'at-rule-no-unknown'        : [
 			true,
 			{
