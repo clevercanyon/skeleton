@@ -39,4 +39,12 @@ use Clever_Canyon\{Skeleton as S};
  *
  * @since 2021-12-15
  */
-final class Project extends U\A6t\Singleton { }
+final class Project extends U\A6t\Base implements U\I7e\Singleton, U\I7e\Factory {
+	/**
+	 * Traits.
+	 *
+	 * @since 2021-12-15
+	 */
+	use U\Traits\A6t\Singleton\Members;
+	use U\Traits\A6t\Factory\Members;
+}
