@@ -72,6 +72,3 @@ services :
             - '../../../../wp-content/plugins/index.php:/var/www/html/wp-content/plugins/index.php:ro'
             - '../../../../wp-content/themes/index.php:/var/www/html/wp-content/themes/index.php:ro'
             - '../../../../wp-content/uploads/index.php:/var/www/html/wp-content/uploads/index.php:ro'
-
-            - '../../../../wp-content/upgrade/.htaccess:/var/www/html/wp-content/upgrade/.htaccess:ro'
-            - '../../../../wp-content/upgrade/index.php:/var/www/html/wp-content/upgrade/index.php:ro'

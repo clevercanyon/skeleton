@@ -242,7 +242,7 @@ services :
         command        : '' # Ditch default CMD.
         entrypoint     : '/wp-docker/host/project/dev/.libs/docker/wp/entry.bash'
         healthcheck    :
-            test     : 'curl --fail http://localhost || exit 1'
+            test     : 'curl --fail http://localhost/?healthcheck=wp-docker || exit 1'
             interval : '3s'
             timeout  : '30s'
             retries  : 10
@@ -286,7 +286,7 @@ services :
             MYSQL_PASSWORD   : 'wordpress' # WordPress database password.
 
         healthcheck    :
-            test     : 'curl --fail http://localhost || exit 1'
+            test     : 'curl --fail http://localhost/?healthcheck=wp-docker || exit 1'
             interval : '3s'
             timeout  : '30s'
             retries  : 10
@@ -325,7 +325,7 @@ services :
 
         environment    : # {@see https://o5p.me/bEtXkH}.
             DEFAULT_HOST : '${WP_DOCKER_COMPOSE_PROJECT_SLUG}.wp'
-            ENABLE_IPV6  : false # Disable for now.
+            ENABLE_IPV6  : 'false' # Disable for now.
 
         healthcheck    :
             test     : 'service nginx status || exit 1'
