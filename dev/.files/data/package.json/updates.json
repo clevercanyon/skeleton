@@ -13,8 +13,15 @@
 		"dotfiles:config" : "./dev/.files/bin/config.js",
 		"dotfiles:update" : "./dev/.files/bin/update.js",
 
-		"dev"             : "npx vite dev --config ./dev/.files/vite/config.js",
-		"build"           : "npx vite build --config ./dev/.files/vite/config.js",
-		"preview"         : "npx vite preview --config ./dev/.files/vite/config.js"
+		"vite:dev"        : "npx vite dev --config ./dev/.files/vite/config.js",
+		"vite:build"      : "npx vite build --config ./dev/.files/vite/config.js",
+		"vite:preview"    : "npx vite preview --config ./dev/.files/vite/config.js"
+	},
+	"config"          : {
+		"c10n" : {
+			"&" : {
+				"dotfiles" : { }
+			}
+		}
 	}
 }
