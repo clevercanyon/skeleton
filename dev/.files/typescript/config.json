@@ -1,0 +1,50 @@
+{
+	"include"         : [
+		"../../../src/*",
+		"../../../src/**/*"
+	],
+	"compilerOptions" : {
+		"noEmit"                           : false,
+		"emitDeclarationOnly"              : true,
+		"declaration"                      : true,
+		"declarationMap"                   : true,
+
+		"baseUrl"                          : "../../../src",
+		"rootDir"                          : "../../../src",
+		"declarationDir"                   : "../../../dist/types",
+
+		"target"                           : "es2021",
+		"lib"                              : [ "es2021" ],
+		"jsx"                              : "react-jsx",
+		"types"                            : [ ],
+
+		"module"                           : "es2020",
+		"moduleResolution"                 : "node",
+		"resolveJsonModule"                : true,
+
+		"esModuleInterop"                  : true,
+		"allowSyntheticDefaultImports"     : true,
+		"isolatedModules"                  : true,
+
+		"strict"                           : true,
+		"skipLibCheck"                     : false,
+
+		"allowJs"                          : false,
+		"checkJs"                          : false,
+
+		"useDefineForClassFields"          : true,
+		"forceConsistentCasingInFileNames" : true,
+
+		"paths"                            : {
+			"@/@clevercanyon/utilities/u/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/any/*" ],
+			"@/@clevercanyon/utilities/c/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/cfw/*" ],
+			"@/@clevercanyon/utilities/n/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/node/*" ],
+			"@/@clevercanyon/utilities/w/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/web/*" ],
+
+			"@/@clevercanyon/utilities/u:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/any/classes/*" ],
+			"@/@clevercanyon/utilities/c:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/cfw/classes/*" ],
+			"@/@clevercanyon/utilities/n:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/node/classes/*" ],
+			"@/@clevercanyon/utilities/w:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/web/classes/*" ]
+		}
+	}
+}

@@ -1,0 +1,69 @@
+{
+	"private"          : true,
+	"version"          : "1.0.0",
+	"license"          : "GPL-2.0-or-later",
+	"name"             : "@clevercanyon/skeleton",
+	"repository"       : "github:clevercanyon/skeleton",
+	"keywords"         : [
+		"clevercanyon"
+	],
+	"author"           : {
+		"name" : "Clever Canyon",
+		"url"  : "https://clevercanyon.com"
+	},
+	"type"             : "module",
+	"sideEffects"      : false,
+	"imports"          : { },
+	"exports"          : {
+		"." : {
+			"import"  : "./dst/esm/index.min.js",
+			"default" : "./dst/umd/index.min.js"
+		}
+	},
+	"module"           : "./dst/esm/index.min.js",
+	"main"             : "./dst/umd/index.min.js",
+	"types"            : "./dist/types/index.d.ts",
+	"dependencies"     : { },
+	"peerDependencies" : { },
+	"devDependencies"  : {
+		"@clevercanyon/skeleton-dev-deps" : "*"
+	},
+	"cpu"              : [
+		"x64",
+		"arm64"
+	],
+	"os"               : [
+		"darwin",
+		"linux"
+	],
+	"engines"          : {
+		"node" : "^18.5.0",
+		"npm"  : "^8.19.2"
+	},
+	"packageManager"   : "npm@8.19.2",
+	"scripts"          : {
+		"dotfiles:config" : "./dev/.files/bin/config.js",
+		"dotfiles:update" : "./dev/.files/bin/update.js",
+
+		"dev"             : "npx vite dev --config ./dev/.files/vite/config.js",
+		"build"           : "npx vite build --config ./dev/.files/vite/config.js",
+		"preview"         : "npx vite preview --config ./dev/.files/vite/config.js"
+	},
+	"config"           : {
+		"c10n" : {
+			"&" : {
+				"dotfiles" : {
+					"lock" : [ ]
+				},
+				"build"    : {
+					"./src" : {
+						"output" : {
+							"formats" : [ "esm", "umd" ],
+							"targets" : [ "any", "browserslist:any" ]
+						}
+					}
+				}
+			}
+		}
+	}
+}

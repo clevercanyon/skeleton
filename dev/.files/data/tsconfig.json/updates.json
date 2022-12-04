@@ -1,0 +1,3 @@
+{
+	"extends" : "./dev/.files/typescript/config.json"
+}
