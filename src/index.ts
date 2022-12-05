@@ -1,5 +1,5 @@
 /**
- * Node application.
+ * Application.
  *
  * @since 2022-02-26
  */
@@ -14,4 +14,8 @@
 
 // </editor-fold>
 
-export default {};
+import './index.scss';
+import bar       from './bar';
+import brandIcon from './assets/brand/icon.png?url';
+
+alert( 'Hello!' );

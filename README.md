@@ -1,3 +1,3 @@
 # Clever Canyon: Skeleton
 
-This is a skeleton directory for new projects.
+This is a skeleton for new projects.

@@ -16,12 +16,12 @@
 	"imports"          : { },
 	"exports"          : {
 		"." : {
-			"import"  : "./dst/esm/index.min.js",
-			"default" : "./dst/umd/index.min.js"
+			"import"  : "./dist/index.js",
+			"default" : "./dist/index.umd.cjs"
 		}
 	},
-	"module"           : "./dst/esm/index.min.js",
-	"main"             : "./dst/umd/index.min.js",
+	"module"           : "./dist/index.js",
+	"main"             : "./dist/index.umd.cjs",
 	"types"            : "./dist/types/index.d.ts",
 	"dependencies"     : { },
 	"peerDependencies" : { },
@@ -45,9 +45,9 @@
 		"dotfiles:config" : "./dev/.files/bin/config.js",
 		"dotfiles:update" : "./dev/.files/bin/update.js",
 
-		"vite:dev"        : "npx vite dev --config ./dev/.files/vite/config.js",
-		"vite:build"      : "npx vite build --config ./dev/.files/vite/config.js",
-		"vite:preview"    : "npx vite preview --config ./dev/.files/vite/config.js"
+		"vite:dev"        : "npx vite dev",
+		"vite:build"      : "npx vite build && npx tsc",
+		"vite:preview"    : "npx vite preview"
 	},
 	"config"           : {
 		"c10n" : {

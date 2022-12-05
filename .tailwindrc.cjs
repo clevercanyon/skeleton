@@ -1,9 +1,9 @@
 /**
- * Prettier config file.
+ * PostCSS config file.
  *
  * @since 1.0.0
  *
- * @note Prettier is aware of this config file's location.
+ * @note PostCSS is aware of this config file's location.
  *
  * @note CUSTOM EDITS ONLY PLEASE!
  * In the future this file will be updated automatically.
@@ -12,7 +12,7 @@
 /* eslint-env es2021, node */
 
 const mc         = require( '@clevercanyon/js-object-mc' );
-const baseConfig = require( './dev/.files/prettier/config.cjs' );
+const baseConfig = require( './dev/.files/tailwind/config.cjs' );
 
 /**
  * Customizations
