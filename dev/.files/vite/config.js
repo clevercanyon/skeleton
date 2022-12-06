@@ -13,43 +13,87 @@
  */
 /* eslint-env es2021, node */
 
-import desm from 'desm';
-import path from 'path';
-import fs   from 'fs-extra';
-
-import { loadEnv }    from 'vite';
-import aliases        from './includes/aliases';
-import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
+import desm                           from 'desm';
+import path                           from 'path';
+import glob                           from 'glob';
+import { loadEnv }                    from 'vite';
+import fs                             from 'fs-extra';
+import prettier                       from 'prettier';
+import minimatch                      from 'minimatch';
+import aliases                        from './includes/aliases';
+import mc                             from '@clevercanyon/js-object-mc';
+import pluginBasicSSL                 from '@vitejs/plugin-basic-ssl';
+import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
 
 export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
+	/**
+	 * Initializes vars.
+	 */
 	const __dirname = desm( import.meta.url );
 	const projDir   = path.resolve( __dirname, '../../..' );
 	const srcDir    = path.resolve( __dirname, '../../../src' );
+	const envsDir   = path.resolve( __dirname, '../../../src/.envs' );
 
-	const env = loadEnv( mode, process.cwd(), '' );
-	const pkg = await fs.readJson( path.resolve( projDir, './package.json' ) );
+	const publicEnvPrefix = 'APP_PUBLIC_'; // Used below also.
+	const env             = loadEnv( mode, envsDir, publicEnvPrefix );
 
-	let libName = pkg.name || '';
-	libName     = libName.toLowerCase();
+	const pkgFile        = path.resolve( projDir, './package.json' );
+	const pkg            = await fs.readJson( pkgFile ); // JSON object props.
+	const pkgPrettierCfg = { ...( await prettier.resolveConfig( pkgFile ) ), parser : 'json' };
+
+	let libName = ( pkg.name || '' ).toLowerCase();
 	libName     = libName.replace( /\bclevercanyon\b/ug, 'c10n' );
 	libName     = libName.replace( /@/ug, '' ).replace( /\./ug, '-' ).replace( /\/+/ug, '.' );
 	libName     = libName.replace( /[^a-z.0-9]([^.])/ug, ( m0, m1 ) => m1.toUpperCase() );
 	libName     = libName.replace( /^\.|\.$/u, '' );
 
-	const entryIndexes = []; // Initialize.
-	[ '.shtml', '.html', '.tsx', '.ts', '.jsx', '.mjs', '.js', '.cjs', '.scss', '.css' ].forEach( ( ext ) => {
-		if ( fs.existsSync( path.resolve( projDir, './src/index' + ext ) ) ) {
-			entryIndexes.push( './index' + ext ); // Relative to `root` dir.
-		}
-	} );
-	return {
-		c10n      : {
-			defaults : {
-				lib : {
-					name  : libName,      // Global variable.
-					entry : entryIndexes, // Relative to `root`.
-				},
+	const libIndexes   = glob.sync( path.join( srcDir, '/index{,-*,.*}.{tsx,ts,jsx,mjs,js,cjs}' ), { nodir : true } );
+	const libMainIndex = libIndexes.find( ( libIndex ) => minimatch( libIndex, 'index.{tsx,ts,jsx,mjs,js,cjs}', { matchBase : true } ) );
+	libIndexes.map( absPath => './' + path.relative( srcDir, absPath ) ); // Relative to `root` dir (i.e., `srcDir`).
+
+	let isLib = false; // Initialize.
+	if ( libName && libIndexes.length && libMainIndex ) {
+		isLib = /^export\s/um.test( await fs.readFile( path.resolve( srcDir, libMainIndex ), 'utf8' ) );
+	}
+	/**
+	 * Updates `package.json` accordingly.
+	 */
+	pkg.exports = pkg.exports || {};
+	pkg.exports[ '.' ] = pkg.exports[ '.' ] || {};
+
+	if ( isLib && 1 === libIndexes.length ) {
+		mc.patch( pkg.exports, {
+			'.' : {
+				import  : './dist/index.js',
+				require : './dist/index.umd.cjs',
 			},
+		} );
+		pkg.module = './dist/index.js';
+		pkg.main   = './dist/index.umd.cjs';
+		pkg.types  = './dist/types/index.d.ts';
+	} else if ( isLib && libIndexes.length > 1 ) {
+		mc.patch( pkg.exports, {
+			'.' : {
+				import  : './dist/index.js',
+				require : './dist/index.cjs',
+			},
+		} );
+		pkg.module = './dist/index.js';
+		pkg.main   = './dist/index.cjs';
+		pkg.types  = './dist/types/index.d.ts';
+	} else if ( ! isLib || ( isLib && 0 === libIndexes ) ) {
+		pkg.module = pkg.main = pkg.types = '';
+		mc.patch( pkg.exports, { '.' : { import : '', require : '' } } );
+	}
+	await fs.writeFile( pkgFile, prettier.format( JSON.stringify( pkg, null, 4 ), pkgPrettierCfg ) );
+
+	/**
+	 * Returns Vite config object data.
+	 */
+	return {
+		c10n      : { // Expose these.
+			aliases, projDir, srcDir, env, pkg,
+			isLib, libName, libIndexes, libMainIndex,
 		},
 		root      : srcDir, // Absolute; where entry indexes live.
 		publicDir : './public', // Static assets relative to `root`.
@@ -58,8 +102,8 @@ export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
 		appType : 'custom', // <https://vitejs.dev/config/shared-options.html#apptype>
 		resolve : { alias : aliases }, // See also: `../typescript/config.json`.
 
-		envDir    : '../', // Where `.env` files live. Relative to `root`.
-		envPrefix : 'APP_', // These are part of app; i.e., visible client-side.
+		envDir    : './' + path.relative( srcDir, envsDir ), // Where `.env` files live. Relative to `root`.
+		envPrefix : publicEnvPrefix, // Part of app; i.e., visible client-side.
 
 		build   : {         // <https://vitejs.dev/config/build-options.html>
 			emptyOutDir : true, // Start clean. Must set as `true` explicitly.
@@ -68,9 +112,22 @@ export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
 			target : 'es2021', // Match our typescript config.
 
 			outDir    : '../dist', // Relative to `root`.
-			assetsDir : './assets/g7d', // Relative to `outDir`.
+			assetsDir : './assets/a19s', // Relative to `outDir`.
+			// `a19s` = numeronym for 'auto-generated assets'.
 
-			rollupOptions            : {},
+			...( isLib ? {
+				lib : {
+					name  : libName,      // Global variable.
+					entry : libIndexes, // Relative to `root`.
+				},
+			} : {} ),
+			rollupOptions            : {
+				output : {
+					extend         : true,
+					noConflict     : true, // ↓ Modifies default CSS asset filename.
+					assetFileNames : ( a ) => 'style.css' === a.name ? 'styles.css' : a.name,
+				},
+			},
 			commonjsOptions          : {},
 			dynamicImportVarsOptions : {},
 		},
@@ -78,9 +135,8 @@ export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
 			$$__APP_PKG_NAME__$$    : pkg.name || '',
 			$$__APP_PKG_VERSION__$$ : pkg.version || '',
 			$$__APP_PKG_REPO__$$    : pkg.repository || '',
-			...env, // Rest of environment vars.
 		},
 		server  : { open : true, https : true },
-		plugins : [ pluginBasicSSL() ],
+		plugins : [ pluginBasicSSL(), pluginEJS( { env, pkg }, { root : srcDir } ) ],
 	};
 };

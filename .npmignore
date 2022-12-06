@@ -8,12 +8,11 @@
 #
 # @note CUSTOM EDITS ONLY PLEASE!
 # In the future this file will be updated automatically.
-# Only `<custom:start>...</custom:end>` will be preserved below.
+# Only `<custom:start.../custom:end>` will be preserved below.
 ##
 
 ##
-# This part follows `.gitignore` exactly.
-# Except for `.yarn/`, which is excluded entirely.
+# This part follows `.gitignore` almost exactly.
 ##
 
 # Local
@@ -38,6 +37,10 @@
 *.orig
 *.patch
 *.diff
+
+# Dists
+
+dist/
 
 # IntelliJ
 
@@ -178,6 +181,10 @@ Icon?
 ##
 # These are in addition to what we have in `.gitignore`.
 ##
+
+# Allow Dists
+
+!dist/
 
 # Source Code
 

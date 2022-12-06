@@ -53,7 +53,10 @@ module.exports = {
 	parser         : 'espree', // Default.
 	parserOptions  : ( commonParserOptions = {
 		ecmaVersion  : 2021,
-		ecmaFeatures : { jsx : true },
+		ecmaFeatures : {
+			jsx           : true,
+			impliedStrict : true,
+		},
 		sourceType   : pkg.type || 'script',
 	} ),
 	settings       : ( commonSettings = {} ),

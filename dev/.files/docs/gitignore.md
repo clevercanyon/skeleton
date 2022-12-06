@@ -4,12 +4,10 @@ When changing ignore files, please consult the following files in this directory
 
 - `.gitignore`
 - `.npmignore`
-- `.gitattributes`
 
 Also review `@jaswrks/dotfiles`.
 
 - `@jaswrks/dotfiles/.gitignore`
-- `@jaswrks/dotfiles/.gitattributes`
 - `@jaswrks/dotfiles/.subversion/config`
 - `@jaswrks/dotfiles/.subversion/ignore`
 

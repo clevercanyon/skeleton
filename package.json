@@ -1,59 +1,62 @@
 {
-	"private"          : true,
-	"version"          : "1.0.0",
-	"license"          : "GPL-2.0-or-later",
-	"name"             : "@clevercanyon/skeleton",
-	"repository"       : "github:clevercanyon/skeleton",
-	"keywords"         : [
-		"clevercanyon"
-	],
-	"author"           : {
-		"name" : "Clever Canyon",
-		"url"  : "https://clevercanyon.com"
+	"private": true,
+	"version": "1.0.0",
+	"license": "GPL-2.0-or-later",
+	"name": "@clevercanyon/skeleton",
+	"repository": "https://github.com/clevercanyon/skeleton",
+	"homepage": "https://github.com/clevercanyon/skeleton#readme",
+	"bugs": "https://github.com/clevercanyon/skeleton/issues",
+	"description": "Another great project by Clever Canyon.",
+	"keywords": ["clevercanyon"],
+	"author": {
+		"name": "Clever Canyon",
+		"url": "https://clevercanyon.com"
 	},
-	"type"             : "module",
-	"sideEffects"      : false,
-	"imports"          : { },
-	"exports"          : {
-		"." : {
-			"import"  : "./dist/index.js",
-			"default" : "./dist/index.umd.cjs"
+	"contributors": [],
+	"funding": "https://clevercanyon.com",
+	"type": "module",
+	"files": ["/dist"],
+	"bin": {},
+	"imports": {},
+	"exports": {
+		".": {
+			"import": "",
+			"require": ""
 		}
 	},
-	"module"           : "./dist/index.js",
-	"main"             : "./dist/index.umd.cjs",
-	"types"            : "./dist/types/index.d.ts",
-	"dependencies"     : { },
-	"peerDependencies" : { },
-	"devDependencies"  : {
-		"@clevercanyon/skeleton-dev-deps" : "*"
+	"sideEffects": false,
+	"module": "",
+	"main": "",
+	"types": "",
+	"dependencies": {},
+	"optionalDependencies": {},
+	"bundleDependencies": {},
+	"peerDependencies": {},
+	"peerDependenciesMeta": {},
+	"devDependencies": {
+		"@clevercanyon/skeleton-dev-deps": "*"
 	},
-	"cpu"              : [
-		"x64",
-		"arm64"
-	],
-	"os"               : [
-		"darwin",
-		"linux"
-	],
-	"engines"          : {
-		"node" : "^18.5.0",
-		"npm"  : "^8.19.2"
+	"overrides": {},
+	"cpu": ["x64", "arm64"],
+	"os": ["darwin", "linux"],
+	"engines": {
+		"node": "^18.5.0",
+		"npm": "^8.19.2"
 	},
-	"packageManager"   : "npm@8.19.2",
-	"scripts"          : {
-		"dotfiles:config" : "./dev/.files/bin/config.js",
-		"dotfiles:update" : "./dev/.files/bin/update.js",
-
-		"vite:dev"        : "npx vite dev",
-		"vite:build"      : "npx vite build && npx tsc",
-		"vite:preview"    : "npx vite preview"
+	"packageManager": "npm@8.19.2",
+	"scripts": {
+		"vite:dev": "npx vite dev",
+		"vite:preview": "npx vite preview",
+		"vite:build": "npx vite build && npx tsc",
+		"dotfiles:config": "./dev/.files/bin/config.js",
+		"dotfiles:update": "./dev/.files/bin/update.js"
 	},
-	"config"           : {
-		"c10n" : {
-			"&" : {
-				"dotfiles" : {
-					"lock" : [ ]
+	"publishConfig": {},
+	"config": {
+		"c10n": {
+			"&": {
+				"dotfiles": {
+					"lock": []
 				}
 			}
 		}

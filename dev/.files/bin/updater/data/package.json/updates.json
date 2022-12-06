@@ -1,34 +1,25 @@
 {
 	"type"            : "module",
+
+	"author"          : {
+		"name" : "Clever Canyon",
+		"url"  : "https://clevercanyon.com"
+	},
+	"funding"         : "https://clevercanyon.com",
 	"devDependencies" : {
 		"@clevercanyon/skeleton-dev-deps" : "*"
 	},
-	"cpu"             : [
-		"x64",
-		"arm64"
-	],
-	"os"              : [
-		"darwin",
-		"linux"
-	],
-	"engines"         : {
-		"node" : "^18.5.0",
-		"npm"  : "^8.19.2"
-	},
-	"packageManager"  : "npm@8.19.2",
-	"scripts"         : {
-		"dotfiles:config" : "./dev/.files/bin/config.js",
-		"dotfiles:update" : "./dev/.files/bin/update.js",
 
+	"cpu"             : [ "x64", "arm64" ],
+	"os"              : [ "darwin", "linux" ],
+	"engines"         : { "node" : "^18.5.0", "npm" : "^8.19.2" },
+	"packageManager"  : "npm@8.19.2",
+
+	"scripts"         : {
 		"vite:dev"        : "npx vite dev",
+		"vite:preview"    : "npx vite preview",
 		"vite:build"      : "npx vite build && npx tsc",
-		"vite:preview"    : "npx vite preview"
-	},
-	"config"          : {
-		"c10n" : {
-			"&" : {
-				"dotfiles" : { }
-			}
-		}
+		"dotfiles:config" : "./dev/.files/bin/config.js",
+		"dotfiles:update" : "./dev/.files/bin/update.js"
 	}
 }
