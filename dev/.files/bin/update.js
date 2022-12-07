@@ -44,7 +44,7 @@ const exec = util.promisify( nodeExec );
 	/**
 	 * Runs updater using files from latest skeleton.
 	 */
-	( await import( tmpDirUpdaterFile ) ).default( { projDir } );
+	await ( await import( tmpDirUpdaterFile ) ).default( { projDir } );
 
 	/**
 	 * Removes tmp directory.

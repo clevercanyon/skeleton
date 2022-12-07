@@ -49,16 +49,10 @@ export default async ( { projDir } ) => {
 	for ( const relPath of [
 		'./dev/.files',
 	] ) {
-		console.log( 'Removing: ', path.resolve( projDir, relPath ) );
 		await fs.remove( path.resolve( projDir, relPath ) );
-
-		console.log( 'Recreating: ', path.resolve( projDir, relPath ) );
 		await fs.ensureDir( path.resolve( projDir, relPath ) );
-
-		console.log( 'Populating: ', path.resolve( projDir, relPath ) );
 		await fs.copy( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
 	}
-	console.log( 'Permissioning: ', path.resolve( projDir, './dev/.files/bin/update.js' ) );
 	await fs.chmod( path.resolve( projDir, './dev/.files/bin/update.js' ), 0o700 );
 
 	/**
