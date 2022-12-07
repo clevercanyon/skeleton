@@ -1,8 +1,6 @@
 ##
 # Cloudflare Wrangler configuration.
 #
-# @since 1.0.0
-#
 # @see https://github.com/toml-lang/toml
 # @see https://pseitz.github.io/toml-to-json-online-converter/
 # @see https://developers.cloudflare.com/workers/cli-wrangler/configuration/

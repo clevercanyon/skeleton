@@ -1,9 +1,8 @@
 /**
  * Typescript config file.
  *
- * @since 1.0.0
- *
  * @note Typescript is not aware of this config file's location.
+ * @note Typescript uses the JSONC format (JSON, with comments).
  *
  * @see https://www.typescriptlang.org/tsconfig
  * @see https://vitejs.dev/guide/features.html#typescript-compiler-options

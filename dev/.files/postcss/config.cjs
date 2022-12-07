@@ -1,8 +1,6 @@
 /**
  * PostCSS config file.
  *
- * @since 1.0.0
- *
  * @note PostCSS is not aware of this config file's location.
  * @see https://github.com/csstools/postcss-plugins/blob/main/plugin-packs/postcss-preset-env/FEATURES.md
  *

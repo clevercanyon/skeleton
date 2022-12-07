@@ -1,8 +1,6 @@
 ##
 # NPM ignore file.
 #
-# @since 1.0.0
-#
 # @note NPM is aware of this config file's location.
 # @note Run `npm pack --dry-run` to test configuration.
 #
@@ -12,7 +10,7 @@
 ##
 
 ##
-# This part follows `.gitignore` almost exactly.
+# This part follows `.gitignore` exactly.
 ##
 
 # Local
@@ -182,15 +180,19 @@ Icon?
 # These are in addition to what we have in `.gitignore`.
 ##
 
+# GitHub
+
+.github/
+
 # Allow Dists
 
 !dist/
 
 # Source Code
 
-/dev/
-/docs/
-/tests/
+dev/
+docs/
+tests/
 
 .*
 __*/
@@ -199,6 +201,7 @@ __*/
 *.tsx
 !*.d.ts
 *.jsx
+*.ejs
 *.scss
 
 *.test.*

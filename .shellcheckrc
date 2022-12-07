@@ -1,8 +1,6 @@
 ##
 # Shellcheck configuration.
 #
-# @since 1.0.0
-#
 # @note Shellcheck is aware of this config file's location.
 #
 # @note CUSTOM EDITS ONLY PLEASE!

@@ -1,8 +1,6 @@
 /**
  * Typescript config file.
  *
- * @since 1.0.0
- *
  * @note Typescript is aware of this config file's location.
  *
  * @note CUSTOM EDITS ONLY PLEASE!
@@ -18,8 +16,12 @@
 	 * <custom:start> */
 
 	"compilerOptions" : {
-		"lib"   : [ "es2021" ],
-		"types" : [ "vite/client" ]
+		"lib"   : [ "es2021", "dom" ],
+		"types" : [
+			"vite/client",
+			"@types/react",
+			"@types/react-dom"
+		]
 	}
 	/** </custom:end> */
 }

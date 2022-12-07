@@ -1,40 +1,40 @@
 {
 	"private": true,
 	"version": "1.0.0",
-	"license": "GPL-2.0-or-later",
+	"license": "GPL-3.0-or-later",
 	"name": "@clevercanyon/skeleton",
+	"description": "Another great project by Clever Canyon.",
 	"repository": "https://github.com/clevercanyon/skeleton",
 	"homepage": "https://github.com/clevercanyon/skeleton#readme",
 	"bugs": "https://github.com/clevercanyon/skeleton/issues",
-	"description": "Another great project by Clever Canyon.",
+	"funding": "https://github.com/sponsors/clevercanyon",
 	"keywords": ["clevercanyon"],
 	"author": {
 		"name": "Clever Canyon",
 		"url": "https://clevercanyon.com"
 	},
 	"contributors": [],
-	"funding": "https://clevercanyon.com",
 	"type": "module",
 	"files": ["/dist"],
 	"bin": {},
 	"imports": {},
-	"exports": {
-		".": {
-			"import": "",
-			"require": ""
-		}
-	},
-	"sideEffects": false,
+	"exports": {},
+	"sideEffects": ["./src/*.scss", "./src/index.*"],
 	"module": "",
 	"main": "",
+	"unpkg": "",
+	"browser": "",
 	"types": "",
-	"dependencies": {},
-	"optionalDependencies": {},
-	"bundleDependencies": {},
-	"peerDependencies": {},
+	"dependencies": {
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0"
+	},
+	"bundleDependencies": [],
 	"peerDependenciesMeta": {},
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "*"
+		"@clevercanyon/skeleton-dev-deps": "*",
+		"@types/react": "^18.0.26",
+		"@types/react-dom": "^18.0.9"
 	},
 	"overrides": {},
 	"cpu": ["x64", "arm64"],
@@ -45,18 +45,23 @@
 	},
 	"packageManager": "npm@8.19.2",
 	"scripts": {
-		"vite:dev": "npx vite dev",
-		"vite:preview": "npx vite preview",
-		"vite:build": "npx vite build && npx tsc",
-		"dotfiles:config": "./dev/.files/bin/config.js",
+		"preview": "npx vite preview",
+		"dev": "npx vite dev --mode=dev",
+		"build": "npx vite build --mode=prod && npx tsc",
+		"build:dev": "npx vite build --mode=dev && npx tsc",
 		"dotfiles:update": "./dev/.files/bin/update.js"
 	},
+	"workspaces": [],
 	"publishConfig": {},
 	"config": {
 		"c10n": {
 			"&": {
 				"dotfiles": {
 					"lock": []
+				},
+				"build": {
+					"appType": "mpa",
+					"targetEnv": "web"
 				}
 			}
 		}

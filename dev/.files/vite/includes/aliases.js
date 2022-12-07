@@ -1,8 +1,6 @@
 /**
  * Vite config file.
  *
- * @since 1.0.0
- *
  * @note Vite is not aware of this config file's location.
  * @see https://vitejs.dev/config/
  *

@@ -1,8 +1,6 @@
 /**
  * Stylelint config file.
  *
- * @since 1.0.0
- *
  * @note Stylelint is aware of this config file's location.
  *
  * @note CUSTOM EDITS ONLY PLEASE!

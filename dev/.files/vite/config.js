@@ -1,8 +1,6 @@
 /**
  * Vite config file.
  *
- * @since 1.0.0
- *
  * @note Vite is not aware of this config file's location.
  *
  * @see https://vitejs.dev/config/
@@ -13,19 +11,50 @@
  */
 /* eslint-env es2021, node */
 
-import desm                           from 'desm';
-import path                           from 'path';
-import glob                           from 'glob';
-import { loadEnv }                    from 'vite';
-import fs                             from 'fs-extra';
-import prettier                       from 'prettier';
-import minimatch                      from 'minimatch';
-import aliases                        from './includes/aliases';
-import mc                             from '@clevercanyon/js-object-mc';
-import pluginBasicSSL                 from '@vitejs/plugin-basic-ssl';
-import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
+import mc                                       from '@clevercanyon/js-object-mc';
+import pluginBasicSSL                           from '@vitejs/plugin-basic-ssl';
+import chalk                                    from 'chalk';
+import desm                                     from 'desm';
+import fs                                       from 'fs-extra';
+import glob                                     from 'glob';
+import _                                        from 'lodash';
+import minimatch                                from 'minimatch';
+import path                                     from 'path';
+import prettier                                 from 'prettier';
+import { loadEnv }                              from 'vite';
+import { ViteEjsPlugin as pluginEJS }           from 'vite-plugin-ejs';
+import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
+import aliases                                  from './includes/aliases';
 
-export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
+/**
+ * Validates project config.
+ *
+ * @param {object} config Project config.
+ *
+ * @return boolean True on successful validation.
+ */
+const validateProjConfig = ( config ) => {
+	if ( typeof config?.appType !== 'undefined' ) {
+		throw new Error(
+			'Modifying `appType` is not permitted at this time.' +
+			' Instead, use `config.c10n.&.build.appType` in `package.json`.',
+		);
+	}
+	if ( typeof config.build?.formats !== 'undefined' ) {
+		throw new Error( 'Modifying `build.formats` is not permitted at this time.' );
+	}
+};
+
+/**
+ * Defines Vite configuration.
+ *
+ * @param {object} vite Data passed in by Vite.
+ * @param {object} projConfig Project configuration overrides.
+ *
+ * @return {Promise<object>} Vite configuration object properties.
+ */
+export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = {} ) => {
+	validateProjConfig( projConfig );
 	/**
 	 * Initializes vars.
 	 */
@@ -34,26 +63,57 @@ export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
 	const srcDir    = path.resolve( __dirname, '../../../src' );
 	const envsDir   = path.resolve( __dirname, '../../../src/.envs' );
 
-	const publicEnvPrefix = 'APP_PUBLIC_'; // Used below also.
-	const env             = loadEnv( mode, envsDir, publicEnvPrefix );
-
 	const pkgFile        = path.resolve( projDir, './package.json' );
 	const pkg            = await fs.readJson( pkgFile ); // JSON object props.
 	const pkgPrettierCfg = { ...( await prettier.resolveConfig( pkgFile ) ), parser : 'json' };
 
-	let libName = ( pkg.name || '' ).toLowerCase();
-	libName     = libName.replace( /\bclevercanyon\b/ug, 'c10n' );
-	libName     = libName.replace( /@/ug, '' ).replace( /\./ug, '-' ).replace( /\/+/ug, '.' );
-	libName     = libName.replace( /[^a-z.0-9]([^.])/ug, ( m0, m1 ) => m1.toUpperCase() );
-	libName     = libName.replace( /^\.|\.$/u, '' );
+	const publicEnvPrefix = 'APP_PUBLIC_'; // Used below also.
+	const env             = loadEnv( mode, envsDir, publicEnvPrefix );
+	const isDevMode       = /^dev/ui.test( mode ), isProdMode = /^prod/ui.test( mode );
 
-	const libIndexes   = glob.sync( path.join( srcDir, '/index{,-*,.*}.{tsx,ts,jsx,mjs,js,cjs}' ), { nodir : true } );
-	const libMainIndex = libIndexes.find( ( libIndex ) => minimatch( libIndex, 'index.{tsx,ts,jsx,mjs,js,cjs}', { matchBase : true } ) );
-	libIndexes.map( absPath => './' + path.relative( srcDir, absPath ) ); // Relative to `root` dir (i.e., `srcDir`).
+	/**
+	 * `appType` = `mpa` (Multipage App), `custom` (Custom-Made App).
+	 * `targetEnv` = `any`, `cf:worker`, `node`, `web`, `web:worker`.
+	 *
+	 * 1. MPA = Multipage App. Must use `index.html` entry points.
+	 * 2. CMA = Custom-Made App. Must use `.{tsx,ts,jsx,mjs,js}` entry points.
+	 */
+	const appType   = pkg.config?.c10n?.[ '&' ].build?.appType || 'custom';
+	const targetEnv = pkg.config?.c10n?.[ '&' ].build?.targetEnv || 'any';
 
-	let isLib = false; // Initialize.
-	if ( libName && libIndexes.length && libMainIndex ) {
-		isLib = /^export\s/um.test( await fs.readFile( path.resolve( srcDir, libMainIndex ), 'utf8' ) );
+	const isMpa = 'mpa' === appType;
+	const isCma = 'custom' === appType;
+
+	let cmaName = ( pkg.name || '' ).toLowerCase();
+	cmaName     = cmaName.replace( /\bclevercanyon\b/ug, 'c10n' );
+	cmaName     = cmaName.replace( /@/ug, '' ).replace( /\./ug, '-' ).replace( /\/+/ug, '.' );
+	cmaName     = cmaName.replace( /[^a-z.0-9]([^.])/ug, ( m0, m1 ) => m1.toUpperCase() );
+	cmaName     = cmaName.replace( /^\.|\.$/u, '' );
+
+	const mpaAbsIndexes = glob.sync( path.join( srcDir, '/**/index.html' ), { nodir : true } );
+	const mpaRelIndexes = mpaAbsIndexes.map( absPath => './' + path.relative( srcDir, absPath ) );
+
+	const cmaAbsEntries = glob.sync( path.join( srcDir, '/*.{tsx,ts,jsx,mjs,js}' ), { nodir : true } );
+	const cmaRelEntries = cmaAbsEntries.map( absPath => './' + path.relative( srcDir, absPath ) );
+
+	const mpaEntryIndex = mpaRelIndexes.find( ( relPath ) => minimatch( relPath, './index.html' ) );
+	const cmaEntryIndex = cmaRelEntries.find( ( relPath ) => minimatch( relPath, './index.{tsx,ts,jsx,mjs,js}' ) );
+
+	const isSSR       = [ 'cf:worker', 'node' ].includes( targetEnv );
+	const isSSRWorker = isSSR && [ 'cf:worker' ].includes( targetEnv );
+	const isWeb       = [ 'web', 'web:worker' ].includes( targetEnv );
+
+	if ( ! isMpa && ! isCma ) {
+		throw new Error( 'Must have a valid `config.c10n.&.build.appType` in `package.json`.' );
+	}
+	if ( ! [ 'any', 'cf:worker', 'node', 'web', 'web:worker' ].includes( targetEnv ) ) {
+		throw new Error( 'Must have a valid `config.c10n.&.build.targetEnv` in `package.json`.' );
+	}
+	if ( isMpa && ! mpaEntryIndex ) {
+		throw new Error( 'Multipage apps must have an `./index.{tsx,ts,jsx,mjs,js}` entry point.' );
+	}
+	if ( isCma && ! cmaEntryIndex ) {
+		throw new Error( 'Custom apps must have an `./index.{tsx,ts,jsx,mjs,js}` entry point.' );
 	}
 	/**
 	 * Updates `package.json` accordingly.
@@ -61,82 +121,150 @@ export default async ( { mode } /* { command, mode, ssrBuild } */ ) => {
 	pkg.exports = pkg.exports || {};
 	pkg.exports[ '.' ] = pkg.exports[ '.' ] || {};
 
-	if ( isLib && 1 === libIndexes.length ) {
+	if ( isSSR ) {
 		mc.patch( pkg.exports, {
 			'.' : {
 				import  : './dist/index.js',
-				require : './dist/index.umd.cjs',
+				require : './dist/index.js',
 			},
 		} );
-		pkg.module = './dist/index.js';
-		pkg.main   = './dist/index.umd.cjs';
-		pkg.types  = './dist/types/index.d.ts';
-	} else if ( isLib && libIndexes.length > 1 ) {
+		pkg.module  = './dist/index.js';
+		pkg.main    = './dist/index.js';
+		pkg.types   = './dist/types/index.d.ts';
+		pkg.browser = isWeb ? pkg.module : '';
+		pkg.unpkg   = pkg.module;
+
+	} else if ( isCma && cmaRelEntries.length > 1 ) {
 		mc.patch( pkg.exports, {
 			'.' : {
 				import  : './dist/index.js',
 				require : './dist/index.cjs',
 			},
 		} );
-		pkg.module = './dist/index.js';
-		pkg.main   = './dist/index.cjs';
-		pkg.types  = './dist/types/index.d.ts';
-	} else if ( ! isLib || ( isLib && 0 === libIndexes ) ) {
-		pkg.module = pkg.main = pkg.types = '';
-		mc.patch( pkg.exports, { '.' : { import : '', require : '' } } );
+		pkg.module  = './dist/index.js';
+		pkg.main    = './dist/index.cjs';
+		pkg.types   = './dist/types/index.d.ts';
+		pkg.browser = isWeb ? pkg.module : '';
+		pkg.unpkg   = pkg.module;
+
+	} else if ( isCma ) {
+		mc.patch( pkg.exports, {
+			'.' : {
+				import  : './dist/index.js',
+				require : './dist/index.umd.cjs',
+			},
+		} );
+		pkg.module  = './dist/index.js';
+		pkg.main    = './dist/index.umd.cjs';
+		pkg.types   = './dist/types/index.d.ts';
+		pkg.browser = isWeb ? pkg.main : '';
+		pkg.unpkg   = pkg.main;
+
+	} else { // It's not a CMA. It's an MPA.
+		pkg.exports = {}; // Clear these out entirely.
+		pkg.module  = pkg.main = pkg.unpkg = pkg.browser = pkg.types = '';
 	}
 	await fs.writeFile( pkgFile, prettier.format( JSON.stringify( pkg, null, 4 ), pkgPrettierCfg ) );
+	console.log(
+		chalk.blue( 'Updated `package.json` properties: ' ) +
+		chalk.green( JSON.stringify( _.pick( pkg, [ 'exports', 'module', 'main', 'unpkg', 'browser', 'types' ] ), null, 4 ) ),
+	);
 
 	/**
-	 * Returns Vite config object data.
+	 * Configures rollup.
+	 * @see https://o5p.me/5Vupql
 	 */
-	return {
-		c10n      : { // Expose these.
-			aliases, projDir, srcDir, env, pkg,
-			isLib, libName, libIndexes, libMainIndex,
+	const rollupConfig               = {
+		input  : isCma ? // Absolute paths.
+			cmaAbsEntries : mpaAbsIndexes,
+		output : {
+			extend     : true, // Global || checks.
+			interop    : 'auto', // Like `tsconfig.json`.
+			noConflict : true, // Like `jQuery.noConflict()`.
 		},
-		root      : srcDir, // Absolute; where entry indexes live.
+	};
+	const importedWorkerRollupConfig = {
+		// Imported web workers; e.g., `?worker`.
+		// See: <https://vitejs.dev/guide/features.html#web-workers>.
+		output : {
+			extend     : true, // Global || checks.
+			interop    : 'auto', // Like `tsconfig.json`.
+			noConflict : true, // Like `jQuery.noConflict()`.
+		},
+	};
+
+	/**
+	 * Configures Vite plugins.
+	 * @see https://github.com/vitejs/vite-plugin-basic-ssl
+	 * @see https://github.com/zhuweiyou/vite-plugin-minify
+	 * @see https://github.com/trapcodeio/vite-plugin-ejs
+	 */
+	const pluginBasicSSLConfig   = pluginBasicSSL();
+	const pluginMinifyHTMLConfig = isProdMode ? pluginMinifyHTML() : null;
+	const pluginEJSConfig        = pluginEJS( { env, pkg }, { root : srcDir, strict : true } );
+	const plugins                = [ pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig ];
+
+	/**
+	 * Vite config base.
+	 * @see https://vitejs.dev/config/
+	 * @note This is extended by project configs.
+	 */
+	const baseConfig = {
+		define    : { // Static replacements.
+			$$__APP_PKG_NAME__$$       : pkg.name || '',
+			$$__APP_PKG_VERSION__$$    : pkg.version || '',
+			$$__APP_PKG_REPOSITORY__$$ : pkg.repository || '',
+			$$__APP_PKG_HOMEPAGE__$$   : pkg.homepage || '',
+			$$__APP_PKG_BUGS__$$       : pkg.bugs || '',
+		},
+		root      : srcDir, // Absolute. Where entry indexes live.
 		publicDir : './public', // Static assets relative to `root`.
-		base      : '/', // Analagous to `<base href="/">`.
+		base      : '/', // Analagous to `<base href="/">` — use trailing slash.
 
-		appType : 'custom', // <https://vitejs.dev/config/shared-options.html#apptype>
-		resolve : { alias : aliases }, // See also: `../typescript/config.json`.
+		appType : isCma ? 'custom' : 'mpa', // MPA = multipage app: <https://o5p.me/ZcTkEv>.
+		resolve : { alias : aliases }, // See: `../typescript/config.json` and `./includes/aliases.js`.
 
-		envDir    : './' + path.relative( srcDir, envsDir ), // Where `.env` files live. Relative to `root`.
+		envDir    : './' + path.relative( srcDir, envsDir ), // Relative to `root`.
 		envPrefix : publicEnvPrefix, // Part of app; i.e., visible client-side.
 
-		build   : {         // <https://vitejs.dev/config/build-options.html>
-			emptyOutDir : true, // Start clean. Must set as `true` explicitly.
-			sourcemap   : false, // Enable to produce sourcemaps.
+		server : { open : true, https : true }, // Vite dev server.
+		plugins, // Additional Vite plugins that were configured above.
+		// esbuild : {},
 
-			target : 'es2021', // Match our typescript config.
+		worker : { // Imported web workers; e.g., `?worker`.
+			// See: <https://vitejs.dev/guide/features.html#web-workers>.
+			plugins       : [], format : 'es',
+			rollupOptions : importedWorkerRollupConfig,
+		},
+		build  : {         // <https://vitejs.dev/config/build-options.html>
+			emptyOutDir : true, // Must set as `true` explicitly.
+			target      : 'es2021', // Matches `tsconfig.json`.
 
 			outDir    : '../dist', // Relative to `root`.
 			assetsDir : './assets/a19s', // Relative to `outDir`.
 			// `a19s` = numeronym for 'auto-generated assets'.
 
-			...( isLib ? {
-				lib : {
-					name  : libName,      // Global variable.
-					entry : libIndexes, // Relative to `root`.
-				},
-			} : {} ),
-			rollupOptions            : {
-				output : {
-					extend         : true,
-					noConflict     : true, // ↓ Modifies default CSS asset filename.
-					assetFileNames : ( a ) => 'style.css' === a.name ? 'styles.css' : a.name,
-				},
+			ssr : isSSR, // Server-side rendering?
+			...( isSSR ? { ssrManifest : isDevMode } : {} ),
+
+			sourcemap : isDevMode, // Enables creation of sourcemaps.
+			manifest  : isDevMode, // Enables creation of manifest for assets.
+
+			...( isCma ? { lib : { name : cmaName, entry : cmaRelEntries } } : {} ),
+			rollupOptions : rollupConfig, // See: <https://o5p.me/5Vupql>.
+		},
+		...( isSSR ? {
+			ssr : {
+				noExternal : true, // All server side.
+				target     : isSSRWorker ? 'webworker' : 'node',
 			},
-			commonjsOptions          : {},
-			dynamicImportVarsOptions : {},
-		},
-		define  : {
-			$$__APP_PKG_NAME__$$    : pkg.name || '',
-			$$__APP_PKG_VERSION__$$ : pkg.version || '',
-			$$__APP_PKG_REPO__$$    : pkg.repository || '',
-		},
-		server  : { open : true, https : true },
-		plugins : [ pluginBasicSSL(), pluginEJS( { env, pkg }, { root : srcDir } ) ],
+		} : {} ),
 	};
+	// Uncomment to aid in debugging.
+	// console.log( JSON.stringify( baseConfig, null, 4 ) );
+	/**
+	 * Returns final Vite config.
+	 * @note Merged with project config.
+	 */
+	return mc.merge( baseConfig, projConfig );
 };

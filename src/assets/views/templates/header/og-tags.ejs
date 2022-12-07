@@ -1,0 +1,6 @@
+<meta property="og:type" content="<%= locals.ogType || 'website'; %>" />
+<meta property="og:site_name" content="<%= locals.ogSiteName || env.APP_PUBLIC_TITLE; %>" />
+<meta property="og:title" content="<%= locals.ogTitle || locals.title || env.APP_PUBLIC_TITLE; %>" />
+<meta property="og:description" content="<%= locals.ogDescription || locals.description || env.APP_PUBLIC_DESCRIPTION; %>" />
+<meta property="og:url" content="<%= locals.ogURL || locals.canonicalURL || env.APP_PUBLIC_BASE_URL; %>" />
+<meta property="og:image" content="<%= locals.ogImage || ( env.APP_PUBLIC_BASE_URL + '/assets/brand/og-image.png?v=' + encodeURIComponent( pkg.version ) ); %>" />

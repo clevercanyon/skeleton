@@ -1,8 +1,6 @@
 /**
  * Prettier config file.
  *
- * @since 1.0.0
- *
  * @note Prettier is not aware of this config file's location.
  *
  * @see https://prettier.io/docs/en/configuration.html
@@ -29,9 +27,15 @@ module.exports = {
 	semi                       : true,
 	singleQuote                : true,
 	tabWidth                   : 4,
-	trailingComma              : 'es5',
+	trailingComma              : 'all',
 	useTabs                    : true,
 	vueIndentScriptAndStyle    : true,
 	xmlSelfClosingSpace        : true,
 	xmlWhitespaceSensitivity   : 'strict',
+	overrides                  : [
+		{
+			files   : [ '**/*.json' ],
+			options : { trailingComma : 'none' },
+		},
+	],
 };

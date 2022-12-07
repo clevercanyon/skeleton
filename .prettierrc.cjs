@@ -1,8 +1,6 @@
 /**
  * Prettier config file.
  *
- * @since 1.0.0
- *
  * @note Prettier is aware of this config file's location.
  *
  * @note CUSTOM EDITS ONLY PLEASE!

@@ -1,8 +1,6 @@
 /**
  * Tailwind CSS config file.
  *
- * @since 1.0.0
- *
  * @note Tailwind is not aware of this config file's location.
  * @see https://tailwindcss.com/docs/configuration
  *
@@ -34,7 +32,7 @@ module.exports = {
 		},
 	},
 	content : [
-		path.resolve( projDir, './src/*.{md,xml,html,shtml,php,js,cjs,mjs,jsx,ts,tsx}' ),
-		path.resolve( projDir, './src/**/*.{md,xml,html,shtml,php,js,cjs,mjs,jsx,ts,tsx}' ),
+		path.resolve( projDir, './src/*.{md,xml,html,shtml,php,js,cjs,mjs,jsx,ts,tsx,ejs}' ),
+		path.resolve( projDir, './src/**/*.{md,xml,html,shtml,php,js,cjs,mjs,jsx,ts,tsx,ejs}' ),
 	],
 };

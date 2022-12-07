@@ -1,8 +1,6 @@
 /**
  * ESLint config file.
  *
- * @since 1.0.0
- *
  * @note ESLint is not aware of this config file's location.
  *
  * @see https://eslint.org/docs/latest/user-guide/configuring

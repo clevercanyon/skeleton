@@ -1,17 +1,16 @@
 ##
-# NPM config file.
+# GitHub funding configuration.
 #
-# @note NPM is aware of this config file's location.
+# @since 1.0.0
+#
+# @note GitHub is aware of this config file's location.
 #
 # @note CUSTOM EDITS ONLY PLEASE!
 # In the future this file will be updated automatically.
 # Only `<custom:start.../custom:end>` will be preserved below.
 ##
 
-access=public
-engine-strict=true
-//registry.npmjs.org/:_authToken=${C10N_NPM_TOKEN}
-//npm.pkg.github.com/:_authToken=${C10N_GITHUB_TOKEN}
+github : clevercanyon
 
 ##
 # Customizations

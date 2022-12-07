@@ -5,7 +5,7 @@
 		"name" : "Clever Canyon",
 		"url"  : "https://clevercanyon.com"
 	},
-	"funding"         : "https://clevercanyon.com",
+	"funding"         : "https://github.com/sponsors/clevercanyon",
 	"devDependencies" : {
 		"@clevercanyon/skeleton-dev-deps" : "*"
 	},
@@ -16,10 +16,19 @@
 	"packageManager"  : "npm@8.19.2",
 
 	"scripts"         : {
-		"vite:dev"        : "npx vite dev",
-		"vite:preview"    : "npx vite preview",
-		"vite:build"      : "npx vite build && npx tsc",
-		"dotfiles:config" : "./dev/.files/bin/config.js",
+		"preview"         : "npx vite preview",
+		"dev"             : "npx vite dev --mode=dev",
+		"build"           : "npx vite build --mode=prod && npx tsc",
+		"build:dev"       : "npx vite build --mode=dev && npx tsc",
 		"dotfiles:update" : "./dev/.files/bin/update.js"
+	},
+	"workspaces"      : [ ],
+	"config"          : {
+		"c10n" : {
+			"&" : {
+				"dotfiles" : { },
+				"build"    : { }
+			}
+		}
 	}
 }
