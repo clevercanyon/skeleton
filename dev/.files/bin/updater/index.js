@@ -9,8 +9,9 @@
 
 import mc           from '@clevercanyon/js-object-mc';
 import desm         from 'desm';
-import fs           from 'fs-extra';
-import path         from 'path';
+import fs           from 'node:fs';
+import fsp          from 'node:fs/promises';
+import path         from 'node:path';
 import customRegexp from './data/custom-regexp.js';
 
 export default async ( { projDir } ) => {
@@ -19,7 +20,7 @@ export default async ( { projDir } ) => {
 	 */
 	const __dirname = desm( import.meta.url );
 	const tmpDir    = path.resolve( __dirname, '../../../..' );
-	const pkg       = await fs.readJson( path.resolve( projDir, './package.json' ) );
+	const pkg       = JSON.parse( await fsp.readFile( path.resolve( projDir, './package.json' ) ) );
 
 	let locks = pkg.config?.c10n?.[ '&' ]?.dotfiles?.lock || [];
 	locks     = locks.map( ( relPath => path.resolve( projDir, relPath ) ) );
@@ -49,11 +50,11 @@ export default async ( { projDir } ) => {
 	for ( const relPath of [
 		'./dev/.files',
 	] ) {
-		await fs.remove( path.resolve( projDir, relPath ) );
-		await fs.ensureDir( path.resolve( projDir, relPath ) );
-		await fs.copy( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
+		await fsp.rm( path.resolve( projDir, relPath ), { recursive : true, force : true } );
+		await fsp.mkdir( path.resolve( projDir, relPath ), { recursive : true } );
+		await fsp.cp( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ), { recursive : true } );
 	}
-	await fs.chmod( path.resolve( projDir, './dev/.files/bin/update.js' ), 0o700 );
+	await fsp.chmod( path.resolve( projDir, './dev/.files/bin/update.js' ), 0o700 );
 
 	/**
 	 * Updates semi-immutable dotfiles.
@@ -80,17 +81,17 @@ export default async ( { projDir } ) => {
 		}
 		let newFileContents = ''; // Initialize.
 
-		if ( await fs.exists( path.resolve( projDir, relPath ) ) ) {
-			const oldFileContents   = await fs.readFile( path.resolve( projDir, relPath ), 'utf8' );
+		if ( fs.existsSync( path.resolve( projDir, relPath ) ) ) {
+			const oldFileContents   = await fsp.readFile( path.resolve( projDir, relPath ), 'utf8' );
 			const oldFileMatches    = customRegexp.exec( oldFileContents ); // See: `./data/custom-regexp.js`.
 			const oldFileCustomCode = oldFileMatches ? oldFileMatches[ 2 ] : ''; // We'll preserve any custom code.
 
-			newFileContents = ( await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' ) )
+			newFileContents = ( await fsp.readFile( path.resolve( tmpDir, relPath ), 'utf8' ) )
 				.replace( customRegexp, ( $_, $1, $2, $3 ) => $1 + oldFileCustomCode + $3 );
 		} else {
-			newFileContents = await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' );
+			newFileContents = await fsp.readFile( path.resolve( tmpDir, relPath ), 'utf8' );
 		}
-		await fs.writeFile( path.resolve( projDir, relPath ), newFileContents );
+		await fsp.writeFile( path.resolve( projDir, relPath ), newFileContents );
 	}
 
 	/**
@@ -103,8 +104,8 @@ export default async ( { projDir } ) => {
 		if ( isLocked( relPath ) ) {
 			return; // Locked 🔒.
 		}
-		if ( ! await fs.exists( path.resolve( projDir, relPath ) ) ) {
-			await fs.copy( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
+		if ( ! fs.existsSync( path.resolve( projDir, relPath ) ) ) {
+			await fsp.cp( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
 		}
 	}
 
@@ -117,15 +118,15 @@ export default async ( { projDir } ) => {
 		if ( isLocked( relPath ) ) {
 			return; // Locked 🔒.
 		}
-		if ( ! await fs.exists( path.resolve( projDir, relPath ) ) ) {
-			await fs.copy( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
+		if ( ! fs.existsSync( path.resolve( projDir, relPath ) ) ) {
+			await fsp.cp( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
 		}
-		const json        = await fs.readJson( path.resolve( projDir, relPath ) );
+		const json        = JSON.parse( await fsp.readFile( path.resolve( projDir, relPath ) ) );
 		const updatesFile = path.resolve( tmpDir, './dev/.files/bin/updater/data', relPath, './updates.json' );
 
-		if ( await fs.exists( updatesFile ) ) {
-			mc.patch( json, await fs.readJson( updatesFile ) );
-			await fs.writeFile( path.resolve( projDir, relPath ), JSON.stringify( json, null, 4 ) );
+		if ( fs.existsSync( updatesFile ) ) {
+			mc.patch( json, JSON.parse( await fsp.readFile( updatesFile ) ) );
+			await fsp.writeFile( path.resolve( projDir, relPath ), JSON.stringify( json, null, 4 ) );
 		}
 	}
 };

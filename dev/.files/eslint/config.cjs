@@ -21,11 +21,11 @@ let commonParserOptions = {};
 let commonSettings      = {};
 let commonRules         = {};
 
-const path = require( 'path' );
-const fs   = require( 'fs-extra' );
+const path = require( 'node:path' );
+const fs   = require( 'node:fs' );
 
 const projDir = path.resolve( __dirname, '../../..' );
-const pkg     = fs.readJsonSync( path.resolve( projDir, './package.json' ) );
+const pkg     = JSON.parse( fs.readFileSync( path.resolve( projDir, './package.json' ) ) );
 
 module.exports = {
 	extends        : ( commonExtends = [

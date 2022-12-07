@@ -15,16 +15,16 @@ import mc                                       from '@clevercanyon/js-object-mc
 import pluginBasicSSL                           from '@vitejs/plugin-basic-ssl';
 import chalk                                    from 'chalk';
 import desm                                     from 'desm';
-import fs                                       from 'fs-extra';
 import glob                                     from 'glob';
 import _                                        from 'lodash';
 import minimatch                                from 'minimatch';
-import path                                     from 'path';
+import fsp                                      from 'node:fs/promises';
+import path                                     from 'node:path';
 import prettier                                 from 'prettier';
 import { loadEnv }                              from 'vite';
 import { ViteEjsPlugin as pluginEJS }           from 'vite-plugin-ejs';
 import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
-import aliases                                  from './includes/aliases';
+import aliases                                  from './includes/aliases.js';
 
 /**
  * Validates project config.
@@ -64,13 +64,13 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	const envsDir   = path.resolve( __dirname, '../../../src/.envs' );
 
 	const pkgFile        = path.resolve( projDir, './package.json' );
-	const pkg            = await fs.readJson( pkgFile ); // JSON object props.
+	const pkg            = JSON.parse( await fsp.readFile( pkgFile ) );
 	const pkgPrettierCfg = { ...( await prettier.resolveConfig( pkgFile ) ), parser : 'json' };
 
 	const publicEnvPrefix = 'APP_PUBLIC_'; // Used below also.
 	const env             = loadEnv( mode, envsDir, publicEnvPrefix );
 
-	const isProd  = /^prod/ui.test( mode );
+	const isProd  = /^prod(uction)?$/ui.test( mode );
 	const isDev   = ! isProd; // Always opposite.
 	const nodeEnv = isProd ? 'production' : 'development';
 
@@ -167,7 +167,7 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 		pkg.exports = {}; // Clear these out entirely.
 		pkg.module  = pkg.main = pkg.unpkg = pkg.browser = pkg.types = '';
 	}
-	await fs.writeFile( pkgFile, prettier.format( JSON.stringify( pkg, null, 4 ), pkgPrettierCfg ) );
+	await fsp.writeFile( pkgFile, prettier.format( JSON.stringify( pkg, null, 4 ), pkgPrettierCfg ) );
 	console.log(
 		chalk.blue( 'Updated `package.json` properties: ' ) +
 		chalk.green( JSON.stringify( _.pick( pkg, [ 'exports', 'module', 'main', 'unpkg', 'browser', 'types' ] ), null, 4 ) ),

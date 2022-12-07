@@ -8,16 +8,16 @@
  */
 /* eslint-env es2021, node */
 
-import { exec as nodeExec } from 'child_process';
-import crypto               from 'crypto';
-import degit                from 'degit';
-import desm                 from 'desm';
-import fs                   from 'fs-extra';
-import os                   from 'os';
-import path                 from 'path';
-import util                 from 'util';
+import degit        from 'degit';
+import desm         from 'desm';
+import childProcess from 'node:child_process';
+import crypto       from 'node:crypto';
+import fsp          from 'node:fs/promises';
+import os           from 'node:os';
+import path         from 'node:path';
+import util         from 'node:util';
 
-const exec = util.promisify( nodeExec );
+const exec = util.promisify( childProcess.exec );
 
 ( async () => {
 	/**
@@ -26,7 +26,7 @@ const exec = util.promisify( nodeExec );
 	const __dirname = desm( import.meta.url );
 	const projDir   = path.resolve( __dirname, '../../..' );
 
-	const tmpDir            = await fs.mkdtemp(
+	const tmpDir            = await fsp.mkdtemp(
 		path.resolve( os.tmpdir(), './' + crypto.randomUUID() ),
 	);
 	const tmpDirUpdaterFile = path.resolve( tmpDir, './dev/.files/bin/updater/index.js' );
@@ -49,5 +49,5 @@ const exec = util.promisify( nodeExec );
 	/**
 	 * Removes tmp directory.
 	 */
-	await fs.remove( tmpDir );
+	await fsp.rm( tmpDir, { recursive : true, force : true } );
 } )();

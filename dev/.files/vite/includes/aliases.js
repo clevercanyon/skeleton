@@ -11,7 +11,7 @@
 /* eslint-env es2021, node */
 
 import desm from 'desm';
-import path from 'path';
+import path from 'node:path';
 
 const __dirname = desm( import.meta.url );
 const projDir   = path.resolve( __dirname, '../../../..' );
