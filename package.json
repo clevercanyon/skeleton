@@ -19,7 +19,10 @@
 	"bin"                  : { },
 	"imports"              : { },
 	"exports"              : { },
-	"sideEffects"          : [ "./src/*.scss", "./src/index.*" ],
+	"sideEffects"          : [
+		"./src/*.scss",
+		"./src/index.*"
+	],
 	"module"               : "",
 	"main"                 : "",
 	"unpkg"                : "",
