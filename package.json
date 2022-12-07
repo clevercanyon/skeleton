@@ -39,10 +39,7 @@
 	"overrides"            : { },
 	"cpu"                  : [ "x64", "arm64" ],
 	"os"                   : [ "darwin", "linux" ],
-	"engines"              : {
-		"node" : "^18.5.0",
-		"npm"  : "^8.19.2"
-	},
+	"engines"              : { "node" : "^19.2.0", "npm" : "^8.19.3" },
 	"scripts"              : {
 		"preview"         : "npx vite preview",
 		"dev"             : "npx vite dev --mode=dev",
