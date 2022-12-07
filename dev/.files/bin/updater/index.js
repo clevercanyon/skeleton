@@ -53,7 +53,6 @@ export default async ( { projDir } ) => {
 		await fs.ensureDir( path.resolve( projDir, relPath ) );
 		await fs.copy( path.resolve( tmpDir, relPath ), path.resolve( projDir, relPath ) );
 	}
-	await fs.chmod( path.resolve( projDir, './dev/.files/bin/config.js' ), 0o700 );
 	await fs.chmod( path.resolve( projDir, './dev/.files/bin/update.js' ), 0o700 );
 
 	/**
