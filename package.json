@@ -1,72 +1,67 @@
 {
-	"private": true,
-	"version": "1.0.1",
-	"license": "GPL-3.0-or-later",
-	"name": "@clevercanyon/skeleton",
-	"description": "Another great project by Clever Canyon.",
-	"repository": "https://github.com/clevercanyon/skeleton",
-	"homepage": "https://github.com/clevercanyon/skeleton#readme",
-	"bugs": "https://github.com/clevercanyon/skeleton/issues",
-	"funding": "https://github.com/sponsors/clevercanyon",
-	"keywords": ["clevercanyon"],
-	"author": {
-		"name": "Clever Canyon",
-		"url": "https://clevercanyon.com"
+	"private"              : true,
+	"version"              : "1.0.1",
+	"license"              : "GPL-3.0-or-later",
+	"name"                 : "@clevercanyon/skeleton",
+	"description"          : "Another great project by Clever Canyon.",
+	"repository"           : "https://github.com/clevercanyon/skeleton",
+	"homepage"             : "https://github.com/clevercanyon/skeleton#readme",
+	"bugs"                 : "https://github.com/clevercanyon/skeleton/issues",
+	"funding"              : "https://github.com/sponsors/clevercanyon",
+	"keywords"             : [ "clevercanyon" ],
+	"author"               : {
+		"name" : "Clever Canyon",
+		"url"  : "https://clevercanyon.com"
 	},
-	"contributors": [],
-	"type": "module",
-	"files": ["/dist"],
-	"bin": {},
-	"imports": {},
-	"exports": {
-		".": {
-			"import": "./dist/index.js",
-			"require": "./dist/index.umd.cjs"
+	"contributors"         : [ ],
+	"type"                 : "module",
+	"files"                : [ "/dist" ],
+	"bin"                  : { },
+	"imports"              : { },
+	"exports"              : {
+		"." : {
+			"import"  : "./dist/index.js",
+			"require" : "./dist/index.umd.cjs"
 		}
 	},
-	"sideEffects": ["./src/*.scss", "./src/index.*"],
-	"module": "./dist/index.js",
-	"main": "./dist/index.umd.cjs",
-	"unpkg": "./dist/index.umd.cjs",
-	"browser": "",
-	"types": "./dist/types/index.d.ts",
-	"dependencies": {
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+	"sideEffects"          : [ "./src/*.scss", "./src/index.*" ],
+	"module"               : "./dist/index.js",
+	"main"                 : "./dist/index.umd.cjs",
+	"unpkg"                : "./dist/index.umd.cjs",
+	"browser"              : "",
+	"types"                : "./dist/types/index.d.ts",
+	"dependencies"         : { },
+	"bundleDependencies"   : [ ],
+	"peerDependenciesMeta" : { },
+	"devDependencies"      : {
+		"@clevercanyon/skeleton-dev-deps" : "*"
 	},
-	"bundleDependencies": [],
-	"peerDependenciesMeta": {},
-	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "*",
-		"@types/react": "^18.0.26",
-		"@types/react-dom": "^18.0.9"
+	"overrides"            : { },
+	"cpu"                  : [ "x64", "arm64" ],
+	"os"                   : [ "darwin", "linux" ],
+	"engines"              : {
+		"node" : "^19.2.0",
+		"npm"  : "^8.19.3"
 	},
-	"overrides": {},
-	"cpu": ["x64", "arm64"],
-	"os": ["darwin", "linux"],
-	"engines": {
-		"node": "^19.2.0",
-		"npm": "^8.19.3"
+	"scripts"              : {
+		"preview"         : "npx vite preview",
+		"dev"             : "npx vite dev --mode=dev",
+		"build:dev"       : "npx tsc && npx vite build --mode=dev",
+		"build:stage"     : "npx tsc && npx vite build --mode=stage",
+		"build:prod"      : "npx tsc && npx vite build --mode=prod",
+		"dotfiles:update" : "./dev/.files/bin/update.js"
 	},
-	"scripts": {
-		"preview": "npx vite preview",
-		"dev": "npx vite dev --mode=dev",
-		"build:dev": "npx tsc && npx vite build --mode=dev",
-		"build:stage": "npx tsc && npx vite build --mode=stage",
-		"build:prod": "npx tsc && npx vite build --mode=prod",
-		"dotfiles:update": "./dev/.files/bin/update.js"
-	},
-	"workspaces": [],
-	"publishConfig": {},
-	"config": {
-		"c10n": {
-			"&": {
-				"dotfiles": {
-					"lock": []
+	"workspaces"           : [ ],
+	"publishConfig"        : { },
+	"config"               : {
+		"c10n" : {
+			"&" : {
+				"dotfiles" : {
+					"lock" : [ ]
 				},
-				"build": {
-					"appType": "custom",
-					"targetEnv": "any"
+				"build"    : {
+					"appType"   : "custom",
+					"targetEnv" : "any"
 				}
 			}
 		}
