@@ -43,6 +43,7 @@
 		"isolatedModules"                  : true,
 
 		"strict"                           : true,
+		"alwaysStrict"                     : true,
 		"skipLibCheck"                     : true,
 
 		"allowJs"                          : false,

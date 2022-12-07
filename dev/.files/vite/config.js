@@ -69,7 +69,10 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 
 	const publicEnvPrefix = 'APP_PUBLIC_'; // Used below also.
 	const env             = loadEnv( mode, envsDir, publicEnvPrefix );
-	const isDevMode       = /^dev/ui.test( mode ), isProdMode = /^prod/ui.test( mode );
+
+	const isProd  = /^prod/ui.test( mode );
+	const isDev   = ! isProd; // Always opposite.
+	const nodeEnv = isProd ? 'production' : 'development';
 
 	/**
 	 * `appType` = `mpa` (Multipage App), `custom` (Custom-Made App).
@@ -200,8 +203,11 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	 * @see https://github.com/trapcodeio/vite-plugin-ejs
 	 */
 	const pluginBasicSSLConfig   = pluginBasicSSL();
-	const pluginMinifyHTMLConfig = isProdMode ? pluginMinifyHTML() : null;
-	const pluginEJSConfig        = pluginEJS( { env, pkg }, { root : srcDir, strict : true } );
+	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
+	const pluginEJSConfig        = pluginEJS(
+		{ NODE_ENV : nodeEnv, isProd, isDev, env, pkg },
+		{ ejs : { root : srcDir, views : [ srcDir + '/assets/ejs' ], strict : true, localsName : '$' } },
+	);
 	const plugins                = [ pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig ];
 
 	/**
@@ -229,7 +235,9 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 
 		server : { open : true, https : true }, // Vite dev server.
 		plugins, // Additional Vite plugins that were configured above.
-		// esbuild : {},
+
+		esbuild : { jsx : 'automatic' }, // ← Not necessary in Vite 4.0.x.
+		// See: <https://o5p.me/240y9w>, where `jsx` will be picked up from `tsconfig.json`.
 
 		worker : { // Imported web workers; e.g., `?worker`.
 			// See: <https://vitejs.dev/guide/features.html#web-workers>.
@@ -245,10 +253,10 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 			// `a19s` = numeronym for 'auto-generated assets'.
 
 			ssr : isSSR, // Server-side rendering?
-			...( isSSR ? { ssrManifest : isDevMode } : {} ),
+			...( isSSR ? { ssrManifest : isDev } : {} ),
 
-			sourcemap : isDevMode, // Enables creation of sourcemaps.
-			manifest  : isDevMode, // Enables creation of manifest for assets.
+			sourcemap : isDev, // Enables creation of sourcemaps.
+			manifest  : isDev, // Enables creation of manifest for assets.
 
 			...( isCma ? { lib : { name : cmaName, entry : cmaRelEntries } } : {} ),
 			rollupOptions : rollupConfig, // See: <https://o5p.me/5Vupql>.

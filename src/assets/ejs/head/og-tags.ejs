@@ -1,0 +1,6 @@
+<meta property="og:type" content="<%= $.ogType || 'website'; %>" />
+<meta property="og:site_name" content="<%= $.ogSiteName || $.env.APP_PUBLIC_TITLE; %>" />
+<meta property="og:title" content="<%= $.ogTitle || $.title || $.env.APP_PUBLIC_TITLE; %>" />
+<meta property="og:description" content="<%= $.ogDescription || $.description || $.env.APP_PUBLIC_DESCRIPTION; %>" />
+<meta property="og:url" content="<%= $.ogURL || $.canonicalURL || $.env.APP_PUBLIC_URL; %>" />
+<meta property="og:image" content="<%= $.ogImage || ( $.env.APP_PUBLIC_URL + '/assets/brand/og-image.png?v=' + encodeURIComponent( $.pkg.version ) ); %>" />

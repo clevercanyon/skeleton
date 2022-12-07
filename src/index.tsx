@@ -5,7 +5,7 @@ const App = () => {
 	return <h1>Hello World</h1>;
 };
 ReactDOM.createRoot(
-	document.getElementById( 'app' ) as HTMLElement,
+	document.getElementById( 'root' ) as HTMLElement,
 ).render(
 	<React.StrictMode>
 		<App />

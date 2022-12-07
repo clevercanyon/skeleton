@@ -1,0 +1,5 @@
+<% if ( $.canonicalURL ) { %>
+    <link rel="canonical" href="<%= $.canonicalURL; %>" />
+<% } else if ( $.isRoot ) { %>
+    <link rel="canonical" href="<%= $.env.APP_PUBLIC_URL; %>" />
+<% } %>
