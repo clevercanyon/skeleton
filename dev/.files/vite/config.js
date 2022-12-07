@@ -75,17 +75,15 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	const nodeEnv = isProd ? 'production' : 'development';
 
 	/**
-	 * `appType` = `mpa` (Multipage App), `custom` (Custom-Made App).
-	 * `targetEnv` = `any`, `cf:worker`, `node`, `web`, `web:worker`.
+	 * `appType`   = `multipage` (MPA), `custom` (CMA).
+	 * `targetEnv` = `any`, `cf-pages`, `cf-worker`, `node`, `web`, `web-worker`.
 	 *
 	 * 1. MPA = Multipage App. Must use `index.html` entry points.
 	 * 2. CMA = Custom-Made App. Must use `.{tsx,ts,jsx,mjs,js}` entry points.
 	 */
 	const appType   = pkg.config?.c10n?.[ '&' ].build?.appType || 'custom';
 	const targetEnv = pkg.config?.c10n?.[ '&' ].build?.targetEnv || 'any';
-
-	const isMpa = 'mpa' === appType;
-	const isCma = 'custom' === appType;
+	const isMpa     = 'multipage' === appType, isCma = 'custom' === appType;
 
 	let cmaName = ( pkg.name || '' ).toLowerCase();
 	cmaName     = cmaName.replace( /\bclevercanyon\b/ug, 'c10n' );
@@ -102,14 +100,14 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	const mpaEntryIndex = mpaRelIndexes.find( ( relPath ) => minimatch( relPath, './index.html' ) );
 	const cmaEntryIndex = cmaRelEntries.find( ( relPath ) => minimatch( relPath, './index.{tsx,ts,jsx,mjs,js}' ) );
 
-	const isSSR       = [ 'cf:worker', 'node' ].includes( targetEnv );
-	const isSSRWorker = isSSR && [ 'cf:worker' ].includes( targetEnv );
-	const isWeb       = [ 'web', 'web:worker' ].includes( targetEnv );
+	const isWeb       = [ 'web', 'web-worker' ].includes( targetEnv );
+	const isSSR       = [ 'cf-pages', 'cf-worker', 'node' ].includes( targetEnv );
+	const isSSRWorker = isSSR && [ 'cf-worker' ].includes( targetEnv );
 
 	if ( ! isMpa && ! isCma ) {
 		throw new Error( 'Must have a valid `config.c10n.&.build.appType` in `package.json`.' );
 	}
-	if ( ! [ 'any', 'cf:worker', 'node', 'web', 'web:worker' ].includes( targetEnv ) ) {
+	if ( ! [ 'any', 'cf-pages', 'cf-worker', 'node', 'web', 'web-worker' ].includes( targetEnv ) ) {
 		throw new Error( 'Must have a valid `config.c10n.&.build.targetEnv` in `package.json`.' );
 	}
 	if ( isMpa && ! mpaEntryIndex ) {
