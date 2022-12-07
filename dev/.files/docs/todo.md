@@ -1,3 +1,0 @@
-- Work on `wrangler.toml` file.
-	- Then update `gitignore.md` file.
-- Consider additional uses for <https://github.com/Rich-Harris/degit>.
