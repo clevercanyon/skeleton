@@ -78,12 +78,18 @@ export default async ( { projDir } ) => {
 		if ( isLocked( relPath ) ) {
 			return; // Locked 🔒.
 		}
-		const oldFileContents   = await fs.readFile( path.resolve( projDir, relPath ), 'utf8' );
-		const oldFileMatches    = customRegexp.exec( oldFileContents ); // See: `./data/custom-regexp.js`.
-		const oldFileCustomCode = oldFileMatches ? oldFileMatches[ 2 ] : ''; // We'll preserve any custom code.
+		let newFileContents = ''; // Initialize.
 
-		const newFileContents = ( await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' ) )
-			.replace( customRegexp, ( $_, $1, $2, $3 ) => $1 + oldFileCustomCode + $3 );
+		if ( await fs.exists( path.resolve( projDir, relPath ) ) ) {
+			const oldFileContents   = await fs.readFile( path.resolve( projDir, relPath ), 'utf8' );
+			const oldFileMatches    = customRegexp.exec( oldFileContents ); // See: `./data/custom-regexp.js`.
+			const oldFileCustomCode = oldFileMatches ? oldFileMatches[ 2 ] : ''; // We'll preserve any custom code.
+
+			newFileContents = ( await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' ) )
+				.replace( customRegexp, ( $_, $1, $2, $3 ) => $1 + oldFileCustomCode + $3 );
+		} else {
+			newFileContents = await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' );
+		}
 		await fs.writeFile( path.resolve( projDir, relPath ), newFileContents );
 	}
 
