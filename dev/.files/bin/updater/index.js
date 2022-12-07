@@ -82,8 +82,8 @@ export default async ( { projDir } ) => {
 		const oldFileMatches    = customRegexp.exec( oldFileContents ); // See: `./data/custom-regexp.js`.
 		const oldFileCustomCode = oldFileMatches ? oldFileMatches[ 2 ] : ''; // We'll preserve any custom code.
 
-		const newFileContents = await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' );
-		newFileContents.replace( customRegexp, ( $_, $1, $2, $3 ) => $1 + oldFileCustomCode + $3 );
+		const newFileContents = ( await fs.readFile( path.resolve( tmpDir, relPath ), 'utf8' ) )
+			.replace( customRegexp, ( $_, $1, $2, $3 ) => $1 + oldFileCustomCode + $3 );
 		await fs.writeFile( path.resolve( projDir, relPath ), newFileContents );
 	}
 
