@@ -1,6 +1,6 @@
 {
 	"private": true,
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"license": "GPL-3.0-or-later",
 	"name": "@clevercanyon/skeleton",
 	"description": "Another great project by Clever Canyon.",
@@ -8,18 +8,25 @@
 	"homepage": "https://github.com/clevercanyon/skeleton#readme",
 	"bugs": "https://github.com/clevercanyon/skeleton/issues",
 	"funding": "https://github.com/sponsors/clevercanyon",
-	"keywords": ["clevercanyon"],
+	"keywords": [
+		"clevercanyon"
+	],
 	"author": {
 		"name": "Clever Canyon",
 		"url": "https://clevercanyon.com"
 	},
 	"contributors": [],
 	"type": "module",
-	"files": ["/dist"],
+	"files": [
+		"/dist"
+	],
 	"bin": {},
 	"imports": {},
 	"exports": {},
-	"sideEffects": ["./src/*.scss", "./src/index.*"],
+	"sideEffects": [
+		"./src/*.scss",
+		"./src/index.*"
+	],
 	"module": "",
 	"main": "",
 	"unpkg": "",
@@ -37,8 +44,14 @@
 		"@types/react-dom": "^18.0.9"
 	},
 	"overrides": {},
-	"cpu": ["x64", "arm64"],
-	"os": ["darwin", "linux"],
+	"cpu": [
+		"x64",
+		"arm64"
+	],
+	"os": [
+		"darwin",
+		"linux"
+	],
 	"engines": {
 		"node": "^18.5.0",
 		"npm": "^8.19.2"
