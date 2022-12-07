@@ -16,12 +16,8 @@
 	 * <custom:start> */
 
 	"compilerOptions" : {
-		"lib"   : [ "es2021", "dom" ],
-		"types" : [
-			"vite/client",
-			"@types/react",
-			"@types/react-dom"
-		]
+		"lib"   : [ "es2021" ],
+		"types" : [ "vite/client" ]
 	}
 	/** </custom:end> */
 }
