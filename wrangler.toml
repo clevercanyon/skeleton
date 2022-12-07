@@ -1,26 +1,31 @@
 ##
-# Cloudflare Wrangler configuration.
+# Wrangler configuration.
 #
-# @see https://github.com/toml-lang/toml
-# @see https://pseitz.github.io/toml-to-json-online-converter/
-# @see https://developers.cloudflare.com/workers/cli-wrangler/configuration/
+# @note Wrangler is aware of this config file's location.
 #
-# Note: Wrangler will always ignore `node_modules`, hidden files or directories, and symlinks.
-# See: <https://developers.cloudflare.com/workers/platform/sites/configuration/#default-ignored-entries>
-# The following list is an exact match to our `.gitignore` file, except that `.yarn/` is excluded entirely here.
+# @note CUSTOM EDITS ONLY PLEASE!
+# In the future this file will be updated automatically.
+# Only `<custom:start.../custom:end>` will be preserved below.
 ##
 compatibility_date = "2022-08-04"
 compatibility_flags = ["global_navigator"]
 
-name = "clevercanyon.skeleton"
-main = "./dst/rollup/esm/index.js"
-
 account_id = "f1176464a976947aa5665d989814a4b1"
+
+main = "./dst/index.js"
+vars = { IS_C10N = "cfw=prod" }
+build = { command = "npm run build:prod" }
+
+site = { bucket = "./dst/assets", exclude = [".#*", "._*", ".~*", "*.local", "*.log", "*~", "*.bak", "*.rej", "*.orig", "*.patch", "*.diff", "dist/", ".vagrant/", "typings/", ".tscache/", "*.tsbuildinfo", ".idea/", "*.sublime-project", "*.sublime-workspace", "*.nbproject", ".vscode/", "*.code-workspace", "npm-debug.log", ".yarn/", "vendor/", "node_modules/", "jspm_packages/", "bower_components/", ".vite/", ".wrangler/", ".linaria-cache/", ".sass-cache/", ".docker/", ".elasticbeanstalk/", "*.ctags", "*.tags", ".git/", ".git-dir/", ".svn/", "_svn/", "CVS/", ".cvsignore", ".bzr/", ".bzrignore", ".hg/", ".hgignore", "SCCS/", "RCS/", "$RECYCLE.BIN/", "Desktop.ini", "Thumbs.db", "ehthumbs.db", ".AppleDB", ".AppleDouble", ".AppleDesktop", ".com.apple.timemachine.donotpresent", "Network Trash Folder", "Temporary Items", ".LSOverride", ".Spotlight-V100", ".VolumeIcon.icns", ".TemporaryItems", ".fseventsd", ".DS_Store", ".Trashes", ".apdisk", "Icon?", "!Icons", "._*"] }
+
+##
+# Customizations
+# <custom:start>
+
+name = "clevercanyon.skeleton"
 routes = ["clevercanyon.skeleton/*"]
 
-vars = { IS_C10N = "cfw=prod" }
-build = { command = "npm run vite:build" }
-site = { bucket = "./dst/rollup/esm/assets", exclude = [".#*", "._*", ".~*", "*.local", "*.log", "*~", "*.bak", "*.rej", "*.orig", "*.patch", "*.diff", "dist/", ".vagrant/", "typings/", ".tscache/", "*.tsbuildinfo", ".idea/", "*.sublime-project", "*.sublime-workspace", "*.nbproject", ".vscode/", "*.code-workspace", "npm-debug.log", ".yarn/", "vendor/", "node_modules/", "jspm_packages/", "bower_components/", ".vite/", ".wrangler/", ".linaria-cache/", ".sass-cache/", ".docker/", ".elasticbeanstalk/", "*.ctags", "*.tags", ".git/", ".git-dir/", ".svn/", "_svn/", "CVS/", ".cvsignore", ".bzr/", ".bzrignore", ".hg/", ".hgignore", "SCCS/", "RCS/", "$RECYCLE.BIN/", "Desktop.ini", "Thumbs.db", "ehthumbs.db", ".AppleDB", ".AppleDouble", ".AppleDesktop", ".com.apple.timemachine.donotpresent", "Network Trash Folder", "Temporary Items", ".LSOverride", ".Spotlight-V100", ".VolumeIcon.icns", ".TemporaryItems", ".fseventsd", ".DS_Store", ".Trashes", ".apdisk", "Icon?", "!Icons", "._*"] }
+# </custom:end>
 
 [env.dev]
 workers_dev = true

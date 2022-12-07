@@ -8,10 +8,10 @@
  */
 /* eslint-env es2021, node */
 
-import desm         from 'desm';
-import path         from 'path';
-import fs           from 'fs-extra';
 import mc           from '@clevercanyon/js-object-mc';
+import desm         from 'desm';
+import fs           from 'fs-extra';
+import path         from 'path';
 import customRegexp from './data/custom-regexp';
 
 export default async ( { projDir } ) => {
@@ -75,6 +75,7 @@ export default async ( { projDir } ) => {
 		'./.tailwindrc.cjs',
 		'./tsconfig.json',
 		'./vite.config.js',
+		'./wrangler.toml',
 	] ) {
 		if ( isLocked( relPath ) ) {
 			return; // Locked 🔒.

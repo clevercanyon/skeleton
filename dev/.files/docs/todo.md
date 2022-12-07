@@ -1,4 +1,3 @@
 - Work on `wrangler.toml` file.
 	- Then update `gitignore.md` file.
-- Update `package.json` with correct script paths.
 - Consider additional uses for <https://github.com/Rich-Harris/degit>.
