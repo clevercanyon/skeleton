@@ -8,13 +8,16 @@
  */
 /* eslint-env es2021, node */
 
-import os        from 'os';
-import desm      from 'desm';
-import path      from 'path';
-import fs        from 'fs-extra';
-import crypto    from 'crypto';
-import degit     from 'degit';
-import { spawn } from 'child_process';
+import { spawn as nodeSpawn } from 'child_process';
+import crypto                 from 'crypto';
+import degit                  from 'degit';
+import desm                   from 'desm';
+import fs                     from 'fs-extra';
+import os                     from 'os';
+import path                   from 'path';
+import util                   from 'util';
+
+const spawn = util.promisify( nodeSpawn );
 
 ( async () => {
 	/**
@@ -26,7 +29,7 @@ import { spawn } from 'child_process';
 	const tmpDir            = await fs.mkdtemp(
 		path.resolve( os.tmpdir(), './' + crypto.randomUUID() ),
 	);
-	const tmpDirUpdaterFile = path.resolve( tmpDir, './dev/.files/bin/updater.js' );
+	const tmpDirUpdaterFile = path.resolve( tmpDir, './dev/.files/bin/updater/index.js' );
 
 	/**
 	 * Downloads latest skeleton.
@@ -36,7 +39,7 @@ import { spawn } from 'child_process';
 	/**
 	 * Runs `npm ci` in latest skeleton directory.
 	 */
-	await spawn( 'npm', [ 'ci' ], { cwd : tmpDir } );
+	await spawn( 'npm', [ 'ci', '--include=dev' ], { cwd : tmpDir } );
 
 	/**
 	 * Runs updater using files from latest skeleton.
@@ -46,5 +49,5 @@ import { spawn } from 'child_process';
 	/**
 	 * Removes tmp directory.
 	 */
-	await fs.remove( tmpDir ); // Housekeeping.
+	await fs.remove( tmpDir );
 } )();

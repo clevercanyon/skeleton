@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Dotfiles updater.
  *
@@ -12,7 +11,7 @@ import mc           from '@clevercanyon/js-object-mc';
 import desm         from 'desm';
 import fs           from 'fs-extra';
 import path         from 'path';
-import customRegexp from './data/custom-regexp';
+import customRegexp from './data/custom-regexp.js';
 
 export default async ( { projDir } ) => {
 	/**

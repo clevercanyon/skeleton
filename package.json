@@ -43,7 +43,6 @@
 		"node" : "^18.5.0",
 		"npm"  : "^8.19.2"
 	},
-	"packageManager"       : "npm@8.19.2",
 	"scripts"              : {
 		"preview"         : "npx vite preview",
 		"dev"             : "npx vite dev --mode=dev",
