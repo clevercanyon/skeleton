@@ -8,16 +8,16 @@
  */
 /* eslint-env es2021, node */
 
-import { spawn as nodeSpawn } from 'child_process';
-import crypto                 from 'crypto';
-import degit                  from 'degit';
-import desm                   from 'desm';
-import fs                     from 'fs-extra';
-import os                     from 'os';
-import path                   from 'path';
-import util                   from 'util';
+import { exec as nodeExec } from 'child_process';
+import crypto               from 'crypto';
+import degit                from 'degit';
+import desm                 from 'desm';
+import fs                   from 'fs-extra';
+import os                   from 'os';
+import path                 from 'path';
+import util                 from 'util';
 
-const spawn = util.promisify( nodeSpawn );
+const exec = util.promisify( nodeExec );
 
 ( async () => {
 	/**
@@ -39,7 +39,7 @@ const spawn = util.promisify( nodeSpawn );
 	/**
 	 * Runs `npm ci` in latest skeleton directory.
 	 */
-	await spawn( 'npm', [ 'ci', '--include=dev' ], { cwd : tmpDir } );
+	await exec( 'npm ci --include=dev', { cwd : tmpDir } );
 
 	/**
 	 * Runs updater using files from latest skeleton.
