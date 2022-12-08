@@ -95,6 +95,7 @@ export default async ( { projDir } ) => {
 		} else {
 			newFileContents = await fsp.readFile( path.resolve( tmpDir, relPath ), 'utf8' );
 		}
+		await fsp.mkdir( path.resolve( projDir, relPath ), { recursive : true } );
 		await fsp.writeFile( path.resolve( projDir, relPath ), newFileContents );
 	}
 
