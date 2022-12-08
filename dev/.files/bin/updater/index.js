@@ -9,10 +9,14 @@
 
 import mc           from '@clevercanyon/js-object-mc';
 import desm         from 'desm';
+import childProcess from 'node:child_process';
 import fs           from 'node:fs';
 import fsp          from 'node:fs/promises';
 import path         from 'node:path';
+import util         from 'node:util';
 import customRegexp from './data/custom-regexp.js';
+
+const exec = util.promisify( childProcess.exec );
 
 export default async ( { projDir } ) => {
 	/**
@@ -129,4 +133,9 @@ export default async ( { projDir } ) => {
 			await fsp.writeFile( path.resolve( projDir, relPath ), JSON.stringify( json, null, 4 ) );
 		}
 	}
+
+	/**
+	 * Runs `npm update` in project directory.
+	 */
+	await exec( 'npm udpate --include=dev', { cwd : projDir } );
 };
