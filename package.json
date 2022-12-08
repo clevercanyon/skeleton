@@ -52,7 +52,9 @@
 		"dotfiles:update" : "./dev/.files/bin/update.js"
 	},
 	"workspaces"           : [ ],
-	"publishConfig"        : { },
+	"publishConfig"        : {
+		"registry" : "https://npm.pkg.github.com"
+	},
 	"config"               : {
 		"c10n" : {
 			"&" : {
