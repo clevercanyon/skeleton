@@ -53,10 +53,7 @@
 		"forceConsistentCasingInFileNames" : true,
 
 		"paths"                            : {
-			"@/~*"       : [ "./*" ], // Relative to `baseUrl`.
-			"@/c10n/u"   : [ "../node_modules/@clevercanyon/utilities" ],
-			"@/c10n/u/*" : [ "../node_modules/@clevercanyon/utilities/*" ],
-			"@/c10n/*"   : [ "../node_modules/@clevercanyon/*" ],
+			"@/~*" : [ "./*" ], // Relative to `baseUrl`.
 		}
 	}
 }

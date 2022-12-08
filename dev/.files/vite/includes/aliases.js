@@ -22,16 +22,4 @@ export default [ // See also: `../typescript/config.json`.
 		find        : /^@\/~(.+)$/u,
 		replacement : path.resolve( srcDir, './$1' ),
 	},
-	{
-		find        : /^@\/c10n\/u$/u,
-		replacement : path.resolve( srcDir, '../node_modules/@clevercanyon/utilities' ),
-	},
-	{
-		find        : /^@\/c10n\/u\/(.+)$/u,
-		replacement : path.resolve( srcDir, '../node_modules/@clevercanyon/utilities/$1' ),
-	},
-	{
-		find        : /^@\/c10n\/(?!u$|u\/)(.+)$/u,
-		replacement : path.resolve( srcDir, '../node_modules/@clevercanyon/$1' ),
-	},
 ];
