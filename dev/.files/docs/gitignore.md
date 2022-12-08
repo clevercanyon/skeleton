@@ -1,4 +1,4 @@
-## `.gitignore` and Related Files
+# `.gitignore` and Related Files
 
 When changing ignore files, please consult the following files in this directory.
 

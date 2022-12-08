@@ -15,38 +15,23 @@ import path from 'node:path';
 
 const __dirname = desm( import.meta.url );
 const projDir   = path.resolve( __dirname, '../../../..' );
+const srcDir    = path.resolve( projDir, './src' );
 
 export default [ // See also: `../typescript/config.json`.
 	{
-		find        : /^@\/@clevercanyon\/utilities\/u\/(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/any' ) + '/$1',
+		find        : /^@\/~(.+)$/u,
+		replacement : path.resolve( srcDir, './$1' ),
 	},
 	{
-		find        : /^@\/@clevercanyon\/utilities\/c\/(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/cfw' ) + '/$1',
+		find        : /^@\/c10n\/u$/u,
+		replacement : path.resolve( srcDir, '../node_modules/@clevercanyon/utilities' ),
 	},
 	{
-		find        : /^@\/@clevercanyon\/utilities\/n\/(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/node' ) + '/$1',
+		find        : /^@\/c10n\/u\/(.+)$/u,
+		replacement : path.resolve( srcDir, '../node_modules/@clevercanyon/utilities/$1' ),
 	},
 	{
-		find        : /^@\/@clevercanyon\/utilities\/w\/(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/web' ) + '/$1',
-	},
-	{
-		find        : /^@\/@clevercanyon\/utilities\/u:(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/any/classes' ) + '/$1',
-	},
-	{
-		find        : /^@\/@clevercanyon\/utilities\/c:(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/cfw/classes' ) + '/$1',
-	},
-	{
-		find        : /^@\/@clevercanyon\/utilities\/n:(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/node/classes' ) + '/$1',
-	},
-	{
-		find        : /^@\/@clevercanyon\/utilities\/w:(.+)$/u,
-		replacement : path.resolve( projDir, './node_modules/@clevercanyon/utilities/src/envs/web/classes' ) + '/$1',
+		find        : /^@\/c10n\/(?!u$|u\/)(.+)$/u,
+		replacement : path.resolve( srcDir, '../node_modules/@clevercanyon/$1' ),
 	},
 ];

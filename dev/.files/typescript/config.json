@@ -53,15 +53,10 @@
 		"forceConsistentCasingInFileNames" : true,
 
 		"paths"                            : {
-			"@/@clevercanyon/utilities/u/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/any/*" ],
-			"@/@clevercanyon/utilities/c/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/cfw/*" ],
-			"@/@clevercanyon/utilities/n/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/node/*" ],
-			"@/@clevercanyon/utilities/w/*" : [ "../node_modules/@clevercanyon/utilities/src/envs/web/*" ],
-
-			"@/@clevercanyon/utilities/u:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/any/classes/*" ],
-			"@/@clevercanyon/utilities/c:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/cfw/classes/*" ],
-			"@/@clevercanyon/utilities/n:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/node/classes/*" ],
-			"@/@clevercanyon/utilities/w:*" : [ "../node_modules/@clevercanyon/utilities/src/envs/web/classes/*" ]
+			"@/~*"       : [ "./*" ], // Relative to `baseUrl`.
+			"@/c10n/u"   : [ "../node_modules/@clevercanyon/utilities" ],
+			"@/c10n/u/*" : [ "../node_modules/@clevercanyon/utilities/*" ],
+			"@/c10n/*"   : [ "../node_modules/@clevercanyon/*" ],
 		}
 	}
 }

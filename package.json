@@ -60,7 +60,7 @@
 					"lock" : [ ]
 				},
 				"build"    : {
-					"appType"   : "custom",
+					"appType"   : "cma",
 					"targetEnv" : "any"
 				}
 			}

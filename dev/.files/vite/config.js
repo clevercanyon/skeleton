@@ -75,15 +75,15 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	const nodeEnv = isProd ? 'production' : 'development';
 
 	/**
-	 * `appType`   = `multipage` (MPA), `custom` (CMA).
-	 * `targetEnv` = `any`, `cf-pages`, `cf-worker`, `node`, `web`, `web-worker`.
+	 * `appType`   = `mpa` (multipage), `cma` (custom).
+	 * `targetEnv` = `any`, `cfp`, `cfw`, `node`, `web`, `webw`.
 	 *
-	 * 1. MPA = Multipage App. Must use `index.html` entry points.
-	 * 2. CMA = Custom-Made App. Must use `.{tsx,ts,jsx,mjs,js}` entry points.
+	 * 1. `mpa` = Multipage app. Must use `index.html` entry points.
+	 * 2. `cma` = Custom-made app. Must use `.{tsx,ts,jsx,mjs,js}` entry points.
 	 */
-	const appType   = pkg.config?.c10n?.[ '&' ].build?.appType || 'custom';
+	const appType   = pkg.config?.c10n?.[ '&' ].build?.appType || 'cma';
 	const targetEnv = pkg.config?.c10n?.[ '&' ].build?.targetEnv || 'any';
-	const isMpa     = 'multipage' === appType, isCma = 'custom' === appType;
+	const isMpa     = 'mpa' === appType, isCma = 'cma' === appType;
 
 	let cmaName = ( pkg.name || '' ).toLowerCase();
 	cmaName     = cmaName.replace( /\bclevercanyon\b/ug, 'c10n' );
@@ -100,14 +100,14 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	const mpaEntryIndex = mpaRelIndexes.find( ( relPath ) => minimatch( relPath, './index.html' ) );
 	const cmaEntryIndex = cmaRelEntries.find( ( relPath ) => minimatch( relPath, './index.{tsx,ts,jsx,mjs,js}' ) );
 
-	const isWeb       = [ 'web', 'web-worker' ].includes( targetEnv );
-	const isSSR       = [ 'cf-pages', 'cf-worker', 'node' ].includes( targetEnv );
-	const isSSRWorker = isSSR && [ 'cf-worker' ].includes( targetEnv );
+	const isWeb       = [ 'web', 'webw' ].includes( targetEnv );
+	const isSSR       = [ 'cfp', 'cfw', 'node' ].includes( targetEnv );
+	const isSSRWorker = isSSR && [ 'cfw' ].includes( targetEnv );
 
-	if ( ! isMpa && ! isCma ) {
+	if ( ( ! isMpa && ! isCma ) || ! [ 'mpa', 'cma' ].includes( appType ) ) {
 		throw new Error( 'Must have a valid `config.c10n.&.build.appType` in `package.json`.' );
 	}
-	if ( ! [ 'any', 'cf-pages', 'cf-worker', 'node', 'web', 'web-worker' ].includes( targetEnv ) ) {
+	if ( ! [ 'any', 'cfp', 'cfw', 'node', 'web', 'webw' ].includes( targetEnv ) ) {
 		throw new Error( 'Must have a valid `config.c10n.&.build.targetEnv` in `package.json`.' );
 	}
 	if ( isMpa && ! mpaEntryIndex ) {
