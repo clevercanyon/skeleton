@@ -8,15 +8,13 @@
 /* eslint-env es2021, node */
 
 import mc           from '@clevercanyon/js-object-mc';
+import chalk        from 'chalk';
 import desm         from 'desm';
-import childProcess from 'node:child_process';
 import fs           from 'node:fs';
 import fsp          from 'node:fs/promises';
 import path         from 'node:path';
-import util         from 'node:util';
+import spawn        from 'spawn-please';
 import customRegexp from './data/custom-regexp.js';
-
-const exec = util.promisify( childProcess.exec );
 
 export default async ( { projDir } ) => {
 	/**
@@ -138,5 +136,9 @@ export default async ( { projDir } ) => {
 	/**
 	 * Runs `npm update` in project directory.
 	 */
-	await exec( 'npm udpate --include=dev', { cwd : projDir } );
+	await spawn( 'npm', [ 'udpate', '--include', 'dev' ], {
+		cwd    : projDir, // Output while running.
+		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
+		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
+	} );
 };

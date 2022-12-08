@@ -8,16 +8,14 @@
  */
 /* eslint-env es2021, node */
 
-import degit        from 'degit';
-import desm         from 'desm';
-import childProcess from 'node:child_process';
-import crypto       from 'node:crypto';
-import fsp          from 'node:fs/promises';
-import os           from 'node:os';
-import path         from 'node:path';
-import util         from 'node:util';
-
-const exec = util.promisify( childProcess.exec );
+import chalk  from 'chalk';
+import degit  from 'degit';
+import desm   from 'desm';
+import crypto from 'node:crypto';
+import fsp    from 'node:fs/promises';
+import os     from 'node:os';
+import path   from 'node:path';
+import spawn  from 'spawn-please';
 
 ( async () => {
 	/**
@@ -34,12 +32,16 @@ const exec = util.promisify( childProcess.exec );
 	/**
 	 * Downloads latest skeleton.
 	 */
-	await degit( 'clevercanyon/skeleton' ).clone( tmpDir );
+	await degit( 'github:clevercanyon/skeleton', { mode : 'git' } ).clone( tmpDir );
 
 	/**
 	 * Runs `npm ci` in latest skeleton directory.
 	 */
-	await exec( 'npm ci --include=dev', { cwd : tmpDir } );
+	await spawn( 'npm', [ 'ci', '--include', 'dev' ], {
+		cwd    : tmpDir, // Output while running.
+		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
+		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
+	} );
 
 	/**
 	 * Runs updater using files from latest skeleton.
