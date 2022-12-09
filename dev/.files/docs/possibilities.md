@@ -31,6 +31,7 @@ Instead, we'd create a `mpa` on `cfp` app.
 - clevercanyon/skeleton.mpa.node
 - clevercanyon/skeleton.mpa.web
 - clevercanyon/skeleton.mpa.webw
+- clevercanyon/skeleton.mpa.opl
 
 ### Custom Apps
 
@@ -40,6 +41,7 @@ Instead, we'd create a `mpa` on `cfp` app.
 - clevercanyon/skeleton.cma.node
 - clevercanyon/skeleton.cma.web
 - clevercanyon/skeleton.cma.webw
+- clevercanyon/skeleton.cma.opl
 
 ## All Rational Combinations
 
@@ -59,6 +61,7 @@ These lists include those from above that actually make sense, at least in theor
 - clevercanyon/skeleton.cma.node
 - clevercanyon/skeleton.cma.web
 - clevercanyon/skeleton.cma.webw
+- clevercanyon/skeleton.cma.opl
 
 ## Skeletons We Actually Need
 

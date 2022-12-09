@@ -76,7 +76,7 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 
 	/**
 	 * `appType`   = `mpa` (multipage), `cma` (custom).
-	 * `targetEnv` = `any`, `cfp`, `cfw`, `node`, `web`, `webw`.
+	 * `targetEnv` = `any`, `cfp`, `cfw`, `node`, `web`, `webw`, `opl`.
 	 *
 	 * 1. `mpa` = Multipage app. Must use `index.html` entry points.
 	 * 2. `cma` = Custom-made app. Must use `.{tsx,ts,jsx,mjs,js}` entry points.
@@ -107,7 +107,7 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	if ( ( ! isMpa && ! isCma ) || ! [ 'mpa', 'cma' ].includes( appType ) ) {
 		throw new Error( 'Must have a valid `config.c10n.&.build.appType` in `package.json`.' );
 	}
-	if ( ! [ 'any', 'cfp', 'cfw', 'node', 'web', 'webw' ].includes( targetEnv ) ) {
+	if ( ! [ 'any', 'cfp', 'cfw', 'node', 'web', 'webw', 'opl' ].includes( targetEnv ) ) {
 		throw new Error( 'Must have a valid `config.c10n.&.build.targetEnv` in `package.json`.' );
 	}
 	if ( isMpa && ! mpaEntryIndex ) {
