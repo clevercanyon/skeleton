@@ -38,7 +38,10 @@ import spawn  from 'spawn-please';
 	/**
 	 * Downloads latest skeleton.
 	 */
-	await spawn( 'git', [ 'clone', '--depth=1', ( process.env.C10N_GITHUB_TOKEN || '' ) + '@github.com/clevercanyon/skeleton', tmpDir ], {
+	const skeletonRepoURL = 'https://' +
+		( process.env.C10N_GITHUB_TOKEN || '' ) +
+		'@github.com/clevercanyon/skeleton';
+	await spawn( 'git', [ 'clone', '--depth=1', skeletonRepoURL, tmpDir ], {
 		cwd    : projDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
 		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
