@@ -122,7 +122,7 @@ export default async ( { mode } /* { command, mode, ssrBuild } */, projConfig = 
 	pkg.exports = pkg.exports || {};
 	pkg.exports[ '.' ] = pkg.exports[ '.' ] || {};
 
-	if ( isCma && cmaRelEntries.length > 1 ) {
+	if ( isCma && ( isSSR || cmaRelEntries.length > 1 ) ) {
 		mc.patch( pkg.exports, {
 			'.' : {
 				import  : './dist/index.js',
