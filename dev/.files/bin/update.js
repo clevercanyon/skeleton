@@ -55,7 +55,7 @@ import spawn  from 'spawn-please';
 	 */
 	console.log( chalk.green( 'Installing `clevercanyon/skeleton`’s dependencies.' ) );
 
-	await spawn( 'npm', [ 'clean-install', '--include=dev', '--no-progress' ], {
+	await spawn( 'npm', [ 'clean-install', '--include=dev', '--silent' ], {
 		cwd    : tmpDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
 		stderr : ( buffer ) => console.log( chalk.redBright( buffer.toString() ) ),
