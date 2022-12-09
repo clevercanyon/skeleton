@@ -134,11 +134,13 @@ export default async ( { projDir } ) => {
 	}
 
 	/**
-	 * Runs `npm update` in project directory.
+	 * Updates `@clevercanyon/skeleton-dev-deps` in project dir.
 	 */
-	await spawn( 'npm', [ 'udpate', '--include=dev' ], {
+	console.log( chalk.green( 'Updating project to latest `clevercanyon/skeleton-dev-deps`.' ) );
+
+	await spawn( 'npm', [ 'udpate', '@clevercanyon/skeleton-dev-deps', '--no-progress' ], {
 		cwd    : projDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
-		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
+		stderr : ( buffer ) => console.log( chalk.redBright( buffer.toString() ) ),
 	} );
 };

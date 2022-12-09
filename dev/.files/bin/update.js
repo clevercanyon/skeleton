@@ -38,32 +38,45 @@ import spawn  from 'spawn-please';
 	/**
 	 * Downloads latest skeleton.
 	 */
-	const skeletonRepoURL = 'https://' +
-		( process.env.C10N_GITHUB_TOKEN || '' ) +
-		'@github.com/clevercanyon/skeleton';
-	await spawn( 'git', [ 'clone', '--depth=1', skeletonRepoURL, tmpDir ], {
+	console.log( chalk.green( 'Downloading latest `clevercanyon/skeleton`.' ) );
+
+	const skeletonRepoURL = 'https://' + // Requires personal access token.
+		( process.env.C10N_GITHUB_TOKEN || '' ) + '@github.com/clevercanyon/skeleton';
+
+	await spawn( 'git', [ 'clone', '--quiet', '--depth=1', skeletonRepoURL, tmpDir ], {
 		cwd    : projDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
-		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
+		stderr : ( buffer ) => console.log( chalk.redBright( buffer.toString() ) ),
 	} );
 	await fsp.rm( path.resolve( tmpDir, './.git' ), { recursive : true, force : true } );
 
 	/**
-	 * Runs `npm ci` in latest skeleton directory.
+	 * Runs `npm clean-install` in latest skeleton directory.
 	 */
-	await spawn( 'npm', [ 'ci', '--include=dev' ], {
+	console.log( chalk.green( 'Installing `clevercanyon/skeleton`’s dependencies.' ) );
+
+	await spawn( 'npm', [ 'clean-install', '--include=dev', '--no-progress' ], {
 		cwd    : tmpDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
-		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
+		stderr : ( buffer ) => console.log( chalk.redBright( buffer.toString() ) ),
 	} );
 
 	/**
 	 * Runs updater using files from latest skeleton.
 	 */
+	console.log( chalk.green( 'Running updater using latest `clevercanyon/skeleton`.' ) );
+
 	await ( await import( path.resolve( tmpDir, './dev/.files/bin/updater/index.js' ) ) ).default( { projDir } );
 
 	/**
-	 * Removes tmp directory.
+	 * Runs cleanup tasks prior to completion.
 	 */
+	console.log( chalk.green( 'Running cleanup tasks.' ) );
+
 	await fsp.rm( tmpDir, { recursive : true, force : true } );
+
+	/**
+	 * Completes update.
+	 */
+	console.log( chalk.green( 'Update complete.' ) );
 } )();
