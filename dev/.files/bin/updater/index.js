@@ -136,8 +136,8 @@ export default async ( { projDir } ) => {
 	/**
 	 * Runs `npm update` in project directory.
 	 */
-	await spawn( 'npm', [ 'udpate', '--include', 'dev' ], {
-		cwd    : projDir, // Output while running.
+	await spawn( 'npm', [ 'udpate', '--include=dev' ], {
+		cwd    : projDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
 		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
 	} );

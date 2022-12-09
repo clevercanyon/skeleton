@@ -9,7 +9,6 @@
 /* eslint-env es2021, node */
 
 import chalk  from 'chalk';
-import degit  from 'degit';
 import desm   from 'desm';
 import crypto from 'node:crypto';
 import fsp    from 'node:fs/promises';
@@ -24,21 +23,33 @@ import spawn  from 'spawn-please';
 	const __dirname = desm( import.meta.url );
 	const projDir   = path.resolve( __dirname, '../../..' );
 
-	const tmpDir            = await fsp.mkdtemp(
-		path.resolve( os.tmpdir(), './' + crypto.randomUUID() ),
-	);
-	const tmpDirUpdaterFile = path.resolve( tmpDir, './dev/.files/bin/updater/index.js' );
+	/**
+	 * Validates environment vars.
+	 */
+	if ( ! process.env.C10N_GITHUB_TOKEN ) {
+		throw new Error( '`C10N_GITHUB_TOKEN` is a required environment variable.' );
+	}
+
+	/**
+	 * Creates temp directory.
+	 */
+	const tmpDir = await fsp.mkdtemp( path.resolve( os.tmpdir(), './' + crypto.randomUUID() ) );
 
 	/**
 	 * Downloads latest skeleton.
 	 */
-	await degit( 'github:clevercanyon/skeleton', { mode : 'git' } ).clone( tmpDir );
+	await spawn( 'git', [ 'clone', '--depth=1', ( process.env.C10N_GITHUB_TOKEN || '' ) + '@github.com/clevercanyon/skeleton', tmpDir ], {
+		cwd    : projDir, // Displays output while running.
+		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
+		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
+	} );
+	await fsp.rm( path.resolve( tmpDir, './.git' ), { recursive : true, force : true } );
 
 	/**
 	 * Runs `npm ci` in latest skeleton directory.
 	 */
-	await spawn( 'npm', [ 'ci', '--include', 'dev' ], {
-		cwd    : tmpDir, // Output while running.
+	await spawn( 'npm', [ 'ci', '--include=dev' ], {
+		cwd    : tmpDir, // Displays output while running.
 		stdout : ( buffer ) => console.log( chalk.blue( buffer.toString() ) ),
 		stderr : ( buffer ) => console.log( chalk.red( buffer.toString() ) ),
 	} );
@@ -46,7 +57,7 @@ import spawn  from 'spawn-please';
 	/**
 	 * Runs updater using files from latest skeleton.
 	 */
-	await ( await import( tmpDirUpdaterFile ) ).default( { projDir } );
+	await ( await import( path.resolve( tmpDir, './dev/.files/bin/updater/index.js' ) ) ).default( { projDir } );
 
 	/**
 	 * Removes tmp directory.
