@@ -17,9 +17,9 @@
 	"scripts"         : {
 		"preview"         : "npx vite preview",
 		"dev"             : "npx vite dev --mode=dev",
-		"build:dev"       : "npx tsc && npx vite build --mode=dev",
-		"build:stage"     : "npx tsc && npx vite build --mode=stage",
-		"build:prod"      : "npx tsc && npx vite build --mode=prod",
+		"build:dev"       : "npx vite build --mode=dev && npx tsc",
+		"build:stage"     : "npx vite build --mode=stage && npx tsc",
+		"build:prod"      : "npx vite build --mode=prod && npx tsc",
 		"dotfiles:update" : "./dev/.files/bin/update.js"
 	},
 	"workspaces"      : [ ],
