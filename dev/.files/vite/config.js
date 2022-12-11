@@ -35,10 +35,7 @@ import aliases from './includes/aliases.js';
  */
 const validateProjConfig = (config) => {
 	if (typeof config?.appType !== 'undefined') {
-		throw new Error(
-			'Modifying `appType` is not permitted at this time.' +
-				' Instead, use `config.c10n.&.build.appType` in `package.json`.',
-		);
+		throw new Error('Modifying `appType` is not permitted at this time. Instead, use `config.c10n.&.build.appType` in `package.json`.');
 	}
 	if (typeof config.build?.formats !== 'undefined') {
 		throw new Error('Modifying `build.formats` is not permitted at this time.');
@@ -155,10 +152,8 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
 
 	console.log(
-		chalk.blue('Updated `package.json` properties: ') +
-			chalk.green(
-				JSON.stringify(_.pick(pkg, ['exports', 'module', 'main', 'unpkg', 'browser', 'types']), null, 4),
-			),
+		chalk.blue('Updated `package.json` properties: ') + //
+			chalk.green(JSON.stringify(_.pick(pkg, ['exports', 'module', 'main', 'unpkg', 'browser', 'types']), null, 4)),
 	);
 
 	/**
@@ -196,7 +191,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	const pluginBasicSSLConfig = pluginBasicSSL();
 	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
 	const pluginEJSConfig = pluginEJS(
-		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg },
+		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg }, //
 		{ ejs: { root: srcDir, views: [srcDir + '/assets/ejs'], strict: true, localsName: '$' } },
 	);
 	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig];
