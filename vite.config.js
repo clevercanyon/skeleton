@@ -1,11 +1,11 @@
 /**
  * Vite config file.
  *
- * @note Vite is aware of this config file's location.
+ * Vite is aware of this config file's location.
  *
  * @note CUSTOM EDITS ONLY PLEASE!
- * In the future this file will be updated automatically.
- * Only `<custom:start.../custom:end>` will be preserved below.
+ * @note In the future this file will be updated automatically.
+ * @note Only `<custom:start.../custom:end>` will be preserved below.
  */
 /* eslint-env es2021, node */
 
@@ -15,8 +15,8 @@ import defineConfig from './dev/.files/vite/config.js';
  * Customizations
  * <custom:start> */
 
-export default async ( vite ) => {
-	return await defineConfig( vite, {} );
+export default async (vite) => {
+	return await defineConfig(vite, {});
 };
 
 /** </custom:end> */
