@@ -71,6 +71,13 @@ module.exports = {
 	rubySingleQuote: true,
 
 	/**
+	 * Prettier imports plugin options.
+	 *
+	 * @see https://o5p.me/kQriWW
+	 */
+	organizeImportsSkipDestructiveCodeActions: true,
+
+	/**
 	 * Prettier JSDoc plugin options.
 	 *
 	 * @see https://o5p.me/dTTfse
@@ -88,11 +95,4 @@ module.exports = {
 	tsdoc: false,
 	jsdocPrintWidth: 120,
 	jsdocLineWrappingStyle: 'greedy',
-
-	/**
-	 * Prettier imports plugin options.
-	 *
-	 * @see https://o5p.me/kQriWW
-	 */
-	organizeImportsSkipDestructiveCodeActions: true,
 };
