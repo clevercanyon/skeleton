@@ -29,9 +29,9 @@ import aliases from './includes/aliases.js';
 /**
  * Validates project config.
  *
- * @param config Project config.
+ * @param   config Project config.
  *
- * @returns True on successful validation.
+ * @returns        True on successful validation.
  */
 const validateProjConfig = (config) => {
 	if (typeof config?.appType !== 'undefined') {
@@ -45,10 +45,10 @@ const validateProjConfig = (config) => {
 /**
  * Defines Vite configuration.
  *
- * @param   {object}          vite       Data passed in by Vite.
- * @param   {object}          projConfig Project configuration overrides.
+ * @param   vite       Data passed in by Vite.
+ * @param   projConfig Project configuration overrides.
  *
- * @returns {Promise<object>}            Vite configuration object properties.
+ * @returns            Vite configuration object properties.
  */
 export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {}) => {
 	validateProjConfig(projConfig);
@@ -72,11 +72,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	const nodeEnv = isProd ? 'production' : 'development';
 
 	/**
-	 * `appType` = `mpa` (multipage), `cma` (custom). `targetEnv` = `any`,
-	 * `cfp`, `cfw`, `node`, `web`, `webw`, `opl`.
-	 *
-	 * 1. `mpa` = Multipage app. Must use `index.html` entry points.
-	 * 2. `cma` = Custom-made app. Must use `.{tsx,ts,jsx,mjs,js}` entry points.
+	 * App type and target env.
 	 */
 	const appType = pkg.config?.c10n?.['&'].build?.appType || 'cma';
 	const targetEnv = pkg.config?.c10n?.['&'].build?.targetEnv || 'any';
@@ -114,6 +110,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	if (isCma && !cmaEntryIndex) {
 		throw new Error('Custom apps must have an `./index.{tsx,ts,jsx,mjs,js}` entry point.');
 	}
+
 	/**
 	 * Updates `package.json` accordingly.
 	 */
@@ -166,7 +163,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 			? cmaAbsEntries
 			: mpaAbsIndexes,
 
-		// Peer dependencies are flagged as external as they'll be installed by a peer.
+		// Peer dependencies are flagged as external; i.e., they'll be installed by a peer.
 		...(Object.keys(pkg.peerDependencies || {}).length ? { external: Object.keys(pkg.peerDependencies) } : {}),
 
 		output: {
@@ -203,7 +200,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	/**
 	 * Vite config base.
 	 *
-	 * @note This is extended by project configs.
+	 * This is extended by project configs.
 	 *
 	 * @see https://vitejs.dev/config/
 	 */
