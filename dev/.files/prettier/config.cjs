@@ -15,15 +15,15 @@ module.exports = {
 	/**
 	 * Prettier standard options.
 	 *
-	 * @note See: <https://o5p.me/mmdRUm>.
+	 * @see https://o5p.me/mmdRUm
 	 */
 	pluginSearchDirs: false,
 	plugins: [
 		'@prettier/plugin-xml', //
 		'@prettier/plugin-php',
 		'@prettier/plugin-ruby',
-		'prettier-plugin-jsdoc',
 		'prettier-plugin-organize-imports',
+		'prettier-plugin-jsdoc',
 	],
 	printWidth: 180,
 	tabWidth: 4,
@@ -48,7 +48,7 @@ module.exports = {
 	/**
 	 * Prettier XML plugin options.
 	 *
-	 * @note See: <https://o5p.me/OiLPzn>.
+	 * @see https://o5p.me/OiLPzn
 	 */
 	xmlSelfClosingSpace: true,
 	xmlWhitespaceSensitivity: 'ignore',
@@ -56,7 +56,7 @@ module.exports = {
 	/**
 	 * Prettier PHP plugin options.
 	 *
-	 * @note See: <https://o5p.me/BHsZj8>.
+	 * @see https://o5p.me/BHsZj8
 	 */
 	phpVersion: '8.1',
 	trailingCommaPHP: true,
@@ -65,7 +65,7 @@ module.exports = {
 	/**
 	 * Prettier Ruby plugin options.
 	 *
-	 * @note See: <https://o5p.me/tuKNvU>.
+	 * @see https://o5p.me/tuKNvU
 	 */
 	rubyPlugins: '',
 	rubySingleQuote: true,
@@ -73,7 +73,7 @@ module.exports = {
 	/**
 	 * Prettier JSDoc plugin options.
 	 *
-	 * @note See: <https://o5p.me/dTTfse>.
+	 * @see https://o5p.me/dTTfse
 	 */
 	jsdocSpaces: 1,
 	jsdocDescriptionWithDot: true,
@@ -92,7 +92,7 @@ module.exports = {
 	/**
 	 * Prettier imports plugin options.
 	 *
-	 * @note See: <https://o5p.me/kQriWW>.
+	 * @see https://o5p.me/kQriWW
 	 */
 	organizeImportsSkipDestructiveCodeActions: true,
 };
