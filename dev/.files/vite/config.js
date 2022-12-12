@@ -192,7 +192,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
 	const pluginEJSConfig = pluginEJS(
 		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg }, //
-		{ ejs: { root: srcDir, views: [srcDir + '/assets/ejs'], strict: true, localsName: '$' } },
+		{ ejs: { root: srcDir, views: [srcDir + '/resources/ejs-views'], strict: true, localsName: '$' } },
 	);
 	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig];
 
@@ -213,7 +213,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 			$$__APP_PKG_BUGS__$$: pkg.bugs || '',
 		},
 		root: srcDir, // Absolute. Where entry indexes live.
-		publicDir: './public', // Static assets relative to `root`.
+		publicDir: './cargo', // Static assets relative to `root`.
 		base: '/', // Analagous to `<base href="/">` — use trailing slash.
 
 		appType: isCma ? 'custom' : 'mpa', // MPA = multipage app: <https://o5p.me/ZcTkEv>.
@@ -241,8 +241,8 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 			target: 'es2021', // Matches `tsconfig.json`.
 
 			outDir: '../dist', // Relative to `root`.
-			assetsDir: './assets/a19s', // Relative to `outDir`.
-			// `a19s` = numeronym for 'auto-generated assets'.
+			assetsDir: './assets/a16s', // Relative to `outDir`.
+			// Note: `a16s` = numeronym for 'acquired resources'.
 
 			ssr: isSSR, // Server-side rendering?
 			...(isSSR ? { ssrManifest: isDev } : {}),
