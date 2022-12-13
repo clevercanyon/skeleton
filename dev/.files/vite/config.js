@@ -15,9 +15,9 @@ import mc from '@clevercanyon/js-object-mc';
 import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
 import chalk from 'chalk';
 import desm from 'desm';
-import glob from 'glob';
+import glob from 'fast-glob';
 import _ from 'lodash';
-import minimatch from 'minimatch';
+import mm from 'micromatch';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import prettier from 'prettier';
@@ -76,6 +76,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 */
 	const appType = pkg.config?.c10n?.['&'].build?.appType || 'cma';
 	const targetEnv = pkg.config?.c10n?.['&'].build?.targetEnv || 'any';
+
 	const isMpa = 'mpa' === appType,
 		isCma = 'cma' === appType;
 
@@ -85,14 +86,15 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	cmaName = cmaName.replace(/[^a-z.0-9]([^.])/gu, (m0, m1) => m1.toUpperCase());
 	cmaName = cmaName.replace(/^\.|\.$/u, '');
 
-	const mpaAbsIndexes = glob.sync(path.join(srcDir, '/**/index.html'), { nodir: true });
-	const mpaRelIndexes = mpaAbsIndexes.map((absPath) => './' + path.relative(srcDir, absPath));
+	const mpaAbsPathIndexes = await glob('**/index.html', { cwd: srcDir, absolute: true });
+	const mpaSubPathIndexes = mpaAbsPathIndexes.map((absPath) => path.relative(srcDir, absPath));
 
-	const cmaAbsEntries = glob.sync(path.join(srcDir, '/*.{tsx,ts,jsx,mjs,js}'), { nodir: true });
-	const cmaRelEntries = cmaAbsEntries.map((absPath) => './' + path.relative(srcDir, absPath));
+	const cmaAbsPathEntries = await glob('*.{tsx,ts,jsx,mjs,js}', { cwd: srcDir, absolute: true });
+	const cmaRelPathEntries = cmaAbsPathEntries.map((absPath) => './' + path.relative(srcDir, absPath));
+	const cmaSubPathEntries = cmaAbsPathEntries.map((absPath) => path.relative(srcDir, absPath));
 
-	const mpaEntryIndex = mpaRelIndexes.find((relPath) => minimatch(relPath, './index.html'));
-	const cmaEntryIndex = cmaRelEntries.find((relPath) => minimatch(relPath, './index.{tsx,ts,jsx,mjs,js}'));
+	const mpaEntryIndex = mpaSubPathIndexes.find((subPath) => mm.isMatch(subPath, 'index.html'));
+	const cmaEntryIndex = cmaSubPathEntries.find((subPath) => mm.isMatch(subPath, 'index.{tsx,ts,jsx,mjs,js}'));
 
 	const isWeb = ['web', 'webw'].includes(targetEnv);
 	const isSSR = ['cfp', 'cfw', 'node'].includes(targetEnv);
@@ -117,7 +119,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	pkg.exports = pkg.exports || {};
 	pkg.exports['.'] = pkg.exports['.'] || {};
 
-	if (isCma && (isSSR || cmaRelEntries.length > 1)) {
+	if (isCma && (isSSR || cmaAbsPathEntries.length > 1)) {
 		mc.patch(pkg.exports, {
 			'.': {
 				import: './dist/index.js',
@@ -160,8 +162,8 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 */
 	const rollupConfig = {
 		input: isCma // Absolute paths.
-			? cmaAbsEntries
-			: mpaAbsIndexes,
+			? cmaAbsPathEntries
+			: mpaAbsPathIndexes,
 
 		// Peer dependencies are flagged as external; i.e., they'll be installed by a peer.
 		...(Object.keys(pkg.peerDependencies || {}).length ? { external: Object.keys(pkg.peerDependencies) } : {}),
@@ -193,7 +195,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
 	const pluginEJSConfig = pluginEJS(
 		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg }, //
-		{ ejs: { root: srcDir, views: [srcDir + '/resources/ejs-views'], strict: true, localsName: '$' } },
+		{ ejs: { root: srcDir, views: [path.resolve(srcDir, './resources/ejs-views')], strict: true, localsName: '$' } },
 	);
 	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig];
 
@@ -251,7 +253,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 			sourcemap: isDev, // Enables creation of sourcemaps.
 			manifest: isDev, // Enables creation of manifest for assets.
 
-			...(isCma ? { lib: { name: cmaName, entry: cmaRelEntries } } : {}),
+			...(isCma ? { lib: { name: cmaName, entry: cmaRelPathEntries } } : {}),
 			rollupOptions: rollupConfig, // See: <https://o5p.me/5Vupql>.
 		},
 		...(isSSR
