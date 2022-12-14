@@ -15,7 +15,7 @@ import mc from '@clevercanyon/js-object-mc';
 import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
 import chalk from 'chalk';
 import desm from 'desm';
-import glob from 'fast-glob';
+import { globby } from 'globby';
 import _ from 'lodash';
 import mm from 'micromatch';
 import fsp from 'node:fs/promises';
@@ -86,10 +86,10 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	cmaName = cmaName.replace(/[^a-z.0-9]([^.])/gu, (m0, m1) => m1.toUpperCase());
 	cmaName = cmaName.replace(/^\.|\.$/u, '');
 
-	const mpaAbsPathIndexes = await glob('**/index.html', { cwd: srcDir, absolute: true });
+	const mpaAbsPathIndexes = await globby('**/index.html', { expandDirectories: false, cwd: srcDir, absolute: true });
 	const mpaSubPathIndexes = mpaAbsPathIndexes.map((absPath) => path.relative(srcDir, absPath));
 
-	const cmaAbsPathEntries = await glob('*.{tsx,ts,jsx,mjs,js}', { cwd: srcDir, absolute: true });
+	const cmaAbsPathEntries = await globby('*.{tsx,ts,jsx,mjs,js}', { expandDirectories: false, cwd: srcDir, absolute: true });
 	const cmaRelPathEntries = cmaAbsPathEntries.map((absPath) => './' + path.relative(srcDir, absPath));
 	const cmaSubPathEntries = cmaAbsPathEntries.map((absPath) => path.relative(srcDir, absPath));
 
