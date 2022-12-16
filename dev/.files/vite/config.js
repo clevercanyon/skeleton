@@ -119,6 +119,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 * Updates `package.json` accordingly.
 	 */
 	pkg.exports = pkg.exports || {}; // Ensure exists.
+	pkg.exports = Array.isArray(pkg.exports) ? {} : pkg.exports;
 
 	if (isCma && (isSSR || cmaEntriesSubPathsNoExt.length > 1)) {
 		mc.patch(pkg.exports, {
@@ -163,7 +164,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 		pkg.types = './dist/types/' + cmaEntryIndexSubPathNoExt + '.d.ts';
 		pkg.typesVersions = { '>=3.1': { '*': ['./types/*'] } };
 	} else {
-		pkg.exports = pkg.typesVersions = {};
+		pkg.exports = [], pkg.typesVersions = {};
 		pkg.module = pkg.main = pkg.browser = pkg.unpkg = pkg.types = '';
 	}
 	await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
