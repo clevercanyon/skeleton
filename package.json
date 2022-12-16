@@ -27,9 +27,14 @@
 	"sideEffects": ["./src/*.{html,scss,css,tsx,ts,jsx,mjs,js}"],
 	"module": "./dist/index.js",
 	"main": "./dist/index.umd.cjs",
-	"unpkg": "./dist/index.umd.cjs",
 	"browser": "",
+	"unpkg": "./dist/index.umd.cjs",
 	"types": "./dist/types/index.d.ts",
+	"typesVersions": {
+		">=3.1": {
+			"*": ["./types/*"]
+		}
+	},
 	"dependencies": {},
 	"peerDependencies": {},
 	"peerDependenciesMeta": {},
