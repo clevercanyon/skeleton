@@ -135,7 +135,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 		pkg.unpkg = pkg.module;
 
 		pkg.types = './dist/types/' + cmaEntryIndexSubPathNoExt + '.d.ts';
-		pkg.typesVersions = { '>=3.1': { '*': ['./dist/types/*'] } };
+		pkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
 
 		for (const cmaEntrySubPathNoExt of cmaEntriesSubPathsNoExt) {
 			if (cmaEntrySubPathNoExt === cmaEntryIndexSubPathNoExt) {
@@ -162,7 +162,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 		pkg.unpkg = pkg.main;
 
 		pkg.types = './dist/types/' + cmaEntryIndexSubPathNoExt + '.d.ts';
-		pkg.typesVersions = { '>=3.1': { '*': ['./dist/types/*'] } };
+		pkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
 	} else {
 		(pkg.exports = []), (pkg.typesVersions = {});
 		pkg.module = pkg.main = pkg.browser = pkg.unpkg = pkg.types = '';
