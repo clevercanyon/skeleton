@@ -21,7 +21,8 @@
 	"exports": {
 		".": {
 			"import": "./dist/index.js",
-			"require": "./dist/index.umd.cjs"
+			"require": "./dist/index.umd.cjs",
+			"types": "./dist/types/index.d.ts"
 		}
 	},
 	"sideEffects": ["./src/*.{html,scss,css,tsx,ts,jsx,mjs,js}"],
@@ -32,7 +33,7 @@
 	"types": "./dist/types/index.d.ts",
 	"typesVersions": {
 		">=3.1": {
-			"*": ["./types/*"]
+			"./*": ["./dist/types/*"]
 		}
 	},
 	"dependencies": {},

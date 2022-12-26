@@ -11,12 +11,12 @@
  */
 /* eslint-env es2021, node */
 
-import mc from '@clevercanyon/js-object-mc';
 import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
 import chalk from 'chalk';
 import desm from 'desm';
 import { globby } from 'globby';
 import _ from 'lodash';
+import mc from 'merge-change';
 import mm from 'micromatch';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
@@ -178,9 +178,34 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	);
 
 	/**
-	 * Configures rollup.
+	 * Configures plugins for Vite.
 	 *
-	 * @see https://o5p.me/5Vupql
+	 * Also configures plugins for imported web workers; e.g., `?worker`. See:
+	 * {@link https://vitejs.dev/guide/features.html#web-workers}.
+	 *
+	 * @see https://github.com/vitejs/vite-plugin-basic-ssl
+	 * @see https://github.com/trapcodeio/vite-plugin-ejs
+	 * @see https://github.com/zhuweiyou/vite-plugin-minify
+	 */
+	const pluginBasicSSLConfig = pluginBasicSSL();
+	const pluginEJSConfig = pluginEJS(
+		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg }, //
+		{ ejs: { root: srcDir, views: [path.resolve(srcDir, './resources/ejs-views')], strict: true, localsName: '$' } },
+	);
+	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
+
+	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig];
+	const importedWorkerPlugins = []; // None applicable at this time.
+
+	/**
+	 * Configures rollup for Vite.
+	 *
+	 * Also configures rollup for imported web workers; e.g., `?worker`. See:
+	 * {@link https://vitejs.dev/guide/features.html#web-workers}.
+	 *
+	 * @see https://rollupjs.org/guide/en/#input
+	 * @see https://rollupjs.org/guide/en/#outputdir
+	 * @see https://rollupjs.org/guide/en/#big-list-of-options
 	 */
 	const rollupConfig = {
 		input: isCma // Absolute paths.
@@ -200,33 +225,8 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 			noConflict: true, // Like `jQuery.noConflict()`.
 		},
 	};
-	const importedWorkerRollupConfig = {
-		// Imported web workers; e.g., `?worker`.
-		// See: <https://vitejs.dev/guide/features.html#web-workers>.
-		output: {
-			interop: 'auto', // Matches TypeScript.
-			exports: 'named', // Matches TypeScript.
-			esModule: true, // Matches TypeScript.
-
-			extend: true, // Global || checks.
-			noConflict: true, // Like `jQuery.noConflict()`.
-		},
-	};
-
-	/**
-	 * Configures Vite plugins.
-	 *
-	 * @see https://github.com/vitejs/vite-plugin-basic-ssl
-	 * @see https://github.com/zhuweiyou/vite-plugin-minify
-	 * @see https://github.com/trapcodeio/vite-plugin-ejs
-	 */
-	const pluginBasicSSLConfig = pluginBasicSSL();
-	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
-	const pluginEJSConfig = pluginEJS(
-		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg }, //
-		{ ejs: { root: srcDir, views: [path.resolve(srcDir, './resources/ejs-views')], strict: true, localsName: '$' } },
-	);
-	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig];
+	const importedWorkerRollupConfig = { ...rollupConfig };
+	delete importedWorkerRollupConfig.input; // Not applicable.
 
 	/**
 	 * Vite config base.
@@ -263,8 +263,8 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 		worker: {
 			// Imported web workers; e.g., `?worker`.
 			// See: <https://vitejs.dev/guide/features.html#web-workers>.
-			plugins: [],
 			format: 'es',
+			plugins: importedWorkerPlugins,
 			rollupOptions: importedWorkerRollupConfig,
 		},
 		build: {
