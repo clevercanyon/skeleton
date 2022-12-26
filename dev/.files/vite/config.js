@@ -11,19 +11,22 @@
  */
 /* eslint-env es2021, node */
 
-import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
-import chalk from 'chalk';
-import desm from 'desm';
-import { globby } from 'globby';
-import _ from 'lodash';
-import mc from 'merge-change';
-import mm from 'micromatch';
-import fsp from 'node:fs/promises';
 import path from 'node:path';
+import fsp from 'node:fs/promises';
+
+import _ from 'lodash';
+import desm from 'desm';
+import chalk from 'chalk';
+import mm from 'micromatch';
+import mc from 'merge-change';
 import prettier from 'prettier';
+import { globby } from 'globby';
+
 import { loadEnv } from 'vite';
+import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
 import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
 import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
+
 import aliases from './includes/aliases.js';
 
 /**
@@ -67,9 +70,11 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	const publicEnvPrefix = 'APP_PUBLIC_'; // Used below also.
 	const env = loadEnv(mode, envsDir, publicEnvPrefix);
 
-	const isProd = /^prod(uction)?$/iu.test(mode);
-	const isDev = !isProd; // Always opposite.
-	const nodeEnv = isProd ? 'production' : 'development';
+	const isDev = /^dev(elopment)?$/iu.test(mode);
+	const isProd = !isDev; // Always opposite.
+
+	const nodeEnv = isDev ? 'development' : 'production';
+	process.env.NODE_ENV = nodeEnv; // <https://o5p.me/DscTVM>.
 
 	/**
 	 * App type and target env.
