@@ -12,9 +12,9 @@
 
 *.ejs
 
-# HTML index (contains EJS).
+# MPA indexes contain EJS.
 
-/src/index.html
+/src/**/index.html
 
 ##
 # Customizations
