@@ -1,1 +1,5 @@
-export default {};
+/**
+ * Skeleton.
+ */
+
+export {};
