@@ -12,6 +12,10 @@
 
 *.ejs
 
+# HTML index (contains EJS).
+
+/src/index.html
+
 ##
 # Customizations
 # <custom:start>
