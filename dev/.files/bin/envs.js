@@ -59,10 +59,10 @@ class Setup {
 
 		await spawn('npx', ['dotenv-vault', 'new', '--yes'], spawnCfg);
 		await spawn('npx', ['dotenv-vault', 'login', '--yes'], spawnCfg);
-		await spawn('npx', ['dotenv-vault', 'build', '--yes'], spawnCfg);
 		await spawn('npx', ['dotenv-vault', 'open', '--yes'], spawnCfg);
 
 		await Utilities.push(); // Maybe existing files; else new files.
+		await spawn('npx', ['dotenv-vault', 'build', '--yes'], spawnCfg);
 	}
 
 	async setup() {
