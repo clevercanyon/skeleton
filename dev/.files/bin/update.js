@@ -54,6 +54,8 @@ class Project {
 	async update() {
 		log(chalk.green('Updating dotfiles.'));
 		await spawn(__filename, ['dotfiles'], spawnCfg);
+
+		log(chalk.green('Updating NPM packages.'));
 		await spawn('npm', ['update', '--include=dev'], spawnCfg);
 
 		log(chalk.green('Updating project build (' + this.args.mode + ').'));
