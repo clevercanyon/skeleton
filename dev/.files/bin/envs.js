@@ -100,6 +100,7 @@ class Utilities {
 	static async push() {
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			if (!fs.existsSync(envFile)) {
+				await fsp.mkdir(path.dirname(envFile), { recursive: true });
 				await fsp.writeFile(envFile, '# ' + envName);
 			}
 			await spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes'], spawnCfg);
