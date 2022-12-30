@@ -33,6 +33,8 @@
 
 		"wrangler": "CLOUDFLARE_API_TOKEN=${C10N_CLOUDFLARE_TOKEN} npx wrangler",
 
+		"update:project": "./dev/.files/bin/update.js project",
+		"update:project:repos": "./dev/.files/bin/update.js project --repos",
 		"update:dotfiles": "./dev/.files/bin/update.js dotfiles"
 	},
 	"workspaces": [],
