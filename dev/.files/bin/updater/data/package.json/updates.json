@@ -41,8 +41,8 @@
 		"envs:push": "npm run env:push:main && npm run env:push:dev && npm run env:push:ci && npm run env:push:stage && npm run env:push:prod",
 		"envs:pull": "npm run env:pull:main && npm run env:pull:dev && npm run env:pull:ci && npm run env:pull:stage && npm run env:pull:prod",
 
-		"envs:setup": "npx dotenv-vault login --yes && npx dotenv-vault build --yes && npx dotenv-vault open --yes && npm run envs:pull",
-		"envs:setup:new": "rm -rf ./.env.me && rm -rf ./.env.vault && rm -rf ./dev/.envs && npx dotenv-vault new --yes && npm run envs:setup",
+		"envs:setup": "npx dotenv-vault login --yes && npm run envs:pull",
+		"envs:setup:new": "rm -rf ./.env.me && rm -rf ./.env.vault && npx dotenv-vault new --yes && npm run envs:setup && npx dotenv-vault build --yes",
 
 		"wrangler": "CLOUDFLARE_API_TOKEN=${C10N_CLOUDFLARE_TOKEN} npx wrangler",
 		"dotfiles:update": "./dev/.files/bin/update.js"
