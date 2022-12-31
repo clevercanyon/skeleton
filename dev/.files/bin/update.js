@@ -158,7 +158,7 @@ class Dotfiles {
 		 */
 		if ('@clevercanyon/skeleton' === pkg.name && (await u.isGitRepo())) {
 			log(chalk.green('Updating `clevercanyon/skeleton` git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
-			log(chalk.green('i.e., Saving skeleton changes before self-update.'));
+			log(chalk.green('    ... i.e., Saving skeleton changes before self-update.'));
 			await u.gitAddCommitPush();
 		}
 
