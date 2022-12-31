@@ -56,7 +56,7 @@ class Project {
 		await spawn(__filename, ['dotfiles'], spawnCfg);
 
 		log(chalk.green('Updating NPM packages.'));
-		await spawn('npm', ['update', '--include=dev'], spawnCfg);
+		await spawn('npm', ['update', '--include=dev', '--silent'], spawnCfg);
 
 		log(chalk.green('Updating project build (' + this.args.mode + ').'));
 		await spawn('npx', ['vite', 'build', '--mode', this.args.mode], spawnCfg);
