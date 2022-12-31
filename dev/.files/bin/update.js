@@ -68,6 +68,7 @@ class Project {
 				await spawn(path.resolve(binDir, './envs.js'), ['push'], spawnCfg);
 			}
 			log(chalk.green('Updating git repo.'));
+			await this.gitChange(); // Force a change.
 			await spawn('git', ['add', '--all'], spawnCfg);
 			await spawn('git', ['commit', '--message', 'Update.'], spawnCfg);
 			await spawn('git', ['push'], spawnCfg);
@@ -78,6 +79,10 @@ class Project {
 				await spawn('npm', ['version', 'publish'], spawnCfg);
 			}
 		}
+	}
+
+	async gitChange() {
+		await fsp.writeFile(path.resolve(projDir, './.gitchange'), String(Date.now()));
 	}
 
 	hasEnvs() {
