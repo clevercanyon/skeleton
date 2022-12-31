@@ -151,7 +151,7 @@ class Dotfiles {
 		/**
 		 * Runs cleanup tasks prior to completion.
 		 */
-		log(chalk.green('Running cleanup tasks.'));
+		log(chalk.green('Running dotfile cleanup tasks.'));
 		await fsp.rm(tmpDir, { recursive: true, force: true });
 
 		/**
