@@ -17,6 +17,7 @@ import fsp from 'node:fs/promises';
 import chalk from 'chalk';
 import spawn from 'spawn-please';
 import { dirname, filename } from 'desm';
+import { globbyStream } from 'globby';
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
@@ -24,7 +25,9 @@ import { hideBin } from 'yargs/helpers';
 const __dirname = dirname(import.meta.url);
 const __filename = filename(import.meta.url);
 
+const projsDir = path.resolve(__dirname, '../../../..');
 const projDir = path.resolve(__dirname, '../../..');
+
 const envsDir = path.resolve(__dirname, '../../../dev/.envs');
 const binDir = path.resolve(__dirname, '../../../dev/.files/bin');
 
@@ -39,6 +42,54 @@ const spawnCfg = {
 	stdout: (buffer) => echo(chalk.blue(buffer.toString())),
 	stderr: (buffer) => echo(chalk.redBright(buffer.toString())),
 };
+
+/**
+ * Projects command.
+ */
+class Projects {
+	constructor(args) {
+		this.args = args;
+
+		(async () => {
+			await this.update();
+		})();
+	}
+
+	async update() {
+		const globStream = globbyStream('*', {
+			expandDirectories: false,
+			onlyDirectories: true,
+			absolute: true,
+			cwd: projsDir,
+			dot: false,
+		});
+		for await (const projDir of globStream) {
+			const projUpdateFile = // Project's update file.
+				path.resolve(projDir, './dev/.files/bin/update.js');
+
+			if (fs.existsSync(projUpdateFile)) {
+				switch (true) {
+					case 'project' === this.args.update && this.args.repos:
+						log(chalk.green('Updating project: ') + chalk.yellow(path.basename(projDir)));
+						await spawn(projUpdateFile, [this.args.update, '--repos', '--mode', this.args.mode], { ...spawnCfg, cwd: projDir });
+						break;
+
+					case 'project' === this.args.update:
+						log(chalk.green('Updating project: ') + chalk.yellow(path.basename(projDir)));
+						await spawn(projUpdateFile, [this.args.update, '--mode', this.args.mode], { ...spawnCfg, cwd: projDir });
+						break;
+
+					case 'dotfiles' === this.args.update:
+						log(chalk.green('Updating dotfiles in: ') + chalk.yellow(path.basename(projDir)));
+						await spawn(projUpdateFile, [this.args.update], { ...spawnCfg, cwd: projDir });
+						break;
+				}
+			}
+		}
+		log(chalk.green('Project updates complete.'));
+	}
+}
+
 /**
  * Project command.
  */
@@ -79,6 +130,7 @@ class Project {
 				await spawn('npm', ['version', 'publish'], spawnCfg);
 			}
 		}
+		log(chalk.green('Project update complete.'));
 	}
 
 	async gitChange() {
@@ -163,25 +215,71 @@ class Dotfiles {
 
 /**
  * Yargs ⛵🏴‍☠
+ *
+ * @see http://yargs.js.org/docs/
  */
 (async () => {
 	await yargs(hideBin(process.argv))
+		.command(
+			['projects'],
+			'Updates projects.',
+			{
+				update: {
+					type: 'string',
+					requiresArg: true,
+					demandOption: true,
+					choices: ['project', 'dotfiles'],
+					description: 'What to update in each project.',
+				},
+				repos: {
+					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
+					default: false,
+					description: 'Update project repos?',
+				},
+				mode: {
+					type: 'string',
+					requiresArg: true,
+					demandOption: false,
+					default: 'prod',
+					choices: ['dev', 'ci', 'stage', 'prod'],
+					description: 'Build & env mode.',
+				},
+			},
+			(args) => new Projects(args),
+		)
 		.command(
 			['project'],
 			'Updates project.',
 			{
 				repos: {
 					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
 					default: false,
+					description: 'Update project repos?',
 				},
 				mode: {
 					type: 'string',
+					requiresArg: true,
+					demandOption: false,
 					default: 'prod',
+					choices: ['dev', 'ci', 'stage', 'prod'],
+					description: 'Build & env mode.',
 				},
 			},
 			(args) => new Project(args),
 		)
-		.command(['dotfiles'], 'Updates dotfiles.', {}, (args) => new Dotfiles(args))
+		.command(
+			['dotfiles'],
+			'Updates dotfiles.',
+			{
+				// No options at this time.
+			},
+			(args) => new Dotfiles(args),
+		)
+		.strict()
 		.help()
 		.parse();
 })();

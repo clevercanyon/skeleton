@@ -129,6 +129,8 @@ class Utilities {
 
 /**
  * Yargs ⛵🏴‍☠
+ *
+ * @see http://yargs.js.org/docs/
  */
 (async () => {
 	await yargs(hideBin(process.argv))
@@ -138,13 +140,17 @@ class Utilities {
 			{
 				'new': {
 					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
 					default: false,
+					description: 'Set up *new* envs?',
 				},
 			},
 			(args) => new Setup(args),
 		)
 		.command('push', 'Pushes to dotenv vault.', {}, (args) => new Push(args))
 		.command('pull', 'Pulls from dotenv vault.', {}, (args) => new Pull(args))
+		.strict()
 		.help()
 		.parse();
 })();
