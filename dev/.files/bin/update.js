@@ -14,6 +14,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import fsp from 'node:fs/promises';
 
+import _ from 'lodash';
 import chalk from 'chalk';
 import spawn from 'spawn-please';
 import { dirname, filename } from 'desm';
@@ -70,17 +71,17 @@ class Projects {
 			if (fs.existsSync(projUpdateFile)) {
 				switch (true) {
 					case 'project' === this.args.update && this.args.repos:
-						log(chalk.green('Updating project: ') + chalk.yellow(path.basename(projDir)));
+						log(chalk.green('Updating project:') + ' ' + chalk.yellow(path.basename(projDir)));
 						await spawn(projUpdateFile, [this.args.update, '--repos', '--mode', this.args.mode], { ...spawnCfg, cwd: projDir });
 						break;
 
 					case 'project' === this.args.update:
-						log(chalk.green('Updating project: ') + chalk.yellow(path.basename(projDir)));
+						log(chalk.green('Updating project:') + ' ' + chalk.yellow(path.basename(projDir)));
 						await spawn(projUpdateFile, [this.args.update, '--mode', this.args.mode], { ...spawnCfg, cwd: projDir });
 						break;
 
 					case 'dotfiles' === this.args.update:
-						log(chalk.green('Updating dotfiles in: ') + chalk.yellow(path.basename(projDir)));
+						log(chalk.green('Updating dotfiles in:') + ' ' + chalk.yellow(path.basename(projDir)));
 						await spawn(projUpdateFile, [this.args.update], { ...spawnCfg, cwd: projDir });
 						break;
 				}
@@ -109,44 +110,33 @@ class Project {
 		log(chalk.green('Updating NPM packages.'));
 		await spawn('npm', ['update', '--include=dev', '--silent'], spawnCfg);
 
-		log(chalk.green('Updating project build (' + this.args.mode + ').'));
+		log(chalk.green('Updating project build; `' + this.args.mode + '` mode.'));
 		await spawn('npx', ['vite', 'build', '--mode', this.args.mode], spawnCfg);
 		await spawn('npx', ['tsc'], spawnCfg); // TypeScript types.
 
 		if (this.args.repos) {
-			if (this.hasEnvs()) {
-				log(chalk.green('Updating envs repo.'));
-				await spawn(path.resolve(binDir, './envs.js'), ['push'], spawnCfg);
+			if (await u.isGitRepo()) {
+				log(chalk.green('Updating git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
+				await u.gitAddCommitPush();
+			} else {
+				log(chalk.gray('Not a git repo.'));
 			}
-			log(chalk.green('Updating git repo.'));
-			await this.gitChange(); // Force a change.
-			await spawn('git', ['add', '--all'], spawnCfg);
-			await spawn('git', ['commit', '--message', 'Update.'], spawnCfg);
-			await spawn('git', ['push'], spawnCfg);
 
-			if (this.isPackage()) {
-				log(chalk.green('Updating package repo.'));
-				await spawn('npm', ['version', 'patch'], spawnCfg);
-				await spawn('npm', ['version', 'publish'], spawnCfg);
+			if (await u.isEnvsRepo()) {
+				log(chalk.green('Updating envs repo.'));
+				await u.envsPush();
+			} else {
+				log(chalk.gray('Not an envs repo.'));
+			}
+
+			if (await u.isNPMRepo(this.args.mode)) {
+				log(chalk.green('Updating NPM repo.'));
+				await u.npmVerionPatchPublish();
+			} else {
+				log(chalk.gray('Not an NPM repo; or not in a publishable state.'));
 			}
 		}
 		log(chalk.green('Project update complete.'));
-	}
-
-	async gitChange() {
-		await fsp.writeFile(path.resolve(projDir, './.gitchange'), String(Date.now()));
-	}
-
-	hasEnvs() {
-		return (
-			fs.existsSync(path.resolve(projDir, './.env.me')) && //
-			fs.existsSync(path.resolve(projDir, './.env.vault')) &&
-			fs.existsSync(path.resolve(envsDir, './.env'))
-		);
-	}
-
-	isPackage() {
-		return false === pkg.private;
 	}
 }
 
@@ -164,28 +154,20 @@ class Dotfiles {
 
 	async update() {
 		/**
-		 * Validates environment vars.
+		 * Don't lose skeleton changes!
 		 */
-		if (!process.env.C10N_GITHUB_TOKEN) {
-			throw new Error('`C10N_GITHUB_TOKEN` is a required environment variable.');
+		if ('@clevercanyon/skeleton' === pkg.name && (await u.isGitRepo())) {
+			log(chalk.green('Updating `clevercanyon/skeleton` git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
+			log(chalk.green('i.e., Saving skeleton changes before self-update.'));
+			await u.gitAddCommitPush();
 		}
-
-		/**
-		 * Creates temp directory.
-		 */
-		const tmpDir = await fsp.mkdtemp(path.resolve(os.tmpdir(), './' + crypto.randomUUID()));
 
 		/**
 		 * Downloads latest skeleton.
 		 */
 		log(chalk.green('Downloading latest `clevercanyon/skeleton`.'));
-
-		const skeletonRepoURL =
-			'https://' + // Requires personal access token.
-			(process.env.C10N_GITHUB_TOKEN || '') +
-			'@github.com/clevercanyon/skeleton';
-
-		await spawn('git', ['clone', '--quiet', '--depth=1', skeletonRepoURL, tmpDir], spawnCfg);
+		const tmpDir = await fsp.mkdtemp(path.resolve(os.tmpdir(), './' + crypto.randomUUID()));
+		await spawn('git', ['clone', '--quiet', '--depth=1', 'git@github.com:clevercanyon/skeleton.git', tmpDir], { ...spawnCfg, cwd: tmpDir });
 		await fsp.rm(path.resolve(tmpDir, './.git'), { recursive: true, force: true });
 
 		/**
@@ -210,6 +192,61 @@ class Dotfiles {
 		 * Completes dotfiles update.
 		 */
 		log(chalk.green('Dotfiles update complete.'));
+	}
+}
+
+/**
+ * Utilities.
+ */
+class u {
+	static async isGitRepo() {
+		try {
+			return 'true' === String(await spawn('git', ['rev-parse', '--is-inside-work-tree'], _.pick(spawnCfg, ['cwd']))).trim();
+		} catch {
+			return false;
+		}
+	}
+
+	static async isEnvsRepo() {
+		return (
+			(await u.isGitRepo()) &&
+			fs.existsSync(path.resolve(projDir, './.env.me')) &&
+			fs.existsSync(path.resolve(projDir, './.env.vault')) &&
+			fs.existsSync(path.resolve(envsDir, './.env'))
+		);
+	}
+
+	static async isNPMRepo(mode = '') {
+		return (await u.isGitRepo()) && 'main' === (await u.gitCurrentBranch()) && (!mode || 'prod' === mode) && false === pkg.private;
+	}
+
+	static async gitCurrentBranch() {
+		return (await u.isGitRepo()) ? String(await spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], _.pick(spawnCfg, ['cwd']))).trim() : '';
+	}
+
+	static async gitChange() {
+		if (!(await u.isGitRepo())) return;
+		await fsp.writeFile(path.resolve(projDir, './.gitchange'), String(Date.now()));
+	}
+
+	static async gitAddCommitPush(message = 'Update.') {
+		if (!(await u.isGitRepo())) return;
+		await u.gitChange(); // Force a change.
+		const branch = await u.gitCurrentBranch();
+		await spawn('git', ['add', '--all'], spawnCfg);
+		await spawn('git', ['commit', '--message', message], spawnCfg);
+		await spawn('git', ['push', '--set-upstream', 'origin', branch], spawnCfg);
+	}
+
+	static async envsPush() {
+		if (!(await u.isEnvsRepo())) return;
+		await spawn(path.resolve(binDir, './envs.js'), ['push'], spawnCfg);
+	}
+
+	static async npmVerionPatchPublish() {
+		if (!(await u.isNPMRepo())) return;
+		await spawn('npm', ['version', 'patch'], spawnCfg);
+		await spawn('npm', ['publish'], spawnCfg);
 	}
 }
 
