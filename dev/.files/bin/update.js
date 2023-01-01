@@ -147,11 +147,13 @@ class Project {
 				log(chalk.gray('Not an envs repo.'));
 			}
 
-			if (this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
-				log(chalk.green('Publishing NPM package.'));
-				await u.npmPublish();
-			} else {
-				log(chalk.gray('Not an NPM package. Or, not in a publishable state.'));
+			if (this.args.pkgs) {
+				if (await u.isNPMPkgPublishable({ mode: this.args.mode })) {
+					log(chalk.green('Publishing NPM package.'));
+					await u.npmPublish();
+				} else {
+					log(chalk.gray('Not an NPM package. Or, not in a publishable state.'));
+				}
 			}
 		}
 		log(chalk.green('Project update complete.'));
