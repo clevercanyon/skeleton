@@ -371,12 +371,14 @@ class u {
 					type: 'array',
 					requiresArg: true,
 					demandOption: false,
+					default: [],
 					description: 'Scripts to `npm run` in each project directory.',
 				},
 				cmdArgs: {
 					type: 'array',
 					requiresArg: true,
 					demandOption: false,
+					default: [],
 					description: 'Arbitrary command + arguments to run in each project directory.',
 				},
 				dryRun: {
