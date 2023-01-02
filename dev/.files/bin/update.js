@@ -188,13 +188,19 @@ class Project {
 			await u.npmUpdate();
 		}
 
+		if (await u.isEnvsRepo()) {
+			log(chalk.green('Updating envs build; encrypts vault.'));
+			if (!this.args.dryRun) {
+				await u.envsBuild(); // Before NPM version patch.
+			}
+		}
 		if (this.args.repos && this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
 			log(chalk.green('NPM package will publish, so patching NPM version prior to build.'));
 			if (!this.args.dryRun) {
 				await u.npmVersionPatch(); // Git commit(s) + tag.
 			}
 		}
-		log(chalk.green('Updating build; `' + this.args.mode + '` mode.'));
+		log(chalk.green('Updating Vite build; `' + this.args.mode + '` mode.'));
 		if (!this.args.dryRun) {
 			await u.viteBuild({ mode: this.args.mode });
 		}
@@ -310,6 +316,10 @@ class u {
 
 	static async envsPush() {
 		await spawn(path.resolve(binDir, './envs.js'), ['push'], quietSpawnCfg);
+	}
+
+	static async envsBuild() {
+		await spawn(path.resolve(binDir, './envs.js'), ['build'], quietSpawnCfg);
 	}
 
 	/*

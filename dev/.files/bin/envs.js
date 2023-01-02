@@ -74,10 +74,8 @@ class Setup {
 		log(chalk.gray('Pushing envs.'));
 		await Utilities.push({ dryRun: this.args.dryRun });
 
-		log(chalk.gray('Running `dotenv-vault build`.'));
-		if (!this.args.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
-		}
+		log(chalk.gray('Building envs.'));
+		await Utilities.build({ dryRun: this.args.dryRun });
 	}
 
 	async setup() {
@@ -130,6 +128,24 @@ class Pull {
 }
 
 /**
+ * Build command.
+ */
+class Build {
+	constructor(args) {
+		this.args = args;
+
+		(async () => {
+			log(chalk.green('Building envs.'));
+			await Utilities.build({ dryRun: this.args.dryRun });
+
+			if (this.args.dryRun) {
+				log(chalk.cyanBright('Dry run. This was all a simulation.'));
+			}
+		})();
+	}
+}
+
+/**
  * Misc. utilities.
  */
 class Utilities {
@@ -160,6 +176,13 @@ class Utilities {
 			if (!opts.dryRun) {
 				await fsp.rm(envFile + '.previous', { force: true });
 			}
+		}
+	}
+
+	static async build(opts = { dryRun: false }) {
+		log(chalk.gray('Running `dotenv-vault build`.'));
+		if (!opts.dryRun) {
+			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 		}
 	}
 }
@@ -219,6 +242,20 @@ class Utilities {
 				},
 			},
 			(args) => new Pull(args),
+		)
+		.command(
+			'build',
+			'Builds dotenv vault.',
+			{
+				dryRun: {
+					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
+					default: false,
+					description: 'Dry run?',
+				},
+			},
+			(args) => new Build(args),
 		)
 		.strict()
 		.help()
