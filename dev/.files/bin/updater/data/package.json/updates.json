@@ -39,9 +39,9 @@
 
 			"update:projects": "./dev/.files/bin/update.js projects",
 			"update:projects::dotfiles": "./dev/.files/bin/update.js projects --run update:dotfiles",
-			"update:projects::project": "./dev/.files/bin/update.js projects --run update:dotfiles update:project",
-			"update:projects::project:repos": "./dev/.files/bin/update.js projects --run update:dotfiles update:project:repos",
-			"update:projects::project:repos:pkgs": "./dev/.files/bin/update.js projects --run update:dotfiles update:project:repos:pkgs"
+			"update:projects::project": "./dev/.files/bin/update.js projects --run update:project",
+			"update:projects::project:repos": "./dev/.files/bin/update.js projects --run update:project:repos",
+			"update:projects::project:repos:pkgs": "./dev/.files/bin/update.js projects --run update:project:repos:pkgs"
 		},
 		"workspaces": []
 	},
