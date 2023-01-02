@@ -49,6 +49,8 @@ class Projects {
 	constructor(args) {
 		this.args = args;
 
+		log(this.args);
+
 		(async () => {
 			await this.update();
 
