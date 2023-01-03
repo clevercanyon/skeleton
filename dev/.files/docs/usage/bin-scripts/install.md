@@ -1,4 +1,4 @@
-# `dev/.files/bin/install.js`
+# `./dev/.files/bin/install.js`
 
 See Also: [Prerequisites](./prerequisites.md)
 
@@ -12,9 +12,11 @@ $ npm ci # Clean install is preferred.
 # Each of these trigger our `postinstall` script: `install.js project`.
 ```
 
+<small>_See also: [`npm ci` docs](https://docs.npmjs.com/cli/commands/npm-ci) to review important differences between `npm ci` and `npm install`._</small>
+
 ### Option 2
 
-This does a clean install, then runs `install.js project`.
+This does an `npm ci` clean install, then runs `./dev/.files/bin/install.js project`.
 
 ```bash
 $ npm run install:project -- --mode=dev
@@ -42,8 +44,6 @@ These keys can be retrieved by running the following script interactively.
 ```
 $ npm run envs:keys
 ```
-
----
 
 ## Help
 

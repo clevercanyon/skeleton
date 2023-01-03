@@ -463,7 +463,7 @@ class u {
 					description: // prettier-ignore
 						'Glob matching is relative to `' + projsDir + '`. This effectively excludes directories otherwise found by the `glob` option.' +
 						' Note: The default ignore patterns are always in effect and cannot be overridden, only appended with this option.' +
-						' Additionally, patterns in this project’s `.gitignore` file, and those within each project, are also always in effect.',
+						' Additionally, patterns in this project’s `.gitignore` file, and those within each matched project directory, are also always in effect.',
 				},
 				order: {
 					type: 'array',
@@ -472,7 +472,9 @@ class u {
 					default: coreProjectsOrder,
 					description: // prettier-ignore
 						'Project subpaths to prioritize, in order. Also, globbing is supported in this option, for loose ordering.' +
-						' Note: The default order is always in effect and cannot be overridden, only appended with this option.',
+						' Note: It’s not necessary to list every single project directory, only those you need to prioritize, in a specific order.' +
+						' Any that are not listed explicitly, in order, will run last, in an arbitrary glob-based ordering, which is generally unpredictable.' +
+						' Note: The default ordering is always in effect and cannot be overridden, only appended with this option.',
 				},
 				cmd: {
 					type: 'string',
