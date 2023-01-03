@@ -1,11 +1,11 @@
-# Requirements
+# Prerequisites
 
 ## Homebrew for macOS
 
 ```bash
 $ xcode-select --install
 $ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-$ brew install mas # macOS app store extensions.
+$ brew install mas # macOS app store for Homebrew; recommended, but not required.
 ```
 
 ## Git via Homebrew

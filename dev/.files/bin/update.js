@@ -73,6 +73,11 @@ const coreProjectsOrder = [
 ];
 
 /**
+ * NOTE: All of these commands _must_ be performed interactively. Please eview the Yargs configuration below for further
+ * details. At this time, there are no exceptions. Every update _must_ occur interactively.
+ */
+
+/**
  * Projects command.
  */
 class Projects {
@@ -129,10 +134,12 @@ class Projects {
 				continue; // No `./package.json` file.
 			}
 			if (this.args.cmd) {
-				log(chalk.green('Running `' + this.args.cmd + '` in:') + ' ' + chalk.yellow(projDisplayDir));
-				if (!this.args.dryRun) {
-					const split = splitCMD(this.args.cmd); // Splits into properties.
-					await spawn(split.cmd, split.args, { ...noisySpawnCfg, cwd: projDir });
+				for (const cmd of this.args.cmd.split(/\s*&&\s*/u)) {
+					log(chalk.green('Running `' + cmd + '` in:') + ' ' + chalk.yellow(projDisplayDir));
+					if (!this.args.dryRun) {
+						const split = splitCMD(cmd); // Splits into properties.
+						await spawn(split.cmd, split.args, { ...noisySpawnCfg, cwd: projDir });
+					}
 				}
 			}
 			if (this.args.run.length) {
@@ -392,12 +399,20 @@ class u {
 		return (await u.isGitRepo()) && false === pkg.private;
 	}
 
+	static async npmLifecycleEvent() {
+		return process.env.npm_lifecycle_event || ''; // NPM script name.
+	}
+
+	static async npmLifecycleScript() {
+		return process.env.npm_lifecycle_script || ''; // NPM script value.
+	}
+
 	static async isNPMPkgPublishable(opts = { mode: 'prod' }) {
 		return (await u.isNPMPkg()) && 'main' === (await u.gitCurrentBranch()) && 'prod' === opts.mode;
 	}
 
 	static async npmUpdate() {
-		await spawn('npm', ['update', '--include=dev', '--ignore-scripts', '--save', '--silent'], quietSpawnCfg);
+		await spawn('npm', ['update', '--ignore-scripts', '--save', '--silent'], quietSpawnCfg);
 	}
 
 	static async npmVersionPatch() {
@@ -425,9 +440,6 @@ class u {
  * @see http://yargs.js.org/docs/
  */
 (async () => {
-	if (!u.isInteractive()) {
-		throw new Error(chalk.red('Updates *must* be performed interactively.'));
-	}
 	await yargs(hideBin(process.argv))
 		.command(
 			['projects'],
@@ -441,7 +453,7 @@ class u {
 					description:  // prettier-ignore
 						'Glob matching is relative to `' + projsDir + '` and finds directories only.' +
 						' Note: Globstars `**` are not allowed given the nature of this command and will therefore throw an error.' +
-						' Please be more specific. Wildcards `*` are fine, but globstars `**` are prohibited in `glob`.',
+						' Please be more specific. Wildcards `*` are fine, but globstars `**` are prohibited in this option.',
 				},
 				ignore: {
 					type: 'array',
@@ -449,9 +461,9 @@ class u {
 					demandOption: false,
 					default: coreProjectsIgnore,
 					description: // prettier-ignore
-						'Glob matching is relative to `' + projsDir + '`. This excludes directories found by `glob`.' +
+						'Glob matching is relative to `' + projsDir + '`. This effectively excludes directories otherwise found by the `glob` option.' +
 						' Note: The default ignore patterns are always in effect and cannot be overridden, only appended with this option.' +
-						' Additionally, patterns in this project’s `.gitignore` file, and those within each project’s directory, are also always in effect.',
+						' Additionally, patterns in this project’s `.gitignore` file, and those within each project, are also always in effect.',
 				},
 				order: {
 					type: 'array',
@@ -459,7 +471,7 @@ class u {
 					demandOption: false,
 					default: coreProjectsOrder,
 					description: // prettier-ignore
-						'Project subpaths to prioritize, in order. Globbing is supported for loose ordering.' +
+						'Project subpaths to prioritize, in order. Also, globbing is supported in this option, for loose ordering.' +
 						' Note: The default order is always in effect and cannot be overridden, only appended with this option.',
 				},
 				cmd: {
@@ -467,7 +479,9 @@ class u {
 					requiresArg: true,
 					demandOption: false,
 					default: '',
-					description: 'Arbitrary `command args` to run in each project directory.',
+					description: // prettier-ignore
+						'Arbitrary `command args` to run in each project directory.' +
+						' Note: The use of `&&` is allowed, but the use of `||` or `|` pipes is not permitted at this time.',
 				},
 				run: {
 					type: 'array',
@@ -500,8 +514,12 @@ class u {
 			if (!args.run.length && !args.cmd) {
 				throw new Error(chalk.red('One of `cmd` and/or `run` is required.'));
 			}
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
 			return true;
 		})
+
 		.command(
 			['dotfiles'],
 			'Updates project dotfiles.',
@@ -525,6 +543,13 @@ class u {
 				await new Dotfiles(args).run();
 			},
 		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
 		.command(
 			['project'],
 			'Updates NPM packages + optionally pushes to repo(s) + optionally publishes package(s).',
@@ -564,7 +589,13 @@ class u {
 				await new Project(args).run();
 			},
 		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
 		.strict()
-		.help()
 		.parse();
 })();

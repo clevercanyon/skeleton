@@ -41,6 +41,11 @@ const envFiles = {
 };
 
 /**
+ * NOTE: Most of these commands _must_ be performed interactively. Please eview the Yargs configuration below for
+ * further details. At this time, only the `decrypt` command is allowed noninteractively, and _only_ noninteractively.
+ */
+
+/**
  * Setup command.
  */
 class Setup {
@@ -134,6 +139,24 @@ class Pull {
 }
 
 /**
+ * Keys command.
+ */
+class Keys {
+	constructor(args) {
+		this.args = args;
+	}
+
+	async run() {
+		log(chalk.green('Retrieving keys for all envs.'));
+		await u.keys({ dryRun: this.args.dryRun });
+
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
+	}
+}
+
+/**
  * Encrypt command.
  */
 class Encrypt {
@@ -173,6 +196,23 @@ class Decrypt {
  * Misc. utilities.
  */
 class u {
+	/*
+	 * TTY utilities.
+	 */
+
+	static isInteractive() {
+		return (
+			process.stdout.isTTY && //
+			process.env.TERM && // Except `dumb`.
+			'dumb' !== process.env.TERM &&
+			'true' !== process.env.CI
+		);
+	}
+
+	/*
+	 * Push utilities.
+	 */
+
 	static async push(opts = { dryRun: false }) {
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			if (!fs.existsSync(envFile)) {
@@ -189,6 +229,10 @@ class u {
 		}
 	}
 
+	/*
+	 * Pull utilities.
+	 */
+
 	static async pull(opts = { dryRun: false }) {
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			log(chalk.gray('Running `dotenv-vault pull` for `' + envName + '` env.'));
@@ -202,6 +246,21 @@ class u {
 			}
 		}
 	}
+
+	/*
+	 * Keys utilities.
+	 */
+
+	static async keys(opts = { dryRun: false }) {
+		log(chalk.gray('Running `dotenv-vault keys`.'));
+		if (!opts.dryRun) {
+			await spawn('npx', ['dotenv-vault', 'keys', '--yes'], noisySpawnCfg);
+		}
+	}
+
+	/*
+	 * Encryption utilities.
+	 */
 
 	static async encrypt(opts = { dryRun: false }) {
 		log(chalk.gray('Running `dotenv-vault build`.'));
@@ -241,6 +300,18 @@ class u {
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
 		return str;
+	}
+
+	/*
+	 * NPM utilities.
+	 */
+
+	static async npmLifecycleEvent() {
+		return process.env.npm_lifecycle_event || ''; // NPM script name.
+	}
+
+	static async npmLifecycleScript() {
+		return process.env.npm_lifecycle_script || ''; // NPM script value.
 	}
 }
 
@@ -284,6 +355,13 @@ class u {
 				await new Setup(args).run();
 			},
 		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
 		.command(
 			'push',
 			'Pushes all envs to dotenv vault.',
@@ -300,6 +378,13 @@ class u {
 				await new Push(args).run();
 			},
 		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
 		.command(
 			'pull',
 			'Pulls all envs from dotenv vault.',
@@ -316,6 +401,36 @@ class u {
 				await new Pull(args).run();
 			},
 		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
+		.command(
+			'keys',
+			'Retrieves decryption keys for all envs.',
+			{
+				dryRun: {
+					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
+					default: false,
+					description: 'Dry run?',
+				},
+			},
+			async (args) => {
+				await new Keys(args).run();
+			},
+		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
 		.command(
 			'encrypt',
 			'Encrypts all envs into `.env.vault`.',
@@ -332,6 +447,13 @@ class u {
 				await new Encrypt(args).run();
 			},
 		)
+		.check(() => {
+			if (!u.isInteractive()) {
+				throw new Error(chalk.red('This *must* be performed interactively.'));
+			}
+			return true;
+		})
+
 		.command(
 			'decrypt',
 			'Decrypts `.env.vault` env(s) for the given key(s).',
@@ -355,7 +477,13 @@ class u {
 				await new Decrypt(args).run();
 			},
 		)
+		.check(() => {
+			if (u.isInteractive()) {
+				throw new Error(chalk.red('This can *only* be performed noninteractively.'));
+			}
+			return true;
+		})
+
 		.strict()
-		.help()
 		.parse();
 })();

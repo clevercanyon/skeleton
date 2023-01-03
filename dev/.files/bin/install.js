@@ -33,7 +33,10 @@ const noisySpawnCfg = {
 };
 const quietSpawnCfg = { cwd: projDir };
 
-log(process.env); // @todo Remove.
+/**
+ * NOTE: All commands in this file must support both interactive and noninteractive sessions. Installations occur across
+ * a variety of platforms and environments. Therefore, it's important to excercise caution before making changes.
+ */
 
 /**
  * Project command.
@@ -131,16 +134,16 @@ class u {
 	static async envsSetupOrDecrypt(opts = { mode: 'prod' }) {
 		if (!u.isInteractive() /* Use keys. */) {
 			const env = process.env; // Shorter reference.
-			const keys = [_.get(env, 'DOTENV_KEY_MAIN', '')];
+			const keys = [_.get(env, 'C10N_DOTENV_KEY_MAIN', '')];
 
 			if ('dev' === opts.mode) {
-				keys.push(_.get(env, 'DOTENV_KEY_DEV', ''));
+				keys.push(_.get(env, 'C10N_DOTENV_KEY_DEV', ''));
 			} else if ('ci' === opts.mode) {
-				keys.push(_.get(env, 'DOTENV_KEY_CI', ''));
+				keys.push(_.get(env, 'C10N_DOTENV_KEY_CI', ''));
 			} else if ('stage' === opts.mode) {
-				keys.push(_.get(env, 'DOTENV_KEY_STAGE', ''));
+				keys.push(_.get(env, 'C10N_DOTENV_KEY_STAGE', ''));
 			} else if ('prod' === opts.mode) {
-				keys.push(_.get(env, 'DOTENV_KEY_PROD', ''));
+				keys.push(_.get(env, 'C10N_DOTENV_KEY_PROD', ''));
 			}
 			for (const key of keys) {
 				if (!key) {
@@ -156,6 +159,14 @@ class u {
 	/*
 	 * NPM utilities.
 	 */
+
+	static async npmLifecycleEvent() {
+		return process.env.npm_lifecycle_event || ''; // NPM script name.
+	}
+
+	static async npmLifecycleScript() {
+		return process.env.npm_lifecycle_script || ''; // NPM script value.
+	}
 
 	static async npmCleanInstall() {
 		await spawn('npm', ['clean-install', '--include=dev', '--ignore-scripts', '--silent'], quietSpawnCfg);
@@ -202,7 +213,10 @@ class u {
 				await new Project(args).run();
 			},
 		)
+		.check(() => {
+			return true;
+		})
+
 		.strict()
-		.help()
 		.parse();
 })();
