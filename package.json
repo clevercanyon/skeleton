@@ -8,14 +8,18 @@
 	"homepage": "https://github.com/clevercanyon/skeleton#readme",
 	"bugs": "https://github.com/clevercanyon/skeleton/issues",
 	"funding": "https://github.com/sponsors/clevercanyon",
-	"keywords": ["clevercanyon"],
+	"keywords": [
+		"clevercanyon"
+	],
 	"author": {
 		"name": "Clever Canyon",
 		"url": "https://clevercanyon.com"
 	},
 	"contributors": [],
 	"type": "module",
-	"files": ["/dist"],
+	"files": [
+		"/dist"
+	],
 	"bin": {},
 	"imports": {},
 	"exports": {
@@ -25,7 +29,9 @@
 			"types": "./dist/types/index.d.ts"
 		}
 	},
-	"sideEffects": ["./src/*.{html,scss,css,tsx,ts,jsx,mjs,js}"],
+	"sideEffects": [
+		"./src/*.{html,scss,css,tsx,ts,jsx,mjs,js}"
+	],
 	"module": "./dist/index.js",
 	"main": "./dist/index.umd.cjs",
 	"browser": "",
@@ -33,20 +39,25 @@
 	"types": "./dist/types/index.d.ts",
 	"typesVersions": {
 		">=3.1": {
-			"./*": ["./dist/types/*"]
+			"./*": [
+				"./dist/types/*"
+			]
 		}
 	},
-	"dependencies": {},
-	"peerDependencies": {},
 	"peerDependenciesMeta": {},
-	"optionalDependencies": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "*"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.48"
 	},
 	"overrides": {},
-	"cpu": ["x64", "arm64"],
-	"os": ["darwin", "linux"],
+	"cpu": [
+		"x64",
+		"arm64"
+	],
+	"os": [
+		"darwin",
+		"linux"
+	],
 	"engines": {
 		"node": "^19.2.0",
 		"npm": "^8.19.3"
@@ -54,8 +65,11 @@
 	"scripts": {
 		"preview": "npx vite preview",
 		"dev": "npx vite dev --mode=dev",
+		"envs:": "./dev/.files/bin/envs.js",
 		"envs:push": "./dev/.files/bin/envs.js push",
 		"envs:pull": "./dev/.files/bin/envs.js pull",
+		"envs:encrypt": "./dev/.files/bin/envs.js encrypt",
+		"envs:decrypt": "./dev/.files/bin/envs.js decrypt",
 		"envs:setup": "./dev/.files/bin/envs.js setup",
 		"envs:setup:new": "./dev/.files/bin/envs.js setup --new",
 		"build": "npx vite build --mode=prod && npx tsc",
@@ -63,7 +77,7 @@
 		"build:ci": "npx vite build --mode=ci && npx tsc",
 		"build:stage": "npx vite build --mode=stage && npx tsc",
 		"build:prod": "npx vite build --mode=prod && npx tsc",
-		"wrangler": "CLOUDFLARE_API_TOKEN=${C10N_CLOUDFLARE_TOKEN} npx wrangler",
+		"update:": "./dev/.files/bin/update.js",
 		"update:dotfiles": "./dev/.files/bin/update.js dotfiles",
 		"update:project": "npm run update:dotfiles && ./dev/.files/bin/update.js project",
 		"update:project:repos": "npm run update:dotfiles && ./dev/.files/bin/update.js project --repos",
@@ -72,7 +86,9 @@
 		"update:projects::dotfiles": "./dev/.files/bin/update.js projects --run update:dotfiles",
 		"update:projects::project": "./dev/.files/bin/update.js projects --run update:project",
 		"update:projects::project:repos": "./dev/.files/bin/update.js projects --run update:project:repos",
-		"update:projects::project:repos:pkgs": "./dev/.files/bin/update.js projects --run update:project:repos:pkgs"
+		"update:projects::project:repos:pkgs": "./dev/.files/bin/update.js projects --run update:project:repos:pkgs",
+		"wrangler": "CLOUDFLARE_API_TOKEN=${C10N_CLOUDFLARE_TOKEN} npx wrangler",
+		"postinstall": "./dev/.files/bin/install.js project"
 	},
 	"workspaces": [],
 	"config": {

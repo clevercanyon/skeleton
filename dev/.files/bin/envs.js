@@ -19,6 +19,8 @@ import spawn from 'spawn-please';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
+import dotenvVaultCore from 'dotenv-vault-core';
+
 const __dirname = desm(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
 
@@ -44,21 +46,21 @@ const envFiles = {
 class Setup {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			if (this.args['new']) {
-				await this.setupNew();
-			} else {
-				await this.setup();
-			}
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+	async run() {
+		if (this.args['new']) {
+			await this.setupNew();
+		} else {
+			await this.setup();
+		}
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 
 	async setupNew() {
-		log(chalk.green('Setting up new envs.'));
+		log(chalk.green('Setting up all new envs.'));
 
 		log(chalk.gray('Deleting `.env.me`, `.env.vault`.'));
 		if (!this.args.dryRun) {
@@ -71,23 +73,27 @@ class Setup {
 			await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
 			await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
 		}
-		log(chalk.gray('Pushing envs.'));
-		await Utilities.push({ dryRun: this.args.dryRun });
+		log(chalk.gray('Pushing all envs.'));
+		await u.push({ dryRun: this.args.dryRun });
 
-		log(chalk.gray('Building envs.'));
-		await Utilities.build({ dryRun: this.args.dryRun });
+		log(chalk.gray('Encrypting all envs.'));
+		await u.encrypt({ dryRun: this.args.dryRun });
 	}
 
 	async setup() {
-		log(chalk.green('Setting up envs.'));
+		log(chalk.green('Setting up all envs.'));
 
-		log(chalk.gray('Running `dotenv-vault login`, `open`.'));
-		if (!this.args.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
-			await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
+		if (!fs.existsSync(path.resolve(projDir, './.env.me'))) {
+			log(chalk.gray('Running `dotenv-vault login`, `open`.'));
+			if (!this.args.dryRun) {
+				await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
+				await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
+			}
 		}
-		log(chalk.gray('Pulling envs.'));
-		await Utilities.pull({ dryRun: this.args.dryRun });
+		if (this.args.pull || !fs.existsSync(envFiles.main)) {
+			log(chalk.gray('Pulling all envs.'));
+			await u.pull({ dryRun: this.args.dryRun });
+		}
 	}
 }
 
@@ -97,15 +103,15 @@ class Setup {
 class Push {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			log(chalk.green('Pushing envs.'));
-			await Utilities.push({ dryRun: this.args.dryRun });
+	async run() {
+		log(chalk.green('Pushing all envs.'));
+		await u.push({ dryRun: this.args.dryRun });
 
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 }
 
@@ -115,40 +121,58 @@ class Push {
 class Pull {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			log(chalk.green('Pulling envs.'));
-			await Utilities.pull({ dryRun: this.args.dryRun });
+	async run() {
+		log(chalk.green('Pulling all envs.'));
+		await u.pull({ dryRun: this.args.dryRun });
 
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 }
 
 /**
- * Build command.
+ * Encrypt command.
  */
-class Build {
+class Encrypt {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			log(chalk.green('Building envs.'));
-			await Utilities.build({ dryRun: this.args.dryRun });
+	async run() {
+		log(chalk.green('Encrypting all envs.'));
+		await u.encrypt({ dryRun: this.args.dryRun });
 
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
+	}
+}
+
+/**
+ * Decrypt command.
+ */
+class Decrypt {
+	constructor(args) {
+		this.args = args;
+	}
+
+	async run() {
+		log(chalk.green('Decrypting env(s).'));
+		await u.decrypt({ keys: this.args.keys, dryRun: this.args.dryRun });
+
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 }
 
 /**
  * Misc. utilities.
  */
-class Utilities {
+class u {
 	static async push(opts = { dryRun: false }) {
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			if (!fs.existsSync(envFile)) {
@@ -179,11 +203,44 @@ class Utilities {
 		}
 	}
 
-	static async build(opts = { dryRun: false }) {
+	static async encrypt(opts = { dryRun: false }) {
 		log(chalk.gray('Running `dotenv-vault build`.'));
 		if (!opts.dryRun) {
 			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 		}
+	}
+
+	static async decrypt(opts = { keys: [], dryRun: false }) {
+		for (const key of opts.keys) {
+			const envName = key.split('?')[1]?.split('=')[1] || '';
+			const envFile = envFiles[envName] || '';
+
+			if (!envName || !envFile) {
+				throw new Error(chalk.red('Invalid key: `' + key + '`.'));
+			}
+			log(chalk.gray('Decrypting `' + envName + '` env.'));
+			if (!opts.dryRun) {
+				const origDotenvKey = process.env.DOTENV_KEY || '';
+				process.env.DOTENV_KEY = key; // For `dotEnvVaultCore`.
+
+				// Note: `path` leads to `.env.vault`. See: <https://o5p.me/MqXJaf>.
+				const env = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
+
+				await fsp.writeFile(envFile, await u.toString(envName, env));
+				process.env.DOTENV_KEY = origDotenvKey;
+			}
+		}
+	}
+
+	static async toString(envName, env) {
+		let str = '# ' + envName + '\n';
+
+		for (let [name, value] of Object.entries(env)) {
+			value = value.replace(/\r\n?/gu, '\n');
+			value = value.replace(/\n/gu, '\\n');
+			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
+		}
+		return str;
 	}
 }
 
@@ -196,7 +253,7 @@ class Utilities {
 	await yargs(hideBin(process.argv))
 		.command(
 			'setup',
-			'Sets up dotenv vault.',
+			'Sets up all envs for dotenv vault.',
 			{
 				'new': {
 					type: 'boolean',
@@ -205,6 +262,16 @@ class Utilities {
 					default: false,
 					description: 'Set up *new* envs?',
 				},
+				pull: {
+					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
+					default: false,
+					description: // prettier-ignore
+						'When not `--new`, pull latest envs from dotenv vault?' +
+						' If not set explicitly, only pulls when main env is missing.' +
+						' Note: This option has no effect when `--new`.',
+				},
 				dryRun: {
 					type: 'boolean',
 					requiresArg: false,
@@ -213,11 +280,13 @@ class Utilities {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Setup(args),
+			async (args) => {
+				await new Setup(args).run();
+			},
 		)
 		.command(
 			'push',
-			'Pushes to dotenv vault.',
+			'Pushes all envs to dotenv vault.',
 			{
 				dryRun: {
 					type: 'boolean',
@@ -227,11 +296,13 @@ class Utilities {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Push(args),
+			async (args) => {
+				await new Push(args).run();
+			},
 		)
 		.command(
 			'pull',
-			'Pulls from dotenv vault.',
+			'Pulls all envs from dotenv vault.',
 			{
 				dryRun: {
 					type: 'boolean',
@@ -241,11 +312,13 @@ class Utilities {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Pull(args),
+			async (args) => {
+				await new Pull(args).run();
+			},
 		)
 		.command(
-			'build',
-			'Builds dotenv vault.',
+			'encrypt',
+			'Encrypts all envs into `.env.vault`.',
 			{
 				dryRun: {
 					type: 'boolean',
@@ -255,7 +328,32 @@ class Utilities {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Build(args),
+			async (args) => {
+				await new Encrypt(args).run();
+			},
+		)
+		.command(
+			'decrypt',
+			'Decrypts `.env.vault` env(s) for the given key(s).',
+			{
+				keys: {
+					type: 'array',
+					requiresArg: true,
+					demandOption: true,
+					default: [],
+					description: 'To decrypt `.env.vault` env(s).',
+				},
+				dryRun: {
+					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
+					default: false,
+					description: 'Dry run?',
+				},
+			},
+			async (args) => {
+				await new Decrypt(args).run();
+			},
 		)
 		.strict()
 		.help()

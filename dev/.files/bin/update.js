@@ -16,17 +16,17 @@ import fsp from 'node:fs/promises';
 import chalk from 'chalk';
 import { dirname } from 'desm';
 import spawn from 'spawn-please';
-import { globbyStream } from 'globby';
+import { globby } from 'globby';
+import mm from 'micromatch';
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
+import { splitCMD } from '@clevercanyon/split-cmd.fork';
 
 const __dirname = dirname(import.meta.url);
 
 const projsDir = path.resolve(__dirname, '../../../..');
 const projDir = path.resolve(__dirname, '../../..');
-
-const envsDir = path.resolve(__dirname, '../../../dev/.envs');
 const binDir = path.resolve(__dirname, '../../../dev/.files/bin');
 
 const pkgFile = path.resolve(projDir, './package.json');
@@ -42,45 +42,98 @@ const noisySpawnCfg = {
 };
 const quietSpawnCfg = { cwd: projDir };
 
+const coreProjectsIgnore = ['.*', 'forks/'];
+const coreProjectsOrder = [
+	'forks/is-number.fork',
+	'forks/to-regex-range.fork',
+	'forks/fill-range.fork',
+	'forks/braces.fork',
+	'forks/picomatch.fork',
+	'forks/micromatch.fork',
+
+	'forks/split-cmd.fork',
+	'forks/merge-change.fork',
+	'forks/*.fork',
+
+	'skeleton-dev-deps',
+	'skeleton',
+
+	'utilities',
+	'utilities.php',
+	'utilities.bash',
+	'utilities.web',
+	'utilities.web',
+	'utilities.webw',
+	'utilities.node',
+	'utilities.cfw',
+	'utilities.cfp',
+	'utilities.*',
+
+	'skeleton.*',
+];
+
 /**
  * Projects command.
  */
 class Projects {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			await this.update();
+	async run() {
+		await this.update();
 
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 
 	async update() {
-		const isAllGlob = '*' === this.args.glob;
-		const globStream = globbyStream(this.args.glob, {
-			expandDirectories: false,
-			onlyDirectories: true,
-			absolute: false,
+		let i; // Initialize.
+		const orderedResults = [];
+		const hasAllGlob = this.args.glob.includes('*');
+
+		await this.doGitIgnoreSetup(); // `.~gitignore` file.
+
+		const unorderedResults = await globby(this.args.glob, {
 			cwd: projsDir,
-			dot: false,
+			onlyDirectories: true,
+			expandDirectories: false,
+
+			gitignore: true,
+			ignoreFiles: ['.~gitignore'],
+			ignore: coreProjectsIgnore.concat(this.args.ignore),
 		});
-		for await (const projDirSubpath of globStream) {
+		for (const projDirSubpathGlob of coreProjectsOrder.concat(this.args.order)) {
+			for (const projDirSubpath of mm(unorderedResults, projDirSubpathGlob)) {
+				if (-1 === (i = unorderedResults.indexOf(projDirSubpath))) {
+					continue; // Not applicable.
+				}
+				orderedResults.push(unorderedResults[i]);
+				unorderedResults.splice(i, 1);
+			}
+		}
+		for await (const projDirSubpath of orderedResults.concat(unorderedResults)) {
 			const projDir = path.resolve(projsDir, projDirSubpath);
 			const projDisplayDir = path.basename(projsDir) + '/' + projDirSubpath;
 
 			const devFilesDir = path.resolve(projDir, './dev/.files');
 			const pkgFile = path.resolve(projDir, './package.json');
 
-			if (isAllGlob && !fs.existsSync(devFilesDir)) {
-				log(chalk.gray('No `./dev/.files` in: `' + projDisplayDir + '`. Bypassing on all-glob.'));
+			if (hasAllGlob && !fs.existsSync(devFilesDir)) {
+				log(chalk.gray('No `./dev/.files` inside `' + projDisplayDir + '`. Bypassing on all-glob.'));
 				continue; // No `./dev/.files` directory.
 			}
-			if (isAllGlob && !fs.existsSync(pkgFile)) {
-				log(chalk.gray('No `./package.json` in: `' + projDisplayDir + '`. Bypassing on all-glob.'));
+			if (hasAllGlob && !fs.existsSync(pkgFile)) {
+				log(chalk.gray('No `./package.json` in `' + projDisplayDir + '`. Bypassing on all-glob.'));
 				continue; // No `./package.json` file.
+			}
+			if (this.args.cmd) {
+				log(chalk.green('Running `' + this.args.cmd + '` in:') + ' ' + chalk.yellow(projDisplayDir));
+				if (!this.args.dryRun) {
+					const split = splitCMD(this.args.cmd); // Splits into properties.
+					await spawn(split.cmd, split.args, { ...noisySpawnCfg, cwd: projDir });
+				}
 			}
 			if (this.args.run.length) {
 				for (const run of this.args.run) {
@@ -90,14 +143,15 @@ class Projects {
 					}
 				}
 			}
-			if (this.args.cmdArgs.length) {
-				log(chalk.green('Running `' + this.args.cmdArgs.join(' ') + '` in:') + ' ' + chalk.yellow(projDisplayDir));
-				if (!this.args.dryRun) {
-					await spawn(this.args.cmdArgs.slice(0, 1), ...this.args.cmdArgs.slice(1), { ...noisySpawnCfg, cwd: projDir });
-				}
-			}
 		}
 		log(chalk.green('Project updates complete.'));
+	}
+
+	async doGitIgnoreSetup() {
+		if (fs.existsSync(path.resolve(projDir, './.gitignore'))) {
+			const gitIgnoreFile = path.resolve(projsDir, './.~gitignore');
+			await fsp.copyFile(path.resolve(projDir, './.gitignore'), gitIgnoreFile);
+		}
 	}
 }
 
@@ -107,21 +161,21 @@ class Projects {
 class Dotfiles {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			await this.update();
+	async run() {
+		await this.update();
 
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 
 	async update() {
 		/**
 		 * Saves skeleton changes.
 		 */
-		if ('@clevercanyon/skeleton' === pkg.name && (await u.isGitRepoDirty())) {
+		if ('@clevercanyon/skeleton' === pkg.name && (await u.isGitRepo()) && (await u.isGitRepoDirty())) {
 			log(chalk.green('Updating `@clevercanyon/skeleton` git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
 			log('    ' + chalk.green('i.e., saving latest skeleton changes before self-update.'));
 
@@ -172,14 +226,14 @@ class Dotfiles {
 class Project {
 	constructor(args) {
 		this.args = args;
+	}
 
-		(async () => {
-			await this.update();
+	async run() {
+		await this.update();
 
-			if (this.args.dryRun) {
-				log(chalk.cyanBright('Dry run. This was all a simulation.'));
-			}
-		})();
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
 	}
 
 	async update() {
@@ -188,10 +242,10 @@ class Project {
 			await u.npmUpdate();
 		}
 
-		if (await u.isEnvsRepo()) {
-			log(chalk.green('Updating envs build; encrypts vault.'));
+		if (await u.isEnvsVault()) {
+			log(chalk.green('Encrypting `.env.vault`.'));
 			if (!this.args.dryRun) {
-				await u.envsBuild(); // Before NPM version patch.
+				await u.envsEncrypt(); // Before NPM version patch.
 			}
 		}
 		if (this.args.repos && this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
@@ -215,7 +269,7 @@ class Project {
 				log(chalk.gray('Not a git repo.'));
 			}
 
-			if (await u.isEnvsRepo()) {
+			if (await u.isEnvsVault()) {
 				log(chalk.green('Updating envs repo.'));
 				if (!this.args.dryRun) {
 					await u.envsPush();
@@ -244,6 +298,19 @@ class Project {
  */
 class u {
 	/*
+	 * TTY utilities.
+	 */
+
+	static isInteractive() {
+		return (
+			process.stdout.isTTY && //
+			process.env.TERM && // Except `dumb`.
+			'dumb' !== process.env.TERM &&
+			'true' !== process.env.CI
+		);
+	}
+
+	/*
 	 * Git utilities.
 	 */
 
@@ -256,11 +323,11 @@ class u {
 	}
 
 	static async isGitRepoDirty() {
-		try {
-			return (await u.isGitRepo()) && '' !== String(await spawn('git', ['status', '--short'], quietSpawnCfg)).trim();
-		} catch {
-			return false;
-		}
+		return '' !== (await u.gitStatus({ short: true }));
+	}
+
+	static async gitStatus(opts = { short: false }) {
+		return String(await spawn('git', ['status', ...(opts.short ? ['--short'] : []), '--porcelain'], quietSpawnCfg)).trim();
 	}
 
 	static async gitChange() {
@@ -285,7 +352,7 @@ class u {
 	}
 
 	static async gitCurrentBranch() {
-		return (await u.isGitRepo()) ? String(await spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], quietSpawnCfg)).trim() : '';
+		return String(await spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], quietSpawnCfg)).trim();
 	}
 
 	static async gitLocalRepoSHA(repoDir, branch) {
@@ -305,21 +372,16 @@ class u {
 	 * Env utilities.
 	 */
 
-	static async isEnvsRepo() {
-		return (
-			(await u.isGitRepo()) &&
-			fs.existsSync(path.resolve(projDir, './.env.me')) &&
-			fs.existsSync(path.resolve(projDir, './.env.vault')) &&
-			fs.existsSync(path.resolve(envsDir, './.env'))
-		);
+	static async isEnvsVault() {
+		return fs.existsSync(path.resolve(projDir, './.env.vault'));
 	}
 
 	static async envsPush() {
 		await spawn(path.resolve(binDir, './envs.js'), ['push'], quietSpawnCfg);
 	}
 
-	static async envsBuild() {
-		await spawn(path.resolve(binDir, './envs.js'), ['build'], quietSpawnCfg);
+	static async envsEncrypt() {
+		await spawn(path.resolve(binDir, './envs.js'), ['encrypt'], quietSpawnCfg);
 	}
 
 	/*
@@ -335,16 +397,16 @@ class u {
 	}
 
 	static async npmUpdate() {
-		await spawn('npm', ['update', '--include=dev', '--silent'], quietSpawnCfg);
+		await spawn('npm', ['update', '--include=dev', '--ignore-scripts', '--save', '--silent'], quietSpawnCfg);
 	}
 
 	static async npmVersionPatch() {
 		if (await u.isGitRepoDirty()) await u.gitAddCommit();
-		await spawn('npm', ['version', 'patch'], noisySpawnCfg);
+		await spawn('npm', ['version', 'patch', '--ignore-scripts'], noisySpawnCfg);
 	}
 
 	static async npmPublish() {
-		await spawn('npm', ['publish'], noisySpawnCfg);
+		await spawn('npm', ['publish', '--ignore-scripts'], noisySpawnCfg);
 	}
 
 	/*
@@ -363,31 +425,58 @@ class u {
  * @see http://yargs.js.org/docs/
  */
 (async () => {
+	if (!u.isInteractive()) {
+		throw new Error(chalk.red('Updates *must* be performed interactively.'));
+	}
 	await yargs(hideBin(process.argv))
 		.command(
 			['projects'],
 			'Updates multiple projects.',
 			{
 				glob: {
+					type: 'array',
+					requiresArg: true,
+					demandOption: false,
+					default: ['*'],
+					description:  // prettier-ignore
+						'Glob matching is relative to `' + projsDir + '` and finds directories only.' +
+						' Note: Globstars `**` are not allowed given the nature of this command and will therefore throw an error.' +
+						' Please be more specific. Wildcards `*` are fine, but globstars `**` are prohibited in `glob`.',
+				},
+				ignore: {
+					type: 'array',
+					requiresArg: true,
+					demandOption: false,
+					default: coreProjectsIgnore,
+					description: // prettier-ignore
+						'Glob matching is relative to `' + projsDir + '`. This excludes directories found by `glob`.' +
+						' Note: The default ignore patterns are always in effect and cannot be overridden, only appended with this option.' +
+						' Additionally, patterns in this project’s `.gitignore` file, and those within each project’s directory, are also always in effect.',
+				},
+				order: {
+					type: 'array',
+					requiresArg: true,
+					demandOption: false,
+					default: coreProjectsOrder,
+					description: // prettier-ignore
+						'Project subpaths to prioritize, in order. Globbing is supported for loose ordering.' +
+						' Note: The default order is always in effect and cannot be overridden, only appended with this option.',
+				},
+				cmd: {
 					type: 'string',
 					requiresArg: true,
 					demandOption: false,
-					default: '*', // Default is all projects.
-					description: 'Glob matching is relative to `' + projsDir + '` and finds directories only.',
+					default: '',
+					description: 'Arbitrary `command args` to run in each project directory.',
 				},
 				run: {
 					type: 'array',
 					requiresArg: true,
 					demandOption: false,
 					default: [],
-					description: 'Scripts to `npm run` in each project directory.',
-				},
-				cmdArgs: {
-					type: 'array',
-					requiresArg: true,
-					demandOption: false,
-					default: [],
-					description: 'Arbitrary command + arguments to run in each project directory.',
+					description: // prettier-ignore
+						'Scripts to `npm run [script]` in each project directory.' +
+						' If both `cmd` and `run` are given, `cmd` will always come first.',
 				},
 				dryRun: {
 					type: 'boolean',
@@ -397,8 +486,22 @@ class u {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Projects(args),
+			async (args) => {
+				await new Projects(args).run();
+			},
 		)
+		.check((args) => {
+			if (!args.glob) {
+				throw new Error(chalk.red('Empty `glob` option.'));
+			}
+			if (-1 !== args.glob.indexOf('**')) {
+				throw new Error(chalk.red('Globstars `**` are prohitibed in `glob` option.'));
+			}
+			if (!args.run.length && !args.cmd) {
+				throw new Error(chalk.red('One of `cmd` and/or `run` is required.'));
+			}
+			return true;
+		})
 		.command(
 			['dotfiles'],
 			'Updates project dotfiles.',
@@ -418,18 +521,20 @@ class u {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Dotfiles(args),
+			async (args) => {
+				await new Dotfiles(args).run();
+			},
 		)
 		.command(
 			['project'],
-			'Updates NPM packages + optionally pushes to repos + optionally publishes packages.',
+			'Updates NPM packages + optionally pushes to repo(s) + optionally publishes package(s).',
 			{
 				repos: {
 					type: 'boolean',
 					requiresArg: false,
 					demandOption: false,
 					default: false,
-					description: 'Push to project repos?',
+					description: 'Push to project repo(s)?',
 				},
 				pkgs: {
 					type: 'boolean',
@@ -437,7 +542,7 @@ class u {
 					demandOption: false,
 					default: false,
 					implies: ['repos'],
-					description: 'Publish project packages?',
+					description: 'Publish updated project package(s)?',
 				},
 				mode: {
 					type: 'string',
@@ -455,7 +560,9 @@ class u {
 					description: 'Dry run?',
 				},
 			},
-			(args) => new Project(args),
+			async (args) => {
+				await new Project(args).run();
+			},
 		)
 		.strict()
 		.help()
