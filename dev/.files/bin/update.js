@@ -279,21 +279,8 @@ class Project {
 		}
 		if (this.args.repos && this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
 			log(chalk.green('NPM package will publish, so patching NPM version prior to build.'));
-
-			if (await u.isGitRepo()) {
-				if (await u.isGitRepoDirty()) {
-					log(chalk.green('First, committing changes to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
-					if (!this.args.dryRun) {
-						await u.gitAddCommit();
-					}
-				}
-				log(chalk.green('Ensuring origin sync. Pushing to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
-				if (!this.args.dryRun) {
-					await u.gitPush();
-				}
-			}
 			if (!this.args.dryRun) {
-				await u.npmVersionPatch(); // Git commit + tag.
+				await u.npmVersionPatch(); // Git commit(s) + tag.
 			}
 		}
 		log(chalk.green('Updating Vite build; `' + this.args.mode + '` mode.'));
@@ -303,15 +290,9 @@ class Project {
 
 		if (this.args.repos) {
 			if (await u.isGitRepo()) {
-				if (await u.isGitRepoDirty()) {
-					log(chalk.green('Committing changes to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
-					if (!this.args.dryRun) {
-						await u.gitAddCommit();
-					}
-				}
-				log(chalk.green('Pushing to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
+				log(chalk.green('Updating git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
 				if (!this.args.dryRun) {
-					await u.gitPush();
+					await u.gitAddCommitPush();
 				}
 			} else {
 				log(chalk.gray('Not a git repo.'));
@@ -373,19 +354,25 @@ class u {
 		return String(await spawn('git', ['status', ...(opts.short ? ['--short'] : []), '--porcelain'], quietSpawnCfg)).trim();
 	}
 
+	static async gitChange() {
+		await fsp.writeFile(path.resolve(projDir, './.gitchange'), String(Date.now()));
+	}
+
 	static async gitAddCommit(message = 'Robotic update.') {
+		await u.gitChange(); // Force a change.
 		await spawn('git', ['add', '--all'], noisySpawnCfg);
 		await spawn('git', ['commit', '--message', message], noisySpawnCfg);
 	}
 
-	static async gitPush() {
+	static async gitAddCommitPush(message = 'Robotic update.') {
+		await u.gitChange(); // Force a change.
 		const branch = await u.gitCurrentBranch();
+
+		await spawn('git', ['add', '--all'], noisySpawnCfg);
+		await spawn('git', ['commit', '--message', message], noisySpawnCfg);
+
 		await spawn('git', ['push', '--set-upstream', 'origin', branch], noisySpawnCfg);
 		await spawn('git', ['push', 'origin', '--tags'], noisySpawnCfg);
-	}
-
-	static async gitAddCommitPush(message = 'Robotic update.') {
-		(await u.gitAddCommit(message)) && (await u.gitPush());
 	}
 
 	static async gitCurrentBranch() {
@@ -446,6 +433,7 @@ class u {
 	}
 
 	static async npmVersionPatch() {
+		if (await u.isGitRepoDirty()) await u.gitAddCommit();
 		await spawn('npm', ['version', 'patch', '--ignore-scripts'], noisySpawnCfg);
 	}
 
