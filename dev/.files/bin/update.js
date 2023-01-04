@@ -89,102 +89,6 @@ const coreProjectsOrder = [
  */
 
 /**
- * Projects command.
- */
-class Projects {
-	constructor(args) {
-		this.args = args;
-	}
-
-	async run() {
-		await this.update();
-
-		if (this.args.dryRun) {
-			log(chalk.cyanBright('Dry run. This was all a simulation.'));
-		}
-	}
-
-	async update() {
-		let i; // Initialize.
-		const orderedResults = [];
-		const hasAllGlob = this.args.glob.includes('*');
-
-		await this.doGitIgnoreSetup(); // `.~gitignore` file.
-
-		const unorderedResults = await globby(this.args.glob, {
-			cwd: projsDir,
-			onlyDirectories: true,
-			expandDirectories: false,
-
-			gitignore: true,
-			ignoreFiles: ['.~gitignore'],
-			ignore: coreProjectsIgnore.concat(this.args.ignore),
-		});
-		for (const projDirSubpathGlob of coreProjectsOrder.concat(this.args.order)) {
-			for (const projDirSubpath of mm(unorderedResults, projDirSubpathGlob)) {
-				if (-1 === (i = unorderedResults.indexOf(projDirSubpath))) {
-					continue; // Not applicable.
-				}
-				orderedResults.push(unorderedResults[i]);
-				unorderedResults.splice(i, 1);
-			}
-		}
-		for await (const projDirSubpath of orderedResults.concat(unorderedResults)) {
-			const projDir = path.resolve(projsDir, projDirSubpath);
-			const projDisplayDir = path.basename(projsDir) + '/' + projDirSubpath;
-
-			const devFilesDir = path.resolve(projDir, './dev/.files');
-			const pkgFile = path.resolve(projDir, './package.json');
-
-			let isSkeletonDevDepsOk = false; // Special case.
-			if (
-				'@clevercanyon/skeleton' === pkg.name &&
-				'skeleton-dev-deps' === projDirSubpath &&
-				!this.args.cmd && // There's no custom CMD.
-				1 === this.args.run.length && // Just one script.
-				mm.isMatch(this.args.run[0], 'update:project{,:repos,:repos:pkgs}')
-			) {
-				isSkeletonDevDepsOk = true; // Allows `skeleton-dev-deps` project updates.
-				// Note: `skeleton-dev-deps` has it's own set of these project update scripts.
-			}
-			if (hasAllGlob && !fs.existsSync(devFilesDir) && !isSkeletonDevDepsOk) {
-				log(chalk.gray('No `./dev/.files` inside `' + projDisplayDir + '`. Bypassing on all-glob.'));
-				continue; // No `./dev/.files` directory.
-			}
-			if (hasAllGlob && !fs.existsSync(pkgFile)) {
-				log(chalk.gray('No `./package.json` in `' + projDisplayDir + '`. Bypassing on all-glob.'));
-				continue; // No `./package.json` file.
-			}
-			if (this.args.cmd) {
-				for (const cmd of this.args.cmd.split(/\s*&&\s*/u)) {
-					log(chalk.green('Running `' + cmd + '` in:') + ' ' + chalk.yellow(projDisplayDir));
-					if (!this.args.dryRun) {
-						const split = splitCMD(cmd); // Splits into props.
-						await spawn(split.cmd, split.args, { ...noisySpawnCfg, cwd: projDir });
-					}
-				}
-			}
-			if (this.args.run.length) {
-				for (const run of this.args.run) {
-					log(chalk.green('Running `npm run ' + run + '` in:') + ' ' + chalk.yellow(projDisplayDir));
-					if (!this.args.dryRun) {
-						await spawn('npm', ['run', run], { ...noisySpawnCfg, cwd: projDir });
-					}
-				}
-			}
-		}
-		log(await u.finale('Success', 'Project updates complete.'));
-	}
-
-	async doGitIgnoreSetup() {
-		if (fs.existsSync(path.resolve(projDir, './.gitignore'))) {
-			const gitIgnoreFile = path.resolve(projsDir, './.~gitignore');
-			await fsp.copyFile(path.resolve(projDir, './.gitignore'), gitIgnoreFile);
-		}
-	}
-}
-
-/**
  * Dotfiles command.
  */
 class Dotfiles {
@@ -276,13 +180,30 @@ class Project {
 			if (!this.args.dryRun) {
 				await u.envsEncrypt(); // Before NPM version patch.
 			}
+		} else if (!this.args.repos /* Will not be conveyed below, so mention here. */) {
+			log(chalk.gray('Not an envs repo.'));
 		}
+
 		if (this.args.repos && this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
 			log(chalk.green('NPM package will publish, so patching NPM version prior to build.'));
+
+			if (await u.isGitRepo()) {
+				if (await u.isGitRepoDirty()) {
+					log(chalk.green('First, committing git repo changes; `' + (await u.gitCurrentBranch()) + '` branch.'));
+					if (!this.args.dryRun) {
+						await u.gitAddCommit();
+					}
+				}
+				log(chalk.green('Ensuring origin sync. Pushing to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
+				if (!this.args.dryRun) {
+					await u.gitPush();
+				}
+			}
 			if (!this.args.dryRun) {
-				await u.npmVersionPatch(); // Git commit(s) + tag.
+				await u.npmVersionPatch(); // Git commit + tag will get pushed below.
 			}
 		}
+
 		log(chalk.green('Updating Vite build; `' + this.args.mode + '` mode.'));
 		if (!this.args.dryRun) {
 			await u.viteBuild({ mode: this.args.mode });
@@ -290,9 +211,15 @@ class Project {
 
 		if (this.args.repos) {
 			if (await u.isGitRepo()) {
-				log(chalk.green('Updating git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
+				if (await u.isGitRepoDirty()) {
+					log(chalk.green('Committing git repo changes; `' + (await u.gitCurrentBranch()) + '` branch.'));
+					if (!this.args.dryRun) {
+						await u.gitAddCommit();
+					}
+				}
+				log(chalk.green('Pushing to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
 				if (!this.args.dryRun) {
-					await u.gitAddCommitPush();
+					await u.gitPush();
 				}
 			} else {
 				log(chalk.gray('Not a git repo.'));
@@ -313,12 +240,110 @@ class Project {
 					if (!this.args.dryRun) {
 						await u.npmPublish();
 					}
+				} else if (await u.isNPMPkg()) {
+					log(chalk.gray('NPM package not in a publishable state.'));
 				} else {
-					log(chalk.gray('Not an NPM package. Or, not in a publishable state.'));
+					log(chalk.gray('Not an NPM package.'));
 				}
 			}
 		}
 		log(await u.finale('Success', 'Project update complete.'));
+	}
+}
+
+/**
+ * Projects command.
+ */
+class Projects {
+	constructor(args) {
+		this.args = args;
+	}
+
+	async run() {
+		await this.update();
+
+		if (this.args.dryRun) {
+			log(chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
+	}
+
+	async update() {
+		let i; // Initialize.
+		const orderedResults = [];
+		const hasAllGlob = this.args.glob.includes('*');
+
+		await this.doGitIgnoreSetup(); // `.~gitignore` file.
+
+		const unorderedResults = await globby(this.args.glob, {
+			cwd: projsDir,
+			onlyDirectories: true,
+			expandDirectories: false,
+
+			gitignore: true,
+			ignoreFiles: ['.~gitignore'],
+			ignore: coreProjectsIgnore.concat(this.args.ignore),
+		});
+		for (const projDirSubpathGlob of coreProjectsOrder.concat(this.args.order)) {
+			for (const projDirSubpath of mm(unorderedResults, projDirSubpathGlob)) {
+				if (-1 === (i = unorderedResults.indexOf(projDirSubpath))) {
+					continue; // Not applicable.
+				}
+				orderedResults.push(unorderedResults[i]);
+				unorderedResults.splice(i, 1);
+			}
+		}
+		for await (const projDirSubpath of orderedResults.concat(unorderedResults)) {
+			const projDir = path.resolve(projsDir, projDirSubpath);
+			const projDisplayDir = path.basename(projsDir) + '/' + projDirSubpath;
+
+			const devFilesDir = path.resolve(projDir, './dev/.files');
+			const pkgFile = path.resolve(projDir, './package.json');
+
+			let isSkeletonDevDepsOk = false; // Special case.
+			if (
+				'@clevercanyon/skeleton' === pkg.name &&
+				'skeleton-dev-deps' === projDirSubpath &&
+				!this.args.cmd && // There's no custom CMD.
+				1 === this.args.run.length && // Just one script.
+				mm.isMatch(this.args.run[0], 'update:project{,:repos,:repos:pkgs}')
+			) {
+				isSkeletonDevDepsOk = true; // Allows `skeleton-dev-deps` project updates.
+				// Note: `skeleton-dev-deps` has it's own set of these project update scripts.
+			}
+			if (hasAllGlob && !fs.existsSync(devFilesDir) && !isSkeletonDevDepsOk) {
+				log(chalk.gray('Has glob `*`. No `./dev/.files` inside `' + projDisplayDir + '`. Bypassing.'));
+				continue; // No `./dev/.files` directory.
+			}
+			if (hasAllGlob && !fs.existsSync(pkgFile)) {
+				log(chalk.gray('Has glob `*`. No `./package.json` in `' + projDisplayDir + '`. Bypassing.'));
+				continue; // No `./package.json` file.
+			}
+			if (this.args.cmd) {
+				for (const cmd of this.args.cmd.split(/\s*&&\s*/u)) {
+					log(chalk.green('Running `' + cmd + '` in:') + ' ' + chalk.yellow(projDisplayDir));
+					if (!this.args.dryRun) {
+						const split = splitCMD(cmd); // Splits into props.
+						await spawn(split.cmd, split.args, { ...noisySpawnCfg, cwd: projDir });
+					}
+				}
+			}
+			if (this.args.run.length) {
+				for (const run of this.args.run) {
+					log(chalk.green('Running `npm run ' + run + '` in:') + ' ' + chalk.yellow(projDisplayDir));
+					if (!this.args.dryRun) {
+						await spawn('npm', ['run', run], { ...noisySpawnCfg, cwd: projDir });
+					}
+				}
+			}
+		}
+		log(await u.finale('Success', 'Project updates complete.'));
+	}
+
+	async doGitIgnoreSetup() {
+		if (fs.existsSync(path.resolve(projDir, './.gitignore'))) {
+			const gitIgnoreFile = path.resolve(projsDir, './.~gitignore');
+			await fsp.copyFile(path.resolve(projDir, './.gitignore'), gitIgnoreFile);
+		}
 	}
 }
 
@@ -354,29 +379,23 @@ class u {
 		return String(await spawn('git', ['status', ...(opts.short ? ['--short'] : []), '--porcelain'], quietSpawnCfg)).trim();
 	}
 
-	static async gitChange() {
-		await fsp.writeFile(path.resolve(projDir, './.gitchange'), String(Date.now()));
-	}
-
-	static async gitAddCommit(message = 'Robotic update.') {
-		await u.gitChange(); // Force a change.
-		await spawn('git', ['add', '--all'], noisySpawnCfg);
-		await spawn('git', ['commit', '--message', message], noisySpawnCfg);
+	static async gitCurrentBranch() {
+		return String(await spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], quietSpawnCfg)).trim();
 	}
 
 	static async gitAddCommitPush(message = 'Robotic update.') {
-		await u.gitChange(); // Force a change.
-		const branch = await u.gitCurrentBranch();
-
-		await spawn('git', ['add', '--all'], noisySpawnCfg);
-		await spawn('git', ['commit', '--message', message], noisySpawnCfg);
-
-		await spawn('git', ['push', '--set-upstream', 'origin', branch], noisySpawnCfg);
-		await spawn('git', ['push', 'origin', '--tags'], noisySpawnCfg);
+		await u.gitAddCommit(message);
+		await u.gitPush();
 	}
 
-	static async gitCurrentBranch() {
-		return String(await spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], quietSpawnCfg)).trim();
+	static async gitAddCommit(message = 'Robotic update.') {
+		await spawn('git', ['add', '--all'], noisySpawnCfg);
+		await spawn('git', ['commit', '--message', message], noisySpawnCfg);
+	}
+
+	static async gitPush() {
+		await spawn('git', ['push', '--set-upstream', 'origin', await u.gitCurrentBranch()], noisySpawnCfg);
+		await spawn('git', ['push', 'origin', '--tags'], noisySpawnCfg);
 	}
 
 	static async gitLocalRepoSHA(repoDir, branch) {
@@ -433,7 +452,6 @@ class u {
 	}
 
 	static async npmVersionPatch() {
-		if (await u.isGitRepoDirty()) await u.gitAddCommit();
 		await spawn('npm', ['version', 'patch', '--ignore-scripts'], noisySpawnCfg);
 	}
 
@@ -502,6 +520,86 @@ class u {
  */
 (async () => {
 	await yargs(hideBin(process.argv))
+		.command({
+			command: ['dotfiles'],
+			desc: 'Updates project dotfiles.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						skeletonUpdatesOthers: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Updating `@clevercanyon/skeleton` also updates others? Such as `skeleton-dev-deps` and `*.fork`s.',
+						},
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error('This *must* be performed interactively.');
+						}
+						return true;
+					});
+			},
+			handler: async (args) => {
+				await new Dotfiles(args).run();
+			},
+		})
+		.command({
+			command: ['project'],
+			desc: 'Updates NPM packages + optionally pushes to repo(s) + optionally publishes package(s).',
+			builder: (yargs) => {
+				yargs
+					.options({
+						repos: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Push to project repo(s)?',
+						},
+						pkgs: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							implies: ['repos'],
+							description: 'Publish updated project package(s)?',
+						},
+						mode: {
+							type: 'string',
+							requiresArg: true,
+							demandOption: false,
+							default: 'prod',
+							choices: ['dev', 'ci', 'stage', 'prod'],
+							description: 'Build and env mode.',
+						},
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error('This *must* be performed interactively.');
+						}
+						return true;
+					});
+			},
+			handler: async (args) => {
+				await new Project(args).run();
+			},
+		})
 		.command({
 			command: ['projects'],
 			desc: 'Updates multiple projects.',
@@ -583,86 +681,6 @@ class u {
 			},
 			handler: async (args) => {
 				await new Projects(args).run();
-			},
-		})
-		.command({
-			command: ['dotfiles'],
-			desc: 'Updates project dotfiles.',
-			builder: (yargs) => {
-				yargs
-					.options({
-						skeletonUpdatesOthers: {
-							type: 'boolean',
-							requiresArg: false,
-							demandOption: false,
-							default: false,
-							description: 'Updating `@clevercanyon/skeleton` also updates others? Such as `skeleton-dev-deps` and `*.fork`s.',
-						},
-						dryRun: {
-							type: 'boolean',
-							requiresArg: false,
-							demandOption: false,
-							default: false,
-							description: 'Dry run?',
-						},
-					})
-					.check(async (/* args */) => {
-						if (!(await u.isInteractive())) {
-							throw new Error('This *must* be performed interactively.');
-						}
-						return true;
-					});
-			},
-			handler: async (args) => {
-				await new Dotfiles(args).run();
-			},
-		})
-		.command({
-			command: ['project'],
-			desc: 'Updates NPM packages + optionally pushes to repo(s) + optionally publishes package(s).',
-			builder: (yargs) => {
-				yargs
-					.options({
-						repos: {
-							type: 'boolean',
-							requiresArg: false,
-							demandOption: false,
-							default: false,
-							description: 'Push to project repo(s)?',
-						},
-						pkgs: {
-							type: 'boolean',
-							requiresArg: false,
-							demandOption: false,
-							default: false,
-							implies: ['repos'],
-							description: 'Publish updated project package(s)?',
-						},
-						mode: {
-							type: 'string',
-							requiresArg: true,
-							demandOption: false,
-							default: 'prod',
-							choices: ['dev', 'ci', 'stage', 'prod'],
-							description: 'Build and env mode.',
-						},
-						dryRun: {
-							type: 'boolean',
-							requiresArg: false,
-							demandOption: false,
-							default: false,
-							description: 'Dry run?',
-						},
-					})
-					.check(async (/* args */) => {
-						if (!(await u.isInteractive())) {
-							throw new Error('This *must* be performed interactively.');
-						}
-						return true;
-					});
-			},
-			handler: async (args) => {
-				await new Project(args).run();
 			},
 		})
 		.fail(async (message, error /* , yargs */) => {
