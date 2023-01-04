@@ -212,7 +212,7 @@ class u {
 			backgroundColor: '',
 
 			titleAlignment: 'left',
-			title: '🙈 ' + chalk.redBright('✖ ' + title),
+			title: '🙈 ' + chalk.redBright('⚑ ' + title),
 		});
 	}
 
@@ -278,7 +278,7 @@ class u {
 		})
 		.fail(async (message, error /* , yargs */) => {
 			if (error.stack && typeof error.stack === 'string') log(chalk.gray(error.stack));
-			log(await u.error('Failure', error ? error.toString() : message));
+			log(await u.error('Problem', error ? error.toString() : message));
 			process.exit(1);
 		})
 		.strict()
