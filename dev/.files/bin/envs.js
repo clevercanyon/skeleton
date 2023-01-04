@@ -338,9 +338,9 @@ class u {
 							demandOption: false,
 							default: false,
 							description: // prettier-ignore
-						'When not `--new`, pull latest envs from dotenv vault?' +
-						' If not set explicitly, only pulls when main env is missing.' +
-						' Note: This option has no effect when `--new`.',
+								'When not `--new`, pull latest envs from dotenv vault?' +
+								' If not set explicitly, only pulls when main env is missing.' +
+								' Note: This option has no effect when `--new`.',
 						},
 						dryRun: {
 							type: 'boolean',

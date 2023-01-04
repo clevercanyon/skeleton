@@ -149,7 +149,7 @@ class u {
 			}
 			await spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys], quietSpawnCfg);
 		} else {
-			await spawn(path.resolve(binDir, './envs.js'), ['setup'], quietSpawnCfg);
+			await spawn(path.resolve(binDir, './envs.js'), ['setup'], noisySpawnCfg);
 		}
 	}
 
@@ -166,7 +166,7 @@ class u {
 	}
 
 	static async npmCleanInstall() {
-		await spawn('npm', ['clean-install', '--include=dev', '--ignore-scripts', '--silent'], quietSpawnCfg);
+		await spawn('npm', ['ci', '--include=dev', '--ignore-scripts', '--silent'], quietSpawnCfg);
 	}
 
 	/*
