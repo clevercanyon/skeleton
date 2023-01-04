@@ -21,7 +21,7 @@ __dirname="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)";
 # Project directory.
 ##
 
-cd ../../../..;
+cd "${__dirname}"/../../../..;
 
 ##
 # Utility functions.
@@ -70,7 +70,7 @@ fi;
 ##
 
 if ! isCMDAnNPMInstall "${cmd1}" && isCMDHelpOrVersion "${args}"; then
-	echo 'Skipping non-critical CMD 1: `'"${cmd1}"'` in `'"${cmd2}"' -h|v,--help|version` modes.';
+	echo 'Skipping non-critical CMD 1: `'"${cmd1}"'` in CMD 2: `'"${cmd2}"'` -h|v,--help|version modes.';
 
 elif isCMDDryRun "${args}"; then
 	if isCMDInDevBin "${cmd1}" || isCMDAnNPMScriptInDevBin "${cmd1}"; then
@@ -82,7 +82,7 @@ elif isCMDDryRun "${args}"; then
 	elif isCMDAnNPMInstall "${cmd1}"; then
 		/usr/bin/env sh -c "${cmd1}"; # Always run installs.
 	else
-		echo 'Skipping CMD 1: `'"${cmd1}"'` in CMD 2: `'"${cmd2}"' --dryRun` mode.';
+		echo 'Skipping CMD 1: `'"${cmd1}"'` in CMD 2: `'"${cmd2}"'` --dryRun mode.';
 	fi;
 else
 	/usr/bin/env sh -c "${cmd1}";
