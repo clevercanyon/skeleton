@@ -25,13 +25,15 @@ const binDir = path.resolve(__dirname, '../../../dev/.files/bin');
 
 const { log } = console;
 const echo = process.stdout.write.bind(process.stdout);
+const isTTY = process.stdout.isTTY || process.env.IS_PARENT_TTY ? true : false;
 
 const noisySpawnCfg = {
-	cwd: projDir, // Displays output while running.
+	cwd: projDir,
+	env: { ...process.env, IS_PARENT_TTY: isTTY },
 	stdout: (buffer) => echo(chalk.blue(buffer.toString())),
 	stderr: (buffer) => echo(chalk.redBright(buffer.toString())),
 };
-const quietSpawnCfg = { cwd: projDir };
+const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
 
 /**
  * NOTE: All commands in this file must support both interactive and noninteractive sessions. Installations occur across
@@ -94,13 +96,8 @@ class u {
 	 * TTY utilities.
 	 */
 
-	static isInteractive() {
-		return (
-			process.stdout.isTTY && //
-			process.env.TERM && // Except `dumb`.
-			'dumb' !== process.env.TERM &&
-			'true' !== process.env.CI
-		);
+	static async isInteractive() {
+		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI;
 	}
 
 	/*
@@ -132,7 +129,7 @@ class u {
 	}
 
 	static async envsSetupOrDecrypt(opts = { mode: 'prod' }) {
-		if (!u.isInteractive() /* Use keys. */) {
+		if (!(await u.isInteractive()) /* Use keys. */) {
 			const env = process.env; // Shorter reference.
 			const keys = [_.get(env, 'C10N_DOTENV_KEY_MAIN', '')];
 
@@ -189,34 +186,36 @@ class u {
  */
 (async () => {
 	await yargs(hideBin(process.argv))
-		.command(
-			['project'],
-			'Installs NPM packages, envs, and builds distro.',
-			{
-				mode: {
-					type: 'string',
-					requiresArg: true,
-					demandOption: false,
-					default: 'prod',
-					choices: ['dev', 'ci', 'stage', 'prod'],
-					description: 'Build and env mode.',
-				},
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+		.command({
+			command: ['project'],
+			desc: 'Installs NPM packages, envs, and builds distro.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						mode: {
+							type: 'string',
+							requiresArg: true,
+							demandOption: false,
+							default: 'prod',
+							choices: ['dev', 'ci', 'stage', 'prod'],
+							description: 'Build and env mode.',
+						},
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Project(args).run();
 			},
-		)
-		.check(() => {
-			return true;
 		})
-
 		.strict()
 		.parse();
 })();

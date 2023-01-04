@@ -26,9 +26,11 @@ const projDir = path.resolve(__dirname, '../../..');
 
 const { log } = console;
 const echo = process.stdout.write.bind(process.stdout);
+const isTTY = process.stdout.isTTY || process.env.IS_PARENT_TTY ? true : false;
 
 const noisySpawnCfg = {
-	cwd: projDir, // Displays output while running.
+	cwd: projDir,
+	env: { ...process.env, IS_PARENT_TTY: isTTY },
 	stdout: (buffer) => echo(chalk.blue(buffer.toString())),
 	stderr: (buffer) => echo(chalk.redBright(buffer.toString())),
 };
@@ -200,13 +202,8 @@ class u {
 	 * TTY utilities.
 	 */
 
-	static isInteractive() {
-		return (
-			process.stdout.isTTY && //
-			process.env.TERM && // Except `dumb`.
-			'dumb' !== process.env.TERM &&
-			'true' !== process.env.CI
-		);
+	static async isInteractive() {
+		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI;
 	}
 
 	/*
@@ -322,168 +319,180 @@ class u {
  */
 (async () => {
 	await yargs(hideBin(process.argv))
-		.command(
-			'setup',
-			'Sets up all envs for dotenv vault.',
-			{
-				'new': {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Set up *new* envs?',
-				},
-				pull: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: // prettier-ignore
+		.command({
+			command: 'setup',
+			desc: 'Sets up all envs for dotenv vault.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						'new': {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Set up *new* envs?',
+						},
+						pull: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: // prettier-ignore
 						'When not `--new`, pull latest envs from dotenv vault?' +
 						' If not set explicitly, only pulls when main env is missing.' +
 						' Note: This option has no effect when `--new`.',
-				},
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+						},
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error(chalk.red('This *must* be performed interactively.'));
+						}
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Setup(args).run();
 			},
-		)
-		.check(() => {
-			if (!u.isInteractive()) {
-				throw new Error(chalk.red('This *must* be performed interactively.'));
-			}
-			return true;
 		})
-
-		.command(
-			'push',
-			'Pushes all envs to dotenv vault.',
-			{
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+		.command({
+			command: 'push',
+			desc: 'Pushes all envs to dotenv vault.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error(chalk.red('This *must* be performed interactively.'));
+						}
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Push(args).run();
 			},
-		)
-		.check(() => {
-			if (!u.isInteractive()) {
-				throw new Error(chalk.red('This *must* be performed interactively.'));
-			}
-			return true;
 		})
-
-		.command(
-			'pull',
-			'Pulls all envs from dotenv vault.',
-			{
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+		.command({
+			command: 'pull',
+			desc: 'Pulls all envs from dotenv vault.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error(chalk.red('This *must* be performed interactively.'));
+						}
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Pull(args).run();
 			},
-		)
-		.check(() => {
-			if (!u.isInteractive()) {
-				throw new Error(chalk.red('This *must* be performed interactively.'));
-			}
-			return true;
 		})
-
-		.command(
-			'keys',
-			'Retrieves decryption keys for all envs.',
-			{
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+		.command({
+			command: 'keys',
+			desc: 'Retrieves decryption keys for all envs.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error(chalk.red('This *must* be performed interactively.'));
+						}
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Keys(args).run();
 			},
-		)
-		.check(() => {
-			if (!u.isInteractive()) {
-				throw new Error(chalk.red('This *must* be performed interactively.'));
-			}
-			return true;
 		})
-
-		.command(
-			'encrypt',
-			'Encrypts all envs into `.env.vault`.',
-			{
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+		.command({
+			command: 'encrypt',
+			desc: 'Encrypts all envs into `.env.vault`.',
+			builder: (yargs) => {
+				yargs
+					.options({
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error(chalk.red('This *must* be performed interactively.'));
+						}
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Encrypt(args).run();
 			},
-		)
-		.check(() => {
-			if (!u.isInteractive()) {
-				throw new Error(chalk.red('This *must* be performed interactively.'));
-			}
-			return true;
 		})
-
-		.command(
-			'decrypt',
-			'Decrypts `.env.vault` env(s) for the given key(s).',
-			{
-				keys: {
-					type: 'array',
-					requiresArg: true,
-					demandOption: true,
-					default: [],
-					description: 'To decrypt `.env.vault` env(s).',
-				},
-				dryRun: {
-					type: 'boolean',
-					requiresArg: false,
-					demandOption: false,
-					default: false,
-					description: 'Dry run?',
-				},
+		.command({
+			command: 'decrypt',
+			desc: 'Decrypts `.env.vault` env(s) for the given key(s).',
+			builder: (yargs) => {
+				yargs
+					.options({
+						keys: {
+							type: 'array',
+							requiresArg: true,
+							demandOption: true,
+							default: [],
+							description: 'To decrypt `.env.vault` env(s).',
+						},
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (await u.isInteractive()) {
+							throw new Error(chalk.red('This can *only* be performed noninteractively.'));
+						}
+						return true;
+					});
 			},
-			async (args) => {
+			handler: async (args) => {
 				await new Decrypt(args).run();
 			},
-		)
-		.check(() => {
-			if (u.isInteractive()) {
-				throw new Error(chalk.red('This can *only* be performed noninteractively.'));
-			}
-			return true;
 		})
-
 		.strict()
 		.parse();
 })();
