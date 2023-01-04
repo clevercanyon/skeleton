@@ -381,11 +381,11 @@ class u {
 	}
 
 	static async envsPush() {
-		await spawn(path.resolve(binDir, './envs.js'), ['push'], quietSpawnCfg);
+		await spawn(path.resolve(binDir, './envs.js'), ['push'], noisySpawnCfg);
 	}
 
 	static async envsEncrypt() {
-		await spawn(path.resolve(binDir, './envs.js'), ['encrypt'], quietSpawnCfg);
+		await spawn(path.resolve(binDir, './envs.js'), ['encrypt'], noisySpawnCfg);
 	}
 
 	/*

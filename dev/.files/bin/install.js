@@ -147,7 +147,7 @@ class u {
 					throw new Error(chalk.red('Missing env key(s).'));
 				}
 			}
-			await spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys], quietSpawnCfg);
+			await spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys], noisySpawnCfg);
 		} else {
 			await spawn(path.resolve(binDir, './envs.js'), ['setup'], noisySpawnCfg);
 		}
