@@ -16,7 +16,19 @@ $ npm run update:dotfiles
 
 -   Runs a full dotfiles update using a copy of the latest `./dev/.files/bin/updater/index.js` from `@clevercanyon/skeleton`. This will update the entire `./dev/.files` directory and process updates across all the accompanying project dotfiles found in the main `@clevercanyon/skeleton` project directory. Any `<custom:start></custom:end>` sections in your project will be preserved.
 
--   A few properties in `./package.json` will be reset to their expected, and necessary, values during the update. For a detailed look at which `./package.json` properties you should never change (or they'll be lost during a dotfiles update), please review `./dev/.files/bin/updater/data/package.json/updates.json`.
+-   A few properties in `./package.json` will be reset to their expected and necessary values during the update. For a detailed look at which `./package.json` properties you should never change (or they'll be lost during a dotfiles update), please review `./dev/.files/bin/updater/data/package.json/updates.json`.
+
+    -   Additionally, when running the `$ npm run update:project` script, the following `./package.json` properties will also be automatically updated to match your project build configuration. Therefore, you should never change any of these manually, as those changes would be lost during a project update.
+
+    ```json
+    "exports": [],
+    "module": "",
+    "main": "",
+    "browser": "",
+    "unpkg": "",
+    "types": "",
+    "typesVersions": {}
+    ```
 
 ## Updates Dotfiles + Project
 
@@ -200,6 +212,8 @@ The `--dryRun` option is your friend. Please use it to test things out before yo
 ```bash
 $ npm run update:projects::help
 ```
+
+---
 
 ## Non-Interactive Updates
 
