@@ -178,11 +178,11 @@ class u {
 	}
 
 	static async npmInstall() {
-		await spawn('npm', ['install', '--ignore-scripts', '--silent'], quietSpawnCfg);
+		await spawn('npm', ['install'], noisySpawnCfg);
 	}
 
 	static async npmCleanInstall() {
-		await spawn('npm', ['ci', '--ignore-scripts', '--silent'], quietSpawnCfg);
+		await spawn('npm', ['ci'], noisySpawnCfg);
 	}
 
 	/*

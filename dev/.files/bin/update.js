@@ -130,11 +130,11 @@ class Dotfiles {
 			if (!this.args.dryRun) {
 				await fsp.rm(s6nRepoDir, { recursive: true, force: true });
 				await fsp.mkdir(s6nRepoDir, { recursive: true }); // Starts fresh.
-				await spawn('git', ['clone', s6nRepoURI, s6nRepoDir, '--branch=main', '--depth=1', '--quiet'], { ...noisySpawnCfg, cwd: s6nRepoDir });
+				await spawn('git', ['clone', s6nRepoURI, s6nRepoDir, '--branch=main', '--depth=1'], { ...noisySpawnCfg, cwd: s6nRepoDir });
 			}
 			log(chalk.green('Installing `@clevercanyon/skeleton`’s NPM dependencies.'));
 			if (!this.args.dryRun) {
-				await spawn('npm', ['ci', '--ignore-scripts', '--silent'], { ...noisySpawnCfg, cwd: s6nRepoDir });
+				await spawn('npm', ['ci'], { ...noisySpawnCfg, cwd: s6nRepoDir });
 			}
 		}
 
@@ -448,15 +448,15 @@ class u {
 	}
 
 	static async npmUpdate() {
-		await spawn('npm', ['update', '--ignore-scripts', '--save', '--silent'], quietSpawnCfg);
+		await spawn('npm', ['update', '--save'], noisySpawnCfg);
 	}
 
 	static async npmVersionPatch() {
-		await spawn('npm', ['version', 'patch', '--ignore-scripts'], noisySpawnCfg);
+		await spawn('npm', ['version', 'patch'], noisySpawnCfg);
 	}
 
 	static async npmPublish() {
-		await spawn('npm', ['publish', '--ignore-scripts'], noisySpawnCfg);
+		await spawn('npm', ['publish'], noisySpawnCfg);
 	}
 
 	/*
