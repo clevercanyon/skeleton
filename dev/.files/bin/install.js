@@ -41,8 +41,8 @@ const noisySpawnCfg = {
 };
 const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
 
-const c10nLogo = path.resolve(__dirname, '../assets/c10n/logo.png');
-const c10nLogoDev = path.resolve(__dirname, '../assets/c10n/logo-dev.png');
+const c10nLogo = path.resolve(__dirname, '../assets/brands/c10n/logo.png');
+const c10nLogoDev = path.resolve(__dirname, '../assets/brands/c10n/logo-dev.png');
 
 /**
  * NOTE: All commands in this file must support both interactive and noninteractive sessions. Installations occur across
