@@ -66,52 +66,17 @@ Create this file on your computer. Then, restart your computer, open VS Code, an
 </plist>
 ```
 
----
+## VS Code Word Separator Instructions
 
-Here's a larger example with a few other things used by `@jaswrks` across all macOS apps.
+Another neat trick is to modify VS Code by adding this to your `settings.json` file. By removing `$` and adding `ꓺ` to the list you can now double-click either side of `$urlꓺparse` to select `$url` or `parse`.
 
-```xml
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-	<dict>
-	<!--
-		Key Modifiers:
+```json
+{
+	// Customizations: removed `$`, added ` ꓺ─‘’“”`.
+	// Configuration of this setting matches that of `terminal.integrated.wordSeparators`.
+	"editor.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/? ꓺ─‘’“”",
 
-		^ : Ctrl
-		$ : Shift
-		~ : Option
-		@ : Command
-		# : Numeric Keypad
-
-		https://web.archive.org/web/20161220060333/http://osxnotes.net/keybindings.html
-	-->
-		<key>^p</key>
-		<string>moveUp:</string>
-
-		<key>^n</key>
-		<string>moveDown:</string>
-
-		<key>^f</key>
-		<string>moveWordForward:</string>
-
-		<key>^b</key>
-		<string>moveWordBackward:</string>
-
-		<key>^a</key>
-		<string>moveToBeginningOfParagraph:</string>
-
-		<key>^e</key>
-		<string>moveToEndOfParagraph:</string>
-
-		<key>^.</key>
-		<dict>
-			<key>^.</key>
-			<array>
-				<string>insertText:</string>
-				<string>&#42234;</string>
-			</array>
-		</dict>
-	</dict>
-</plist>
+	// Configuration of this setting matches that of `editor.wordSeparators`.
+	"terminal.integrated.wordSeparators": "`~!@#%^&*()-=+[{]}\\|;:'\",.<>/? ꓺ─‘’“”"
+}
 ```
