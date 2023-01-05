@@ -42,6 +42,7 @@ const noisySpawnCfg = {
 const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
 
 const c10nIcon = path.resolve(__dirname, '../assets/c10n/icon.png');
+const c10nLogo = path.resolve(__dirname, '../assets/c10n/logo.png');
 const c10nEmoji = '🦊'; // Clever Canyon’s adopted emoji icon.
 
 /**
@@ -230,6 +231,7 @@ class u {
 			return chalk.green(text); // No box.
 		}
 		return (
+			'\n' +
 			coloredBox(chalk.green(text), {
 				margin: 0,
 				padding: 0.75,
@@ -244,7 +246,7 @@ class u {
 				title: c10nEmoji + ' ' + chalk.greenBright('✓ ' + title),
 			}) +
 			'\n' +
-			(await terminalImage(c10nIcon, { width: '32px', fallback: () => '' }))
+			(await terminalImage(c10nLogo, { width: '128px', fallback: () => '' }))
 		);
 	}
 }
