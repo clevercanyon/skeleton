@@ -205,7 +205,7 @@ class u {
 		}
 		return (
 			'\n' +
-			coloredBox(chalk.red(text), {
+			coloredBox(chalk.bold.red(text), {
 				margin: 0,
 				padding: 0.75,
 				textAlignment: 'left',
@@ -216,7 +216,7 @@ class u {
 				backgroundColor: '',
 
 				titleAlignment: 'left',
-				title: chalk.redBright('⚑ ' + title),
+				title: chalk.bold.redBright('⚑ ' + title),
 			}) +
 			'\n' +
 			(await terminalImage(c10nLogoDev, { width: '300px', fallback: () => '' }))
@@ -232,18 +232,18 @@ class u {
 		}
 		return (
 			'\n' +
-			coloredBox(chalk.green(text), {
+			coloredBox(chalk.bold.hex('#ed5f3b')(text), {
 				margin: 0,
 				padding: 0.75,
 				textAlignment: 'left',
 
 				dimBorder: false,
 				borderStyle: 'round',
-				borderColor: '#445d2c',
+				borderColor: '#8e3923',
 				backgroundColor: '',
 
 				titleAlignment: 'left',
-				title: chalk.greenBright('✓ ' + title),
+				title: chalk.bold.green('✓ ' + title),
 			}) +
 			'\n' +
 			(await terminalImage(c10nLogo, { width: '300px', fallback: () => '' }))
