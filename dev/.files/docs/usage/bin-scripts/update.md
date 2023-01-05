@@ -213,8 +213,6 @@ The `--dryRun` option is your friend. Please use it to test things out before yo
 $ npm run update:projects::help
 ```
 
----
-
 ## Non-Interactive Updates
 
 Not permissable at this time. All updates _must_ be performed interactively.
