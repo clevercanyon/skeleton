@@ -43,7 +43,7 @@ A key binding, not a shortcut. We do know about tools like Typinator, which are 
 
 ## `ꓺ` Key Binding Instructions
 
-Create this file on your computer. Then, restart your computer, open VS Code, and type: <big><kbd>Ctrl</kbd> <kbd>..</kbd></big> <small>(two periods)</small>. It produces `ꓺ`, which is `\uA4FA`, also known as `&#42234;`. With this new key binding you'll type `ꓺ` quickly, easily, and intuitively.
+Create this file on your computer. Then, restart your computer, open VS Code, and type: <big><kbd>Ctrl</kbd> <kbd>..</kbd></big> <small>(two periods)</small>. It produces `ꓺ`, which is [`\uA4FA`](https://graphemica.com/%EA%93%BA#code), also known as `&#42234;`. With this new key binding you'll type `ꓺ` quickly, easily, and intuitively.
 
 ```txt
 ~/Library/KeyBindings/DefaultKeyBinding.dict
