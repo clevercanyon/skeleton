@@ -204,7 +204,7 @@ class u {
 			return chalk.red(text); // No box.
 		}
 		return (
-			(await terminalImage(c10nIcon, { width: '64px', fallback: () => '' })) +
+			(await terminalImage(c10nIcon, { width: '32px', fallback: () => '' })) +
 			'\n' +
 			coloredBox(chalk.red(text), {
 				margin: 0,
@@ -230,7 +230,7 @@ class u {
 			return chalk.green(text); // No box.
 		}
 		return (
-			(await terminalImage(c10nIcon, { width: '64px', fallback: () => '' })) +
+			(await terminalImage(c10nIcon, { width: '32px', fallback: () => '' })) +
 			'\n' +
 			coloredBox(chalk.green(text), {
 				margin: 0,
