@@ -72,8 +72,6 @@ $ npm run update:project:repos:pkgs
 $ npm run update:help
 ```
 
----
-
 ## Updating Multiple Projects
 
 When updating multiple projects, the `./update.js` script simply steps up one directory level and looks for sibling project directories with a customizable set of glob and ignore patterns, as described below. After globbing, matched project directories, or deeper, can be updated all in a single command, saving an enormous amount of time.
