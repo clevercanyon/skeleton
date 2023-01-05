@@ -80,12 +80,17 @@ When updating multiple projects, the `./update.js` script simply steps up one di
 
 ```text
 ~/Projects/clevercanyon
- - skeleton
- - utilities
  - forks
-   - project.fork
- - foobar
- - etc., etc.
+   - micromatch.fork
+   - ...etc.
+ - my-new-project
+ - skeleton
+ - skeleton-dev-deps
+ - skeleton.cma.web
+ - utilities
+ - utilities.node
+ - utilities.web
+ - ... etc.
 ```
 
 With this structure, all `clevercanyon` projects are together. If you are working in the `foobar` project and do an `$ npm run update:projects::dotfiles`, the script steps up one directory to `~/Projects/clevercanyon` where it globs for siblings. In the matching directories, it updates each of their dotfiles.
