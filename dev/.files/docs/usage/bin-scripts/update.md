@@ -74,7 +74,7 @@ $ npm run update:help
 
 ## Updating Multiple Projects
 
-When updating multiple projects, the `./update.js` script simply steps up one directory level and looks for sibling project directories with a customizable set of glob and ignore patterns, as described below. After globbing, matched project directories, or deeper, can be updated all in a single command, saving an enormous amount of time.
+When updating multiple projects, the `./update.js` script simply steps up one directory level and looks for sibling project directories with a customizable set of glob and ignore patterns, as described below. After globbing, matched project directories, or deeper, can be updated all in a single command, saving an enormous amount of time. A bit scary at first, but woohoo, productivity!
 
 ### Recommended Project Directory Tree Structure
 
@@ -93,7 +93,7 @@ When updating multiple projects, the `./update.js` script simply steps up one di
  - ... etc.
 ```
 
-With this structure, all `clevercanyon` projects are together. If you are working in the `foobar` project and do an `$ npm run update:projects::dotfiles`, the script steps up one directory to `~/Projects/clevercanyon` where it globs for siblings. In the matching directories, it updates each of their dotfiles.
+With this structure, all `clevercanyon` projects are together. If you are working in the `my-new-project` directory and do an `$ npm run update:projects::dotfiles`, the script steps up one directory to `~/Projects/clevercanyon` where it globs for siblings. In the matching directories, it updates each of their dotfiles.
 
 By default, the glob pattern is `*`, matching all direct siblings. However, if any of the glob patterns is set to a single `*` (as in the default case), scripts are only run if the project directory contains a `./dev/.files` directory and a `./package.json` file.
 
