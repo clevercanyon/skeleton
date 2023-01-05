@@ -70,7 +70,7 @@ Create this file on your computer. Then, restart your computer, open VS Code, an
 
 Another neat trick is to modify VS Code by adding this to your `settings.json` file. By removing `$` and adding `ꓺ` to the list you can now double-click either side of `$urlꓺparse` to select `$url` or `parse`.
 
-```json
+```jsonc
 {
 	// Customizations: removed `$`, added ` ꓺ─‘’“”`.
 	// Configuration of this setting matches that of `terminal.integrated.wordSeparators`.
