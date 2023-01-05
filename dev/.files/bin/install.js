@@ -41,7 +41,7 @@ const noisySpawnCfg = {
 };
 const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
 
-const c10nIcon = path.resolve(projDir, '../assets/c10n/icon.png');
+const c10nIcon = path.resolve(__dirname, '../assets/c10n/icon.png');
 const c10nEmoji = '🦊'; // Clever Canyon’s adopted emoji icon.
 
 /**
