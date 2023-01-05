@@ -246,7 +246,7 @@ class u {
 				title: c10nEmoji + ' ' + chalk.greenBright('✓ ' + title),
 			}) +
 			'\n' +
-			(await terminalImage(c10nLogo, { width: '256px', fallback: () => '' }))
+			(await terminalImage(c10nLogo, { width: '296px', fallback: () => '' }))
 		);
 	}
 }
