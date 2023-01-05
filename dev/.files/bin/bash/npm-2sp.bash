@@ -55,7 +55,8 @@ function isCMDAnNPMInstall() {
 }
 
 function log() {
-    echo -e '\033[0;90m'"${1:-}"'\033[0m\n'
+    echo -e '\033[0;90m'"${1:-}"'\033[0m\n' >&2 # To stderr stream.
+    # stderr, so we don't interfere with proxied output to stdout stream.
 }
 
 ##
