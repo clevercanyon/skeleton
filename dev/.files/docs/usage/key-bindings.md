@@ -33,7 +33,7 @@ const url = $urlꓺparse('https://foo.bar/baz/biz/buz');
 
 Our strategy is to use a leading `$` to indicate that it's coming from a `@clevercanyon/utilities{,.*}` package. Anytime we use one of our own utilties, we prefix the import with a `$` to indicate it's a utility module. Secondly, when we use the `parse` import throughout our codebases, it now clearly shows that it came from our `$url` utility module.
 
-In other words, this works well as an alternative to `$url.parse`, which we also use — primarily in server-side codebases where tree shaking is not as much of a concern. In both cases we have code that is readable — `$urlꓺparse()` looks almost exactly like `$url.parse()`, but the former is tree-shakeable and the latter is not.
+In other words, this works well as an alternative to `$url.parse`, which we also use primarily in server-side codebases where tree shaking is not as much of a concern. In both cases we have code that is readable — `$urlꓺparse()` looks almost exactly like `$url.parse()`, but the former is tree-shakeable and the latter is not.
 
 ## How do we type the `ꓺ` character?
 
