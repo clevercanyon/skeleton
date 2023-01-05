@@ -41,7 +41,7 @@ We use a macOS key binding, because we type `ꓺ` a lot!
 
 A key binding, not a shortcut. We do know about tools like Typinator, which are great, but we don't need any lag whatsoever when we're writing code. Set yourself up for productivity because you'll be working in a codebase with this `ꓺ` character all over the place.
 
-## `ꓺ` Key Binding Instructions
+## `ꓺ` macOS Key Binding Instructions
 
 Create this file on your computer. Then, restart your computer, open VS Code, and type: <big><kbd>Ctrl</kbd> <kbd>..</kbd></big> <small>(two periods)</small>. It produces `ꓺ`, which is [`\uA4FA`](https://graphemica.com/%EA%93%BA#code), also known as `&#42234;`. With this new key binding you'll type `ꓺ` quickly, easily, and intuitively.
 
