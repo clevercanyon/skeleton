@@ -203,19 +203,22 @@ class u {
 		if (!isParentTTY || !supportsColor?.has16m) {
 			return chalk.red(text); // No box.
 		}
-		return coloredBox(chalk.red(text), {
-			margin: 0,
-			padding: 0.75,
-			textAlignment: 'left',
+		return (
+			(await terminalImage(c10nIcon, { width: '64px', fallback: () => '' })) +
+			coloredBox(chalk.red(text), {
+				margin: 0,
+				padding: 0.75,
+				textAlignment: 'left',
 
-			dimBorder: false,
-			borderStyle: 'round',
-			borderColor: '#551819',
-			backgroundColor: '',
+				dimBorder: false,
+				borderStyle: 'round',
+				borderColor: '#551819',
+				backgroundColor: '',
 
-			titleAlignment: 'left',
-			title: '🙈 ' + chalk.redBright('⚑ ' + title),
-		});
+				titleAlignment: 'left',
+				title: '🙈 ' + chalk.redBright('⚑ ' + title),
+			})
+		);
 	}
 
 	/**
@@ -226,7 +229,7 @@ class u {
 			return chalk.green(text); // No box.
 		}
 		return (
-			(await terminalImage(c10nIcon, { width: '64px', fallback: () => {} })) +
+			(await terminalImage(c10nIcon, { width: '64px', fallback: () => '' })) +
 			coloredBox(chalk.green(text), {
 				margin: 0,
 				padding: 0.75,
