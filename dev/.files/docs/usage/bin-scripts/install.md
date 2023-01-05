@@ -23,7 +23,7 @@ In noninteractive installs you must have the following environment variables. Yo
 
 ```
 C10N_DOTENV_KEY_MAIN
-C10N_DOTENV_KEY_CI (or another, matching mode above)
+C10N_DOTENV_KEY_CI (or another, matching `mode`)
 ```
 
 These keys can be retrieved by running the following script interactively.
