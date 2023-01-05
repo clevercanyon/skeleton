@@ -13,7 +13,7 @@ const url = $url.parse('https://foo.bar/baz/biz/buz');
 
 In fact, we use this approach quite a bit. However, it's not suitable for client-side apps because now we're importing the entire module. The problem is that we've imported the entire module as a single object. As a result, the much larger set of `$url` utilities that we imported is no longer [tree-shakeable](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking). Perhaps we only needed `parse`, not the 50 other things that `$url` offers.
 
-#### Instead, we could do it like this.
+Instead, we could do it like this.
 
 ```js
 import { parse as urlParse } from '@clevercanyon/utilities/url';
