@@ -2,10 +2,10 @@
 
 When changing ignore files, please review:
 
--   `@clevercanyon/skeleton/.gitignore`
--   `@clevercanyon/skeleton/.npmignore`
+-   clevercanyon/skeleton/.gitignore
+-   clevercanyon/skeleton/.npmignore
 
-Also review `@jaswrks/dotfiles.mac`.
+If you're @jaswrks, also be sure to review these:
 
--   `@jaswrks/dotfiles.mac/src/resources/mac-setup/bin/dotfiles.js`
--   `@jaswrks/dotfiles.mac/src/resources/dotfiles/.config/_libs/vs-code/settings.json`
+-   @jaswrks/dotfiles.mac/src/resources/mac-setup/bin/dotfiles.js
+-   @jaswrks/dotfiles.mac/src/resources/dotfiles/.config/\_libs/vs-code/settings.json
