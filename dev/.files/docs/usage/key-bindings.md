@@ -20,7 +20,7 @@ import { parse as urlParse } from '@clevercanyon/utilities/url';
 const url = urlParse('https://foo.bar/baz/biz/buz');
 ```
 
-This is reasonable, and more importantly, it's tree-shakeable. Only it doesn't convey the association that it has with the larger set of `$url` utilities. In a large codebase that leverages imports from many different packages, naming conflicts and confusing prefixes are likely to occur if we kept on using this approach when importing our own modules, alongside those from other packages.
+This is reasonable, and more importantly, it's tree-shakeable. Only, it doesn't convey the association that it has with the larger set of `$url` utilities. In a large codebase that leverages imports from many different packages, naming conflicts and confusing prefixes are likely to occur if we kept on using this approach when importing our own modules, alongside those from other packages.
 
 Remember, we're not always working with community-driven NPM packages that have catchy names. We just need a set of URL utilities. There's not time to think about whether we should call it urlZ, or urley, etc. Naming things is hard enough already, we don't need to make cute names a prerequisite for having a readable and maintainable codebase.
 
