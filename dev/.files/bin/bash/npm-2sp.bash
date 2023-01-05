@@ -22,22 +22,11 @@ __dirname="$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd)";
 ##
 
 cd "${__dirname}"/../../../..;
+projDir="$(pwd)";
 
 ##
 # Utility functions.
 ##
-
-function isCMDInDevBin() {
-	[[ "${1:-}" =~ ^\.\/dev\/\.files\/bin\/ ]];
-}
-
-function isCMDAnNPMScriptInDevBin() {
-	[[ "${1:-}" =~ ^npm[[:space:]]+run(-script)?[[:space:]]+(envs|install|update)\: ]];
-}
-
-function isCMDAnNPMInstall() {
-	[[ "${1:-}" =~ ^npm[[:space:]](install|ci|clean-install|install-clean)($|[[:space:]]) ]];
-}
 
 function isCMDSafeToRun() {
 	[[ "${1:-}" =~ ^(git|npm|npx)[[:space:]] ]] || isCMDInDevBin "${1:-}";
@@ -49,6 +38,20 @@ function isCMDHelpOrVersion() {
 
 function isCMDDryRun() {
 	[[ "${1:-}" =~ (^|[[:space:]])(--dry(Run|-run))($|[[:space:]]) ]];
+}
+
+function isCMDInDevBin() {
+	[[ "${1:-}" =~ ^\.\/dev\/\.files\/bin\/ ]];
+}
+
+function isCMDAnNPMScriptInDevBin() {
+	[[ "${1:-}" =~ ^npm[[:space:]]+run(-script)?[[:space:]]+(envs|install|update)\: ]];
+}
+
+function isCMDAnNPMInstall() {
+	# https://docs.npmjs.com/cli/commands/npm-ci
+	# https://docs.npmjs.com/cli/commands/npm-install
+	[[ "${1:-}" =~ ^npm[[:space:]](ci|clean-install|install-clean|isntall-clean|i|in|ins|inst|insta|instal|isnt|isnta|isntal|install)($|[[:space:]]) ]];
 }
 
 ##
@@ -69,8 +72,11 @@ fi;
 # Uses `sh`, matching NPM.
 ##
 
-if ! isCMDAnNPMInstall "${cmd1}" && isCMDHelpOrVersion "${args}"; then
-	echo 'Skipping non-critical CMD 1: `'"${cmd1}"'` in CMD 2: `'"${cmd2}"'` -h|v,--help|version modes.';
+if isCMDAnNPMInstall "${cmd1}" && [[ "${cmd1}" =~ ^npm[[:space:]]+ci$ && "${cmd2}" = './dev/.files/bin/install.js project' && -d "${projDir}"/node_modules ]]; then
+	echo 'Skipping CMD 1: `'"${cmd1}"'` in favor of CMD 2: `'"${cmd2}"'`, since `node_modules` exists already.';
+
+elif ! isCMDAnNPMInstall "${cmd1}" && isCMDHelpOrVersion "${args}"; then
+	echo 'Skipping non-critical CMD 1: `'"${cmd1}"'` when CMD 2: `'"${cmd2}"'` is in -h|-v|--help|--version mode.';
 
 elif isCMDDryRun "${args}"; then
 	if isCMDInDevBin "${cmd1}" || isCMDAnNPMScriptInDevBin "${cmd1}"; then
@@ -82,7 +88,7 @@ elif isCMDDryRun "${args}"; then
 	elif isCMDAnNPMInstall "${cmd1}"; then
 		/usr/bin/env sh -c "${cmd1}"; # Always run installs.
 	else
-		echo 'Skipping CMD 1: `'"${cmd1}"'` in CMD 2: `'"${cmd2}"'` --dryRun mode.';
+		echo 'Skipping CMD 1: `'"${cmd1}"'` when CMD 2: `'"${cmd2}"'` is in --dryRun mode.';
 	fi;
 else
 	/usr/bin/env sh -c "${cmd1}";
