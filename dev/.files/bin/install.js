@@ -229,23 +229,19 @@ class u {
 		if (!isParentTTY || !supportsColor?.has16m) {
 			return chalk.green(text); // No box.
 		}
-		return (
-			(await terminalImage(c10nIcon, { width: '32px', fallback: () => '' })) +
-			'\n' +
-			coloredBox(chalk.green(text), {
-				margin: 0,
-				padding: 0.75,
-				textAlignment: 'left',
+		return coloredBox(chalk.green(text), {
+			margin: 0,
+			padding: 0.75,
+			textAlignment: 'left',
 
-				dimBorder: false,
-				borderStyle: 'round',
-				borderColor: '#445d2c',
-				backgroundColor: '',
+			dimBorder: false,
+			borderStyle: 'round',
+			borderColor: '#445d2c',
+			backgroundColor: '',
 
-				titleAlignment: 'left',
-				title: c10nEmoji + ' ' + chalk.greenBright('✓ ' + title),
-			})
-		);
+			titleAlignment: 'left',
+			title: (await terminalImage(c10nIcon, { width: '24px', fallback: () => c10nEmoji })) + ' ' + chalk.greenBright('✓ ' + title),
+		});
 	}
 }
 
