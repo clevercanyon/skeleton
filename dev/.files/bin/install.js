@@ -205,6 +205,7 @@ class u {
 		}
 		return (
 			(await terminalImage(c10nIcon, { width: '64px', fallback: () => '' })) +
+			'\n' +
 			coloredBox(chalk.red(text), {
 				margin: 0,
 				padding: 0.75,
@@ -230,6 +231,7 @@ class u {
 		}
 		return (
 			(await terminalImage(c10nIcon, { width: '64px', fallback: () => '' })) +
+			'\n' +
 			coloredBox(chalk.green(text), {
 				margin: 0,
 				padding: 0.75,
