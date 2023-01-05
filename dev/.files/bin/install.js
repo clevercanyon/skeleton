@@ -41,9 +41,8 @@ const noisySpawnCfg = {
 };
 const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
 
-const c10nIcon = path.resolve(__dirname, '../assets/c10n/icon.png');
 const c10nLogo = path.resolve(__dirname, '../assets/c10n/logo.png');
-const c10nEmoji = '🦊'; // Clever Canyon’s adopted emoji icon.
+const c10nLogoDev = path.resolve(__dirname, '../assets/c10n/logo-dev.png');
 
 /**
  * NOTE: All commands in this file must support both interactive and noninteractive sessions. Installations occur across
@@ -205,7 +204,6 @@ class u {
 			return chalk.red(text); // No box.
 		}
 		return (
-			(await terminalImage(c10nIcon, { width: '32px', fallback: () => '' })) +
 			'\n' +
 			coloredBox(chalk.red(text), {
 				margin: 0,
@@ -218,8 +216,10 @@ class u {
 				backgroundColor: '',
 
 				titleAlignment: 'left',
-				title: '🙈 ' + chalk.redBright('⚑ ' + title),
-			})
+				title: chalk.redBright('⚑ ' + title),
+			}) +
+			'\n' +
+			(await terminalImage(c10nLogoDev, { width: '300px', fallback: () => '' }))
 		);
 	}
 
@@ -243,10 +243,10 @@ class u {
 				backgroundColor: '',
 
 				titleAlignment: 'left',
-				title: c10nEmoji + ' ' + chalk.greenBright('✓ ' + title),
+				title: chalk.greenBright('✓ ' + title),
 			}) +
 			'\n' +
-			(await terminalImage(c10nLogo, { width: '296px', fallback: () => '' }))
+			(await terminalImage(c10nLogo, { width: '300px', fallback: () => '' }))
 		);
 	}
 }
