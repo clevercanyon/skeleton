@@ -1,6 +1,6 @@
-# `./dev/.files/bin/install.js`
+# `$ npm run install:*`
 
-See Also: [Prerequisites](./prerequisites.md)
+<small>Underlying bin script: `./dev/.files/bin/install.js`</small>
 
 ## Interactive Installs
 
