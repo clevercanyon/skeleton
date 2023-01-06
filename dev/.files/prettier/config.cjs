@@ -82,47 +82,6 @@ module.exports = {
 		},
 		{
 			/**
-			 * INI plugin options.
-			 *
-			 * @see https://o5p.me/1fqazf
-			 */
-			files: ['*.ini'],
-			plugins: ['prettier-plugin-ini'],
-			options: {
-				parser: 'ini',
-				iniSpaceAroundEquals: true,
-			},
-		},
-		{
-			/**
-			 * Properties plugin options.
-			 *
-			 * @see https://o5p.me/IyzRSp
-			 */
-			files: ['*.properties', '*.env{,.*}'],
-			plugins: ['prettier-plugin-properties'],
-			options: {
-				parser: 'dot-properties',
-				keySeparator: '=',
-				escapeNonLatin1: false,
-			},
-		},
-		{
-			/**
-			 * XML plugin options.
-			 *
-			 * @see https://o5p.me/OiLPzn
-			 */
-			files: ['*.xml'],
-			plugins: ['@prettier/plugin-xml'],
-			options: {
-				parser: 'xml',
-				xmlSelfClosingSpace: true,
-				xmlWhitespaceSensitivity: 'ignore',
-			},
-		},
-		{
-			/**
 			 * PHP plugin options.
 			 *
 			 * @see https://o5p.me/BHsZj8
@@ -134,33 +93,6 @@ module.exports = {
 				braceStyle: '1tbs',
 				phpVersion: '8.1',
 				trailingCommaPHP: true,
-			},
-		},
-		{
-			/**
-			 * SQL plugin options.
-			 *
-			 * @see https://o5p.me/kYq5bx
-			 */
-			files: ['*.sql'],
-			plugins: ['prettier-plugin-sql'],
-			options: {
-				parser: 'sql',
-				commaPosition: 'after',
-				database: 'mysql',
-				denseOperators: false,
-				expressionWidth: 180,
-				formatter: 'sql-formatter',
-				indentStyle: 'standard',
-				keywordCase: 'upper',
-				language: 'sql',
-				linesBetweenQueries: 1,
-				logicalOperatorNewline: 'before',
-				newlineBeforeSemicolon: false,
-				params: Object,
-				paramTypes: Object,
-				tabulateAlias: false,
-				type: 'table',
 			},
 		},
 		{
@@ -198,6 +130,74 @@ module.exports = {
 				stopAt: undefined,
 				switchCaseIndent: true,
 				variant: 0, // Bash.
+			},
+		},
+		{
+			/**
+			 * SQL plugin options.
+			 *
+			 * @see https://o5p.me/kYq5bx
+			 */
+			files: ['*.sql'],
+			plugins: ['prettier-plugin-sql'],
+			options: {
+				parser: 'sql',
+				commaPosition: 'after',
+				database: 'mysql',
+				denseOperators: false,
+				expressionWidth: 180,
+				formatter: 'sql-formatter',
+				indentStyle: 'standard',
+				keywordCase: 'upper',
+				language: 'sql',
+				linesBetweenQueries: 1,
+				logicalOperatorNewline: 'before',
+				newlineBeforeSemicolon: false,
+				params: Object,
+				paramTypes: Object,
+				tabulateAlias: false,
+				type: 'table',
+			},
+		},
+		{
+			/**
+			 * XML plugin options.
+			 *
+			 * @see https://o5p.me/OiLPzn
+			 */
+			files: ['*.xml'],
+			plugins: ['@prettier/plugin-xml'],
+			options: {
+				parser: 'xml',
+				xmlSelfClosingSpace: true,
+				xmlWhitespaceSensitivity: 'ignore',
+			},
+		},
+		{
+			/**
+			 * INI plugin options.
+			 *
+			 * @see https://o5p.me/1fqazf
+			 */
+			files: ['*.ini'],
+			plugins: ['prettier-plugin-ini'],
+			options: {
+				parser: 'ini',
+				iniSpaceAroundEquals: true,
+			},
+		},
+		{
+			/**
+			 * Properties plugin options.
+			 *
+			 * @see https://o5p.me/IyzRSp
+			 */
+			files: ['*.properties', '*.env{,.*}'],
+			plugins: ['prettier-plugin-properties'],
+			options: {
+				parser: 'dot-properties',
+				keySeparator: '=',
+				escapeNonLatin1: false,
 			},
 		},
 	],

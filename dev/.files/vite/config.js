@@ -11,6 +11,7 @@
  */
 /* eslint-env es2021, node */
 
+import fs from 'node:fs';
 import path from 'node:path';
 import fsp from 'node:fs/promises';
 
@@ -75,7 +76,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 */
 	const appType = pkg.config?.c10n?.['&'].build?.appType || 'cma';
 	const targetEnv = pkg.config?.c10n?.['&'].build?.targetEnv || 'any';
-	const appBasePath = env.APP_BASE_PATH || '/'; // From environment vars.
+	const appBasePath = env.APP_BASE_PATH || ''; // From environment vars.
 
 	const isMPA = 'mpa' === appType;
 	const isCMA = 'cma' === appType || !isMPA;
@@ -195,8 +196,25 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 */
 	const pluginBasicSSLConfig = pluginBasicSSL();
 	const pluginEJSConfig = pluginEJS(
-		{ NODE_ENV: nodeEnv, isProd, isDev, env, pkg }, //
-		{ ejs: { root: srcDir, views: [path.resolve(srcDir, './resources/ejs-views')], strict: true, localsName: '$' } },
+		{ $: { pkg, mode, env } },
+		{
+			ejs: /* <https://o5p.me/wGv5nM> */ {
+				strict: true, // JS strict mode.
+				async: true, // Support await in EJS files.
+
+				delimiter: '?', // <https://o5p.me/Qwu3af>.
+				localsName: '$', // Shorter name for `locals`.
+				outputFunctionName: 'echo', // For output in scriptlets.
+
+				root: [srcDir], // For includes with an absolute path.
+				views: /* For includes with a relative path — includes utilities. */ [
+					path.resolve(srcDir, './resources/ejs-views'),
+					...(fs.existsSync(path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/assets/ejs-views'))
+						? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/assets/ejs-views')]
+						: []),
+				],
+			},
+		},
 	);
 	const pluginMinifyHTMLConfig = isProd ? pluginMinifyHTML() : null;
 
@@ -248,7 +266,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 		},
 		root: srcDir, // Absolute. Where entry indexes live.
 		publicDir: path.relative(srcDir, cargoDir), // Relative to `root` directory.
-		base: appBasePath, // Analagous to `<base href="/">` — leading & trailing slash.
+		base: appBasePath + '/', // Analagous to `<base href="/">` — leading & trailing slash.
 
 		appType: isCMA ? 'custom' : 'mpa', // MPA = multipage app: <https://o5p.me/ZcTkEv>.
 		resolve: { alias: aliases }, // See: `../typescript/config.json` and `./includes/aliases.js`.
