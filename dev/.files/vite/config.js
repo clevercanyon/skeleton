@@ -196,7 +196,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 */
 	const pluginBasicSSLConfig = pluginBasicSSL();
 	const pluginEJSConfig = pluginEJS(
-		{ $: { pkg, mode, env } },
+		{ $build: { pkg, mode, env, projDir } },
 		{
 			ejs: /* <https://o5p.me/wGv5nM> */ {
 				strict: true, // JS strict mode.

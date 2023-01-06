@@ -62,7 +62,6 @@ module.exports = {
 			 * @see https://o5p.me/dTTfse
 			 */
 			files: ['*.{js,cjs,mjs,jsx,ts,tsx}'],
-			plugins: ['prettier-plugin-jsdoc'],
 			options: {
 				jsdocAddDefaultToDescription: false,
 				jsdocCapitalizeDescription: true,
@@ -87,7 +86,6 @@ module.exports = {
 			 * @see https://o5p.me/BHsZj8
 			 */
 			files: ['*.php'],
-			plugins: ['@prettier/plugin-php'],
 			options: {
 				parser: 'php',
 				braceStyle: '1tbs',
@@ -102,7 +100,6 @@ module.exports = {
 			 * @see https://o5p.me/tuKNvU
 			 */
 			files: ['*.rb'],
-			plugins: ['@prettier/plugin-ruby'],
 			options: {
 				parser: 'ruby',
 				rubyPlugins: '',
@@ -116,7 +113,6 @@ module.exports = {
 			 * @see https://o5p.me/D0rlOV
 			 */
 			files: ['*.bash', '{,*.}Dockerfile'],
-			plugins: ['prettier-plugin-sh'],
 			options: {
 				parser: 'sh',
 				binaryNextLine: false,
@@ -139,7 +135,6 @@ module.exports = {
 			 * @see https://o5p.me/kYq5bx
 			 */
 			files: ['*.sql'],
-			plugins: ['prettier-plugin-sql'],
 			options: {
 				parser: 'sql',
 				commaPosition: 'after',
@@ -166,7 +161,6 @@ module.exports = {
 			 * @see https://o5p.me/OiLPzn
 			 */
 			files: ['*.xml'],
-			plugins: ['@prettier/plugin-xml'],
 			options: {
 				parser: 'xml',
 				xmlSelfClosingSpace: true,
@@ -180,7 +174,6 @@ module.exports = {
 			 * @see https://o5p.me/1fqazf
 			 */
 			files: ['*.ini'],
-			plugins: ['prettier-plugin-ini'],
 			options: {
 				parser: 'ini',
 				iniSpaceAroundEquals: true,
@@ -193,7 +186,6 @@ module.exports = {
 			 * @see https://o5p.me/IyzRSp
 			 */
 			files: ['*.properties', '*.env{,.*}'],
-			plugins: ['prettier-plugin-properties'],
 			options: {
 				parser: 'dot-properties',
 				keySeparator: '=',

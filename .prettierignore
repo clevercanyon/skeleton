@@ -8,6 +8,11 @@
 # @note Only `<custom:start.../custom:end>` will be preserved below.
 ##
 
+# EJS unsupported at this time.
+# @todo Build or find an EJS plugin.
+
+*.ejs
+
 ##
 # Customizations.
 # <custom:start>
