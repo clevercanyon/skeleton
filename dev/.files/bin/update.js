@@ -202,7 +202,7 @@ class Project {
 				}
 			}
 			if (!this.args.dryRun) {
-				await u.npmVersionPatch((this.args.message + ' [npm:%s][p]').trim());
+				await u.npmVersionPatch((this.args.message + ' [p][npm:v%s]').trim());
 			}
 		}
 
