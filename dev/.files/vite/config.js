@@ -28,7 +28,9 @@ import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
 import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
 import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
 
-import aliases from './includes/aliases.js';
+import { createRequire } from 'node:module';
+import importAliases from './includes/aliases.js';
+const require = createRequire(import.meta.url);
 
 /**
  * Defines Vite configuration.
@@ -196,7 +198,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 	 */
 	const pluginBasicSSLConfig = pluginBasicSSL();
 	const pluginEJSConfig = pluginEJS(
-		{ $build: { pkg, mode, env, projDir } },
+		{ $build: { require, pkg, mode, env, projDir } },
 		{
 			ejs: /* <https://o5p.me/wGv5nM> */ {
 				strict: true, // JS strict mode.
@@ -208,7 +210,11 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 
 				root: [srcDir], // For includes with an absolute path.
 				views: /* For includes with a relative path — includes utilities. */ [
-					path.resolve(srcDir, './resources/ejs-views'),
+					//
+					path.resolve(srcDir, './resources/ejs-views'), // Our standard location for internal EJS views.
+					path.resolve(srcDir, './cargo/assets/ejs-views'), // Our standard location for distributed EJS views.
+
+					// If this package is using `@clevercanyon/utilities` we can also leverage EJS fallback utility views.
 					...(fs.existsSync(path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/assets/ejs-views'))
 						? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/assets/ejs-views')]
 						: []),
@@ -269,7 +275,7 @@ export default async ({ mode } /* { command, mode, ssrBuild } */, projConfig = {
 		base: appBasePath + '/', // Analagous to `<base href="/">` — leading & trailing slash.
 
 		appType: isCMA ? 'custom' : 'mpa', // MPA = multipage app: <https://o5p.me/ZcTkEv>.
-		resolve: { alias: aliases }, // See: `../typescript/config.json` and `./includes/aliases.js`.
+		resolve: { alias: importAliases }, // See: `../typescript/config.json` and `./includes/aliases.js`.
 
 		envDir: path.relative(srcDir, envsDir), // Relative to `root` directory.
 		envPrefix: appEnvPrefix, // Environment vars w/ this prefix become a part of the app.
