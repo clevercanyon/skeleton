@@ -396,7 +396,7 @@ class u {
 
 	static async gitAddCommit(message) {
 		await spawn('git', ['add', '--all'], noisySpawnCfg);
-		await spawn('git', ['commit', '--message', message + ' [robotic]'], noisySpawnCfg);
+		await spawn('git', ['commit', '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]'], noisySpawnCfg);
 	}
 
 	static async gitPush() {
@@ -458,7 +458,7 @@ class u {
 	}
 
 	static async npmVersionPatch(message) {
-		await spawn('npm', ['version', 'patch', '--message', message + ' [robotic]'], noisySpawnCfg);
+		await spawn('npm', ['version', 'patch', '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]'], noisySpawnCfg);
 	}
 
 	static async npmPublish() {
