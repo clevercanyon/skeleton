@@ -8,6 +8,8 @@
  */
 /* eslint-env es2021, node */
 
+import _ from 'lodash';
+
 import fs from 'node:fs';
 import path from 'node:path';
 import { dirname } from 'desm';
@@ -21,6 +23,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import spawn from 'spawn-please';
+import { Octokit } from '@octokit/core';
 import dotenvVaultCore from 'dotenv-vault-core';
 
 const __dirname = dirname(import.meta.url);
@@ -38,6 +41,8 @@ const noisySpawnCfg = {
 	stdout: (buffer) => echo(chalk.white(buffer.toString())),
 	stderr: (buffer) => echo(chalk.gray(buffer.toString())),
 };
+const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
+
 const envFiles = {
 	main: path.resolve(projDir, './dev/.envs/.env'),
 	dev: path.resolve(projDir, './dev/.envs/.env.dev'),
@@ -45,6 +50,8 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
+const octokit = new Octokit({ auth: process.env.C10N_GITHUB_TOKEN });
+
 const c10nLogo = path.resolve(__dirname, '../assets/brands/c10n/logo.png');
 const c10nLogoDev = path.resolve(__dirname, '../assets/brands/c10n/logo-dev.png');
 
@@ -316,6 +323,80 @@ class u {
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
 		return str;
+	}
+
+	/*
+	 * Git utilities.
+	 */
+
+	static async isGitRepo() {
+		try {
+			return 'true' === String(await spawn('git', ['rev-parse', '--is-inside-work-tree'], quietSpawnCfg)).trim();
+		} catch {
+			return false;
+		}
+	}
+
+	static async githubRemote() {
+		const url = String(await spawn('git', ['remote', 'get-url', 'origin'], quietSpawnCfg)).trim();
+
+		let m = null; // Initialize.
+		if (
+			(m = /^git@github(?:\.com)?:([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url)) || //
+			(m = /^https?:\/\/github.com\/([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))
+		) {
+			return { owner: m[1], repo: m[2] };
+		}
+		return { owner: '', repo: '' };
+	}
+
+	static async githubEnvs() {
+		const envs = {}; // Initialize.
+		const remote = await u.githubRemote();
+
+		const r = await octokit.request('GET /repos/{owner}/{repo}/environments', {
+			owner: remote.owner,
+			repo: remote.repo,
+		});
+		for (const env of r.environments) {
+			envs[env.name] = env;
+		}
+		return envs;
+	}
+
+	static async githubCreateEnvs() {
+		const remote = await u.githubRemote();
+		const githubEnvs = await u.githubEnvs();
+
+		for (const [envName] of Object.entries(envFiles)) {
+			if (githubEnvs[envName]) {
+				continue; // Do not recreate or modify existing envs.
+			}
+			await octokit.request('PUT /repos/{owner}/{repo}/environments/{environment_name}', {
+				owner: remote.owner,
+				repo: remote.repo,
+				environment_name: envName,
+
+				wait_timer: 0,
+				reviewers: null,
+				deployment_branch_policy: null,
+			});
+		}
+	}
+
+	static async githubPushEnvs() {
+		const githubEnvs = u.githubCreateEnvs();
+		const remote = await u.githubRemote();
+
+		for (const [envName] of Object.entries(envFiles)) {
+			await octokit.request('PUT /repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}', {
+				repository_id: 'REPOSITORY_ID',
+				environment_name: envName,
+				secret_name: 'SECRET_NAME',
+				encrypted_value: 'c2VjcmV0',
+				key_id: '012345678912345678',
+			});
+		}
 	}
 
 	/*
