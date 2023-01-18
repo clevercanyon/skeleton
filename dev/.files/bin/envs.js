@@ -430,6 +430,7 @@ class u {
 		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments{?per_page}', { owner, repo, per_page: 100 });
 
 		for await (const { data } of i6r) {
+			log(data);
 			for (const env of data.environments) {
 				envs[env.name] = env;
 			}
