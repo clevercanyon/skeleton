@@ -45,12 +45,7 @@ function :___strict_mode_closure___() {
         local last_command="${1:-}"
         local last_command_status_code="${2:-1}"
 
-        # Dividing lines are exactly 75 bytes in length.
         diagnostic_lines+=('---------------------------------------------------------------------------')
-        if [[ -n "${STRICT_MODE_STACK_TRACE_SCRIPT_DESCRIPTION:-}" ]]; then
-            diagnostic_lines+=("${STRICT_MODE_STACK_TRACE_SCRIPT_DESCRIPTION}")
-            diagnostic_lines+=('---------------------------------------------------------------------------')
-        fi
         diagnostic_lines+=('Error in '"${BASH_SOURCE[1]}"':'"${BASH_LINENO[0]}")
         diagnostic_lines+=('`'"${last_command}"'` exited with status `'"${last_command_status_code}"'`.')
 
