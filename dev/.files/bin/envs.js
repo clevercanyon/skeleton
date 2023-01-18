@@ -466,7 +466,7 @@ class u {
 		const { owner, repo } = await u.githubOrigin();
 		const repoEnvs = await u.githubRepoEnvs();
 
-		for (const [envName] of Object.entries(envFiles)) {
+		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
 			if (repoEnvs[envName]) {
 				continue; // Do not recreate or modify existing envs.
 			}
@@ -503,9 +503,11 @@ class u {
 
 		const envKeys = await u.extractKeys();
 		const { id: repoId } = await u.githubRepo();
+		log(repoId);
+		log(await u.githubRepo());
 		const { publicKeyId, publicKey } = await u.githubRepoPublicKey();
 
-		for (const [envName] of Object.entries(envFiles)) {
+		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
 			const envSecretsToDelete = await u.githubRepoEnvSecrets(repoId, envName);
 
 			for (const [envSecretName, envSecretValue] of Object.entries({
