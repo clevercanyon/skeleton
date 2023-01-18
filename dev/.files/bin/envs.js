@@ -484,6 +484,7 @@ class u {
 	static async githubEnsureRepoEnvs(opts = { dryRun: false }) {
 		const { owner, repo } = await u.githubOrigin();
 		const repoEnvs = await u.githubRepoEnvs();
+		log(repoEnvs);
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
 			if (repoEnvs[envName]) {
