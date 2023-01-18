@@ -24,8 +24,9 @@ import spawn from 'spawn-please';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { Octokit } from '@octokit/core';
-import sodium from 'libsodium-wrappers';
+import { Octokit as OctokitCore } from '@octokit/core';
+import { paginateRest as OctokitPluginPaginateRest } from '@octokit/plugin-paginate-rest';
+import sodium from 'libsodium-wrappers'; // Used to encrypt GitHub secret values.
 
 import dotenvVaultCore from 'dotenv-vault-core';
 
@@ -53,6 +54,7 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
+const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
 const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN });
 
 const c10nLogo = path.resolve(__dirname, '../assets/brands/c10n/logo.png');
