@@ -285,7 +285,7 @@ class u {
 			}
 		}
 		if (await u.isGitRepo()) {
-			u.githubPushRepoEnvs(opts);
+			await u.githubPushRepoEnvs(opts);
 		}
 	}
 
