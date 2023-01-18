@@ -425,7 +425,7 @@ class u {
 	static async githubRepoEnvs() {
 		const envs = {}; // Initialize.
 		const { owner, repo } = await u.githubOrigin();
-		const i6r = octokit.paginate.iterator(octokit.request('GET /repos/{owner}/{repo}/environments{?per_page}', { owner, repo, per_page: 100 }));
+		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments{?per_page}', { owner, repo, per_page: 100 });
 
 		for await (const { data } of i6r) {
 			for (const env of data.environments) {
@@ -437,7 +437,7 @@ class u {
 
 	static async githubRepoEnvSecrets(repoId, envName) {
 		const envSecrets = []; // Initialize.
-		const i6r = octokit.paginate.iterator(octokit.request('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 }));
+		const i6r = octokit.paginate.iterator('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 });
 
 		for await (const { data } of i6r) {
 			for (const envSecret of data.secrets) {
