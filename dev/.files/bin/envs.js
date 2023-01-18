@@ -400,28 +400,29 @@ class u {
 	 */
 
 	static async githubOrigin() {
+		let m = null; // Initialize array of matches.
 		const url = String(await spawn('git', ['remote', 'get-url', 'origin'], quietSpawnCfg)).trim();
 
-		let m = null; // Initialize.
-		if (
-			(m = /^git@github(?:\.com)?:([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url)) || //
-			(m = /^https?:\/\/github.com\/([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))
-		) {
+		if ((m = /^git@github(?:\.com)?:([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))) {
+			return { owner: m[1], repo: m[2] };
+		} else if ((m = /^https?:\/\/github.com\/([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))) {
 			return { owner: m[1], repo: m[2] };
 		}
-		throw new Error('Repo does not have a GitHub origin.');
+		throw new Error('githubOrigin: Repo does not have a GitHub origin.');
 	}
 
 	static async githubRepo() {
 		const { owner, repo } = await u.githubOrigin();
-		return (await octokit.request('GET /repos/{owner}/{repo}', { owner, repo })).data;
-	}
+		const r1 = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
+		const r2 = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', { owner, repo });
 
-	static async githubRepoPublicKey() {
-		const { owner, repo } = await u.githubOrigin();
-		const r = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', { owner, repo });
-
-		return { publicKeyId: r.data.key_id, publicKey: r.data.key };
+		if (typeof r1 !== 'object' || typeof r1.data !== 'object' || !r1.data.id) {
+			throw new Error('githubRepo: Failed to acquire GitHub repository’s data.');
+		}
+		if (typeof r2 !== 'object' || typeof r2.data !== 'object' || !r2.data.key_id || !r2.data.key) {
+			throw new Error('githubRepo: Failed to acquire GitHub repository’s public key.');
+		}
+		return { ...r1.data, publicKeyId: r2.data.key_id, publicKey: r2.data.key };
 	}
 
 	static async githubRepoEnvs() {
@@ -429,7 +430,13 @@ class u {
 		const { owner, repo } = await u.githubOrigin();
 		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments{?per_page}', { owner, repo, per_page: 100 });
 
+		if (typeof i6r !== 'object') {
+			throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environments.');
+		}
 		for await (const { data } of i6r) {
+			if (typeof data !== 'object') {
+				throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environment data.');
+			}
 			for (const env of data.environments || []) {
 				envs[env.name] = env;
 			}
@@ -441,7 +448,13 @@ class u {
 		const envSecrets = []; // Initialize.
 		const i6r = octokit.paginate.iterator('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 });
 
+		if (typeof i6r !== 'object') {
+			throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secrets for an environment.');
+		}
 		for await (const { data } of i6r) {
+			if (typeof data !== 'object') {
+				throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secret data for an environment.');
+			}
 			for (const envSecret of data.secrets || []) {
 				envSecrets[envSecret.name] = envSecret;
 			}
@@ -454,7 +467,13 @@ class u {
 		const { owner, repo } = await u.githubOrigin();
 		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies{?per_page}', { owner, repo, envName, per_page: 100 });
 
+		if (typeof i6r !== 'object') {
+			throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policies for an environment.');
+		}
 		for await (const { data } of i6r) {
+			if (typeof data !== 'object') {
+				throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policy data for an environment.');
+			}
 			for (const envBranchPolicy of data.branch_policies || []) {
 				envBranchPolicies[envBranchPolicy.name] = envBranchPolicy;
 			}
@@ -484,7 +503,10 @@ class u {
 							  }
 							: null,
 				});
-				if ('prod' === envName) {
+			}
+			if ('prod' === envName) {
+				log(chalk.gray('Creating `main` branch policy for `' + envName + '` repo env at GitHub.'));
+				if (!opts.dryRun) {
 					if (!(await u.githubRepoEnvBranchPolicies(envName)).main) {
 						await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
 							owner,
@@ -501,9 +523,8 @@ class u {
 	static async githubPushRepoEnvs(opts = { dryRun: false }) {
 		await u.githubEnsureRepoEnvs(opts);
 
-		const envKeys = await u.extractKeys();
-		const { id: repoId } = await u.githubRepo();
-		const { publicKeyId, publicKey } = await u.githubRepoPublicKey();
+		const envKeys = await u.extractKeys(); // Extracts secret keys that unlock environments.
+		const { id: repoId, publicKeyId: repoPublicKeyId, publicKey: repoPublicKey } = await u.githubRepo();
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
 			const envSecretsToDelete = await u.githubRepoEnvSecrets(repoId, envName);
@@ -515,7 +536,7 @@ class u {
 				delete envSecretsToDelete[envSecretName]; // Don't delete.
 
 				const encryptedEnvSecretValue = await sodium.ready.then(() => {
-					const sodiumKey = sodium.from_base64(publicKey, sodium.base64_variants.ORIGINAL);
+					const sodiumKey = sodium.from_base64(repoPublicKey, sodium.base64_variants.ORIGINAL);
 					return sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(envSecretValue), sodiumKey), sodium.base64_variants.ORIGINAL);
 				});
 				log(chalk.gray('Updating `' + envSecretName + '` secret in the `' + envName + '` repo env at GitHub.'));
@@ -524,7 +545,7 @@ class u {
 						repoId,
 						envName,
 						envSecretName,
-						key_id: publicKeyId,
+						key_id: repoPublicKeyId,
 						encrypted_value: encryptedEnvSecretValue,
 					});
 				}
