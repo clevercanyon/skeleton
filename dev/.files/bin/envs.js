@@ -437,6 +437,7 @@ class u {
 			if (typeof data !== 'object') {
 				throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environment data.');
 			}
+			log(data);
 			for (const env of data.environments || []) {
 				envs[env.name] = env;
 			}
@@ -445,7 +446,7 @@ class u {
 	}
 
 	static async githubRepoEnvSecrets(repoId, envName) {
-		const envSecrets = []; // Initialize.
+		const envSecrets = {}; // Initialize.
 		const i6r = octokit.paginate.iterator('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 });
 
 		if (typeof i6r !== 'object') {
@@ -484,7 +485,6 @@ class u {
 	static async githubEnsureRepoEnvs(opts = { dryRun: false }) {
 		const { owner, repo } = await u.githubOrigin();
 		const repoEnvs = await u.githubRepoEnvs();
-		log(repoEnvs);
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
 			if (repoEnvs[envName]) {
