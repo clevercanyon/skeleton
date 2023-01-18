@@ -19,11 +19,14 @@ import coloredBox from 'boxen';
 import terminalImage from 'term-img';
 import chalk, { supportsColor } from 'chalk';
 
+import spawn from 'spawn-please';
+
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import spawn from 'spawn-please';
 import { Octokit } from '@octokit/core';
+import sodium from 'libsodium-wrappers';
+
 import dotenvVaultCore from 'dotenv-vault-core';
 
 const __dirname = dirname(import.meta.url);
@@ -50,7 +53,7 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
-const octokit = new Octokit({ auth: process.env.C10N_GITHUB_TOKEN });
+const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN });
 
 const c10nLogo = path.resolve(__dirname, '../assets/brands/c10n/logo.png');
 const c10nLogoDev = path.resolve(__dirname, '../assets/brands/c10n/logo-dev.png');
@@ -61,26 +64,26 @@ const c10nLogoDev = path.resolve(__dirname, '../assets/brands/c10n/logo-dev.png'
  */
 
 /**
- * Setup command.
+ * Install command.
  */
-class Setup {
+class Install {
 	constructor(args) {
 		this.args = args;
 	}
 
 	async run() {
 		if (this.args['new']) {
-			await this.setupNew();
+			await this.installNew();
 		} else {
-			await this.setup();
+			await this.install();
 		}
 		if (this.args.dryRun) {
 			log(chalk.cyanBright('Dry run. This was all a simulation.'));
 		}
 	}
 
-	async setupNew() {
-		log(chalk.green('Setting up all new envs.'));
+	async installNew() {
+		log(chalk.green('Installing all new envs.'));
 
 		log(chalk.gray('Deleting `.env.me`, `.env.vault`.'));
 		if (!this.args.dryRun) {
@@ -99,12 +102,15 @@ class Setup {
 		log(chalk.gray('Encrypting all envs.'));
 		await u.encrypt({ dryRun: this.args.dryRun });
 
-		log(await u.finale('Success', 'New setup complete.'));
+		log(await u.finale('Success', 'New install complete.'));
 	}
 
-	async setup() {
-		log(chalk.green('Setting up all envs.'));
+	async install() {
+		log(chalk.green('Installing all envs.'));
 
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
 		if (!fs.existsSync(path.resolve(projDir, './.env.me'))) {
 			log(chalk.gray('Running `dotenv-vault login`, `open`.'));
 			if (!this.args.dryRun) {
@@ -116,7 +122,7 @@ class Setup {
 			log(chalk.gray('Pulling all envs.'));
 			await u.pull({ dryRun: this.args.dryRun });
 		}
-		log(await u.finale('Success', 'Setup complete.'));
+		log(await u.finale('Success', 'Install complete.'));
 	}
 }
 
@@ -130,6 +136,10 @@ class Push {
 
 	async run() {
 		log(chalk.green('Pushing all envs.'));
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
 		await u.push({ dryRun: this.args.dryRun });
 
 		log(await u.finale('Success', 'Push complete.'));
@@ -150,6 +160,10 @@ class Pull {
 
 	async run() {
 		log(chalk.green('Pulling all envs.'));
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
 		await u.pull({ dryRun: this.args.dryRun });
 
 		log(await u.finale('Success', 'Pull complete.'));
@@ -170,6 +184,10 @@ class Keys {
 
 	async run() {
 		log(chalk.green('Retrieving keys for all envs.'));
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
 		await u.keys({ dryRun: this.args.dryRun });
 
 		log(await u.finale('Success', 'Copy keys from list above.'));
@@ -190,6 +208,10 @@ class Encrypt {
 
 	async run() {
 		log(chalk.green('Encrypting all envs.'));
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
 		await u.encrypt({ dryRun: this.args.dryRun });
 
 		log(await u.finale('Success', 'Encryption complete.'));
@@ -210,6 +232,10 @@ class Decrypt {
 
 	async run() {
 		log(chalk.green('Decrypting env(s).'));
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
 		await u.decrypt({ keys: this.args.keys, dryRun: this.args.dryRun });
 
 		log(await u.finale('Success', 'Decryption complete.'));
@@ -233,6 +259,14 @@ class u {
 	}
 
 	/*
+	 * Vault utilities.
+	 */
+
+	static async isEnvsVault() {
+		return fs.existsSync(path.resolve(projDir, './.env.vault'));
+	}
+
+	/*
 	 * Push utilities.
 	 */
 
@@ -249,6 +283,9 @@ class u {
 			if (!opts.dryRun) {
 				await spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes'], noisySpawnCfg);
 			}
+		}
+		if (await u.isGitRepo()) {
+			u.githubPushRepoEnvs(opts);
 		}
 	}
 
@@ -281,6 +318,21 @@ class u {
 		}
 	}
 
+	static async extractKeys() {
+		const keys = {}; // Initialize.
+
+		log(chalk.gray('Extracting `dotenv-vault keys`.'));
+		const output = await spawn('npx', ['dotenv-vault', 'keys', '--yes'], quietSpawnCfg);
+
+		let _m = null; // Initialize.
+		const regexp = /\bdotenv:\/\/:key_.+?\?environment=([^\s]+)/giu;
+
+		while ((_m = regexp.exec(output)) !== null) {
+			keys[_m[1]] = _m[0];
+		}
+		return keys;
+	}
+
 	/*
 	 * Encryption utilities.
 	 */
@@ -291,6 +343,10 @@ class u {
 			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 		}
 	}
+
+	/*
+	 * Decryption utilities.
+	 */
 
 	static async decrypt(opts = { keys: [], dryRun: false }) {
 		for (const key of opts.keys) {
@@ -337,7 +393,11 @@ class u {
 		}
 	}
 
-	static async githubRemote() {
+	/*
+	 * GitHub utilities.
+	 */
+
+	static async githubOrigin() {
 		const url = String(await spawn('git', ['remote', 'get-url', 'origin'], quietSpawnCfg)).trim();
 
 		let m = null; // Initialize.
@@ -347,68 +407,106 @@ class u {
 		) {
 			return { owner: m[1], repo: m[2] };
 		}
-		return { owner: '', repo: '' };
+		throw new Error('Repo does not have a GitHub origin.');
 	}
 
-	static async githubEnvs() {
-		const envs = {}; // Initialize.
-		const remote = await u.githubRemote();
+	static async githubRepo() {
+		const { owner, repo } = await u.githubOrigin();
+		return await octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
+	}
 
-		const r = await octokit.request('GET /repos/{owner}/{repo}/environments', {
-			owner: remote.owner,
-			repo: remote.repo,
-		});
-		for (const env of r.environments) {
-			envs[env.name] = env;
+	static async githubRepoPublicKey() {
+		const { owner, repo } = await u.githubOrigin();
+		const r = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', { owner, repo });
+
+		return { publicKeyId: r.key_id, publicKey: r.key };
+	}
+
+	static async githubRepoEnvs() {
+		const envs = {}; // Initialize.
+		const { owner, repo } = await u.githubOrigin();
+		const i6r = octokit.paginate.iterator(octokit.request('GET /repos/{owner}/{repo}/environments{?per_page}', { owner, repo, per_page: 100 }));
+
+		for await (const { data } of i6r) {
+			for (const env of data.environments) {
+				envs[env.name] = env;
+			}
 		}
 		return envs;
 	}
 
-	static async githubCreateEnvs() {
-		const remote = await u.githubRemote();
-		const githubEnvs = await u.githubEnvs();
+	static async githubRepoEnvSecrets(repoId, envName) {
+		const envSecrets = []; // Initialize.
+		const i6r = octokit.paginate.iterator(octokit.request('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 }));
+
+		for await (const { data } of i6r) {
+			for (const envSecret of data.secrets) {
+				envSecrets[envSecret.name] = envSecret;
+			}
+		}
+		return envSecrets;
+	}
+
+	static async githubEnsureRepoEnvs(opts = { dryRun: false }) {
+		const { owner, repo } = await u.githubOrigin();
+		const repoEnvs = await u.githubRepoEnvs();
 
 		for (const [envName] of Object.entries(envFiles)) {
-			if (githubEnvs[envName]) {
+			if (repoEnvs[envName]) {
 				continue; // Do not recreate or modify existing envs.
 			}
-			await octokit.request('PUT /repos/{owner}/{repo}/environments/{environment_name}', {
-				owner: remote.owner,
-				repo: remote.repo,
-				environment_name: envName,
-
-				wait_timer: 0,
-				reviewers: null,
-				deployment_branch_policy: null,
-			});
+			log(chalk.gray('Creating `' + envName + '` repo env at GitHub.'));
+			if (!opts.dryRun) {
+				await octokit.request('PUT /repos/{owner}/{repo}/environments/{envName}', {
+					owner,
+					repo,
+					envName,
+					wait_timer: 0,
+					reviewers: null,
+					deployment_branch_policy: null,
+				});
+			}
 		}
 	}
 
-	static async githubPushEnvs() {
-		const githubEnvs = u.githubCreateEnvs();
-		const remote = await u.githubRemote();
+	static async githubPushRepoEnvs(opts = { dryRun: false }) {
+		await u.githubEnsureRepoEnvs(opts);
+
+		const envKeys = await u.extractKeys();
+		const { id: repoId } = await u.githubRepo();
+		const { publicKeyId, publicKey } = await u.githubRepoPublicKey();
 
 		for (const [envName] of Object.entries(envFiles)) {
-			await octokit.request('PUT /repositories/{repository_id}/environments/{environment_name}/secrets/{secret_name}', {
-				repository_id: 'REPOSITORY_ID',
-				environment_name: envName,
-				secret_name: 'SECRET_NAME',
-				encrypted_value: 'c2VjcmV0',
-				key_id: '012345678912345678',
-			});
+			const envSecretsToDelete = await u.githubRepoEnvSecrets(repoId, envName);
+
+			for (const [envSecretName, envSecretValue] of Object.entries({
+				['USER_DOTENV_KEY_MAIN']: envKeys.main,
+				['USER_DOTENV_KEY_' + envName.toUpperCase()]: envKeys[envName],
+			})) {
+				delete envSecretsToDelete[envSecretName]; // Don't delete.
+
+				const encryptedEnvSecretValue = await sodium.ready.then(() => {
+					const sodiumKey = sodium.from_base64(publicKey, sodium.base64_variants.ORIGINAL);
+					return sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(envSecretValue), sodiumKey), sodium.base64_variants.ORIGINAL);
+				});
+				log(chalk.gray('Updating `' + envSecretName + '` secret in the `' + envName + '` repo env at GitHub.'));
+				if (!opts.dryRun) {
+					await octokit.request('PUT /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', {
+						repoId,
+						envName,
+						envSecretName,
+						key_id: publicKeyId,
+						encrypted_value: encryptedEnvSecretValue,
+					});
+				}
+			}
+			for (const [envSecretName] of Object.entries(envSecretsToDelete)) {
+				log(chalk.gray('Deleting `' + envSecretName + '` secret in the `' + envName + '` repo env at GitHub.'));
+				if (!opts.dryRun) {
+					await octokit.request('DELETE /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', { repoId, envName, envSecretName });
+				}
+			}
 		}
-	}
-
-	/*
-	 * NPM utilities.
-	 */
-
-	static async npmLifecycleEvent() {
-		return process.env.npm_lifecycle_event || ''; // NPM script name.
-	}
-
-	static async npmLifecycleScript() {
-		return process.env.npm_lifecycle_script || ''; // NPM script value.
 	}
 
 	/**
@@ -474,8 +572,8 @@ class u {
 (async () => {
 	await yargs(hideBin(process.argv))
 		.command({
-			command: 'setup',
-			desc: 'Sets up all envs for dotenv vault.',
+			command: 'install',
+			desc: 'Installs all envs for dotenv vault.',
 			builder: (yargs) => {
 				yargs
 					.options({
@@ -484,7 +582,7 @@ class u {
 							requiresArg: false,
 							demandOption: false,
 							default: false,
-							description: 'Set up *new* envs?',
+							description: 'Perform a new (fresh) install?',
 						},
 						pull: {
 							type: 'boolean',
@@ -494,7 +592,7 @@ class u {
 							description: // prettier-ignore
 								'When not `--new`, pull latest envs from dotenv vault?' +
 								' If not set explicitly, only pulls when main env is missing.' +
-								' Note: This option has no effect when `--new`.',
+								' Note: This option has no effect when `--new` is given.',
 						},
 						dryRun: {
 							type: 'boolean',
@@ -512,7 +610,7 @@ class u {
 					});
 			},
 			handler: async (args) => {
-				await new Setup(args).run();
+				await new Install(args).run();
 			},
 		})
 		.command({

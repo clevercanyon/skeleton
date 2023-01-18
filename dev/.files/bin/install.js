@@ -87,9 +87,9 @@ class Project {
 		}
 
 		if (await u.isEnvsVault()) {
-			log(chalk.green('Setting up `.env.vault`.'));
+			log(chalk.green('Installing Dotenv Vault variables.'));
 			if (!this.args.dryRun) {
-				await u.envsSetupOrDecrypt({ mode: this.args.mode });
+				await u.envsInstallOrDecrypt({ mode: this.args.mode });
 			}
 		}
 
@@ -142,42 +142,48 @@ class u {
 		return fs.existsSync(path.resolve(projDir, './.env.vault'));
 	}
 
-	static async envsSetupOrDecrypt(opts = { mode: 'prod' }) {
+	static async envsInstallOrDecrypt(opts = { mode: 'prod' }) {
 		if (!(await u.isInteractive()) /* Use keys. */) {
 			const env = process.env; // Shorter reference.
-			const keys = [_.get(env, 'C10N_DOTENV_KEY_MAIN', '')];
+
+			if (!env.USER_DOTENV_KEY_MAIN) {
+				throw new Error('Missing `USER_DOTENV_KEY_MAIN` env var.');
+			}
+			const keys = [env.USER_DOTENV_KEY_MAIN];
 
 			if ('dev' === opts.mode) {
-				keys.push(_.get(env, 'C10N_DOTENV_KEY_DEV', ''));
-			} else if ('ci' === opts.mode) {
-				keys.push(_.get(env, 'C10N_DOTENV_KEY_CI', ''));
-			} else if ('stage' === opts.mode) {
-				keys.push(_.get(env, 'C10N_DOTENV_KEY_STAGE', ''));
-			} else if ('prod' === opts.mode) {
-				keys.push(_.get(env, 'C10N_DOTENV_KEY_PROD', ''));
-			}
-			for (const key of keys) {
-				if (!key) {
-					throw new Error('Missing env key(s).');
+				if (!env.USER_DOTENV_KEY_DEV) {
+					throw new Error('Missing `USER_DOTENV_KEY_DEV` env var.');
 				}
+				keys.push(env.USER_DOTENV_KEY_DEV);
+				//
+			} else if ('ci' === opts.mode) {
+				if (!env.USER_DOTENV_KEY_CI) {
+					throw new Error('Missing `USER_DOTENV_KEY_CI` env var.');
+				}
+				keys.push(env.USER_DOTENV_KEY_CI);
+				//
+			} else if ('stage' === opts.mode) {
+				if (!env.USER_DOTENV_KEY_STAGE) {
+					throw new Error('Missing `USER_DOTENV_KEY_STAGE` env var.');
+				}
+				keys.push(env.USER_DOTENV_KEY_STAGE);
+				//
+			} else if ('prod' === opts.mode) {
+				if (!env.USER_DOTENV_KEY_PROD) {
+					throw new Error('Missing `USER_DOTENV_KEY_PROD` env var.');
+				}
+				keys.push(env.USER_DOTENV_KEY_PROD);
 			}
 			await spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys], noisySpawnCfg);
 		} else {
-			await spawn(path.resolve(binDir, './envs.js'), ['setup'], noisySpawnCfg);
+			await spawn(path.resolve(binDir, './envs.js'), ['install'], noisySpawnCfg);
 		}
 	}
 
 	/*
 	 * NPM utilities.
 	 */
-
-	static async npmLifecycleEvent() {
-		return process.env.npm_lifecycle_event || ''; // NPM script name.
-	}
-
-	static async npmLifecycleScript() {
-		return process.env.npm_lifecycle_script || ''; // NPM script value.
-	}
 
 	static async npmInstall() {
 		await spawn('npm', ['install'], noisySpawnCfg);

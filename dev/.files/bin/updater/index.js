@@ -71,7 +71,9 @@ export default async ({ projDir, args }) => {
 	 * Updates semi-immutable dotfiles.
 	 */
 	for (const relPath of [
-		'./.github/FUNDING.yml', //
+		'./.github/workflows/ci.yml',
+		'./.github/dependabot.yml',
+		'./.github/FUNDING.yml',
 		'./.browserslistrc',
 		'./.editorconfig',
 		'./.eslintrc.cjs',

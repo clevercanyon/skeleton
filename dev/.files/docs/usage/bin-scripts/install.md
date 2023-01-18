@@ -10,7 +10,7 @@ $ npm run install:project
 # Mode can be one of: `dev`, `ci`, `stage`, or `prod` (default).
 ```
 
-You will need a [Dotenv Vault](https://www.dotenv.org) login. Please contact `@jaswrks` to request access. You must also have an environment meeting all [prerequisites](./prerequisites.md), along with the additional credentials noted at the bottom of the prerequisites article.
+You will need a [Dotenv Vault](https://www.dotenv.org) login. Please contact `@jaswrks` or `@brucewrks` to request access. You must also have an environment meeting all [prerequisites](./prerequisites.md), along with the additional credentials noted at the bottom of the prerequisites article.
 
 ## Noninteractive Installs (e.g., CI)
 
@@ -21,9 +21,9 @@ $ npm run install:project -- --mode=ci
 
 In noninteractive installs you must have the following environment variables. You must also have an environment meeting all of these [prerequisites](./prerequisites.md), along with the additional credentials noted at the bottom of the prerequisites article.
 
-```
-C10N_DOTENV_KEY_MAIN
-C10N_DOTENV_KEY_CI (or another, matching `mode`)
+```bash
+USER_DOTENV_KEY_MAIN
+USER_DOTENV_KEY_CI # Where `_CI` matches `mode`.
 ```
 
 These keys can be retrieved by running the following script interactively.
