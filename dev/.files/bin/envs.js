@@ -476,7 +476,6 @@ class u {
 					owner,
 					repo,
 					envName,
-					wait_timer: 0,
 					deployment_branch_policy:
 						'prod' === envName
 							? {
