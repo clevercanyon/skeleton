@@ -434,10 +434,10 @@ class u {
 			throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environments.');
 		}
 		for await (const { data } of i6r) {
-			if (!(data instanceof Array)) {
-				throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environment data.');
-			}
 			for (const env of data) {
+				if (typeof env !== 'object' || !env.name) {
+					throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environment data.');
+				}
 				envs[env.name] = env;
 			}
 		}
@@ -452,10 +452,10 @@ class u {
 			throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secrets for an environment.');
 		}
 		for await (const { data } of i6r) {
-			if (!(data instanceof Array)) {
-				throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secret data for an environment.');
-			}
 			for (const envSecret of data) {
+				if (typeof envSecret !== 'object' || !envSecret.name) {
+					throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secret data for an environment.');
+				}
 				envSecrets[envSecret.name] = envSecret;
 			}
 		}
@@ -471,10 +471,10 @@ class u {
 			throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policies for an environment.');
 		}
 		for await (const { data } of i6r) {
-			if (!(data instanceof Array)) {
-				throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policy data for an environment.');
-			}
 			for (const envBranchPolicy of data) {
+				if (typeof envBranchPolicy !== 'object' || !envBranchPolicy.name) {
+					throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policy data for an environment.');
+				}
 				envBranchPolicies[envBranchPolicy.name] = envBranchPolicy;
 			}
 		}
