@@ -452,11 +452,10 @@ class u {
 			throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secrets for an environment.');
 		}
 		for await (const { data } of i6r) {
-			log(data);
-			if (typeof data !== 'object') {
+			if (!(data instanceof Array)) {
 				throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secret data for an environment.');
 			}
-			for (const envSecret of data.secrets || []) {
+			for (const envSecret of data) {
 				envSecrets[envSecret.name] = envSecret;
 			}
 		}
@@ -472,10 +471,10 @@ class u {
 			throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policies for an environment.');
 		}
 		for await (const { data } of i6r) {
-			if (typeof data !== 'object') {
+			if (!(data instanceof Array)) {
 				throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policy data for an environment.');
 			}
-			for (const envBranchPolicy of data.branch_policies || []) {
+			for (const envBranchPolicy of data) {
 				envBranchPolicies[envBranchPolicy.name] = envBranchPolicy;
 			}
 		}
@@ -505,17 +504,15 @@ class u {
 							: null,
 				});
 			}
-			if ('prod' === envName) {
+			if ('prod' === envName && !(await u.githubRepoEnvBranchPolicies(envName)).main) {
 				log(chalk.gray('Creating `main` branch policy for `' + envName + '` repo env at GitHub.'));
 				if (!opts.dryRun) {
-					if (!(await u.githubRepoEnvBranchPolicies(envName)).main) {
-						await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
-							owner,
-							repo,
-							envName,
-							name: 'main',
-						});
-					}
+					await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
+						owner,
+						repo,
+						envName,
+						name: 'main',
+					});
 				}
 			}
 		}
