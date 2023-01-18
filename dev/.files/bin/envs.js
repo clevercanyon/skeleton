@@ -434,11 +434,10 @@ class u {
 			throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environments.');
 		}
 		for await (const { data } of i6r) {
-			if (typeof data !== 'object') {
+			if (!(data instanceof Array)) {
 				throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environment data.');
 			}
-			log(data);
-			for (const env of data.environments || []) {
+			for (const env of data) {
 				envs[env.name] = env;
 			}
 		}
@@ -453,6 +452,7 @@ class u {
 			throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secrets for an environment.');
 		}
 		for await (const { data } of i6r) {
+			log(data);
 			if (typeof data !== 'object') {
 				throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secret data for an environment.');
 			}
