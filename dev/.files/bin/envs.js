@@ -442,11 +442,24 @@ class u {
 		const i6r = octokit.paginate.iterator('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 });
 
 		for await (const { data } of i6r) {
-			for (const envSecret of data.secrets) {
+			for (const envSecret of data.secrets || []) {
 				envSecrets[envSecret.name] = envSecret;
 			}
 		}
 		return envSecrets;
+	}
+
+	static async githubRepoEnvBranchPolicies(envName) {
+		const envBranchPolicies = {}; // Initialize.
+		const { owner, repo } = await u.githubOrigin();
+		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies{?per_page}', { owner, repo, envName, per_page: 100 });
+
+		for await (const { data } of i6r) {
+			for (const envBranchPolicy of data.branch_policies || []) {
+				envBranchPolicies[envBranchPolicy.name] = envBranchPolicy;
+			}
+		}
+		return envBranchPolicies;
 	}
 
 	static async githubEnsureRepoEnvs(opts = { dryRun: false }) {
@@ -464,9 +477,24 @@ class u {
 					repo,
 					envName,
 					wait_timer: 0,
-					reviewers: null,
-					deployment_branch_policy: null,
+					deployment_branch_policy:
+						'prod' === envName
+							? {
+									protected_branches: false,
+									custom_branch_policies: true,
+							  }
+							: null,
 				});
+				if ('prod' === envName) {
+					if (!(await u.githubRepoEnvBranchPolicies(envName)).main) {
+						await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
+							owner,
+							repo,
+							envName,
+							name: 'main',
+						});
+					}
+				}
 			}
 		}
 	}
