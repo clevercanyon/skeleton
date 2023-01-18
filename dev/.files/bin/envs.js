@@ -414,14 +414,14 @@ class u {
 
 	static async githubRepo() {
 		const { owner, repo } = await u.githubOrigin();
-		return await octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
+		return (await octokit.request('GET /repos/{owner}/{repo}', { owner, repo })).data;
 	}
 
 	static async githubRepoPublicKey() {
 		const { owner, repo } = await u.githubOrigin();
 		const r = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', { owner, repo });
 
-		return { publicKeyId: r.key_id, publicKey: r.key };
+		return { publicKeyId: r.data.key_id, publicKey: r.data.key };
 	}
 
 	static async githubRepoEnvs() {
@@ -503,8 +503,6 @@ class u {
 
 		const envKeys = await u.extractKeys();
 		const { id: repoId } = await u.githubRepo();
-		log(repoId);
-		log(await u.githubRepo());
 		const { publicKeyId, publicKey } = await u.githubRepoPublicKey();
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
