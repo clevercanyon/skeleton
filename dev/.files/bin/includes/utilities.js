@@ -342,7 +342,7 @@ export default class u {
 				has_downloads: true,
 
 				// allow_forking: false,
-				// Cannot configure this here.
+				// Cannot configure this via API.
 				// Disabled at org level via GitHub.com.
 
 				allow_update_branch: true,
@@ -361,10 +361,6 @@ export default class u {
 
 				web_commit_signoff_required: false,
 
-				security_and_analysis: {
-					secret_scanning: { status: 'enabled' },
-					secret_scanning_push_protection: { status: 'enabled' },
-				},
 				homepage: pkg.homepage || defaultHomepage,
 				description: pkg.description || defaultDescription,
 				is_template: await u.isPkgRepoTemplate(),
