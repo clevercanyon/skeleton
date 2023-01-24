@@ -82,13 +82,13 @@ class Install {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Installing all new envs.'));
+		log(chalk.green('Installing all new Dotenv Vault envs.'));
 
 		/**
 		 * Deletes old files so a new install can begin.
 		 */
 
-		log(chalk.gray('Deleting `.env.me`, `.env.vault`.'));
+		log(chalk.gray('Deleting any existing `.env.me`, `.env.vault` files.'));
 		if (!this.args.dryRun) {
 			await fsp.rm(path.resolve(projDir, './.env.me'), { force: true });
 			await fsp.rm(path.resolve(projDir, './.env.vault'), { force: true });
@@ -98,7 +98,7 @@ class Install {
 		 * Logs the current user into Dotenv Vault.
 		 */
 
-		log(chalk.gray('Running `dotenv-vault new`, `login`, `open`.'));
+		log(chalk.gray('Creating all new Dotenv Vault envs, which requires login.'));
 		if (!this.args.dryRun) {
 			await spawn('npx', ['dotenv-vault', 'new', '--yes'], noisySpawnCfg);
 			await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
@@ -109,21 +109,21 @@ class Install {
 		 * Pushes all envs to Dotenv Vault.
 		 */
 
-		log(chalk.gray('Pushing all envs.'));
+		log(chalk.gray('Pushing all envs to Dotenv Vault.'));
 		await u.envsPush({ dryRun: this.args.dryRun });
 
 		/**
 		 * Encrypts all Dotenv Vault envs.
 		 */
 
-		log(chalk.gray('Encrypting all envs.'));
+		log(chalk.gray('Building; i.e., encrypting, all Dotenv Vault envs.'));
 		await u.envsEncrypt({ dryRun: this.args.dryRun });
 
 		/**
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'New install complete.'));
+		log(await u.finale('Success', 'Installation of new Dotenv Vault envs complete.'));
 	}
 
 	/**
@@ -134,14 +134,14 @@ class Install {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Installing all envs.'));
+		log(chalk.green('Installing all Dotenv Vault envs.'));
 
 		/**
 		 * Checks if project is an envs vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not an envs vault.');
+			throw new Error('There are no Dotenv Vault envs to install.');
 		}
 
 		/**
@@ -149,7 +149,7 @@ class Install {
 		 */
 
 		if (!fs.existsSync(path.resolve(projDir, './.env.me'))) {
-			log(chalk.gray('Running `dotenv-vault login`, `open`.'));
+			log(chalk.gray('Installing all Dotenv Vault envs, which requires login.'));
 			if (!this.args.dryRun) {
 				await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
 				await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
@@ -161,7 +161,7 @@ class Install {
 		 */
 
 		if (this.args.pull || !fs.existsSync(envFiles.main)) {
-			log(chalk.gray('Pulling all envs.'));
+			log(chalk.gray('Pulling all envs from Dotenv Vault.'));
 			await u.envsPull({ dryRun: this.args.dryRun });
 		}
 
@@ -169,7 +169,7 @@ class Install {
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'Install complete.'));
+		log(await u.finale('Success', 'Installation of Dotenv Vault envs complete.'));
 	}
 }
 
@@ -203,14 +203,14 @@ class Push {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Pushing all envs.'));
+		log(chalk.green('Pushing all envs to Dotenv Vault.'));
 
 		/**
 		 * Checks if project has a Dotenv Vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not an envs vault.');
+			throw new Error('There are no Dotenv Vault envs to push.');
 		}
 
 		/**
@@ -223,7 +223,7 @@ class Push {
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'Push complete.'));
+		log(await u.finale('Success', 'Dotenv Vault pushing complete.'));
 	}
 }
 
@@ -257,14 +257,14 @@ class Pull {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Pulling all envs.'));
+		log(chalk.green('Pulling all envs from Dotenv Vault.'));
 
 		/**
 		 * Checks if project has a Dotenv Vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not an envs vault.');
+			throw new Error('There are no Dotenv Vault envs to pull.');
 		}
 
 		/**
@@ -277,7 +277,7 @@ class Pull {
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'Pull complete.'));
+		log(await u.finale('Success', 'Dotenv Vault pulling complete.'));
 	}
 }
 
@@ -311,14 +311,14 @@ class Keys {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Retrieving keys for all envs.'));
+		log(chalk.green('Retrieving Dotenv Vault keys for all envs.'));
 
 		/**
 		 * Checks if project has a Dotenv Vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not an envs vault.');
+			throw new Error('There are no Dotenv Vault keys to retrieve.');
 		}
 
 		/**
@@ -331,7 +331,7 @@ class Keys {
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'Copy keys from list above.'));
+		log(await u.finale('Success', 'Copy Dotenv Vault env keys from list above.'));
 	}
 }
 
@@ -365,14 +365,14 @@ class Encrypt {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Encrypting all envs.'));
+		log(chalk.green('Building; i.e., encrypting all Dotenv Vault envs.'));
 
 		/**
 		 * Checks if project has a Dotenv Vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not an envs vault.');
+			throw new Error('There are no Dotenv Vault envs to encrypt.');
 		}
 
 		/**
@@ -385,7 +385,7 @@ class Encrypt {
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'Encryption complete.'));
+		log(await u.finale('Success', 'Dotenv Vault encryption complete.'));
 	}
 }
 
@@ -419,14 +419,14 @@ class Decrypt {
 		 * Displays preamble.
 		 */
 
-		log(chalk.green('Decrypting env(s).'));
+		log(chalk.green('Decrypting Dotenv Vault env(s).'));
 
 		/**
 		 * Checks if project has a Dotenv Vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not an envs vault.');
+			throw new Error('There are no Dotenv Vault envs to decrypt.');
 		}
 
 		/**
@@ -439,7 +439,7 @@ class Decrypt {
 		 * Signals completion with success.
 		 */
 
-		log(await u.finale('Success', 'Decryption complete.'));
+		log(await u.finale('Success', 'Dotenv Vault decryption complete.'));
 	}
 }
 

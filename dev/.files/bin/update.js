@@ -201,7 +201,7 @@ class Project {
 
 		if (this.args.repos && (await u.isEnvsVault())) {
 			log(chalk.green('Repos will update, so pushing, then re-encrypting `./.env.vault`.'));
-			await u.runEnvsPush({ dryRun: this.args.dryRun });
+			await u.envsPush({ dryRun: this.args.dryRun });
 		}
 
 		/**
@@ -228,6 +228,12 @@ class Project {
 
 		if (this.args.repos) {
 			/**
+			 * Gets `./package.json` with a potentially incremented version.
+			 */
+
+			const pkg = await u.pkg(); // See version incrementation above.
+
+			/**
 			 * Publishes a new version of NPM package(s).
 			 */
 			// Also checks org-wide npmjs package standards.
@@ -246,29 +252,30 @@ class Project {
 
 			/**
 			 * Pushes changes to git repo(s).
-			 *
-			 * @todo Generate a GitHub release also.
 			 */
 
 			if (await u.isGitRepo()) {
 				if (await u.isGitRepoDirty()) {
-					if (this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
-						const pkg = await u.pkg(); // Current `./package.json` with incremented version.
-
-						log(chalk.green('Committing git repo changes; `' + (await u.gitCurrentBranch()) + '` branch; `v' + pkg.version + '` tag.'));
-						if (!this.args.dryRun) {
-							await u.gitAddCommitTag((this.args.message + ' [p][v' + pkg.version + ']').trim());
-						}
-					} else {
-						log(chalk.green('Committing git repo changes; `' + (await u.gitCurrentBranch()) + '` branch.'));
-						if (!this.args.dryRun) {
-							await u.gitAddCommit((this.args.message + ' [p]').trim());
-						}
+					log(chalk.green('Committing git repo changes; `' + (await u.gitCurrentBranch()) + '` branch.'));
+					if (!this.args.dryRun) {
+						await u.gitAddCommit((this.args.message + ' [p]').trim());
+					}
+				}
+				if (this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
+					log(chalk.green('Creating git repo tag; `' + (await u.gitCurrentBranch()) + '` branch; `v' + pkg.version + '` tag.'));
+					if (!this.args.dryRun) {
+						await u.gitTag((this.args.message + ' [p][v' + pkg.version + ']').trim());
 					}
 				}
 				log(chalk.green('Pushing to git repo; `' + (await u.gitCurrentBranch()) + '` branch.'));
 				if (!this.args.dryRun) {
-					await u.gitPush();
+					await u.gitPush(); // Also pushes any tags.
+				}
+				if ((await u.isGitRepoOriginGitHub()) && this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
+					log(chalk.green('Generating GitHub release; `v' + pkg.version + '` tag.'));
+					if (!this.args.dryRun) {
+						await u.githubReleaseTag();
+					}
 				}
 			} else {
 				log(chalk.gray('Not a git repo.'));

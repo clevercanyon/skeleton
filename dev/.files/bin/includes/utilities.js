@@ -246,6 +246,47 @@ export default class u {
 		throw new Error('u.githubOrigin: Repo does not have a GitHub origin.');
 	}
 
+	static async githubReleaseTag() {
+		const { owner, repo } = await u.githubOrigin();
+
+		// Created by Vite build process.
+		const distZipFile = path.resolve(projDir, './.~dist.zip');
+
+		if (!fs.existsSync(distZipFile)) {
+			throw new Error('u.githubReleaseTag: Missing `./.~dist.zip`.');
+		}
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
+		if (!pkg.version) {
+			throw new Error('u.githubReleaseTag: Package version is empty.');
+		}
+		const r = await octokit.request('POST /repos/{owner}/{repo}/releases', {
+			owner,
+			repo,
+
+			name: 'v' + pkg.version,
+			tag_name: 'v' + pkg.version,
+
+			draft: false,
+			generate_release_notes: true,
+			prerelease: semver.prerelease(pkg.version) ? true : false,
+		});
+		if (typeof r !== 'object' || typeof r.data !== 'object' || !r.data.id || !r.data.upload_url) {
+			throw new Error('u.githubReleaseTag: Failed to acquire GitHub release data.');
+		}
+		await octokit.request({
+			method: 'POST',
+			url: r.data.upload_url,
+
+			name: 'dist.zip',
+			headers: {
+				'content-type': 'application/zip',
+				'content-length': fs.statSync(distZipFile).size,
+			},
+			data: fs.readFileSync(distZipFile),
+		});
+	}
+
 	static async githubCheckRepoOrgWideStandards(opts = { dryRun: false }) {
 		const { owner, repo } = await u.githubOrigin();
 		const repoData = await u._githubRepo();
@@ -575,34 +616,34 @@ export default class u {
 							  }
 							: null,
 				});
-			}
-			const repoEnvBranchPolicies = await u._githubRepoEnvBranchPolicies(envName);
-			const repoEnvBranchPoliciesToDelete = Object.assign({}, repoEnvBranchPolicies);
+				const repoEnvBranchPolicies = await u._githubRepoEnvBranchPolicies(envName);
+				const repoEnvBranchPoliciesToDelete = Object.assign({}, repoEnvBranchPolicies);
 
-			for (const repoEnvBranchPolicyName of [...('prod' === envName ? ['main'] : [])]) {
-				delete repoEnvBranchPoliciesToDelete[repoEnvBranchPolicyName]; // Don't delete.
+				for (const repoEnvBranchPolicyName of [...('prod' === envName ? ['main'] : [])]) {
+					delete repoEnvBranchPoliciesToDelete[repoEnvBranchPolicyName]; // Don't delete.
 
-				if (!repoEnvBranchPolicies[repoEnvBranchPolicyName]) {
-					log(chalk.gray('Creating `' + repoEnvBranchPolicyName + '` branch policy for `' + envName + '` repo env at GitHub.'));
+					if (!repoEnvBranchPolicies[repoEnvBranchPolicyName]) {
+						log(chalk.gray('Creating `' + repoEnvBranchPolicyName + '` branch policy for `' + envName + '` repo env at GitHub.'));
+						if (!opts.dryRun) {
+							await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
+								owner,
+								repo,
+								envName,
+								name: repoEnvBranchPolicyName,
+							});
+						}
+					}
+				}
+				for (const [repoEnvBranchPolicyName, repoEnvBranchPolicy] of Object.entries(repoEnvBranchPoliciesToDelete)) {
+					log(chalk.gray('Deleting `' + repoEnvBranchPolicyName + '` (unused) branch policy for `' + envName + '` repo env at GitHub.'));
 					if (!opts.dryRun) {
-						await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
+						await octokit.request('DELETE /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies/{branchPolicyId}', {
 							owner,
 							repo,
 							envName,
-							name: repoEnvBranchPolicyName,
+							branchPolicyId: repoEnvBranchPolicy.id,
 						});
 					}
-				}
-			}
-			for (const [repoEnvBranchPolicyName, repoEnvBranchPolicy] of Object.entries(repoEnvBranchPoliciesToDelete)) {
-				log(chalk.gray('Deleting `' + repoEnvBranchPolicyName + '` (unused) branch policy for `' + envName + '` repo env at GitHub.'));
-				if (!opts.dryRun) {
-					await octokit.request('DELETE /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies/{branchPolicyId}', {
-						owner,
-						repo,
-						envName,
-						branchPolicyId: repoEnvBranchPolicy.id,
-					});
 				}
 			}
 		}
@@ -622,10 +663,6 @@ export default class u {
 		return fs.existsSync(path.resolve(projDir, './.env.vault'));
 	}
 
-	static async runEnvsPush(opts = { dryRun: false }) {
-		await spawn(path.resolve(binDir, './envs.js'), ['push', ...(opts.dryRun ? ['--dryRun'] : [])], noisySpawnCfg);
-	}
-
 	static async envsPush(opts = { dryRun: false }) {
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			if (!fs.existsSync(envFile)) {
@@ -635,9 +672,12 @@ export default class u {
 					await fsp.writeFile(envFile, '# ' + envName);
 				}
 			}
-			log(chalk.gray('Running `dotenv-vault push`, `build` for `' + envName + '` env.'));
+			log(chalk.gray('Pushing `' + envName + '` env to Dotenv Vault.'));
 			if (!opts.dryRun) {
 				await spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes'], noisySpawnCfg);
+			}
+			log(chalk.gray('Encrypting `' + envName + '` env using new Dotenv Vault data.'));
+			if (!opts.dryRun) {
 				await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 			}
 		}
@@ -648,12 +688,12 @@ export default class u {
 
 	static async envsPull(opts = { dryRun: false }) {
 		for (const [envName, envFile] of Object.entries(envFiles)) {
-			log(chalk.gray('Running `dotenv-vault pull` for `' + envName + '` env.'));
+			log(chalk.gray('Pulling `' + envName + '` env from Dotenv Vault.'));
 			if (!opts.dryRun) {
 				await fsp.mkdir(path.dirname(envFile), { recursive: true });
 				await spawn('npx', ['dotenv-vault', 'pull', envName, envFile, '--yes'], noisySpawnCfg);
 			}
-			log(chalk.gray('Deleting previous file for `' + envName + '` env.'));
+			// log(chalk.gray('Deleting previous file for `' + envName + '` env.'));
 			if (!opts.dryRun) {
 				await fsp.rm(envFile + '.previous', { force: true });
 			}
@@ -661,14 +701,14 @@ export default class u {
 	}
 
 	static async envsKeys(opts = { dryRun: false }) {
-		log(chalk.gray('Running `dotenv-vault keys`.'));
+		log(chalk.gray('Getting all Dotenv Vault keys.'));
 		if (!opts.dryRun) {
 			await spawn('npx', ['dotenv-vault', 'keys', '--yes'], noisySpawnCfg);
 		}
 	}
 
 	static async envsEncrypt(opts = { dryRun: false }) {
-		log(chalk.gray('Running `dotenv-vault build` (encrypting).'));
+		log(chalk.gray('Building Dotenv Vault; i.e., encrypting all envs.'));
 		if (!opts.dryRun) {
 			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 		}
@@ -680,9 +720,9 @@ export default class u {
 			const envFile = envFiles[envName] || '';
 
 			if (!envName || !envFile) {
-				throw new Error('u.envsDecrypt: Invalid decryption key: `' + key + '`.');
+				throw new Error('u.envsDecrypt: Invalid Dotenv Vault decryption key: `' + key + '`.');
 			}
-			log(chalk.gray('Decrypting `' + envName + '` env using key.'));
+			log(chalk.gray('Decrypting `' + envName + '` env using Dotenv Vault key.'));
 			if (!opts.dryRun) {
 				const origDotenvKey = process.env.DOTENV_KEY || '';
 				process.env.DOTENV_KEY = key; // For `dotEnvVaultCore`.
@@ -701,31 +741,31 @@ export default class u {
 			const env = process.env; // Shorter reference.
 
 			if (!env.USER_DOTENV_KEY_MAIN) {
-				throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_MAIN` env var.');
+				throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_MAIN` environment variable.');
 			}
 			const keys = [env.USER_DOTENV_KEY_MAIN];
 
 			if ('dev' === opts.mode) {
 				if (!env.USER_DOTENV_KEY_DEV) {
-					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_DEV` env var.');
+					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_DEV` environment variable.');
 				}
 				keys.push(env.USER_DOTENV_KEY_DEV);
 				//
 			} else if ('ci' === opts.mode) {
 				if (!env.USER_DOTENV_KEY_CI) {
-					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_CI` env var.');
+					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_CI` environment variable.');
 				}
 				keys.push(env.USER_DOTENV_KEY_CI);
 				//
 			} else if ('stage' === opts.mode) {
 				if (!env.USER_DOTENV_KEY_STAGE) {
-					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_STAGE` env var.');
+					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_STAGE` environment variable.');
 				}
 				keys.push(env.USER_DOTENV_KEY_STAGE);
 				//
 			} else if ('prod' === opts.mode) {
 				if (!env.USER_DOTENV_KEY_PROD) {
-					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_PROD` env var.');
+					throw new Error('u.envsInstallOrDecrypt: Missing `USER_DOTENV_KEY_PROD` environment variable.');
 				}
 				keys.push(env.USER_DOTENV_KEY_PROD);
 			}
@@ -738,7 +778,7 @@ export default class u {
 	static async _envsExtractKeys() {
 		const keys = {}; // Initialize.
 
-		log(chalk.gray('Extracting Dotenv Vault keys.'));
+		log(chalk.gray('Extracting all Dotenv Vault keys.'));
 		const output = await spawn('npx', ['dotenv-vault', 'keys', '--yes'], quietSpawnCfg);
 
 		let _m = null; // Initialize.
@@ -747,7 +787,7 @@ export default class u {
 		while ((_m = regexp.exec(output)) !== null) {
 			keys[_m[1]] = _m[0];
 		}
-		if (!Object.keys(keys).length !== Object.keys(envFiles).length) {
+		if (Object.keys(keys).length !== Object.keys(envFiles).length) {
 			throw new Error('u._envsExtractKeys: Failed to extract Dotenv Vault keys.');
 		}
 		return keys;
