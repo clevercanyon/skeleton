@@ -343,14 +343,13 @@ export default class u {
 
 				// allow_forking: false,
 				// Cannot configure this via API.
-				// Disabled at org level via GitHub.com.
-
-				allow_update_branch: true,
+				// Disabled already by org @ GitHub.com.
 
 				allow_auto_merge: false,
 				allow_squash_merge: true,
 				allow_merge_commit: false,
 				allow_rebase_merge: false,
+				allow_update_branch: true,
 				delete_branch_on_merge: true,
 
 				merge_commit_title: 'MERGE_MESSAGE',
@@ -363,6 +362,7 @@ export default class u {
 
 				homepage: pkg.homepage || defaultHomepage,
 				description: pkg.description || defaultDescription,
+
 				is_template: await u.isPkgRepoTemplate(),
 			});
 			await octokit.request('PUT /repos/{owner}/{repo}/vulnerability-alerts', { owner, repo });
@@ -401,17 +401,17 @@ export default class u {
 					required_linear_history: true,
 					restrictions: { teams: ['owners'] },
 
-					required_pull_request_reviews: {
-						dismissal_restrictions: { teams: ['owners'] },
-					},
-					bypass_pull_request_allowances: { teams: ['owners'] },
-					required_status_checks: { checks: [], strict: true },
-					require_code_owner_reviews: true,
-					required_approving_review_count: 1,
 					required_conversation_resolution: true,
-					require_last_push_approval: true,
-					dismiss_stale_reviews: true,
+					required_status_checks: { checks: [], strict: true },
 
+					required_pull_request_reviews: {
+						dismiss_stale_reviews: true,
+						require_code_owner_reviews: true,
+						required_approving_review_count: 1,
+						require_last_push_approval: true,
+						dismissal_restrictions: { teams: ['owners'] },
+						bypass_pull_request_allowances: { teams: ['owners'] },
+					},
 					enforce_admins: true,
 				});
 			}
