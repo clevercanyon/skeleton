@@ -18,12 +18,12 @@ import { hideBin } from 'yargs/helpers';
 import chalk from 'chalk';
 import u from './includes/utilities.js';
 
+u.propagateUserEnvVars(); // i.e., `USER_` env vars.
+
 const __dirname = dirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
 
 const { log } = console; // Shorter reference.
-
-u.propagateUserEnvVars(); // i.e., `USER_` environment vars.
 
 /**
  * NOTE: All commands in this file must support both interactive and noninteractive sessions. Installations occur across

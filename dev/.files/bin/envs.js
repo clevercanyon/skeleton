@@ -17,23 +17,15 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import chalk from 'chalk';
-import spawn from 'spawn-please';
 import u from './includes/utilities.js';
+
+u.propagateUserEnvVars(); // i.e., `USER_` env vars.
 
 const __dirname = dirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
 
 const { log } = console; // Shorter reference.
-const echo = process.stdout.write.bind(process.stdout);
 
-const isTTY = process.stdout.isTTY || process.env.PARENT_IS_TTY ? true : false;
-
-const noisySpawnCfg = {
-	cwd: projDir,
-	env: { ...process.env, PARENT_IS_TTY: isTTY },
-	stdout: (buffer) => echo(chalk.white(buffer.toString())),
-	stderr: (buffer) => echo(chalk.gray(buffer.toString())),
-};
 const envFiles = {
 	main: path.resolve(projDir, './dev/.envs/.env'),
 	dev: path.resolve(projDir, './dev/.envs/.env.dev'),
@@ -41,8 +33,6 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
-u.propagateUserEnvVars(); // i.e., `USER_` environment vars.
-
 /**
  * NOTE: Most of these commands _must_ be performed interactively. Please review the Yargs configuration below for
  * further details. At this time, only the `decrypt` command is allowed noninteractively, and _only_ noninteractively.
@@ -99,9 +89,9 @@ class Install {
 
 		log(chalk.gray('Creating all new Dotenv Vault envs, which requires login.'));
 		if (!this.args.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'new', '--yes'], noisySpawnCfg);
-			await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
-			await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
+			await u.spawn('npx', ['dotenv-vault', 'new', '--yes']);
+			await u.spawn('npx', ['dotenv-vault', 'login', '--yes']);
+			await u.spawn('npx', ['dotenv-vault', 'open', '--yes']);
 		}
 
 		/**
@@ -150,8 +140,8 @@ class Install {
 		if (!fs.existsSync(path.resolve(projDir, './.env.me'))) {
 			log(chalk.gray('Installing all Dotenv Vault envs, which requires login.'));
 			if (!this.args.dryRun) {
-				await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
-				await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
+				await u.spawn('npx', ['dotenv-vault', 'login', '--yes']);
+				await u.spawn('npx', ['dotenv-vault', 'open', '--yes']);
 			}
 		}
 

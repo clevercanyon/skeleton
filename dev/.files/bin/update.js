@@ -23,28 +23,18 @@ import { hideBin } from 'yargs/helpers';
 
 import chalk from 'chalk';
 import * as se from 'shescape';
-import spawn from 'spawn-please';
 
 import u from './includes/utilities.js';
 import coreProjects from './includes/core-projects.js';
 import { splitCMD } from '@clevercanyon/split-cmd.fork';
+
+u.propagateUserEnvVars(); // i.e., `USER_` env vars.
 
 const __dirname = dirname(import.meta.url);
 const projsDir = path.resolve(__dirname, '../../../..');
 const projDir = path.resolve(__dirname, '../../..');
 
 const { log } = console; // Shorter reference.
-const echo = process.stdout.write.bind(process.stdout);
-
-const isTTY = process.stdout.isTTY || process.env.PARENT_IS_TTY ? true : false;
-
-const noisySpawnCfg = {
-	cwd: projDir,
-	env: { ...process.env, PARENT_IS_TTY: isTTY },
-	stdout: (buffer) => echo(chalk.white(buffer.toString())),
-	stderr: (buffer) => echo(chalk.gray(buffer.toString())),
-};
-u.propagateUserEnvVars(); // i.e., `USER_` environment vars.
 
 /**
  * NOTE: All of these commands _must_ be performed interactively. Please review the Yargs configuration below for
@@ -124,11 +114,11 @@ class Dotfiles {
 			if (!this.args.dryRun) {
 				await fsp.rm(skeletonRepoDir, { recursive: true, force: true });
 				await fsp.mkdir(skeletonRepoDir, { recursive: true }); // Starts fresh.
-				await spawn('git', ['clone', skeletonRepoURL, skeletonRepoDir, '--branch', skeletonBranch, '--depth=1'], { ...noisySpawnCfg, cwd: skeletonRepoDir });
+				await u.spawn('git', ['clone', skeletonRepoURL, skeletonRepoDir, '--branch', skeletonBranch, '--depth=1'], { cwd: skeletonRepoDir });
 			}
 			log(chalk.green('Installing `clevercanyon/skeleton`’s NPM dependencies; `' + skeletonBranch + '` branch.'));
 			if (!this.args.dryRun) {
-				await spawn('npm', ['ci'], { ...noisySpawnCfg, cwd: skeletonRepoDir });
+				await u.spawn('npm', ['ci'], { cwd: skeletonRepoDir });
 			}
 		}
 
@@ -414,7 +404,7 @@ class Projects {
 
 					log(chalk.green('Running `' + quotedCMD + (quotedArgs.length ? ' ' + quotedArgs.join(' ') : '') + '` in:') + ' ' + chalk.yellow(projDisplayDir));
 					if (!this.args.dryRun) {
-						await spawn(split.cmd, split.args, { ...noisySpawnCfg, cwd: projDir });
+						await u.spawn(split.cmd, split.args, { cwd: projDir });
 					}
 				}
 			}
@@ -436,7 +426,7 @@ class Projects {
 
 						log(chalk.green('Running `npx madrun ' + quotedCMD + (quotedArgs.length ? ' ' + quotedArgs.join(' ') : '') + '` in:') + ' ' + chalk.yellow(projDisplayDir));
 						if (!this.args.dryRun) {
-							await spawn('npx', ['madrun', split.cmd, ...split.args], { ...noisySpawnCfg, cwd: projDir });
+							await u.spawn('npx', ['madrun', split.cmd, ...split.args], { cwd: projDir });
 						}
 					}
 				}

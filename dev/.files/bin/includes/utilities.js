@@ -50,17 +50,6 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository } = (() => {
 const { log } = console; // Shorter reference.
 const echo = process.stdout.write.bind(process.stdout);
 
-const isParentTTY = process.stdout.isTTY ? true : false;
-const isTTY = process.stdout.isTTY || process.env.PARENT_IS_TTY ? true : false;
-
-const noisySpawnCfg = {
-	cwd: projDir,
-	env: { ...process.env, PARENT_IS_TTY: isTTY },
-	stdout: (buffer) => echo(chalk.white(buffer.toString())),
-	stderr: (buffer) => echo(chalk.gray(buffer.toString())),
-};
-const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
-
 const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
 const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN || '' });
 
@@ -95,7 +84,31 @@ export default class u {
 	 */
 
 	static async isInteractive() {
+		const isTTY = process.stdout.isTTY || process.env.PARENT_IS_TTY ? true : false;
 		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI && true !== process.env.CI;
+	}
+
+	/**
+	 * Spawn utilities.
+	 */
+
+	static async spawn(cmd, args = [], opts = {}) {
+		const cfg = {
+			cwd: projDir,
+			env: {
+				...process.env,
+				PARENT_IS_TTY:
+					process.stdout.isTTY || //
+					process.env.PARENT_IS_TTY
+						? true
+						: false,
+			},
+			stdout: opts.quiet ? null : (buffer) => echo(chalk.white(buffer.toString())),
+			stderr: opts.quiet ? null : (buffer) => echo(chalk.gray(buffer.toString())),
+
+			..._.omit(opts, ['quiet']),
+		};
+		return await spawn(cmd, args, cfg);
 	}
 
 	/*
@@ -147,7 +160,7 @@ export default class u {
 
 	static async isGitRepo() {
 		try {
-			return 'true' === String(await spawn('git', ['rev-parse', '--is-inside-work-tree'], quietSpawnCfg)).trim();
+			return 'true' === String(await u.spawn('git', ['rev-parse', '--is-inside-work-tree'], { quiet: true })).trim();
 		} catch {
 			return false;
 		}
@@ -167,11 +180,11 @@ export default class u {
 	}
 
 	static async gitStatus(opts = { short: false }) {
-		return String(await spawn('git', ['status', ...(opts.short ? ['--short'] : []), '--porcelain'], quietSpawnCfg)).trim();
+		return String(await u.spawn('git', ['status', ...(opts.short ? ['--short'] : []), '--porcelain'], { quiet: true })).trim();
 	}
 
 	static async gitCurrentBranch() {
-		const branch = String(await spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], quietSpawnCfg)).trim();
+		const branch = String(await u.spawn('git', ['symbolic-ref', '--short', '--quiet', 'HEAD'], { quiet: true })).trim();
 
 		if (!branch) {
 			// In the case of being on a tag or a specific commit SHA.
@@ -196,8 +209,8 @@ export default class u {
 	}
 
 	static async gitAddCommit(message) {
-		await spawn('git', ['add', '--all'], noisySpawnCfg);
-		await spawn('git', ['commit', '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]'], noisySpawnCfg);
+		await u.spawn('git', ['add', '--all']);
+		await u.spawn('git', ['commit', '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]']);
 	}
 
 	static async gitTag(message) {
@@ -206,22 +219,22 @@ export default class u {
 		if (!pkg.version) {
 			throw new Error('u.gitTag: Package version is empty.');
 		}
-		await spawn('git', ['tag', '--annotate', 'v' + pkg.version, '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]'], noisySpawnCfg);
+		await u.spawn('git', ['tag', '--annotate', 'v' + pkg.version, '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]']);
 	}
 
 	static async gitPush() {
-		await spawn('git', ['push', '--set-upstream', 'origin', await u.gitCurrentBranch()], noisySpawnCfg);
-		await spawn('git', ['push', 'origin', '--tags'], noisySpawnCfg);
+		await u.spawn('git', ['push', '--set-upstream', 'origin', await u.gitCurrentBranch()]);
+		await u.spawn('git', ['push', 'origin', '--tags']);
 	}
 
 	static async gitLocalRepoSHA(repoDir, branch) {
-		return String(await spawn('git', ['rev-parse', branch], { ...quietSpawnCfg, cwd: repoDir }))
+		return String(await u.spawn('git', ['rev-parse', branch], { cwd: repoDir, quiet: true }))
 			.trim()
 			.toLowerCase();
 	}
 
 	static async gitRemoteRepoSHA(repoURI, branch) {
-		return String(await spawn('git', ['ls-remote', repoURI, branch], { ...quietSpawnCfg, cwd: os.tmpdir() }))
+		return String(await u.spawn('git', ['ls-remote', repoURI, branch], { cwd: os.tmpdir(), quiet: true }))
 			.trim()
 			.toLowerCase()
 			.split(/\s+/u)[0];
@@ -233,7 +246,7 @@ export default class u {
 
 	static async githubOrigin() {
 		let m = null; // Initialize array of matches.
-		const url = String(await spawn('git', ['remote', 'get-url', 'origin'], quietSpawnCfg)).trim();
+		const url = String(await u.spawn('git', ['remote', 'get-url', 'origin'], { quiet: true })).trim();
 
 		if ((m = /^https?:\/\/github.com\/([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))) {
 			return { owner: m[1], repo: m[2] };
@@ -671,11 +684,11 @@ export default class u {
 			}
 			log(chalk.gray('Pushing `' + envName + '` env to Dotenv Vault.'));
 			if (!opts.dryRun) {
-				await spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes'], noisySpawnCfg);
+				await u.spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes']);
 			}
 			log(chalk.gray('Encrypting `' + envName + '` env using new Dotenv Vault data.'));
 			if (!opts.dryRun) {
-				await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
+				await u.spawn('npx', ['dotenv-vault', 'build', '--yes']);
 			}
 		}
 		if ((await u.isGitRepo()) && (await u.isGitRepoOriginGitHub())) {
@@ -688,7 +701,7 @@ export default class u {
 			log(chalk.gray('Pulling `' + envName + '` env from Dotenv Vault.'));
 			if (!opts.dryRun) {
 				await fsp.mkdir(path.dirname(envFile), { recursive: true });
-				await spawn('npx', ['dotenv-vault', 'pull', envName, envFile, '--yes'], noisySpawnCfg);
+				await u.spawn('npx', ['dotenv-vault', 'pull', envName, envFile, '--yes']);
 			}
 			// log(chalk.gray('Deleting previous file for `' + envName + '` env.'));
 			if (!opts.dryRun) {
@@ -700,14 +713,14 @@ export default class u {
 	static async envsKeys(opts = { dryRun: false }) {
 		log(chalk.gray('Getting all Dotenv Vault keys.'));
 		if (!opts.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'keys', '--yes'], noisySpawnCfg);
+			await u.spawn('npx', ['dotenv-vault', 'keys', '--yes']);
 		}
 	}
 
 	static async envsEncrypt(opts = { dryRun: false }) {
 		log(chalk.gray('Building Dotenv Vault; i.e., encrypting all envs.'));
 		if (!opts.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
+			await u.spawn('npx', ['dotenv-vault', 'build', '--yes']);
 		}
 	}
 
@@ -766,9 +779,9 @@ export default class u {
 				}
 				keys.push(env.USER_DOTENV_KEY_PROD);
 			}
-			await spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys], noisySpawnCfg);
+			await u.spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys]);
 		} else {
-			await spawn(path.resolve(binDir, './envs.js'), ['install'], noisySpawnCfg);
+			await u.spawn(path.resolve(binDir, './envs.js'), ['install']);
 		}
 	}
 
@@ -776,7 +789,7 @@ export default class u {
 		const keys = {}; // Initialize.
 
 		log(chalk.gray('Extracting all Dotenv Vault keys.'));
-		const output = await spawn('npx', ['dotenv-vault', 'keys', '--yes'], quietSpawnCfg);
+		const output = await u.spawn('npx', ['dotenv-vault', 'keys', '--yes'], { quiet: true });
 
 		let _m = null; // Initialize.
 		const regexp = /\bdotenv:\/\/:key_.+?\?environment=([^\s]+)/giu;
@@ -822,7 +835,7 @@ export default class u {
 				(await u.npmjsPkgOrigin()) && // Throws exception on failure.
 				(await u.isNPMPkgRegistryNPMJS()) && // Confirms `https://registry.npmjs.org`.
 				// This command throws an exception on failure; e.g., if package is not published at npmjs.
-				(await spawn('npm', ['author', 'ls'], quietSpawnCfg).then(() => true)) // Published at npmjs?
+				(await u.spawn('npm', ['author', 'ls'], { quiet: true }).then(() => true)) // Published at npmjs?
 			);
 		} catch {
 			return false;
@@ -834,7 +847,7 @@ export default class u {
 	}
 
 	static async isNPMPkgRegistry(registry) {
-		return registry.replace(/\/+$/, '') === String(await spawn('npm', ['config', 'get', 'registry'], quietSpawnCfg)).replace(/\/+$/, '');
+		return registry.replace(/\/+$/, '') === String(await u.spawn('npm', ['config', 'get', 'registry'], { quiet: true })).replace(/\/+$/, '');
 	}
 
 	static async isNPMPkgPublishable(opts = { mode: 'prod' }) {
@@ -842,20 +855,20 @@ export default class u {
 	}
 
 	static async npmInstall() {
-		await spawn('npm', ['install'], noisySpawnCfg);
+		await u.spawn('npm', ['install']);
 	}
 
 	static async npmCleanInstall() {
-		await spawn('npm', ['ci'], noisySpawnCfg);
+		await u.spawn('npm', ['ci']);
 	}
 
 	static async npmUpdate() {
-		await spawn('npm', ['update', '--save'], noisySpawnCfg);
+		await u.spawn('npm', ['update', '--save']);
 	}
 
 	static async npmPublish(opts = { dryRun: false }) {
 		if (!opts.dryRun) {
-			await spawn('npm', ['publish'], noisySpawnCfg);
+			await u.spawn('npm', ['publish']);
 		}
 		if (await u.isNPMPkgOriginNPMJS()) {
 			await u.npmjsCheckPkgOrgWideStandards({ dryRun: opts.dryRun });
@@ -903,13 +916,13 @@ export default class u {
 			delete teamsToDelete[team]; // Don't delete.
 			log(chalk.gray('Adding `' + team + '` team to npmjs package with `' + permission + '` permission.'));
 			if (!opts.dryRun) {
-				await spawn('npm', ['access', 'grant', permission, org + ':' + team], quietSpawnCfg);
+				await u.spawn('npm', ['access', 'grant', permission, org + ':' + team], { quiet: true });
 			}
 		}
 		for (const [team, teamData] of Object.entries(teamsToDelete)) {
 			log(chalk.gray('Deleting `' + team + '` (unused) with `' + teamData.permission + '` permission from npmjs package.'));
 			if (!opts.dryRun) {
-				await spawn('npm', ['access', 'revoke', org + ':' + team], quietSpawnCfg).catch(() => null);
+				await u.spawn('npm', ['access', 'revoke', org + ':' + team], { quiet: true }).catch(() => null);
 			}
 		}
 		if (!opts.dryRun) {
@@ -928,7 +941,7 @@ export default class u {
 	}
 
 	static async _npmjsOrgUsers(org) {
-		const members = JSON.parse(String(await spawn('npm', ['org', 'ls', org, '--json'], quietSpawnCfg)));
+		const members = JSON.parse(String(await u.spawn('npm', ['org', 'ls', org, '--json'], { quiet: true })));
 
 		if (typeof members !== 'object') {
 			throw new Error('u._npmjsOrgMembers: Failed to acquire list of NPM team members for `' + org + '`.');
@@ -937,7 +950,7 @@ export default class u {
 	}
 
 	static async _npmjsOrgTeams(org) {
-		const teams = JSON.parse(String(await spawn('npm', ['team', 'ls', org, '--json'], quietSpawnCfg)));
+		const teams = JSON.parse(String(await u.spawn('npm', ['team', 'ls', org, '--json'], { quiet: true })));
 
 		if (!(teams instanceof Array)) {
 			throw new Error('u._npmjsOrgTeams: Failed to acquire list of NPM teams for `' + org + '` org.');
@@ -950,14 +963,14 @@ export default class u {
 	 */
 
 	static async viteBuild(opts = { mode: 'prod' }) {
-		await spawn('npx', ['vite', 'build', '--mode', opts.mode], noisySpawnCfg);
+		await u.spawn('npx', ['vite', 'build', '--mode', opts.mode]);
 	}
 
 	/**
 	 * Error utilities.
 	 */
 	static async error(title, text) {
-		if (!isParentTTY || !supportsColor?.has16m) {
+		if (!process.stdout.isTTY || !supportsColor?.has16m) {
 			return chalk.red(text); // No box.
 		}
 		return (
@@ -984,7 +997,7 @@ export default class u {
 	 * Finale utilities.
 	 */
 	static async finale(title, text) {
-		if (!isParentTTY || !supportsColor?.has16m) {
+		if (!process.stdout.isTTY || !supportsColor?.has16m) {
 			return chalk.green(text); // No box.
 		}
 		return (
