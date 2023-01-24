@@ -22,7 +22,7 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
 import chalk from 'chalk';
-import se from 'shescape';
+import * as se from 'shescape';
 import spawn from 'spawn-please';
 
 import u from './includes/utilities.js';
