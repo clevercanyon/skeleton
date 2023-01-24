@@ -399,7 +399,7 @@ export default class u {
 
 					allow_force_pushes: false,
 					required_linear_history: true,
-					restrictions: { teams: ['owners'] },
+					restrictions: { users: [], teams: ['owners'], apps: [] },
 
 					required_conversation_resolution: true,
 					required_status_checks: { checks: [], strict: true },
@@ -409,8 +409,8 @@ export default class u {
 						require_code_owner_reviews: true,
 						required_approving_review_count: 1,
 						require_last_push_approval: true,
-						dismissal_restrictions: { teams: ['owners'] },
-						bypass_pull_request_allowances: { teams: ['owners'] },
+						dismissal_restrictions: { users: [], teams: ['owners'], apps: [] },
+						bypass_pull_request_allowances: { users: [], teams: ['owners'], apps: [] },
 					},
 					enforce_admins: true,
 				});
