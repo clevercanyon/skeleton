@@ -341,7 +341,10 @@ export default class u {
 				has_discussions: true,
 				has_downloads: true,
 
-				allow_forking: false,
+				// allow_forking: false,
+				// Cannot configure this here.
+				// Disabled at org level via GitHub.com.
+
 				allow_update_branch: true,
 
 				allow_auto_merge: false,
