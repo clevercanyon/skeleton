@@ -1,4 +1,5 @@
 {
+	"$unset": ["scripts"],
 	"$set": {
 		"author": {
 			"name": "Clever Canyon",
@@ -12,8 +13,7 @@
 			"node": "^19.2.0 || ^19.4.0",
 			"npm": "^8.19.3 || ^9.2.0"
 		},
-		"workspaces": [],
-		"scripts": {}
+		"workspaces": []
 	},
 	"devDependencies": {
 		"@clevercanyon/skeleton-dev-deps": "*"
