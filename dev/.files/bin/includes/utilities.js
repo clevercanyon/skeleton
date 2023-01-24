@@ -616,13 +616,10 @@ export default class u {
 					owner,
 					repo,
 					envName,
-					deployment_branch_policy:
-						'prod' === envName
-							? {
-									protected_branches: false,
-									custom_branch_policies: true,
-							  }
-							: null,
+					deployment_branch_policy: {
+						protected_branches: false,
+						custom_branch_policies: true,
+					},
 				});
 				const repoEnvBranchPolicies = await u._githubRepoEnvBranchPolicies(envName);
 				const repoEnvBranchPoliciesToDelete = Object.assign({}, repoEnvBranchPolicies);
@@ -684,10 +681,10 @@ export default class u {
 			if (!opts.dryRun) {
 				await u.spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes']);
 			}
-			log(chalk.gray('Encrypting `' + envName + '` env using new Dotenv Vault data.'));
-			if (!opts.dryRun) {
-				await u.spawn('npx', ['dotenv-vault', 'build', '--yes']);
-			}
+		}
+		log(chalk.gray('Encrypting all envs using latest Dotenv Vault data.'));
+		if (!opts.dryRun) {
+			await u.spawn('npx', ['dotenv-vault', 'build', '--yes']);
 		}
 		if ((await u.isGitRepo()) && (await u.isGitRepoOriginGitHub())) {
 			await u.githubPushRepoEnvs({ dryRun: opts.dryRun });
