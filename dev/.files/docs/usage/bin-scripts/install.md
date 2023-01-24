@@ -1,12 +1,12 @@
-# `$ npm run install:*`
+# `$ madrun install:*`
 
 <small>Underlying bin script: `./dev/.files/bin/install.js`</small>
 
 ## Interactive Installs
 
 ```bash
-$ npm run install:project
-# Or, `$ npm run install:project -- --mode=dev`
+$ madrun install:project
+# Or, `$ madrun install:project --mode=dev`
 # Mode can be one of: `dev`, `ci`, `stage`, or `prod` (default).
 ```
 
@@ -15,7 +15,7 @@ You will need a [Dotenv Vault](https://www.dotenv.org) login. Please contact `@j
 ## Noninteractive Installs (e.g., CI)
 
 ```bash
-$ npm run install:project -- --mode=ci
+$ madrun install:project --mode=ci
 # Mode can be one of: `dev`, `ci`, `stage`, or `prod` (default).
 ```
 
@@ -29,11 +29,12 @@ USER_DOTENV_KEY_CI # Where `_CI` matches `mode`.
 These keys can be retrieved by running the following script interactively.
 
 ```
-$ npm run envs:keys
+$ madrun envs:keys
 ```
 
 ## Help
 
 ```bash
-$ npm run install:help
+$ madrun install --help
+$ madrun envs:keys --help
 ```

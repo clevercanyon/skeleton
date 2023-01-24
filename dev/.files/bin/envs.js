@@ -8,35 +8,24 @@
  */
 /* eslint-env es2021, node */
 
-import _ from 'lodash';
-
 import fs from 'node:fs';
 import path from 'node:path';
 import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
-import coloredBox from 'boxen';
-import terminalImage from 'term-img';
-import chalk, { supportsColor } from 'chalk';
-
-import spawn from 'spawn-please';
-
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-import { Octokit as OctokitCore } from '@octokit/core';
-import { paginateRest as OctokitPluginPaginateRest } from '@octokit/plugin-paginate-rest';
-import sodium from 'libsodium-wrappers'; // Used to encrypt GitHub secret values.
-
-import dotenvVaultCore from 'dotenv-vault-core';
+import chalk from 'chalk';
+import spawn from 'spawn-please';
+import u from './includes/utilities.js';
 
 const __dirname = dirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
 
-const { log } = console;
+const { log } = console; // Shorter reference.
 const echo = process.stdout.write.bind(process.stdout);
 
-const isParentTTY = process.stdout.isTTY ? true : false;
 const isTTY = process.stdout.isTTY || process.env.PARENT_IS_TTY ? true : false;
 
 const noisySpawnCfg = {
@@ -45,8 +34,6 @@ const noisySpawnCfg = {
 	stdout: (buffer) => echo(chalk.white(buffer.toString())),
 	stderr: (buffer) => echo(chalk.gray(buffer.toString())),
 };
-const quietSpawnCfg = _.pick(noisySpawnCfg, ['cwd', 'env']);
-
 const envFiles = {
 	main: path.resolve(projDir, './dev/.envs/.env'),
 	dev: path.resolve(projDir, './dev/.envs/.env.dev'),
@@ -54,11 +41,8 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
-const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
-const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN });
-
-const c10nLogo = path.resolve(__dirname, '../assets/brands/c10n/logo.png');
-const c10nLogoDev = path.resolve(__dirname, '../assets/brands/c10n/logo-dev.png');
+process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // For any use of `git|gh` commands.
+process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // `GH_TOKEN` alternate name.
 
 /**
  * NOTE: Most of these commands _must_ be performed interactively. Please review the Yargs configuration below for
@@ -69,10 +53,16 @@ const c10nLogoDev = path.resolve(__dirname, '../assets/brands/c10n/logo-dev.png'
  * Install command.
  */
 class Install {
+	/**
+	 * Constructor.
+	 */
 	constructor(args) {
 		this.args = args;
 	}
 
+	/**
+	 * Runs CMD.
+	 */
 	async run() {
 		if (this.args['new']) {
 			await this.installNew();
@@ -84,35 +74,80 @@ class Install {
 		}
 	}
 
+	/**
+	 * Runs new install.
+	 */
 	async installNew() {
+		/**
+		 * Displays preamble.
+		 */
+
 		log(chalk.green('Installing all new envs.'));
+
+		/**
+		 * Deletes old files so a new install can begin.
+		 */
 
 		log(chalk.gray('Deleting `.env.me`, `.env.vault`.'));
 		if (!this.args.dryRun) {
 			await fsp.rm(path.resolve(projDir, './.env.me'), { force: true });
 			await fsp.rm(path.resolve(projDir, './.env.vault'), { force: true });
 		}
+
+		/**
+		 * Logs the current user into Dotenv Vault.
+		 */
+
 		log(chalk.gray('Running `dotenv-vault new`, `login`, `open`.'));
 		if (!this.args.dryRun) {
 			await spawn('npx', ['dotenv-vault', 'new', '--yes'], noisySpawnCfg);
 			await spawn('npx', ['dotenv-vault', 'login', '--yes'], noisySpawnCfg);
 			await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
 		}
+
+		/**
+		 * Pushes all envs to Dotenv Vault.
+		 */
+
 		log(chalk.gray('Pushing all envs.'));
-		await u.push({ dryRun: this.args.dryRun });
+		await u.envsPush({ dryRun: this.args.dryRun });
+
+		/**
+		 * Encrypts all Dotenv Vault envs.
+		 */
 
 		log(chalk.gray('Encrypting all envs.'));
-		await u.encrypt({ dryRun: this.args.dryRun });
+		await u.envsEncrypt({ dryRun: this.args.dryRun });
+
+		/**
+		 * Signals completion with success.
+		 */
 
 		log(await u.finale('Success', 'New install complete.'));
 	}
 
+	/**
+	 * Runs install.
+	 */
 	async install() {
+		/**
+		 * Displays preamble.
+		 */
+
 		log(chalk.green('Installing all envs.'));
+
+		/**
+		 * Checks if project has a Dotenv Vault.
+		 */
 
 		if (!(await u.isEnvsVault())) {
 			throw new Error('Not a Dotenv Vault.');
 		}
+
+		/**
+		 * Ensures current user is logged into Dotenv Vault.
+		 */
+
 		if (!fs.existsSync(path.resolve(projDir, './.env.me'))) {
 			log(chalk.gray('Running `dotenv-vault login`, `open`.'));
 			if (!this.args.dryRun) {
@@ -120,10 +155,20 @@ class Install {
 				await spawn('npx', ['dotenv-vault', 'open', '--yes'], noisySpawnCfg);
 			}
 		}
+
+		/**
+		 * Pulls all envs from Dotenv Vault.
+		 */
+
 		if (this.args.pull || !fs.existsSync(envFiles.main)) {
 			log(chalk.gray('Pulling all envs.'));
-			await u.pull({ dryRun: this.args.dryRun });
+			await u.envsPull({ dryRun: this.args.dryRun });
 		}
+
+		/**
+		 * Signals completion with success.
+		 */
+
 		log(await u.finale('Success', 'Install complete.'));
 	}
 }
@@ -132,23 +177,53 @@ class Install {
  * Push command.
  */
 class Push {
+	/**
+	 * Constructor.
+	 */
 	constructor(args) {
 		this.args = args;
 	}
 
+	/**
+	 * Runs CMD.
+	 */
 	async run() {
-		log(chalk.green('Pushing all envs.'));
-
-		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
-		}
-		await u.push({ dryRun: this.args.dryRun });
-
-		log(await u.finale('Success', 'Push complete.'));
+		await this.push();
 
 		if (this.args.dryRun) {
 			log(chalk.cyanBright('Dry run. This was all a simulation.'));
 		}
+	}
+
+	/**
+	 * Runs push.
+	 */
+	async push() {
+		/**
+		 * Displays preamble.
+		 */
+
+		log(chalk.green('Pushing all envs.'));
+
+		/**
+		 * Checks if project has a Dotenv Vault.
+		 */
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
+
+		/**
+		 * Pushes all envs to Dotenv Vault.
+		 */
+
+		await u.envsPush({ dryRun: this.args.dryRun });
+
+		/**
+		 * Signals completion with success.
+		 */
+
+		log(await u.finale('Success', 'Push complete.'));
 	}
 }
 
@@ -156,23 +231,53 @@ class Push {
  * Pull command.
  */
 class Pull {
+	/**
+	 * Constructor.
+	 */
 	constructor(args) {
 		this.args = args;
 	}
 
+	/**
+	 * Runs CMD.
+	 */
 	async run() {
-		log(chalk.green('Pulling all envs.'));
-
-		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
-		}
-		await u.pull({ dryRun: this.args.dryRun });
-
-		log(await u.finale('Success', 'Pull complete.'));
+		await this.pull();
 
 		if (this.args.dryRun) {
 			log(chalk.cyanBright('Dry run. This was all a simulation.'));
 		}
+	}
+
+	/**
+	 * Runs pull.
+	 */
+	async pull() {
+		/**
+		 * Displays preamble.
+		 */
+
+		log(chalk.green('Pulling all envs.'));
+
+		/**
+		 * Checks if project has a Dotenv Vault.
+		 */
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
+
+		/**
+		 * Pulls all envs from Dotenv Vault.
+		 */
+
+		await u.envsPull({ dryRun: this.args.dryRun });
+
+		/**
+		 * Signals completion with success.
+		 */
+
+		log(await u.finale('Success', 'Pull complete.'));
 	}
 }
 
@@ -180,23 +285,53 @@ class Pull {
  * Keys command.
  */
 class Keys {
+	/**
+	 * Constructor.
+	 */
 	constructor(args) {
 		this.args = args;
 	}
 
+	/**
+	 * Runs CMD.
+	 */
 	async run() {
-		log(chalk.green('Retrieving keys for all envs.'));
-
-		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
-		}
-		await u.keys({ dryRun: this.args.dryRun });
-
-		log(await u.finale('Success', 'Copy keys from list above.'));
+		await this.keys();
 
 		if (this.args.dryRun) {
 			log(chalk.cyanBright('Dry run. This was all a simulation.'));
 		}
+	}
+
+	/**
+	 * Runs keys.
+	 */
+	async keys() {
+		/**
+		 * Displays preamble.
+		 */
+
+		log(chalk.green('Retrieving keys for all envs.'));
+
+		/**
+		 * Checks if project has a Dotenv Vault.
+		 */
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
+
+		/**
+		 * Outputs all Dotenv Vault keys.
+		 */
+
+		await u.envsKeys({ dryRun: this.args.dryRun });
+
+		/**
+		 * Signals completion with success.
+		 */
+
+		log(await u.finale('Success', 'Copy keys from list above.'));
 	}
 }
 
@@ -204,23 +339,53 @@ class Keys {
  * Encrypt command.
  */
 class Encrypt {
+	/**
+	 * Constructor.
+	 */
 	constructor(args) {
 		this.args = args;
 	}
 
+	/**
+	 * Runs CMD.
+	 */
 	async run() {
-		log(chalk.green('Encrypting all envs.'));
-
-		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
-		}
-		await u.encrypt({ dryRun: this.args.dryRun });
-
-		log(await u.finale('Success', 'Encryption complete.'));
+		await this.encrypt();
 
 		if (this.args.dryRun) {
 			log(chalk.cyanBright('Dry run. This was all a simulation.'));
 		}
+	}
+
+	/**
+	 * Runs encrypt.
+	 */
+	async encrypt() {
+		/**
+		 * Displays preamble.
+		 */
+
+		log(chalk.green('Encrypting all envs.'));
+
+		/**
+		 * Checks if project has a Dotenv Vault.
+		 */
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
+		}
+
+		/**
+		 * Encrypts all Dotenv Vault envs.
+		 */
+
+		await u.envsEncrypt({ dryRun: this.args.dryRun });
+
+		/**
+		 * Signals completion with success.
+		 */
+
+		log(await u.finale('Success', 'Encryption complete.'));
 	}
 }
 
@@ -228,392 +393,58 @@ class Encrypt {
  * Decrypt command.
  */
 class Decrypt {
+	/**
+	 * Constructor.
+	 */
 	constructor(args) {
 		this.args = args;
 	}
 
+	/**
+	 * Runs CMD.
+	 */
 	async run() {
-		log(chalk.green('Decrypting env(s).'));
-
-		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
-		}
-		await u.decrypt({ keys: this.args.keys, dryRun: this.args.dryRun });
-
-		log(await u.finale('Success', 'Decryption complete.'));
+		await this.decrypt();
 
 		if (this.args.dryRun) {
 			log(chalk.cyanBright('Dry run. This was all a simulation.'));
 		}
 	}
-}
-
-/**
- * Utilities.
- */
-class u {
-	/*
-	 * TTY utilities.
-	 */
-
-	static async isInteractive() {
-		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI;
-	}
-
-	/*
-	 * Vault utilities.
-	 */
-
-	static async isEnvsVault() {
-		return fs.existsSync(path.resolve(projDir, './.env.vault'));
-	}
-
-	/*
-	 * Push utilities.
-	 */
-
-	static async push(opts = { dryRun: false }) {
-		for (const [envName, envFile] of Object.entries(envFiles)) {
-			if (!fs.existsSync(envFile)) {
-				log(chalk.gray('Creating file for `' + envName + '` env.'));
-				if (!opts.dryRun) {
-					await fsp.mkdir(path.dirname(envFile), { recursive: true });
-					await fsp.writeFile(envFile, '# ' + envName);
-				}
-			}
-			log(chalk.gray('Running `dotenv-vault push` for `' + envName + '` env.'));
-			if (!opts.dryRun) {
-				await spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes'], noisySpawnCfg);
-			}
-		}
-		if (await u.isGitRepo()) {
-			await u.githubPushRepoEnvs(opts);
-		}
-	}
-
-	/*
-	 * Pull utilities.
-	 */
-
-	static async pull(opts = { dryRun: false }) {
-		for (const [envName, envFile] of Object.entries(envFiles)) {
-			log(chalk.gray('Running `dotenv-vault pull` for `' + envName + '` env.'));
-			if (!opts.dryRun) {
-				await fsp.mkdir(path.dirname(envFile), { recursive: true });
-				await spawn('npx', ['dotenv-vault', 'pull', envName, envFile, '--yes'], noisySpawnCfg);
-			}
-			log(chalk.gray('Deleting previous file for `' + envName + '` env.'));
-			if (!opts.dryRun) {
-				await fsp.rm(envFile + '.previous', { force: true });
-			}
-		}
-	}
-
-	/*
-	 * Keys utilities.
-	 */
-
-	static async keys(opts = { dryRun: false }) {
-		log(chalk.gray('Running `dotenv-vault keys`.'));
-		if (!opts.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'keys', '--yes'], noisySpawnCfg);
-		}
-	}
-
-	static async extractKeys() {
-		const keys = {}; // Initialize.
-
-		log(chalk.gray('Extracting `dotenv-vault keys`.'));
-		const output = await spawn('npx', ['dotenv-vault', 'keys', '--yes'], quietSpawnCfg);
-
-		let _m = null; // Initialize.
-		const regexp = /\bdotenv:\/\/:key_.+?\?environment=([^\s]+)/giu;
-
-		while ((_m = regexp.exec(output)) !== null) {
-			keys[_m[1]] = _m[0];
-		}
-		return keys;
-	}
-
-	/*
-	 * Encryption utilities.
-	 */
-
-	static async encrypt(opts = { dryRun: false }) {
-		log(chalk.gray('Running `dotenv-vault build`.'));
-		if (!opts.dryRun) {
-			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
-		}
-	}
-
-	/*
-	 * Decryption utilities.
-	 */
-
-	static async decrypt(opts = { keys: [], dryRun: false }) {
-		for (const key of opts.keys) {
-			const envName = key.split('?')[1]?.split('=')[1] || '';
-			const envFile = envFiles[envName] || '';
-
-			if (!envName || !envFile) {
-				throw new Error('Invalid key: `' + key + '`.');
-			}
-			log(chalk.gray('Decrypting `' + envName + '` env.'));
-			if (!opts.dryRun) {
-				const origDotenvKey = process.env.DOTENV_KEY || '';
-				process.env.DOTENV_KEY = key; // For `dotEnvVaultCore`.
-
-				// Note: `path` leads to `.env.vault`. See: <https://o5p.me/MqXJaf>.
-				const env = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
-
-				await fsp.writeFile(envFile, await u.toString(envName, env));
-				process.env.DOTENV_KEY = origDotenvKey;
-			}
-		}
-	}
-
-	static async toString(envName, env) {
-		let str = '# ' + envName + '\n';
-
-		for (let [name, value] of Object.entries(env)) {
-			value = value.replace(/\r\n?/gu, '\n');
-			value = value.replace(/\n/gu, '\\n');
-			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
-		}
-		return str;
-	}
-
-	/*
-	 * Git utilities.
-	 */
-
-	static async isGitRepo() {
-		try {
-			return 'true' === String(await spawn('git', ['rev-parse', '--is-inside-work-tree'], quietSpawnCfg)).trim();
-		} catch {
-			return false;
-		}
-	}
-
-	/*
-	 * GitHub utilities.
-	 */
-
-	static async githubOrigin() {
-		let m = null; // Initialize array of matches.
-		const url = String(await spawn('git', ['remote', 'get-url', 'origin'], quietSpawnCfg)).trim();
-
-		if ((m = /^git@github(?:\.com)?:([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))) {
-			return { owner: m[1], repo: m[2] };
-		} else if ((m = /^https?:\/\/github.com\/([^/]+)\/([^/]+?)(?:\.git)?$/iu.exec(url))) {
-			return { owner: m[1], repo: m[2] };
-		}
-		throw new Error('githubOrigin: Repo does not have a GitHub origin.');
-	}
-
-	static async githubRepo() {
-		const { owner, repo } = await u.githubOrigin();
-		const r1 = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
-		const r2 = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', { owner, repo });
-
-		if (typeof r1 !== 'object' || typeof r1.data !== 'object' || !r1.data.id) {
-			throw new Error('githubRepo: Failed to acquire GitHub repository’s data.');
-		}
-		if (typeof r2 !== 'object' || typeof r2.data !== 'object' || !r2.data.key_id || !r2.data.key) {
-			throw new Error('githubRepo: Failed to acquire GitHub repository’s public key.');
-		}
-		return { ...r1.data, publicKeyId: r2.data.key_id, publicKey: r2.data.key };
-	}
-
-	static async githubRepoEnvs() {
-		const envs = {}; // Initialize.
-		const { owner, repo } = await u.githubOrigin();
-		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments{?per_page}', { owner, repo, per_page: 100 });
-
-		if (typeof i6r !== 'object') {
-			throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environments.');
-		}
-		for await (const { data } of i6r) {
-			for (const env of data) {
-				if (typeof env !== 'object' || !env.name) {
-					throw new Error('githubRepoEnvs: Failed to acquire GitHub repository’s environment data.');
-				}
-				envs[env.name] = env;
-			}
-		}
-		return envs;
-	}
-
-	static async githubRepoEnvSecrets(repoId, envName) {
-		const envSecrets = {}; // Initialize.
-		const i6r = octokit.paginate.iterator('GET /repositories/{repoId}/environments/{envName}/secrets{?per_page}', { repoId, envName, per_page: 100 });
-
-		if (typeof i6r !== 'object') {
-			throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secrets for an environment.');
-		}
-		for await (const { data } of i6r) {
-			for (const envSecret of data) {
-				if (typeof envSecret !== 'object' || !envSecret.name) {
-					throw new Error('githubRepoEnvSecrets: Failed to acquire GitHub repository’s secret data for an environment.');
-				}
-				envSecrets[envSecret.name] = envSecret;
-			}
-		}
-		return envSecrets;
-	}
-
-	static async githubRepoEnvBranchPolicies(envName) {
-		const envBranchPolicies = {}; // Initialize.
-		const { owner, repo } = await u.githubOrigin();
-		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies{?per_page}', { owner, repo, envName, per_page: 100 });
-
-		if (typeof i6r !== 'object') {
-			throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policies for an environment.');
-		}
-		for await (const { data } of i6r) {
-			for (const envBranchPolicy of data) {
-				if (typeof envBranchPolicy !== 'object' || !envBranchPolicy.name) {
-					throw new Error('githubRepoEnvBranchPolicies: Failed to acquire GitHub repository’s branch policy data for an environment.');
-				}
-				envBranchPolicies[envBranchPolicy.name] = envBranchPolicy;
-			}
-		}
-		return envBranchPolicies;
-	}
-
-	static async githubEnsureRepoEnvs(opts = { dryRun: false }) {
-		const { owner, repo } = await u.githubOrigin();
-		const repoEnvs = await u.githubRepoEnvs();
-
-		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
-			if (repoEnvs[envName]) {
-				continue; // Do not recreate or modify existing envs.
-			}
-			log(chalk.gray('Creating `' + envName + '` repo env at GitHub.'));
-			if (!opts.dryRun) {
-				await octokit.request('PUT /repos/{owner}/{repo}/environments/{envName}', {
-					owner,
-					repo,
-					envName,
-					deployment_branch_policy:
-						'prod' === envName
-							? {
-									protected_branches: false,
-									custom_branch_policies: true,
-							  }
-							: null,
-				});
-			}
-			if ('prod' === envName && !(await u.githubRepoEnvBranchPolicies(envName)).main) {
-				log(chalk.gray('Creating `main` branch policy for `' + envName + '` repo env at GitHub.'));
-				if (!opts.dryRun) {
-					await octokit.request('POST /repos/{owner}/{repo}/environments/{envName}/deployment-branch-policies', {
-						owner,
-						repo,
-						envName,
-						name: 'main',
-					});
-				}
-			}
-		}
-	}
-
-	static async githubPushRepoEnvs(opts = { dryRun: false }) {
-		await u.githubEnsureRepoEnvs(opts);
-
-		const envKeys = await u.extractKeys(); // Extracts secret keys that unlock environments.
-		const { id: repoId, publicKeyId: repoPublicKeyId, publicKey: repoPublicKey } = await u.githubRepo();
-
-		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
-			const envSecretsToDelete = await u.githubRepoEnvSecrets(repoId, envName);
-
-			for (const [envSecretName, envSecretValue] of Object.entries({
-				['USER_DOTENV_KEY_MAIN']: envKeys.main,
-				['USER_DOTENV_KEY_' + envName.toUpperCase()]: envKeys[envName],
-			})) {
-				delete envSecretsToDelete[envSecretName]; // Don't delete.
-
-				const encryptedEnvSecretValue = await sodium.ready.then(() => {
-					const sodiumKey = sodium.from_base64(repoPublicKey, sodium.base64_variants.ORIGINAL);
-					return sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(envSecretValue), sodiumKey), sodium.base64_variants.ORIGINAL);
-				});
-				log(chalk.gray('Updating `' + envSecretName + '` secret in the `' + envName + '` repo env at GitHub.'));
-				if (!opts.dryRun) {
-					await octokit.request('PUT /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', {
-						repoId,
-						envName,
-						envSecretName,
-						key_id: repoPublicKeyId,
-						encrypted_value: encryptedEnvSecretValue,
-					});
-				}
-			}
-			for (const [envSecretName] of Object.entries(envSecretsToDelete)) {
-				log(chalk.gray('Deleting `' + envSecretName + '` secret in the `' + envName + '` repo env at GitHub.'));
-				if (!opts.dryRun) {
-					await octokit.request('DELETE /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', { repoId, envName, envSecretName });
-				}
-			}
-		}
-	}
 
 	/**
-	 * Error utilities.
+	 * Runs decrypt.
 	 */
-	static async error(title, text) {
-		if (!isParentTTY || !supportsColor?.has16m) {
-			return chalk.red(text); // No box.
+	async decrypt() {
+		/**
+		 * Displays preamble.
+		 */
+
+		log(chalk.green('Decrypting env(s).'));
+
+		/**
+		 * Checks if project has a Dotenv Vault.
+		 */
+
+		if (!(await u.isEnvsVault())) {
+			throw new Error('Not a Dotenv Vault.');
 		}
-		return (
-			'\n' +
-			coloredBox(chalk.bold.red(text), {
-				margin: 0,
-				padding: 0.75,
-				textAlignment: 'left',
 
-				dimBorder: false,
-				borderStyle: 'round',
-				borderColor: '#551819',
-				backgroundColor: '',
+		/**
+		 * Decrypts all Dotenv Vault envs; i.e., extracts env files.
+		 */
 
-				titleAlignment: 'left',
-				title: chalk.bold.redBright('⚑ ' + title),
-			}) +
-			'\n' +
-			(await terminalImage(c10nLogoDev, { width: '300px', fallback: () => '' }))
-		);
-	}
+		await u.envsDecrypt({ keys: this.args.keys, dryRun: this.args.dryRun });
 
-	/**
-	 * Finale utilities.
-	 */
-	static async finale(title, text) {
-		if (!isParentTTY || !supportsColor?.has16m) {
-			return chalk.green(text); // No box.
-		}
-		return (
-			'\n' +
-			coloredBox(chalk.bold.hex('#ed5f3b')(text), {
-				margin: 0,
-				padding: 0.75,
-				textAlignment: 'left',
+		/**
+		 * Signals completion with success.
+		 */
 
-				dimBorder: false,
-				borderStyle: 'round',
-				borderColor: '#8e3923',
-				backgroundColor: '',
-
-				titleAlignment: 'left',
-				title: chalk.bold.green('✓ ' + title),
-			}) +
-			'\n' +
-			(await terminalImage(c10nLogo, { width: '300px', fallback: () => '' }))
-		);
+		log(await u.finale('Success', 'Decryption complete.'));
 	}
 }
 
 /**
- * Yargs ⛵🏴‍☠
+ * Yargs CLI config. ⛵🏴‍☠
  *
  * @see http://yargs.js.org/docs/
  */
