@@ -1,5 +1,5 @@
 {
-	"$unset": ["scripts"],
+	"$unset": ["typings", "scripts"],
 	"$set": {
 		"author": {
 			"name": "Clever Canyon",
