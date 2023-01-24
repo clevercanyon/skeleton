@@ -362,7 +362,6 @@ export default class u {
 				web_commit_signoff_required: false,
 
 				security_and_analysis: {
-					advanced_security: { status: 'enabled' },
 					secret_scanning: { status: 'enabled' },
 					secret_scanning_push_protection: { status: 'enabled' },
 				},
