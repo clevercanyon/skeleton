@@ -41,8 +41,7 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
-process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // For any use of `git|gh` commands.
-process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // `GH_TOKEN` alternate name.
+u.propagateUserEnvVars(); // i.e., `USER_` environment vars.
 
 /**
  * NOTE: Most of these commands _must_ be performed interactively. Please review the Yargs configuration below for

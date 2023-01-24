@@ -78,9 +78,6 @@ const npmjsConfigVersion = '1.0.0'; // Bump when config changes in routines belo
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 const c10nLogoDev = path.resolve(__dirname, '../../assets/brands/c10n/logo-dev.png');
 
-process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // For any use of `git|gh` commands.
-process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // `GH_TOKEN` alternate name.
-
 /**
  * Utilities.
  */
@@ -802,6 +799,13 @@ export default class u {
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
 		return str;
+	}
+
+	static propagateUserEnvVars() {
+		process.env.NPM_TOKEN = process.env.USER_NPM_TOKEN || '';
+		process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || '';
+		process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || '';
+		process.env.CLOUDFLARE_API_TOKEN = process.env.USER_CLOUDFLARE_TOKEN || '';
 	}
 
 	/*

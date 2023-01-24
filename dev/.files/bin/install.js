@@ -23,8 +23,7 @@ const projDir = path.resolve(__dirname, '../../..');
 
 const { log } = console; // Shorter reference.
 
-process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // For any use of `git|gh` commands.
-process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // `GH_TOKEN` alternate name.
+u.propagateUserEnvVars(); // i.e., `USER_` environment vars.
 
 /**
  * NOTE: All commands in this file must support both interactive and noninteractive sessions. Installations occur across

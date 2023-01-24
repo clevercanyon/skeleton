@@ -44,8 +44,7 @@ const noisySpawnCfg = {
 	stdout: (buffer) => echo(chalk.white(buffer.toString())),
 	stderr: (buffer) => echo(chalk.gray(buffer.toString())),
 };
-process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // For any use of `git|gh` commands.
-process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || ''; // `GH_TOKEN` alternate name.
+u.propagateUserEnvVars(); // i.e., `USER_` environment vars.
 
 /**
  * NOTE: All of these commands _must_ be performed interactively. Please review the Yargs configuration below for
