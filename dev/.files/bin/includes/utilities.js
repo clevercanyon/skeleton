@@ -34,12 +34,19 @@ const __dirname = dirname(import.meta.url);
 const binDir = path.resolve(__dirname, '..');
 const projDir = path.resolve(__dirname, '../../../..');
 
-const pkgFile = path.resolve(projDir, './package.json');
-const pkg = JSON.parse(fs.readFileSync(pkgFile).toString());
+const { pkgFile, pkgName, pkgPrivate, pkgRepository } = (() => {
+	const pkgFile = path.resolve(projDir, './package.json');
+	const pkg = JSON.parse(fs.readFileSync(pkgFile).toString());
 
-if (typeof pkg !== 'object') {
-	throw new Error('Unable to parse `./package.json`.');
-}
+	if (typeof pkg !== 'object') {
+		throw new Error('u: Unable to parse `./package.json`.');
+	}
+	const pkgName = pkg.name || '';
+	const pkgPrivate = pkg.private || null;
+	const pkgRepository = pkg.repository || '';
+
+	return { pkgFile, pkgName, pkgPrivate, pkgRepository };
+})();
 const { log } = console; // Shorter reference.
 const echo = process.stdout.write.bind(process.stdout);
 
@@ -98,15 +105,26 @@ export default class u {
 	 * Pkg utilities.
 	 */
 
+	static async pkg() {
+		const pkg = JSON.parse(fs.readFileSync(pkgFile).toString());
+
+		if (typeof pkg !== 'object') {
+			throw new Error('u.pkg: Unable to parse `./package.json`.');
+		}
+		return pkg; // JSON object data.
+	}
+
 	static async isPkgRepo(ownerRepo) {
-		return new RegExp('[:/]' + u.escRegExp(ownerRepo) + '(?:\\.git)?$', 'iu').test(pkg.repository || '');
+		return new RegExp('[:/]' + u.escRegExp(ownerRepo) + '(?:\\.git)?$', 'iu').test(pkgRepository);
 	}
 
 	static async isPkgRepoTemplate() {
-		return /[:/][^/]+\/skeleton(?:\.[^/]+)?(?:\.git)?$/gi.test(pkg.repository || '');
+		return /[:/][^/]+\/skeleton(?:\.[^/]+)?(?:\.git)?$/gi.test(pkgRepository);
 	}
 
-	static async pkgIncrementVersion() {
+	static async pkgIncrementVersion(opts = { dryRun: false }) {
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
 		const origVersion = String(pkg.version || '');
 		let version = origVersion || '0.0.0';
 
@@ -119,9 +137,11 @@ export default class u {
 		if (!version /* Catch increment failures. */) {
 			throw new Error('u.pkgIncrementVersion: Failed to increment version: `' + origVersion + '`.');
 		}
-		pkg.version = version; // Update to the incremented version.
-		const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
-		await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+		if (!opts.dryRun) {
+			pkg.version = version; // Update to incremented version.
+			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
+			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+		}
 	}
 
 	/*
@@ -184,6 +204,11 @@ export default class u {
 	}
 
 	static async gitTag(message) {
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
+		if (!pkg.version) {
+			throw new Error('u.gitTag: Package version is empty.');
+		}
 		await spawn('git', ['tag', '--annotate', 'v' + pkg.version, '--message', message + (/\]$/u.test(message) ? '' : ' ') + '[robotic]'], noisySpawnCfg);
 	}
 
@@ -234,7 +259,9 @@ export default class u {
 		if (!repoData.permissions?.admin) {
 			return; // Current user’s permissions do not allow repo configuration.
 		}
-		if (pkg.config?.c10n?.['&']?.github?.configVersion === githubConfigVersion) {
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
+		if (_.get(pkg, 'config.c10n.&.github.configVersion') === githubConfigVersion) {
 			log(chalk.gray('GitHub repo configuration is up-to-date @v' + githubConfigVersion + '.'));
 			return; // Repo configuration version is already up-to-date.
 		}
@@ -242,7 +269,7 @@ export default class u {
 			throw new Error('githubCheckRepoOrgWideStandards: Default branch at GitHub must be `main`.');
 		}
 		const alwaysOnRequiredTeams = { owners: 'admin', 'security-managers': 'pull' }; // No exceptions.
-		const teams = Object.assign({}, pkg.config?.c10n?.['&']?.github?.teams || {}, alwaysOnRequiredTeams);
+		const teams = Object.assign({}, _.get(pkg, 'config.c10n.&.github.teams', {}), alwaysOnRequiredTeams);
 		const teamsToDelete = await u._githubRepoTeams(); // Current list of repo’s teams.
 
 		const protectedBranches = await u._githubRepoProtectedBranches();
@@ -346,9 +373,9 @@ export default class u {
 				await octokit.request('DELETE /repos/{owner}/{repo}/branches/{branch}/protection', { owner, repo, branch });
 			}
 		}
-		_.set(pkg, 'config.c10n.&.github.configVersion', githubConfigVersion);
-		const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
 		if (!opts.dryRun) {
+			_.set(pkg, 'config.c10n.&.github.configVersion', githubConfigVersion);
+			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
 			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
 		}
 	}
@@ -365,12 +392,16 @@ export default class u {
 		if (!repoData.permissions?.admin) {
 			return; // Current user’s permissions do not allow.
 		}
-		if (pkg.config?.c10n?.['&']?.github?.envsVersion === githubEnvsVersion) {
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
+		if (_.get(pkg, 'config.c10n.&.github.envsVersion') === githubEnvsVersion) {
 			log(chalk.gray('GitHub repo environments are up-to-date @v' + githubEnvsVersion + '.'));
 			return; // Repo environments version is already up-to-date.
 		}
+		log(chalk.gray('Configuring GitHub repo environments using org-wide standards.'));
+
 		const envKeys = await u._envsExtractKeys(); // Dotenv Vault decryption keys.
-		await u._githubEnsureRepoEnvs(opts); // Creates|deletes repo envs as necessary.
+		await u._githubEnsureRepoEnvs({ dryRun: opts.dryRun }); // Creates|deletes repo envs.
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
 			const envSecretsToDelete = await u._githubRepoEnvSecrets(repoId, envName);
@@ -403,9 +434,9 @@ export default class u {
 				}
 			}
 		}
-		_.set(pkg, 'config.c10n.&.github.envsVersion', githubEnvsVersion);
-		const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
 		if (!opts.dryRun) {
+			_.set(pkg, 'config.c10n.&.github.envsVersion', githubEnvsVersion);
+			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
 			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
 		}
 	}
@@ -591,12 +622,8 @@ export default class u {
 		return fs.existsSync(path.resolve(projDir, './.env.vault'));
 	}
 
-	static async runEnvsPush() {
-		await spawn(path.resolve(binDir, './envs.js'), ['push'], noisySpawnCfg);
-	}
-
-	static async runEnvsEncrypt() {
-		await spawn(path.resolve(binDir, './envs.js'), ['encrypt'], noisySpawnCfg);
+	static async runEnvsPush(opts = { dryRun: false }) {
+		await spawn(path.resolve(binDir, './envs.js'), ['push', ...(opts.dryRun ? ['--dryRun'] : [])], noisySpawnCfg);
 	}
 
 	static async envsPush(opts = { dryRun: false }) {
@@ -608,13 +635,14 @@ export default class u {
 					await fsp.writeFile(envFile, '# ' + envName);
 				}
 			}
-			log(chalk.gray('Running `dotenv-vault push` for `' + envName + '` env.'));
+			log(chalk.gray('Running `dotenv-vault push`, `build` for `' + envName + '` env.'));
 			if (!opts.dryRun) {
 				await spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes'], noisySpawnCfg);
+				await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 			}
 		}
 		if ((await u.isGitRepo()) && (await u.isGitRepoOriginGitHub())) {
-			await u.githubPushRepoEnvs(opts);
+			await u.githubPushRepoEnvs({ dryRun: opts.dryRun });
 		}
 	}
 
@@ -640,7 +668,7 @@ export default class u {
 	}
 
 	static async envsEncrypt(opts = { dryRun: false }) {
-		log(chalk.gray('Running `dotenv-vault build`.'));
+		log(chalk.gray('Running `dotenv-vault build` (encrypting).'));
 		if (!opts.dryRun) {
 			await spawn('npx', ['dotenv-vault', 'build', '--yes'], noisySpawnCfg);
 		}
@@ -652,9 +680,9 @@ export default class u {
 			const envFile = envFiles[envName] || '';
 
 			if (!envName || !envFile) {
-				throw new Error('u.decrypt: Invalid decryption key: `' + key + '`.');
+				throw new Error('u.envsDecrypt: Invalid decryption key: `' + key + '`.');
 			}
-			log(chalk.gray('Decrypting `' + envName + '` env.'));
+			log(chalk.gray('Decrypting `' + envName + '` env using key.'));
 			if (!opts.dryRun) {
 				const origDotenvKey = process.env.DOTENV_KEY || '';
 				process.env.DOTENV_KEY = key; // For `dotEnvVaultCore`.
@@ -741,7 +769,7 @@ export default class u {
 	 */
 
 	static async isNPMPkg() {
-		return (await u.isGitRepo()) && false === pkg.private;
+		return (await u.isGitRepo()) && false === pkgPrivate;
 	}
 
 	static async isNPMPkgOriginNPMJS() {
@@ -781,8 +809,13 @@ export default class u {
 		await spawn('npm', ['update', '--save'], noisySpawnCfg);
 	}
 
-	static async npmPublish() {
-		await spawn('npm', ['publish'], noisySpawnCfg);
+	static async npmPublish(opts = { dryRun: false }) {
+		if (!opts.dryRun) {
+			await spawn('npm', ['publish'], noisySpawnCfg);
+		}
+		if (await u.isNPMPkgOriginNPMJS()) {
+			await u.npmjsCheckPkgOrgWideStandards({ dryRun: opts.dryRun });
+		}
 	}
 
 	/*
@@ -792,9 +825,9 @@ export default class u {
 	static async npmjsPkgOrigin() {
 		let m = null; // Initialize array of matches.
 
-		if ((m = /^(@[^/]+)\/([^/]+)$/iu.exec(pkg.name || ''))) {
+		if ((m = /^(@[^/]+)\/([^/]+)$/iu.exec(pkgName))) {
 			return { org: m[1], name: m[2] };
-		} else if ((m = /^([^/]+)$/iu.exec(pkg.name || ''))) {
+		} else if ((m = /^([^/]+)$/iu.exec(pkgName))) {
 			return { org: '', name: m[1] };
 		}
 		throw new Error('u.npmjsPkgOrigin: Package does not have an npmjs origin.');
@@ -809,12 +842,16 @@ export default class u {
 		if (!(await u._npmjsOrgUserCanAdmin(org))) {
 			return; // Current user’s permissions do not allow package configuration.
 		}
-		if (pkg.config?.c10n?.['&']?.npmjs?.configVersions === githubConfigVersion + ',' + npmjsConfigVersion) {
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
+		if (_.get(pkg, 'config.c10n.&.npmjs.configVersions') === githubConfigVersion + ',' + npmjsConfigVersion) {
 			log(chalk.gray('npmjs package configuration is up-to-date @v' + githubConfigVersion + ' @v' + npmjsConfigVersion + '.'));
 			return; // Package configuration version is already up-to-date.
 		}
+		log(chalk.gray('Configuring npmjs package using org-wide standards.'));
+
 		const alwaysOnRequiredTeams = { developers: 'read-write', owners: 'read-write', 'security-managers': 'read-only' }; // No exceptions.
-		let teams = Object.assign({}, pkg.config?.c10n?.['&']?.npmjs?.teams || pkg.config?.c10n?.['&']?.github?.teams || {}, alwaysOnRequiredTeams);
+		let teams = Object.assign({}, _.get(pkg, 'config.c10n.&.npmjs.teams', _.get(pkg, 'config.c10n.&.github.teams', {})), alwaysOnRequiredTeams);
 		teams = Object.keys(teams).forEach((team) => (teams[team] = /^(?:read-write|push|maintain|admin)$/iu.test(teams[team]) ? 'read-write' : 'read-only'));
 		const teamsToDelete = await u._npmjsOrgTeams(org); // Current list of organization’s teams.
 
@@ -831,9 +868,9 @@ export default class u {
 				await spawn('npm', ['access', 'revoke', org + ':' + team], quietSpawnCfg).catch(() => null);
 			}
 		}
-		_.set(pkg, 'config.c10n.&.npmjs.configVersions', githubConfigVersion + ',' + npmjsConfigVersion);
-		const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
 		if (!opts.dryRun) {
+			_.set(pkg, 'config.c10n.&.npmjs.configVersions', githubConfigVersion + ',' + npmjsConfigVersion);
+			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
 			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
 		}
 	}

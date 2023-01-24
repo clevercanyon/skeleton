@@ -7,6 +7,8 @@
  */
 /* eslint-env es2021, node */
 
+import _ from 'lodash';
+
 import fs from 'node:fs';
 import path from 'node:path';
 import fsp from 'node:fs/promises';
@@ -32,18 +34,6 @@ export default async ({ projDir, args }) => {
 	const projsDir = path.dirname(projDir); // One level up.
 	const skeletonDir = path.resolve(__dirname, '../../../..');
 
-	const pkgFile = path.resolve(projDir, './package.json');
-	const pkg = JSON.parse((await fsp.readFile(pkgFile)).toString());
-	const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
-
-	if (typeof pkg !== 'object') {
-		throw new Error('Unable to parse `./package.json`.');
-	}
-	let locks = pkg.config?.c10n?.['&']?.dotfiles?.lock || [];
-	locks = locks.map((relPath) => path.resolve(projDir, relPath));
-
-	const quietSpawnCfg = { cwd: projDir };
-
 	/**
 	 * Escapes string for use in a regular expression.
 	 *
@@ -56,14 +46,42 @@ export default async ({ projDir, args }) => {
 	};
 
 	/**
-	 * Tests `pkg.repository` against an `owner/repo` string.
+	 * Gets current `./package.json`.
+	 *
+	 * @returns {object} Parsed `./package.json`.
+	 */
+	const getPkg = async () => {
+		const pkgFile = path.resolve(projDir, './package.json');
+		const pkg = JSON.parse(fs.readFileSync(pkgFile).toString());
+
+		if (typeof pkg !== 'object') {
+			throw new Error('updater.getPkg: Unable to parse `./package.json`.');
+		}
+		return pkg;
+	};
+
+	/**
+	 * Gets properties from `./package.json` file.
+	 */
+	const { pkgRepository, pkgDotfileLocks } = await (async () => {
+		const pkg = await getPkg();
+		const pkgRepository = pkg.repository || '';
+
+		let pkgDotfileLocks = _.get(pkg, 'config.c10n.&.dotfiles.lock', []);
+		pkgDotfileLocks = pkgDotfileLocks.map((relPath) => path.resolve(projDir, relPath));
+
+		return { pkgRepository, pkgDotfileLocks };
+	})();
+
+	/**
+	 * Tests `pkgRepository` against an `owner/repo` string.
 	 *
 	 * @param   {string}  ownerRepo An `owner/repo` string.
 	 *
 	 * @returns {boolean}           True if current package repo is `ownerRepo`.
 	 */
-	const isPkgRepo = (ownerRepo) => {
-		return new RegExp('[:/]' + escRegExp(ownerRepo) + '(?:\\.git)?$', 'iu').test(pkg.repository || '');
+	const isPkgRepo = async (ownerRepo) => {
+		return new RegExp('[:/]' + escRegExp(ownerRepo) + '(?:\\.git)?$', 'iu').test(pkgRepository);
 	};
 
 	/**
@@ -73,12 +91,12 @@ export default async ({ projDir, args }) => {
 	 *
 	 * @returns {boolean}         True if relative path is locked by `package.json`.
 	 */
-	const isLocked = (relPath) => {
+	const isLocked = async (relPath) => {
 		// Compares absolute paths to each other.
 		const absPath = path.resolve(projDir, relPath);
 
-		for (let i = 0; i < locks.length; i++) {
-			if (absPath === locks[i]) {
+		for (let i = 0; i < pkgDotfileLocks.length; i++) {
+			if (absPath === pkgDotfileLocks[i]) {
 				return true; // Locked 🔒.
 			}
 		}
@@ -120,7 +138,7 @@ export default async ({ projDir, args }) => {
 		'./vite.config.js',
 		'./wrangler.toml',
 	]) {
-		if (isLocked(relPath)) {
+		if (await isLocked(relPath)) {
 			continue; // Locked 🔒.
 		}
 		let newFileContents = ''; // Initialize.
@@ -136,7 +154,7 @@ export default async ({ projDir, args }) => {
 		await fsp.mkdir(path.dirname(path.resolve(projDir, relPath)), { recursive: true });
 		await fsp.writeFile(path.resolve(projDir, relPath), newFileContents);
 
-		if (args.skeletonUpdatesOthers && isPkgRepo('clevercanyon/skeleton') && coreProjects.updates.skeletonOthers.files.includes(relPath)) {
+		if (args.skeletonUpdatesOthers && (await isPkgRepo('clevercanyon/skeleton')) && coreProjects.updates.skeletonOthers.files.includes(relPath)) {
 			const otherGlobs = coreProjects.updates.skeletonOthers.globs; // The “others” we'll update.
 			const globStream = globbyStream(otherGlobs, { expandDirectories: false, onlyDirectories: true, absolute: true, cwd: projsDir, dot: false });
 
@@ -167,7 +185,7 @@ export default async ({ projDir, args }) => {
 		'./LICENSE.txt', //
 		'./README.md',
 	]) {
-		if (isLocked(relPath)) {
+		if (await isLocked(relPath)) {
 			continue; // Locked 🔒.
 		}
 		if (!fs.existsSync(path.resolve(projDir, relPath))) {
@@ -181,18 +199,27 @@ export default async ({ projDir, args }) => {
 	for (const relPath of [
 		'./package.json', //
 	]) {
-		if (isLocked(relPath)) {
+		if (await isLocked(relPath)) {
 			continue; // Locked 🔒.
 		}
 		if (!fs.existsSync(path.resolve(projDir, relPath))) {
 			await fsp.cp(path.resolve(skeletonDir, relPath), path.resolve(projDir, relPath));
 		}
 		const json = JSON.parse((await fsp.readFile(path.resolve(projDir, relPath))).toString());
-		const updatesFile = path.resolve(skeletonDir, './dev/.files/bin/updater/data', relPath, './updates.json');
+		const jsonUpdatesFile = path.resolve(skeletonDir, './dev/.files/bin/updater/data', relPath, './updates.json');
 
-		if (fs.existsSync(updatesFile)) {
-			mc.patch(json, JSON.parse((await fsp.readFile(updatesFile)).toString()));
-			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), pkgPrettierCfg));
+		if (typeof json !== 'object') {
+			throw new Error('updater: Unable to parse `' + relPath + '`.');
+		}
+		if (fs.existsSync(jsonUpdatesFile)) {
+			const jsonUpdates = JSON.parse((await fsp.readFile(jsonUpdatesFile)).toString());
+
+			if (typeof jsonUpdates !== 'object') {
+				throw new Error('updater: Unable to parse `' + jsonUpdatesFile + '`.');
+			}
+			mc.patch(json, jsonUpdates); // Merges potentially declarative ops.
+			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
+			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
 		}
 	}
 
@@ -200,5 +227,5 @@ export default async ({ projDir, args }) => {
 	 * Updates `@clevercanyon/skeleton-dev-deps` in project dir.
 	 */
 	log(chalk.green('Updating project to latest `@clevercanyon/skeleton-dev-deps`.'));
-	await spawn('npm', ['udpate', '@clevercanyon/skeleton-dev-deps', '--silent'], quietSpawnCfg);
+	await spawn('npm', ['udpate', '@clevercanyon/skeleton-dev-deps', '--silent'], { cwd: projDir });
 };

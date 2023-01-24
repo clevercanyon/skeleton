@@ -33,12 +33,6 @@ const __dirname = dirname(import.meta.url);
 const projsDir = path.resolve(__dirname, '../../../..');
 const projDir = path.resolve(__dirname, '../../..');
 
-const pkgFile = path.resolve(projDir, './package.json');
-const pkg = JSON.parse(fs.readFileSync(pkgFile).toString());
-
-if (typeof pkg !== 'object') {
-	throw new Error('Unable to parse `./package.json`.');
-}
 const { log } = console; // Shorter reference.
 const echo = process.stdout.write.bind(process.stdout);
 
@@ -198,22 +192,16 @@ class Project {
 		if (this.args.repos && (await u.isGitRepo()) && (await u.isGitRepoOriginGitHub())) {
 			log(chalk.green('Repos will update, so checking GitHub repo org-wide standards.'));
 			await u.githubCheckRepoOrgWideStandards({ dryRun: this.args.dryRun });
-			//
-		} else if (!this.args.repos /* Not conveyed below, so mention here. */) {
-			log(chalk.gray('Not a git repo.'));
 		}
 
 		/**
-		 * Encrypts Dotenv Vault; i.e., `.env.vault`.
+		 * Pushes to Dotenv Vault, then encrypts, `./.env.vault`.
 		 */
+		// Also syncs GitHub repo environments using org-wide standards.
 
-		if (await u.isEnvsVault()) {
-			log(chalk.green('Encrypting `.env.vault`.'));
-			if (!this.args.dryRun) {
-				await u.runEnvsEncrypt(); // Before any commits.
-			}
-		} else if (!this.args.repos /* Not conveyed below, so mention here. */) {
-			log(chalk.gray('Not an envs repo.'));
+		if (this.args.repos && (await u.isEnvsVault())) {
+			log(chalk.green('Repos will update, so pushing, then re-encrypting `./.env.vault`.'));
+			await u.runEnvsPush({ dryRun: this.args.dryRun });
 		}
 
 		/**
@@ -222,9 +210,7 @@ class Project {
 
 		if (this.args.repos && this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
 			log(chalk.green('NPM package will publish, so incrementing version.'));
-			if (!this.args.dryRun) {
-				await u.pkgIncrementVersion();
-			}
+			await u.pkgIncrementVersion({ dryRun: this.args.dryRun });
 		}
 
 		/**
@@ -242,19 +228,6 @@ class Project {
 
 		if (this.args.repos) {
 			/**
-			 * Pushes changes to Dotenv Vault.
-			 */
-
-			if (await u.isEnvsVault()) {
-				log(chalk.green('Updating envs repo.'));
-				if (!this.args.dryRun) {
-					await u.runEnvsPush();
-				}
-			} else {
-				log(chalk.gray('Not an envs repo.'));
-			}
-
-			/**
 			 * Publishes a new version of NPM package(s).
 			 */
 			// Also checks org-wide npmjs package standards.
@@ -262,13 +235,8 @@ class Project {
 			if (this.args.pkgs) {
 				if (await u.isNPMPkgPublishable({ mode: this.args.mode })) {
 					log(chalk.green('Publishing NPM package.'));
-					if (!this.args.dryRun) {
-						await u.npmPublish();
-					}
-					if (await u.isNPMPkgOriginNPMJS()) {
-						log(chalk.green('Checking npmjs package org-wide standards.'));
-						await u.npmjsCheckPkgOrgWideStandards({ dryRun: this.args.dryRun });
-					}
+					await u.npmPublish({ dryRun: this.args.dryRun });
+					//
 				} else if (await u.isNPMPkg()) {
 					log(chalk.gray('NPM package is not in a publishable state.'));
 				} else {
@@ -285,6 +253,8 @@ class Project {
 			if (await u.isGitRepo()) {
 				if (await u.isGitRepoDirty()) {
 					if (this.args.pkgs && (await u.isNPMPkgPublishable({ mode: this.args.mode }))) {
+						const pkg = await u.pkg(); // Current `./package.json` with incremented version.
+
 						log(chalk.green('Committing git repo changes; `' + (await u.gitCurrentBranch()) + '` branch; `v' + pkg.version + '` tag.'));
 						if (!this.args.dryRun) {
 							await u.gitAddCommitTag((this.args.message + ' [p][v' + pkg.version + ']').trim());

@@ -137,11 +137,11 @@ class Install {
 		log(chalk.green('Installing all envs.'));
 
 		/**
-		 * Checks if project has a Dotenv Vault.
+		 * Checks if project is an envs vault.
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
+			throw new Error('Not an envs vault.');
 		}
 
 		/**
@@ -210,7 +210,7 @@ class Push {
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
+			throw new Error('Not an envs vault.');
 		}
 
 		/**
@@ -264,7 +264,7 @@ class Pull {
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
+			throw new Error('Not an envs vault.');
 		}
 
 		/**
@@ -318,7 +318,7 @@ class Keys {
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
+			throw new Error('Not an envs vault.');
 		}
 
 		/**
@@ -372,7 +372,7 @@ class Encrypt {
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
+			throw new Error('Not an envs vault.');
 		}
 
 		/**
@@ -426,7 +426,7 @@ class Decrypt {
 		 */
 
 		if (!(await u.isEnvsVault())) {
-			throw new Error('Not a Dotenv Vault.');
+			throw new Error('Not an envs vault.');
 		}
 
 		/**

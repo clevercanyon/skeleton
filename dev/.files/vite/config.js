@@ -21,7 +21,6 @@ import fsp from 'node:fs/promises';
 import mm from 'micromatch';
 import { globby } from 'globby';
 
-import chalk from 'chalk';
 import mc from 'merge-change';
 import prettier from 'prettier';
 import spawn from 'spawn-please';
@@ -43,7 +42,7 @@ const require = createRequire(import.meta.url);
  *
  * @returns      Vite configuration object properties.
  */
-export default async ({ mode /*, command, ssrBuild */ }) => {
+export default async ({ mode, command /*, ssrBuild */ }) => {
 	/**
 	 * Directory vars.
 	 */
@@ -79,8 +78,8 @@ export default async ({ mode /*, command, ssrBuild */ }) => {
 	/**
 	 * App type, target, path, and related vars.
 	 */
-	const appType = pkg.config?.c10n?.['&'].build?.appType || 'cma';
-	const targetEnv = pkg.config?.c10n?.['&'].build?.targetEnv || 'any';
+	const appType = _.get(pkg, 'config.c10n.&.build.appType') || 'cma';
+	const targetEnv = _.get(pkg, 'config.c10n.&.build.targetEnv') || 'any';
 	const appBasePath = env.APP_BASE_PATH || ''; // From environment vars.
 
 	const isMPA = 'mpa' === appType;
@@ -231,11 +230,9 @@ export default async ({ mode /*, command, ssrBuild */ }) => {
 	const pluginC10NPostProcessConfig = ((postProcessed = false) => {
 		return {
 			name: 'vite-plugin-c10n-post-process',
+			enforce: 'post', // After others on this hook.
 
-			apply: 'build', // Runs on build command only.
-			enforce: 'post', // Enforce post processing.
-
-			async writeBundle(/* ← rollup hook */) {
+			async writeBundle(/* rollup hook */) {
 				if (postProcessed) return;
 				postProcessed = true;
 
@@ -243,30 +240,26 @@ export default async ({ mode /*, command, ssrBuild */ }) => {
 				 * Copies `./.env.vault` to dist directory.
 				 */
 				if (fs.existsSync(path.resolve(projDir, './.env.vault'))) {
-					chalk.blue('Copying `./.env.vault` to dist directory.');
 					await fsp.copyFile(path.resolve(projDir, './.env.vault'), path.resolve(distDir, './.env.vault'));
 				}
 
 				/**
-				 * Generates typescript type declaration file(s).
-				 */
-				chalk.blue('Generating TypeScript type declaration file(s).');
-				await spawn('npx', ['tsc', '--emitDeclarationOnly'], { cwd: projDir });
-
-				/**
 				 * Writes prepared `package.json` property updates.
 				 */
-				console.log(
-					chalk.blue('Updating `./package.json` properties: ') + //
-						chalk.green(JSON.stringify(_.pick(pkg, ['exports', 'module', 'main', 'browser', 'unpkg', 'types', 'typesVersions']), null, 4)),
-				);
 				await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+
+				/**
+				 * Generates typescript type declaration file(s).
+				 */
+				if ('build' === command) {
+					await spawn('npx', ['tsc', '--emitDeclarationOnly'], { cwd: projDir });
+				}
 			},
 		};
 	})();
 	const pluginZipPackConfig = vitePluginZipPack({ inDir: distDir, outDir: projDir, outFileName: '.~dist.zip' });
 
-	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig, pluginZipPackConfig, pluginC10NPostProcessConfig];
+	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig, pluginC10NPostProcessConfig, pluginZipPackConfig];
 	const importedWorkerPlugins = []; // <https://vitejs.dev/guide/features.html#web-workers>.
 
 	/**
