@@ -155,7 +155,7 @@ export USER_CLOUDFLARE_TOKEN='your_token_goes_here'
 ### `USER_GITHUB_TOKEN`
 
 -   Contact @jaswrks or @bruckwrks and request access to the Clever Canyon organization on GitHub.
--   Create a personal **classic** (aka: legacy) access token (recommended). Select scopes `repo` and `workflow`, at minimum. Please note that a classic access token works for all organizations you're a member of. A 1 year expiration date is suggested.
+-   Create a personal **classic** (aka: legacy) access token (recommended). Select scopes `repo`, `workflow`, and `read:org`, at minimum. Please note that a classic access token works for all organizations you're a member of. A 1 year expiration date is suggested.
     -   See: <https://github.com/settings/tokens/new>
 -   Alternatively, create a personal **granular** (aka: fine-grained) access token with **resource owner** set to `clevercanyon`. Give the token access to **all respositories** and enable read/write (or highest available) access for all repository permissions. Leave account permissions empty. A 1 year expiration date is suggested. _Note: The caveat with granular access tokens is that they are created for a single resource owner. Therefore, you'll need a separate token for anything outside of Clever Canyon. In the future we anticipate that GitHub will improve, at which time we'll update these instructions, favoring granular access._
     -   See: <https://github.com/settings/personal-access-tokens/new>
