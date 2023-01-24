@@ -96,7 +96,6 @@ export default async ({ projDir, args }) => {
 	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/envs.js'), 0o700);
 	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/install.js'), 0o700);
 	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/update.js'), 0o700);
-	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/bash/npm-2sp.bash'), 0o700);
 
 	/**
 	 * Updates semi-immutable dotfiles.
