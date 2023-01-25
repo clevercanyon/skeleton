@@ -93,8 +93,10 @@ export default class u {
 	 */
 
 	static async spawn(cmd, args = [], opts = {}) {
-		const cfg = {
+		return await spawn(cmd, args, {
 			cwd: projDir,
+			shell: 'bash',
+			stdio: 'pipe',
 			env: {
 				...process.env,
 				PARENT_IS_TTY:
@@ -103,12 +105,12 @@ export default class u {
 						? true
 						: false,
 			},
+			// Output handlers do not run when `stdio: 'inherit'` or `quiet: true`.
 			stdout: opts.quiet ? null : (buffer) => echo(chalk.white(buffer.toString())),
 			stderr: opts.quiet ? null : (buffer) => echo(chalk.gray(buffer.toString())),
 
 			..._.omit(opts, ['quiet']),
-		};
-		return await spawn(cmd, args, cfg);
+		});
 	}
 
 	/*

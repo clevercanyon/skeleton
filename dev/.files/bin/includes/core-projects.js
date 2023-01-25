@@ -25,6 +25,7 @@ export default {
 
 			'forks/split-cmd.fork',
 			'forks/merge-change.fork',
+			'forks/spawn-please.fork',
 			'forks/shescape.fork',
 			'forks/*.fork',
 
