@@ -17,13 +17,15 @@ import path from 'node:path';
 import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
+import * as se from 'shescape';
+import spawn from 'spawn-please';
+
 import coloredBox from 'boxen';
 import terminalImage from 'term-img';
 import chalk, { supportsColor } from 'chalk';
 
 import semver from 'semver';
 import prettier from 'prettier';
-import spawn from 'spawn-please';
 import dotenvVaultCore from 'dotenv-vault-core';
 
 import { Octokit as OctokitCore } from '@octokit/core';
@@ -93,8 +95,14 @@ export default class u {
 	 */
 
 	static async spawn(cmd, args = [], opts = {}) {
+		if ('shell' in opts ? opts.shell : 'bash') {
+			// When using a shell, we must escape everything ourselves.
+			// i.e., Node does not escape `cmd` or `args` when a `shell` is given.
+			(cmd = se.quote(cmd)), (args = se.quoteAll(args));
+		}
 		return await spawn(cmd, args, {
 			cwd: projDir,
+			shell: 'bash',
 			stdio: 'pipe',
 			env: {
 				...process.env,
