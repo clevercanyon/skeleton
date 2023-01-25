@@ -412,7 +412,7 @@ export default class u {
 					required_conversation_resolution: true,
 					required_status_checks: { checks: [], strict: true },
 
-					required_deployment_checks: { environments: ['ci'] },
+					required_deployment_environment_checks: ['ci'],
 					restrictions: { users: [], teams: ['owners'], apps: [] },
 					required_pull_request_reviews: {
 						dismiss_stale_reviews: true,
