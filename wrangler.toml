@@ -40,8 +40,8 @@ site.exclude = [
 build.cwd = "./"
 build.watch_dir = "./src"
 
-build.command = "npx madrun build --mode=prod"
-env.dev.build.command = "npx madrun build --mode=dev"
+build.command = "npx @clevercanyon/madrun build --mode=prod"
+env.dev.build.command = "npx @clevercanyon/madrun build --mode=dev"
 
 ##
 # Customizations.

@@ -424,9 +424,9 @@ class Projects {
 						const quotedCMD = se.quote(split.cmd); // Used only in output logging.
 						const quotedArgs = se.quoteAll(split.args); // Only in output logging.
 
-						log(chalk.green('Running `npx madrun ' + quotedCMD + (quotedArgs.length ? ' ' + quotedArgs.join(' ') : '') + '` in:') + ' ' + chalk.yellow(projDisplayDir));
+						log(chalk.green('Running `madrun ' + quotedCMD + (quotedArgs.length ? ' ' + quotedArgs.join(' ') : '') + '` in:') + ' ' + chalk.yellow(projDisplayDir));
 						if (!this.args.dryRun) {
-							await u.spawn('npx', ['madrun', split.cmd, ...split.args], { cwd: projDir });
+							await u.spawn('npx', ['@clevercanyon/madrun', split.cmd, ...split.args], { cwd: projDir });
 						}
 					}
 				}
@@ -610,7 +610,7 @@ class Projects {
 							demandOption: false,
 							default: [],
 							description: // prettier-ignore
-								'Scripts to `npx madrun [cmd] [args]` in each project directory.' +
+								'Scripts to `madrun [cmd] [args]` in each project directory.' +
 								' Note: The use of `&&` is allowed, but the use of `||` or `|` pipes is not permitted at this time.' +
 								' If both `cmd` and `run` are given, `cmd` will always run first.',
 						},
