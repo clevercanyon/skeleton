@@ -460,19 +460,19 @@ export default class u {
 				['USER_DOTENV_KEY_' + envName.toUpperCase()]: envKeys[envName],
 			})) {
 				delete envSecretsToDelete[envSecretName]; // Don't delete.
+				const { envPublicKeyId, envPublicKey } = await u._githubRepoEnvPublicKey(repoId, envName);
 
 				const encryptedEnvSecretValue = await sodium.ready.then(() => {
-					const sodiumKey = sodium.from_base64(repoData.publicKey, sodium.base64_variants.ORIGINAL);
+					const sodiumKey = sodium.from_base64(envPublicKey, sodium.base64_variants.ORIGINAL);
 					return sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(envSecretValue), sodiumKey), sodium.base64_variants.ORIGINAL);
 				});
-				log(encryptedEnvSecretValue);
 				log(chalk.gray('Updating `' + envSecretName + '` secret in `' + envName + '` repo env at GitHub.'));
 				if (!opts.dryRun) {
 					await octokit.request('PUT /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', {
 						repoId,
 						envName,
 						envSecretName,
-						key_id: repoData.publicKeyId,
+						key_id: envPublicKeyId,
 						encrypted_value: encryptedEnvSecretValue,
 					});
 				}
@@ -493,16 +493,12 @@ export default class u {
 
 	static async _githubRepo() {
 		const { owner, repo } = await u.githubOrigin();
-		const r1 = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
-		const r2 = await octokit.request('GET /repos/{owner}/{repo}/actions/secrets/public-key', { owner, repo });
+		const r = await octokit.request('GET /repos/{owner}/{repo}', { owner, repo });
 
-		if (typeof r1 !== 'object' || typeof r1.data !== 'object' || !r1.data.id) {
+		if (typeof r !== 'object' || typeof r.data !== 'object' || !r.data.id) {
 			throw new Error('u._githubRepo: Failed to acquire GitHub repository’s data.');
 		}
-		if (typeof r2 !== 'object' || typeof r2.data !== 'object' || !r2.data.key_id || !r2.data.key) {
-			throw new Error('u._githubRepo: Failed to acquire GitHub repository’s public key.');
-		}
-		return { ...r1.data, publicKeyId: r2.data.key_id, publicKey: r2.data.key };
+		return r.data;
 	}
 
 	static async _githubRepoTeams() {
@@ -560,6 +556,15 @@ export default class u {
 			}
 		}
 		return envs;
+	}
+
+	static async _githubRepoEnvPublicKey(repoId, envName) {
+		const r = await octokit.request('GET /repositories/{repoId}/environments/{envName}/secrets/public-key', { repoId, envName });
+
+		if (typeof r !== 'object' || typeof r.data !== 'object' || !r.data.key_id || !r.data.key) {
+			throw new Error('u._githubRepoEnvPublicKey: Failed to acquire GitHub repository env’s public key.');
+		}
+		return { envPublicKeyId: r.data.key_id, envPublicKey: r.data.key };
 	}
 
 	static async _githubRepoEnvSecrets(repoId, envName) {
