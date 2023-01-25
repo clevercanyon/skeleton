@@ -31,8 +31,9 @@ import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
 import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
 import { default as vitePluginZipPack } from 'vite-plugin-zip-pack';
 
-import { createRequire } from 'node:module';
 import importAliases from './includes/aliases.js';
+
+import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 
 /**

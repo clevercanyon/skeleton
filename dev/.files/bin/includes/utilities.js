@@ -17,13 +17,15 @@ import path from 'node:path';
 import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
+import * as se from 'shescape';
+import spawn from 'spawn-please';
+
 import coloredBox from 'boxen';
 import terminalImage from 'term-img';
 import chalk, { supportsColor } from 'chalk';
 
 import semver from 'semver';
 import prettier from 'prettier';
-import spawn from 'spawn-please';
 import dotenvVaultCore from 'dotenv-vault-core';
 
 import { Octokit as OctokitCore } from '@octokit/core';
@@ -93,8 +95,15 @@ export default class u {
 	 */
 
 	static async spawn(cmd, args = [], opts = {}) {
-		const cfg = {
+		if ('shell' in opts ? opts.shell : 'bash') {
+			// When using a shell, we must escape everything ourselves.
+			// i.e., Node does not escape `cmd` or `args` when a `shell` is given.
+			(cmd = se.quote(cmd)), (args = se.quoteAll(args));
+		}
+		return await spawn(cmd, args, {
 			cwd: projDir,
+			shell: 'bash',
+			stdio: 'pipe',
 			env: {
 				...process.env,
 				PARENT_IS_TTY:
@@ -103,12 +112,12 @@ export default class u {
 						? true
 						: false,
 			},
+			// Output handlers do not run when `stdio: 'inherit'` or `quiet: true`.
 			stdout: opts.quiet ? null : (buffer) => echo(chalk.white(buffer.toString())),
 			stderr: opts.quiet ? null : (buffer) => echo(chalk.gray(buffer.toString())),
 
 			..._.omit(opts, ['quiet']),
-		};
-		return await spawn(cmd, args, cfg);
+		});
 	}
 
 	/*
@@ -739,7 +748,7 @@ export default class u {
 				process.env.DOTENV_KEY = key; // For `dotEnvVaultCore`.
 
 				// Note: `path` leads to `.env.vault`. See: <https://o5p.me/MqXJaf>.
-				const env = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
+				const { parsed: env } = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
 
 				await fsp.writeFile(envFile, await u._envsToString(envName, env));
 				process.env.DOTENV_KEY = origDotenvKey;
@@ -807,14 +816,12 @@ export default class u {
 	static async _envsToString(envName, env) {
 		let str = '# ' + envName + '\n';
 
-		log(env);
 		for (let [name, value] of Object.entries(env)) {
 			value = String(value);
 			value = value.replace(/\r\n?/gu, '\n');
 			value = value.replace(/\n/gu, '\\n');
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
-		log(str);
 		return str;
 	}
 
@@ -859,15 +866,15 @@ export default class u {
 	}
 
 	static async npmInstall() {
-		await u.spawn('npm', ['install']);
+		await u.spawn('npm', ['install'], { stdio: 'inherit' });
 	}
 
 	static async npmCleanInstall() {
-		await u.spawn('npm', ['ci']);
+		await u.spawn('npm', ['ci'], { stdio: 'inherit' });
 	}
 
 	static async npmUpdate() {
-		await u.spawn('npm', ['update', '--save']);
+		await u.spawn('npm', ['update', '--save'], { stdio: 'inherit' });
 	}
 
 	static async npmPublish(opts = { dryRun: false }) {
