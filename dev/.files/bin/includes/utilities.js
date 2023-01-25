@@ -410,7 +410,7 @@ export default class u {
 					required_signatures: true,
 					required_linear_history: true,
 					required_conversation_resolution: true,
-					required_status_checks: { checks: [], strict: true },
+					required_status_checks: null, // We don't use.
 
 					// @review Not implemented. See: <https://o5p.me/hfPAag>.
 					required_deployment_environments: { environments: ['ci'] },
