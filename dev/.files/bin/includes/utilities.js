@@ -807,7 +807,9 @@ export default class u {
 	static async _envsToString(envName, env) {
 		let str = '# ' + envName + '\n';
 
+		log(env);
 		for (let [name, value] of Object.entries(env)) {
+			value = String(value);
 			value = value.replace(/\r\n?/gu, '\n');
 			value = value.replace(/\n/gu, '\\n');
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
