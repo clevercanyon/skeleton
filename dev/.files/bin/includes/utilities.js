@@ -930,8 +930,8 @@ export default class u {
 		const teamsToDelete = await u._npmjsOrgTeams(org); // Current list of organization’s teams.
 		const alwaysOnRequiredTeams = { developers: 'read-write', owners: 'read-write', 'security-managers': 'read-only' }; // No exceptions.
 
-		let teams = Object.assign({}, _.get(pkg, 'config.c10n.&.npmjs.teams', _.get(pkg, 'config.c10n.&.github.teams', {})), alwaysOnRequiredTeams);
-		teams = Object.keys(teams).forEach((team) => (teams[team] = /^(?:read-write|push|maintain|admin)$/iu.test(teams[team]) ? 'read-write' : 'read-only'));
+		const teams = Object.assign({}, _.get(pkg, 'config.c10n.&.npmjs.teams', _.get(pkg, 'config.c10n.&.github.teams', {})), alwaysOnRequiredTeams);
+		Object.keys(teams).forEach((team) => (teams[team] = /^(?:read-write|push|maintain|admin)$/iu.test(teams[team]) ? 'read-write' : 'read-only'));
 
 		for (const [team, permission] of Object.entries(teams)) {
 			delete teamsToDelete[team]; // Don't delete.
