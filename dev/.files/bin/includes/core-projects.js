@@ -12,7 +12,7 @@ export default {
 	updates: {
 		ignore: [
 			'.*', //
-			'github',
+			'.github',
 			'forks/',
 		],
 		order: [
@@ -48,7 +48,7 @@ export default {
 		],
 		skeletonOthers: {
 			globs: [
-				'github', //
+				'.github', //
 				'private',
 				'skeleton-dev-deps',
 				'{*.fork,forks/*.fork}',

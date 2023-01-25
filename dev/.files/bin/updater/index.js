@@ -120,7 +120,6 @@ export default async ({ projDir, args }) => {
 	 */
 	for (const relPath of [
 		'./.github/dependabot.yml',
-		'./.github/FUNDING.yml',
 		'./.browserslistrc',
 		'./.editorconfig',
 		'./.eslintrc.cjs',
