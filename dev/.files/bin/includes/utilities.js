@@ -739,7 +739,7 @@ export default class u {
 				process.env.DOTENV_KEY = key; // For `dotEnvVaultCore`.
 
 				// Note: `path` leads to `.env.vault`. See: <https://o5p.me/MqXJaf>.
-				const env = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
+				const { parsed: env } = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
 
 				await fsp.writeFile(envFile, await u._envsToString(envName, env));
 				process.env.DOTENV_KEY = origDotenvKey;
@@ -807,14 +807,12 @@ export default class u {
 	static async _envsToString(envName, env) {
 		let str = '# ' + envName + '\n';
 
-		log(env);
 		for (let [name, value] of Object.entries(env)) {
 			value = String(value);
 			value = value.replace(/\r\n?/gu, '\n');
 			value = value.replace(/\n/gu, '\\n');
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
-		log(str);
 		return str;
 	}
 
@@ -859,15 +857,15 @@ export default class u {
 	}
 
 	static async npmInstall() {
-		await u.spawn('npm', ['install']);
+		await u.spawn('npm', ['install'], { stdio: 'inherit' });
 	}
 
 	static async npmCleanInstall() {
-		await u.spawn('npm', ['ci']);
+		await u.spawn('npm', ['ci'], { stdio: 'inherit' });
 	}
 
 	static async npmUpdate() {
-		await u.spawn('npm', ['update', '--save']);
+		await u.spawn('npm', ['update', '--save'], { stdio: 'inherit' });
 	}
 
 	static async npmPublish(opts = { dryRun: false }) {
