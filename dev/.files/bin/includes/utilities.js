@@ -393,18 +393,17 @@ export default class u {
 					branch,
 
 					lock_branch: false,
-					block_creations: false,
+					block_creations: true,
 					allow_deletions: false,
 					allow_fork_syncing: false,
-
 					allow_force_pushes: false,
-					required_linear_history: true,
-					restrictions: { users: [], teams: ['owners'], apps: [] },
 
 					required_signatures: true,
+					required_linear_history: true,
 					required_conversation_resolution: true,
 					required_status_checks: { checks: [], strict: true },
 
+					restrictions: { users: [], teams: ['owners'], apps: [] },
 					required_pull_request_reviews: {
 						dismiss_stale_reviews: true,
 						require_code_owner_reviews: true,
@@ -415,7 +414,6 @@ export default class u {
 					},
 					enforce_admins: true,
 				});
-				//await octokit.request('GET /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures', { owner, repo, branch });
 			}
 		}
 		for (const [branch] of Object.entries(protectedBranchesToDelete)) {
