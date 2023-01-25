@@ -465,6 +465,7 @@ export default class u {
 					const sodiumKey = sodium.from_base64(repoData.publicKey, sodium.base64_variants.ORIGINAL);
 					return sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(envSecretValue), sodiumKey), sodium.base64_variants.ORIGINAL);
 				});
+				log(encryptedEnvSecretValue);
 				log(chalk.gray('Updating `' + envSecretName + '` secret in `' + envName + '` repo env at GitHub.'));
 				if (!opts.dryRun) {
 					await octokit.request('PUT /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', {
