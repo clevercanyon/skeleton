@@ -17,7 +17,7 @@
 	},
 	"devDependencies": {
 		"$set": {
-			"@clevercanyon/skeleton-dev-deps": "*"
+			"@clevercanyon/skeleton-dev-deps": "^1.0.0"
 		}
 	},
 	"config": {

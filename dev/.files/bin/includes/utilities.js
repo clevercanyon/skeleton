@@ -450,7 +450,6 @@ export default class u {
 		log(chalk.gray('Configuring GitHub repo environments using org-wide standards.'));
 
 		const envKeys = await u._envsExtractKeys(); // Dotenv Vault decryption keys.
-		log(JSON.stringify(envKeys, null, 4));
 		await u._githubEnsureRepoEnvs({ dryRun: opts.dryRun }); // Creates|deletes repo envs.
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
@@ -466,6 +465,7 @@ export default class u {
 					const sodiumKey = sodium.from_base64(repoData.publicKey, sodium.base64_variants.ORIGINAL);
 					return sodium.to_base64(sodium.crypto_box_seal(sodium.from_string(envSecretValue), sodiumKey), sodium.base64_variants.ORIGINAL);
 				});
+				log(encryptedEnvSecretValue);
 				log(chalk.gray('Updating `' + envSecretName + '` secret in `' + envName + '` repo env at GitHub.'));
 				if (!opts.dryRun) {
 					await octokit.request('PUT /repositories/{repoId}/environments/{envName}/secrets/{envSecretName}', {
@@ -791,7 +791,6 @@ export default class u {
 		const regexp = /\bdotenv:\/\/:key_.+?\?environment=([^\s]+)/giu;
 
 		while ((_m = regexp.exec(output)) !== null) {
-			log(_m);
 			keys[_m[1]] = _m[0];
 		}
 		if (Object.keys(keys).length !== Object.keys(envFiles).length) {
