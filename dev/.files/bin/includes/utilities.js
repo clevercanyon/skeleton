@@ -401,6 +401,7 @@ export default class u {
 					required_linear_history: true,
 					restrictions: { users: [], teams: ['owners'], apps: [] },
 
+					required_signatures: true,
 					required_conversation_resolution: true,
 					required_status_checks: { checks: [], strict: true },
 
@@ -414,6 +415,7 @@ export default class u {
 					},
 					enforce_admins: true,
 				});
+				//await octokit.request('GET /repos/{owner}/{repo}/branches/{branch}/protection/required_signatures', { owner, repo, branch });
 			}
 		}
 		for (const [branch] of Object.entries(protectedBranchesToDelete)) {
