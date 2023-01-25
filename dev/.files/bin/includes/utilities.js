@@ -44,7 +44,7 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository } = (() => {
 		throw new Error('u: Unable to parse `./package.json`.');
 	}
 	const pkgName = pkg.name || '';
-	const pkgPrivate = pkg.private || null;
+	const pkgPrivate = pkg.private;
 	const pkgRepository = pkg.repository || '';
 
 	return { pkgFile, pkgName, pkgPrivate, pkgRepository };
