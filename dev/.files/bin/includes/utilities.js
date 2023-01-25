@@ -450,6 +450,7 @@ export default class u {
 		log(chalk.gray('Configuring GitHub repo environments using org-wide standards.'));
 
 		const envKeys = await u._envsExtractKeys(); // Dotenv Vault decryption keys.
+		log(JSON.stringify(envKeys, null, 4));
 		await u._githubEnsureRepoEnvs({ dryRun: opts.dryRun }); // Creates|deletes repo envs.
 
 		for (const [envName] of Object.entries(_.omit(envFiles, ['main']))) {
@@ -790,6 +791,7 @@ export default class u {
 		const regexp = /\bdotenv:\/\/:key_.+?\?environment=([^\s]+)/giu;
 
 		while ((_m = regexp.exec(output)) !== null) {
+			log(_m);
 			keys[_m[1]] = _m[0];
 		}
 		if (Object.keys(keys).length !== Object.keys(envFiles).length) {

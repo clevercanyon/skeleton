@@ -16,7 +16,9 @@
 		"workspaces": []
 	},
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "*"
+		"$set": {
+			"@clevercanyon/skeleton-dev-deps": "*"
+		}
 	},
 	"config": {
 		"c10n": {
