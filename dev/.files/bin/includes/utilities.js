@@ -862,7 +862,12 @@ export default class u {
 	}
 
 	static async isNPMPkgRegistry(registry) {
-		return registry.replace(/\/+$/, '') === String(await u.spawn('npm', ['config', 'get', 'registry'], { quiet: true })).replace(/\/+$/, '');
+		return (
+			registry.replace(/\/+$/, '') ===
+			String(await u.spawn('npm', ['config', 'get', 'registry'], { quiet: true }))
+				.trim()
+				.replace(/\/+$/, '')
+		);
 	}
 
 	static async isNPMPkgPublishable(opts = { mode: 'prod' }) {
