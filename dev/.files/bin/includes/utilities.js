@@ -95,7 +95,6 @@ export default class u {
 	static async spawn(cmd, args = [], opts = {}) {
 		return await spawn(cmd, args, {
 			cwd: projDir,
-			shell: 'bash',
 			stdio: 'pipe',
 			env: {
 				...process.env,
