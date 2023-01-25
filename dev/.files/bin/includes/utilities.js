@@ -411,7 +411,7 @@ export default class u {
 					required_linear_history: true,
 					required_conversation_resolution: true,
 					required_status_checks: { checks: [], strict: true },
-					required_deployment_environments: { checks: ['ci'], strict: true }, // @review Not implemented yet. See: <https://o5p.me/hfPAag>.
+					required_environment_checks: { checks: ['ci'], strict: true }, // @review Not implemented yet. See: <https://o5p.me/hfPAag>.
 
 					restrictions: { users: [], teams: ['owners'], apps: [] },
 					required_pull_request_reviews: {
