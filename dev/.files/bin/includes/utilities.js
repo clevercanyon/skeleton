@@ -927,20 +927,22 @@ export default class u {
 		}
 		log(chalk.gray('Configuring npmjs package using org-wide standards.'));
 
+		const teamsToDelete = await u._npmjsOrgTeams(org); // Current list of organization’s teams.
 		const alwaysOnRequiredTeams = { developers: 'read-write', owners: 'read-write', 'security-managers': 'read-only' }; // No exceptions.
+
 		let teams = Object.assign({}, _.get(pkg, 'config.c10n.&.npmjs.teams', _.get(pkg, 'config.c10n.&.github.teams', {})), alwaysOnRequiredTeams);
 		teams = Object.keys(teams).forEach((team) => (teams[team] = /^(?:read-write|push|maintain|admin)$/iu.test(teams[team]) ? 'read-write' : 'read-only'));
-		const teamsToDelete = await u._npmjsOrgTeams(org); // Current list of organization’s teams.
 
 		for (const [team, permission] of Object.entries(teams)) {
 			delete teamsToDelete[team]; // Don't delete.
+
 			log(chalk.gray('Adding `' + team + '` team to npmjs package with `' + permission + '` permission.'));
 			if (!opts.dryRun) {
 				await u.spawn('npm', ['access', 'grant', permission, org + ':' + team], { quiet: true });
 			}
 		}
-		for (const [team, teamData] of Object.entries(teamsToDelete)) {
-			log(chalk.gray('Deleting `' + team + '` (unused) with `' + teamData.permission + '` permission from npmjs package.'));
+		for (const [team] of Object.entries(teamsToDelete)) {
+			log(chalk.gray('Deleting `' + team + '` (unused) from npmjs package.'));
 			if (!opts.dryRun) {
 				await u.spawn('npm', ['access', 'revoke', org + ':' + team], { quiet: true }).catch(() => null);
 			}
@@ -975,7 +977,10 @@ export default class u {
 		if (!(teams instanceof Array)) {
 			throw new Error('u._npmjsOrgTeams: Failed to acquire list of NPM teams for `' + org + '` org.');
 		}
-		return teams.map((team) => team.replace(/^[^:]+:/u, '')); // Array of team slugs.
+		return teams.reduce((o, team) => {
+			o[team.replace(/^[^:]+:/u, '')] = team;
+			return o; // Object return.
+		}, {});
 	}
 
 	/*
