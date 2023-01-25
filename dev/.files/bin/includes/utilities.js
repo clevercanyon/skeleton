@@ -814,6 +814,7 @@ export default class u {
 			value = value.replace(/\n/gu, '\\n');
 			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
+		log(str);
 		return str;
 	}
 
