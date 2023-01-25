@@ -183,7 +183,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		pkg.types = './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts';
 		pkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
 	} else {
-		pkg.type = pkg.module = pkg.main = pkg.browser = pkg.unpkg = pkg.types = '';
+		(pkg.type = 'module'), (pkg.module = pkg.main = pkg.browser = pkg.unpkg = pkg.types = '');
 		(pkg.files = []), (pkg.exports = []), (pkg.sideEffects = []), (pkg.typesVersions = {});
 	}
 
