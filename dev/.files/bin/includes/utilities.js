@@ -424,7 +424,7 @@ export default class u {
 						dismissal_restrictions: { users: [], teams: ['owners'], apps: [] },
 						bypass_pull_request_allowances: { users: [], teams: ['owners'], apps: [] },
 					},
-					enforce_admins: true,
+					enforce_admins: false, // No. Let's not get too crazy.
 				});
 			}
 		}
