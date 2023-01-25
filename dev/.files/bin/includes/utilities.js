@@ -368,7 +368,6 @@ export default class u {
 				squash_merge_commit_message: 'COMMIT_MESSAGES',
 
 				web_commit_signoff_required: false,
-				enable_repository_funding_links: true,
 
 				homepage: pkg.homepage || defaultHomepage,
 				description: pkg.description || defaultDescription,
