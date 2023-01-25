@@ -750,6 +750,7 @@ export default class u {
 				// Note: `path` leads to `.env.vault`. See: <https://o5p.me/MqXJaf>.
 				const { parsed: env } = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
 
+				await fsp.mkdir(path.dirname(envFile), { recursive: true });
 				await fsp.writeFile(envFile, await u._envsToString(envName, env));
 				process.env.DOTENV_KEY = origDotenvKey;
 			}
