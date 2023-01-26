@@ -216,6 +216,10 @@ export default async ({ projDir, args }) => {
 			if (typeof jsonUpdates !== 'object') {
 				throw new Error('updater: Unable to parse `' + jsonUpdatesFile + '`.');
 			}
+			if ('./package.json' === relPath && isPkgRepo('clevercanyon/skeleton-dev-deps')) {
+				delete jsonUpdates.devDependencies['@clevercanyon/skeleton-dev-deps'];
+				delete jsonUpdates.devDependencies.$set['@clevercanyon/skeleton-dev-deps'];
+			}
 			mc.patch(json, jsonUpdates); // Merges potentially declarative ops.
 			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
 			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
