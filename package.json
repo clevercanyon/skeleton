@@ -42,16 +42,16 @@
 	"peerDependenciesMeta": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "^1.0.88"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.90"
 	},
 	"overrides": {},
+	"workspaces": [],
 	"cpu": ["x64", "arm64"],
 	"os": ["darwin", "linux"],
 	"engines": {
 		"node": "^19.2.0 || ^19.4.0",
 		"npm": "^8.19.3 || ^9.2.0"
 	},
-	"workspaces": [],
 	"config": {
 		"c10n": {
 			"&": {
@@ -76,8 +76,5 @@
 				}
 			}
 		}
-	},
-	"dependencies": {},
-	"peerDependencies": {},
-	"optionalDependencies": {}
+	}
 }
