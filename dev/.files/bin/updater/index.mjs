@@ -11,27 +11,35 @@ import _ from 'lodash';
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
-import { dirname } from 'desm';
-import { globbyStream } from 'globby';
-
 import chalk from 'chalk';
+import flatten from 'flat';
 import mc from 'merge-change';
 import prettier from 'prettier';
 import spawn from 'spawn-please';
 
-import customRegexp from './data/custom-regexp.js';
-import coreProjects from '../includes/core-projects.js';
+import customRegexp from './data/custom-regexp.mjs';
 
 const { log } = console; // Shorter reference.
 
-export default async ({ projDir, args }) => {
+mc.addOperation('$default', (current, defaults) => {
+	const paths = Object.keys(defaults);
+
+	for (const path of paths) {
+		if (undefined === _.get(current, path)) {
+			_.set(current, path, defaults[path]);
+		}
+	}
+	return paths.length > 0;
+});
+
+export default async ({ projDir }) => {
 	/**
 	 * Initializes vars.
 	 */
 	const __dirname = dirname(import.meta.url);
-	const projsDir = path.dirname(projDir); // One level up.
 	const skeletonDir = path.resolve(__dirname, '../../../..');
 
 	/**
@@ -152,29 +160,6 @@ export default async ({ projDir, args }) => {
 		}
 		await fsp.mkdir(path.dirname(path.resolve(projDir, relPath)), { recursive: true });
 		await fsp.writeFile(path.resolve(projDir, relPath), newFileContents);
-
-		if (args.skeletonUpdatesOthers && (await isPkgRepo('clevercanyon/skeleton')) && coreProjects.updates.skeletonOthers.files.includes(relPath)) {
-			const otherGlobs = coreProjects.updates.skeletonOthers.globs; // The “others” we'll update.
-			const globStream = globbyStream(otherGlobs, { expandDirectories: false, onlyDirectories: true, absolute: true, cwd: projsDir, dot: false });
-
-			for await (const projDir of globStream) {
-				if (!fs.existsSync(path.resolve(projDir, './package.json'))) {
-					continue; // False positive. No `package.json` file.
-				}
-				let newFileContents = ''; // Initialize.
-
-				if (fs.existsSync(path.resolve(projDir, relPath))) {
-					const oldFileContents = (await fsp.readFile(path.resolve(projDir, relPath))).toString();
-					const oldFileMatches = customRegexp.exec(oldFileContents); // See: `./data/custom-regexp.js`.
-					const oldFileCustomCode = oldFileMatches ? oldFileMatches[2] : ''; // We'll preserve any custom code.
-					newFileContents = (await fsp.readFile(path.resolve(skeletonDir, relPath))).toString().replace(customRegexp, ($_, $1, $2, $3) => $1 + oldFileCustomCode + $3);
-				} else {
-					newFileContents = (await fsp.readFile(path.resolve(skeletonDir, relPath))).toString();
-				}
-				await fsp.mkdir(path.dirname(path.resolve(projDir, relPath)), { recursive: true });
-				await fsp.writeFile(path.resolve(projDir, relPath), newFileContents);
-			}
-		}
 	}
 
 	/**
@@ -204,8 +189,9 @@ export default async ({ projDir, args }) => {
 		if (!fs.existsSync(path.resolve(projDir, relPath))) {
 			await fsp.cp(path.resolve(skeletonDir, relPath), path.resolve(projDir, relPath));
 		}
-		const json = JSON.parse((await fsp.readFile(path.resolve(projDir, relPath))).toString());
+		let json = JSON.parse((await fsp.readFile(path.resolve(projDir, relPath))).toString());
 		const jsonUpdatesFile = path.resolve(skeletonDir, './dev/.files/bin/updater/data', relPath, './updates.json');
+		const jsonSortOrderFile = path.resolve(skeletonDir, './dev/.files/bin/updater/data', relPath, './sort-order.json');
 
 		if (typeof json !== 'object') {
 			throw new Error('updater: Unable to parse `' + relPath + '`.');
@@ -217,14 +203,26 @@ export default async ({ projDir, args }) => {
 				throw new Error('updater: Unable to parse `' + jsonUpdatesFile + '`.');
 			}
 			if ('./package.json' === relPath && (await isPkgRepo('clevercanyon/skeleton-dev-deps'))) {
-				if (jsonUpdates.devDependencies?.['@clevercanyon/skeleton-dev-deps']) {
-					delete jsonUpdates.devDependencies['@clevercanyon/skeleton-dev-deps'];
-				}
-				if (jsonUpdates.devDependencies?.$set?.['@clevercanyon/skeleton-dev-deps']) {
-					delete jsonUpdates.devDependencies.$set['@clevercanyon/skeleton-dev-deps'];
+				if (jsonUpdates.$default?.['devDependencies.@clevercanyon/skeleton-dev-deps']) {
+					delete jsonUpdates.$default['devDependencies.@clevercanyon/skeleton-dev-deps'];
 				}
 			}
 			mc.patch(json, jsonUpdates); // Merges potentially declarative ops.
+			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
+			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
+		}
+		if (fs.existsSync(jsonSortOrderFile)) {
+			const jsonSortOrder = JSON.parse((await fsp.readFile(jsonSortOrderFile)).toString());
+
+			if (!Array.isArray(jsonSortOrder)) {
+				throw new Error('updater: Unable to parse `' + jsonSortOrderFile + '`.');
+			}
+			const _json = _.cloneDeep(json);
+
+			json = {}; // New JSON object; by insertion order.
+			jsonSortOrder.forEach((p, i, v) => undefined === (v = _.get(_json, p)) || _.set(json, p, v));
+			for (const [p, v] of flatten(_json)) undefined !== _.get(json, p) || _.set(json, p, v);
+
 			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
 			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
 		}
