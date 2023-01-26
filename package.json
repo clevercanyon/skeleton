@@ -42,7 +42,7 @@
 	"peerDependenciesMeta": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "^1.0.83"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.84"
 	},
 	"overrides": {},
 	"cpu": ["x64", "arm64"],
@@ -67,7 +67,7 @@
 						"engineers": "pull",
 						"architects": "push"
 					},
-					"configVersion": "1.0.0",
+					"configVersion": "1.0.1",
 					"envsVersion": "1.0.0"
 				},
 				"npmjs": {}
