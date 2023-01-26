@@ -119,9 +119,9 @@ export default async ({ projDir }) => {
 		await fsp.mkdir(path.resolve(projDir, relPath), { recursive: true });
 		await fsp.cp(path.resolve(skeletonDir, relPath), path.resolve(projDir, relPath), { recursive: true });
 	}
-	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/envs.js'), 0o700);
-	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/install.js'), 0o700);
-	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/update.js'), 0o700);
+	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/envs.mjs'), 0o700);
+	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/install.mjs'), 0o700);
+	await fsp.chmod(path.resolve(projDir, './dev/.files/bin/update.mjs'), 0o700);
 
 	/**
 	 * Updates semi-immutable dotfiles.
@@ -133,6 +133,7 @@ export default async ({ projDir }) => {
 		'./.eslintrc.cjs',
 		'./.gitattributes',
 		'./.gitignore',
+		'./.madrun.mjs',
 		'./.npmignore',
 		'./.npmrc',
 		'./.postcssrc.cjs',
@@ -142,7 +143,7 @@ export default async ({ projDir }) => {
 		'./.stylelintrc.cjs',
 		'./.tailwindrc.cjs',
 		'./tsconfig.json',
-		'./vite.config.js',
+		'./vite.config.mjs',
 		'./wrangler.toml',
 	]) {
 		if (await isLocked(relPath)) {
