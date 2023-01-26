@@ -53,10 +53,7 @@ export default {
 			'private',
 		],
 		skeletonOthers: {
-			globs: [
-				'skeleton-dev-deps', //
-				'{*.fork,forks/*.fork}',
-			],
+			globs: ['{*.fork,forks/*.fork}'],
 			files: [
 				'./.gitattributes', //
 				'./.gitignore',

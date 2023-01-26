@@ -470,8 +470,8 @@ void (async () => {
 							demandOption: false,
 							default: false,
 							description: // prettier-ignore
-								'Updating `clevercanyon/skeleton` also updates some dotfiles in “other” core repos?' +
-								' The “other” repos include: ../ `github`, `private`, `skeleton-dev-deps`, and `*.fork`s.',
+								'Updating `clevercanyon/skeleton` also updates dotfiles in “other” core repos?' +
+								' At this time, the “other” core repos are all `*.fork`s.',
 						},
 						message: {
 							alias: 'm',
