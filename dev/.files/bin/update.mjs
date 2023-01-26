@@ -128,7 +128,7 @@ class Dotfiles {
 
 		log(chalk.green('Running updater using latest `clevercanyon/skeleton`; `' + skeletonBranch + '` branch.'));
 		if (!this.args.dryRun) {
-			await (await import(path.resolve(skeletonRepoDir, './dev/.files/bin/updater/index.js'))).default({ projDir });
+			await (await import(path.resolve(skeletonRepoDir, './dev/.files/bin/updater/index.mjs'))).default({ projDir });
 		}
 
 		/**
