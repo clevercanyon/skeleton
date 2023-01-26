@@ -71,8 +71,13 @@
 					"configVersion": "1.0.1",
 					"envsVersion": "1.0.0"
 				},
-				"npmjs": {}
+				"npmjs": {
+					"configVersions": ""
+				}
 			}
 		}
-	}
+	},
+	"dependencies": {},
+	"peerDependencies": {},
+	"optionalDependencies": {}
 }

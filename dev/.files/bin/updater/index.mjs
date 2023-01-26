@@ -222,7 +222,7 @@ export default async ({ projDir }) => {
 
 			json = {}; // New JSON object; by insertion order.
 			jsonSortOrder.forEach((p, i, v) => undefined === (v = _.get(_json, p)) || _.set(json, p, v));
-			for (const [p, v] of flatten(_json)) undefined !== _.get(json, p) || _.set(json, p, v);
+			for (const [p, v] of Object.entries(flatten(_json))) undefined !== _.get(json, p) || _.set(json, p, v);
 
 			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
 			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
