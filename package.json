@@ -67,9 +67,9 @@
 						"engineers": "pull",
 						"architects": "push"
 					},
+					"labels": {},
 					"configVersion": "1.0.1",
-					"envsVersion": "1.0.0",
-					"labels": {}
+					"envsVersion": "1.0.0"
 				},
 				"npmjs": {}
 			}
