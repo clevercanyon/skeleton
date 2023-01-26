@@ -42,7 +42,7 @@ export default async ({ projDir, args }) => {
 	 * @returns {string}     Escaped string.
 	 */
 	const escRegExp = (str) => {
-		return str.replace(/[.*+?^${}()|[\]\\-]/gu, '\\$&');
+		return str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
 	};
 
 	/**
@@ -217,8 +217,12 @@ export default async ({ projDir, args }) => {
 				throw new Error('updater: Unable to parse `' + jsonUpdatesFile + '`.');
 			}
 			if ('./package.json' === relPath && isPkgRepo('clevercanyon/skeleton-dev-deps')) {
-				delete jsonUpdates.devDependencies['@clevercanyon/skeleton-dev-deps'];
-				delete jsonUpdates.devDependencies.$set['@clevercanyon/skeleton-dev-deps'];
+				if (jsonUpdates.devDependencies?.['@clevercanyon/skeleton-dev-deps']) {
+					delete jsonUpdates.devDependencies['@clevercanyon/skeleton-dev-deps'];
+				}
+				if (jsonUpdates.devDependencies?.$set?.['@clevercanyon/skeleton-dev-deps']) {
+					delete jsonUpdates.devDependencies.$set['@clevercanyon/skeleton-dev-deps'];
+				}
 			}
 			mc.patch(json, jsonUpdates); // Merges potentially declarative ops.
 			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
