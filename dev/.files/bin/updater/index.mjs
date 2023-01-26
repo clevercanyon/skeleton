@@ -15,7 +15,7 @@ import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
 import chalk from 'chalk';
-import flatten from 'flat';
+import deeps from 'deeps';
 import mc from 'merge-change';
 import prettier from 'prettier';
 import spawn from 'spawn-please';
@@ -208,22 +208,25 @@ export default async ({ projDir }) => {
 					delete jsonUpdates.$default['devDependencies.@clevercanyon/skeleton-dev-deps'];
 				}
 			}
-			mc.patch(json, jsonUpdates); // Merges potentially declarative ops.
+			mc.patch(json, jsonUpdates); // Potentially declarative ops.
 			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
 			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
 		}
 		if (fs.existsSync(jsonSortOrderFile)) {
+			const origJSON = _.cloneDeep(json); // Deep clone.
+			json = {}; // Sorted JSON file; i.e., using insertion order.
 			const jsonSortOrder = JSON.parse((await fsp.readFile(jsonSortOrderFile)).toString());
 
 			if (!Array.isArray(jsonSortOrder)) {
 				throw new Error('updater: Unable to parse `' + jsonSortOrderFile + '`.');
 			}
-			const _json = _.cloneDeep(json);
-
-			json = {}; // New JSON object; by insertion order.
-			jsonSortOrder.forEach((p, i, v) => undefined === (v = _.get(_json, p)) || _.set(json, p, v));
-			for (const [p, v] of Object.entries(flatten(_json))) undefined !== _.get(json, p) || _.set(json, p, v);
-
+			for (const path of jsonSortOrder) {
+				const value = deeps.get(origJSON, path, 'ꓺ');
+				if (undefined !== value) deeps.set(json, path, value, true, 'ꓺ');
+			}
+			for (const [path, value] of Object.entries(deeps.flatten(origJSON, 'ꓺ'))) {
+				if (undefined === deeps.get(json, path, 'ꓺ')) deeps.set(json, path, value, true, 'ꓺ');
+			}
 			const prettierCfg = { ...(await prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
 			await fsp.writeFile(path.resolve(projDir, relPath), prettier.format(JSON.stringify(json, null, 4), prettierCfg));
 		}
