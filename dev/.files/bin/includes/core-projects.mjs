@@ -9,10 +9,7 @@
 
 export default {
 	updates: {
-		ignore: [
-			'.*', //
-			'!.github',
-		],
+		ignore: [],
 		order: [
 			'skeleton-dev-deps',
 			'skeleton',

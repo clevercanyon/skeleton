@@ -543,7 +543,7 @@ void (async () => {
 							type: 'array',
 							requiresArg: true,
 							demandOption: false,
-							default: ['*'],
+							default: ['*', '.github'],
 							description:  // prettier-ignore
 								'Glob matching is relative to `' + projsDir + '` and finds directories only.' +
 								' Note: Globstars `**` are not allowed given the nature of this command and will therefore throw an error.' +
