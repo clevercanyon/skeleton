@@ -54,10 +54,12 @@ export default {
 	'wrangler': 'CLOUDFLARE_API_TOKEN="${USER_CLOUDFLARE_TOKEN}" npx wrangler {{@}}',
 
 	'on::madrun:default:new': [
-		'npx @clevercanyon/madrun install:project',
+		'npx @clevercanyon/madrun install:project', // @todo Can we log into Dotenv Vault w/o browser tabs opening?
 		async () => {
 			let u = './dev/.files/bin/includes/utilities.mjs';
 			u = (await import(path.resolve(projDir, u))).default;
+
+			u.propagateUserEnvVars(); // i.e., `USER_` env vars.
 
 			await fsp.rm(path.resolve(projDir, './.env.me'), { force: true });
 			await fsp.rm(path.resolve(projDir, './.env.vault'), { force: true });
@@ -96,6 +98,15 @@ export default {
 
 			readme = readme.replace(/@clevercanyon\/[^/?#\s]+/gu, '@clevercanyon/' + projSlug);
 			await fsp.writeFile(readmeFile, readme);
+
+			await u.spawn('git', ['init']); // Origin creation automated for owners.
+
+			if ('true' === process.env.C10N_OWNER && process.env.GH_TOKEN) {
+				await u.spawn('gh', ['repo', 'create', '--private', '--source=.', '--remote=origin']);
+				//
+			} /* Else reach out to an owner when ready to push. */ else {
+				await u.spawn('git', ['remote', 'add', 'origin', 'https://github.com/clevercanyon/' + projSlug + '.git']);
+			}
 		},
 	],
 };
