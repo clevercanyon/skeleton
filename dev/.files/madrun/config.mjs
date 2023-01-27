@@ -65,6 +65,8 @@ export default {
 			await fsp.rm(path.resolve(projDir, './.env.vault'), { force: true });
 
 			const projSlug = path.basename(projDir);
+			const projParentDirBasename = path.basename(path.dirname(projDir));
+
 			await u.updatePkg({
 				name: '@clevercanyon/' + projSlug,
 				repository: 'https://github.com/clevercanyon/' + projSlug,
@@ -99,12 +101,12 @@ export default {
 			readme = readme.replace(/@clevercanyon\/[^/?#\s]+/gu, '@clevercanyon/' + projSlug);
 			await fsp.writeFile(readmeFile, readme);
 
-			await u.spawn('git', ['init']); // Origin creation automated for owners.
+			await u.spawn('git', ['init']); // GitHub origin creation automated for owners.
 
-			if (/(^|:)owner($|:)/iu.test(process.env.C10N_USER || '') && process.env.GH_TOKEN) {
-				await u.spawn('gh', ['repo', 'create', '--private', '--source=.', '--remote=origin']);
+			if ('clevercanyon' === projParentDirBasename && /(^|:)owner($|:)/iu.test(process.env.C10N_USER || '') && process.env.GH_TOKEN) {
+				await u.spawn('gh', ['repo', 'create', 'clevercanyon/' + projSlug, '--private', '--source=.']);
 				//
-			} /* Else reach out to an owner when ready to push. */ else {
+			} else if ('clevercanyon' === projParentDirBasename) {
 				await u.spawn('git', ['remote', 'add', 'origin', 'https://github.com/clevercanyon/' + projSlug + '.git']);
 			}
 		},
