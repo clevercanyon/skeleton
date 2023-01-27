@@ -142,7 +142,7 @@ void (async () => {
 							choices: ['dev', 'ci', 'stage', 'prod'],
 							description: 'Build and env mode.',
 						},
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,

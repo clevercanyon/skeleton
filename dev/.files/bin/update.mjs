@@ -464,7 +464,7 @@ void (async () => {
 							default: 'Dotfiles update.',
 							description: 'Commit message when updating `clevercanyon/skeleton`.',
 						},
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -521,7 +521,7 @@ void (async () => {
 							choices: ['dev', 'ci', 'stage', 'prod'],
 							description: 'Build and env mode.',
 						},
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -605,7 +605,7 @@ void (async () => {
 							default: '', // No default value.
 							description: 'Commit message when updating project repos.',
 						},
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,

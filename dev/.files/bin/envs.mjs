@@ -469,7 +469,7 @@ void (async () => {
 								' If not set explicitly, only pulls when main env is missing.' +
 								' Note: This option has no effect when `--new` is given.',
 						},
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -494,7 +494,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -519,7 +519,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -544,7 +544,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -569,7 +569,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -601,7 +601,7 @@ void (async () => {
 							default: [],
 							description: 'To decrypt `.env.vault` env(s).',
 						},
-						'dry-run': {
+						dryRun: {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
