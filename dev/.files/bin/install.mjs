@@ -121,6 +121,13 @@ class Project {
  */
 void (async () => {
 	await yargs(hideBin(process.argv))
+		.parserConfiguration({
+			'dot-notation': false,
+			'strip-aliased': true,
+			'strip-dashed': true,
+			'greedy-arrays': true,
+			'boolean-negation': false,
+		})
 		.command({
 			command: ['project'],
 			describe: 'Installs NPM packages, envs, and builds distro.',
@@ -135,7 +142,7 @@ void (async () => {
 							choices: ['dev', 'ci', 'stage', 'prod'],
 							description: 'Build and env mode.',
 						},
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,

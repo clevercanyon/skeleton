@@ -439,6 +439,13 @@ class Decrypt {
  */
 void (async () => {
 	await yargs(hideBin(process.argv))
+		.parserConfiguration({
+			'dot-notation': false,
+			'strip-aliased': true,
+			'strip-dashed': true,
+			'greedy-arrays': true,
+			'boolean-negation': false,
+		})
 		.command({
 			command: 'install',
 			describe: 'Installs all envs for dotenv vault.',
@@ -462,7 +469,7 @@ void (async () => {
 								' If not set explicitly, only pulls when main env is missing.' +
 								' Note: This option has no effect when `--new` is given.',
 						},
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -487,7 +494,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -512,7 +519,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -537,7 +544,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -562,7 +569,7 @@ void (async () => {
 			builder: (yargs) => {
 				return yargs
 					.options({
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -594,7 +601,7 @@ void (async () => {
 							default: [],
 							description: 'To decrypt `.env.vault` env(s).',
 						},
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,

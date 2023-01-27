@@ -443,6 +443,13 @@ class Projects {
  */
 void (async () => {
 	await yargs(hideBin(process.argv))
+		.parserConfiguration({
+			'dot-notation': false,
+			'strip-aliased': true,
+			'strip-dashed': true,
+			'greedy-arrays': true,
+			'boolean-negation': false,
+		})
 		.command({
 			command: ['dotfiles'],
 			describe: 'Updates project dotfiles.',
@@ -457,7 +464,7 @@ void (async () => {
 							default: 'Dotfiles update.',
 							description: 'Commit message when updating `clevercanyon/skeleton`.',
 						},
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -514,7 +521,7 @@ void (async () => {
 							choices: ['dev', 'ci', 'stage', 'prod'],
 							description: 'Build and env mode.',
 						},
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
@@ -598,7 +605,7 @@ void (async () => {
 							default: '', // No default value.
 							description: 'Commit message when updating project repos.',
 						},
-						dryRun: {
+						'dry-run': {
 							type: 'boolean',
 							requiresArg: false,
 							demandOption: false,
