@@ -182,19 +182,32 @@ export default class u {
 
 	static async prettifyPkg() {
 		const pkg = {}; // Sorted `./package.json`; i.e., using insertion order.
-		const origPkg = await u.pkg(); // Parses current `./package.json` file.
+		const curPkg = await u.pkg(); // Parses current `./package.json` file.
 
+		const updatesFile = path.resolve(projDir, './dev/.files/bin/updater/data/package.json/updates.json');
 		const sortOrderFile = path.resolve(projDir, './dev/.files/bin/updater/data/package.json/sort-order.json');
+
+		const updates = JSON.parse((await fsp.readFile(updatesFile)).toString());
 		const sortOrder = JSON.parse((await fsp.readFile(sortOrderFile)).toString());
 
+		if (typeof updates !== 'object') {
+			throw new Error('u.prettifyPkg: Unable to parse `' + updatesFile + '`.');
+		}
 		if (!Array.isArray(sortOrder)) {
 			throw new Error('u.prettifyPkg: Unable to parse `' + sortOrderFile + '`.');
 		}
+		if (await u.isPkgRepo('clevercanyon/skeleton-dev-deps')) {
+			if (updates.$default?.['devDependencies.@clevercanyon/skeleton-dev-deps']) {
+				delete updates.$default['devDependencies.@clevercanyon/skeleton-dev-deps'];
+			}
+		}
+		mc.patch(curPkg, updates); // Potentially declarative ops.
+
 		for (const path of sortOrder) {
-			const value = deeps.get(origPkg, path, 'ꓺ');
+			const value = deeps.get(curPkg, path, 'ꓺ');
 			if (undefined !== value) deeps.set(pkg, path, value, true, 'ꓺ');
 		}
-		for (const [path, value] of Object.entries(deeps.flatten(origPkg, 'ꓺ'))) {
+		for (const [path, value] of Object.entries(deeps.flatten(curPkg, 'ꓺ'))) {
 			if (undefined === deeps.get(pkg, path, 'ꓺ')) deeps.set(pkg, path, value, true, 'ꓺ');
 		}
 		const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
