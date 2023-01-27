@@ -101,7 +101,7 @@ export default {
 
 			await u.spawn('git', ['init']); // Origin creation automated for owners.
 
-			if ('true' === process.env.C10N_OWNER && process.env.GH_TOKEN) {
+			if (/(^|:)owner($|:)/iu.test(process.env.C10N_USER || '') && process.env.GH_TOKEN) {
 				await u.spawn('gh', ['repo', 'create', '--private', '--source=.', '--remote=origin']);
 				//
 			} /* Else reach out to an owner when ready to push. */ else {
