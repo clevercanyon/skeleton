@@ -39,7 +39,10 @@
 			"./*": ["./dist/types/*"]
 		}
 	},
+	"dependencies": {},
+	"peerDependencies": {},
 	"peerDependenciesMeta": {},
+	"optionalDependencies": {},
 	"bundleDependencies": [],
 	"devDependencies": {
 		"@clevercanyon/skeleton-dev-deps": "^1.0.91"
