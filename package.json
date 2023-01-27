@@ -50,7 +50,7 @@
 	"peerDependenciesMeta": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "^1.0.96"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.97"
 	},
 	"overrides": {},
 	"workspaces": [],
