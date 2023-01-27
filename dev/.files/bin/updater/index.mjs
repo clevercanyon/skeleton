@@ -28,8 +28,18 @@ mc.addOperation('$default', (current, defaults) => {
 	const paths = Object.keys(defaults);
 
 	for (const path of paths) {
-		if (undefined === _.get(current, path)) {
-			_.set(current, path, defaults[path]);
+		if (undefined === deeps.get(current, path, '.')) {
+			deeps.set(current, path, defaults[path], true, '.');
+		}
+	}
+	return paths.length > 0;
+});
+mc.addOperation('$ꓺdefault', (current, defaults) => {
+	const paths = Object.keys(defaults);
+
+	for (const path of paths) {
+		if (undefined === deeps.get(current, path, 'ꓺ')) {
+			deeps.set(current, path, defaults[path], true, 'ꓺ');
 		}
 	}
 	return paths.length > 0;
@@ -204,8 +214,8 @@ export default async ({ projDir }) => {
 				throw new Error('updater: Unable to parse `' + jsonUpdatesFile + '`.');
 			}
 			if ('./package.json' === relPath && (await isPkgRepo('clevercanyon/skeleton-dev-deps'))) {
-				if (jsonUpdates.$default?.['devDependencies.@clevercanyon/skeleton-dev-deps']) {
-					delete jsonUpdates.$default['devDependencies.@clevercanyon/skeleton-dev-deps'];
+				if (jsonUpdates.$ꓺdefault?.['devDependenciesꓺ@clevercanyon/skeleton-dev-deps']) {
+					delete jsonUpdates.$ꓺdefault['devDependenciesꓺ@clevercanyon/skeleton-dev-deps'];
 				}
 			}
 			mc.patch(json, jsonUpdates); // Potentially declarative ops.

@@ -71,6 +71,27 @@ const npmjsConfigVersion = '1.0.0'; // Bump when config changes in routines belo
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 const c10nLogoDev = path.resolve(__dirname, '../../assets/brands/c10n/logo-dev.png');
 
+mc.addOperation('$default', (current, defaults) => {
+	const paths = Object.keys(defaults);
+
+	for (const path of paths) {
+		if (undefined === deeps.get(current, path, '.')) {
+			deeps.set(current, path, defaults[path], true, '.');
+		}
+	}
+	return paths.length > 0;
+});
+mc.addOperation('$ꓺdefault', (current, defaults) => {
+	const paths = Object.keys(defaults);
+
+	for (const path of paths) {
+		if (undefined === deeps.get(current, path, 'ꓺ')) {
+			deeps.set(current, path, defaults[path], true, 'ꓺ');
+		}
+	}
+	return paths.length > 0;
+});
+
 /**
  * Utilities.
  */
@@ -197,8 +218,8 @@ export default class u {
 			throw new Error('u.prettifyPkg: Unable to parse `' + sortOrderFile + '`.');
 		}
 		if (await u.isPkgRepo('clevercanyon/skeleton-dev-deps')) {
-			if (updates.$default?.['devDependencies.@clevercanyon/skeleton-dev-deps']) {
-				delete updates.$default['devDependencies.@clevercanyon/skeleton-dev-deps'];
+			if (updates.$ꓺdefault?.['devDependenciesꓺ@clevercanyon/skeleton-dev-deps']) {
+				delete updates.$ꓺdefault['devDependenciesꓺ@clevercanyon/skeleton-dev-deps'];
 			}
 		}
 		mc.patch(curPkg, updates); // Potentially declarative ops.
