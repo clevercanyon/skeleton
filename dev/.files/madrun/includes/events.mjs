@@ -14,7 +14,7 @@ import { dirname } from 'desm';
 import path from 'node:path';
 
 const __dirname = dirname(import.meta.url);
-const projDir = path.resolve(__dirname, '../../..');
+const projDir = path.resolve(__dirname, '../../../..');
 
 export default {
 	'on::madrun:default:new': [
