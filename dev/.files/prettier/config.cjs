@@ -57,11 +57,22 @@ module.exports = {
 	overrides: [
 		{
 			/**
+			 * Enforce JSON parser.
+			 *
+			 * @see https://o5p.me/sj8jjz
+			 */
+			files: ['*.json'],
+			options: {
+				parser: 'json', // Not `json-stringify`.
+			},
+		},
+		{
+			/**
 			 * JSDoc plugin options.
 			 *
 			 * @see https://o5p.me/dTTfse
 			 */
-			files: ['*.{js,cjs,mjs,jsx,ts,tsx}'],
+			files: ['*.{js,jsx,cjs,cjsx,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}'],
 			options: {
 				jsdocAddDefaultToDescription: false,
 				jsdocCapitalizeDescription: true,

@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Update CLI.
  *
@@ -17,6 +16,8 @@ import path from 'node:path';
 import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
+import deeps from 'deeps';
+import mc from 'merge-change';
 import * as se from 'shescape';
 import spawn from 'spawn-please';
 
@@ -26,6 +27,8 @@ import chalk, { supportsColor } from 'chalk';
 
 import semver from 'semver';
 import prettier from 'prettier';
+
+import dotenv from 'dotenv';
 import dotenvVaultCore from 'dotenv-vault-core';
 
 import { Octokit as OctokitCore } from '@octokit/core';
@@ -36,18 +39,19 @@ const __dirname = dirname(import.meta.url);
 const binDir = path.resolve(__dirname, '..');
 const projDir = path.resolve(__dirname, '../../../..');
 
-const { pkgFile, pkgName, pkgPrivate, pkgRepository } = (() => {
+const { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType } = (() => {
 	const pkgFile = path.resolve(projDir, './package.json');
 	const pkg = JSON.parse(fs.readFileSync(pkgFile).toString());
 
 	if (typeof pkg !== 'object') {
 		throw new Error('u: Unable to parse `./package.json`.');
 	}
-	const pkgName = pkg.name || '';
-	const pkgPrivate = pkg.private || null;
-	const pkgRepository = pkg.repository || '';
+	const pkgName = _.get(pkg, 'name', '');
+	const pkgPrivate = _.get(pkg, 'private', null);
+	const pkgRepository = _.get(pkg, 'repository', '');
+	const pkgBuildAppType = _.get(pkg, 'config.c10n.&.build.appType', '');
 
-	return { pkgFile, pkgName, pkgPrivate, pkgRepository };
+	return { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType };
 })();
 const { log } = console; // Shorter reference.
 const echo = process.stdout.write.bind(process.stdout);
@@ -62,12 +66,33 @@ const envFiles = {
 	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
 	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
 };
-const githubConfigVersion = '1.0.0'; // Bump when config changes in routines below.
+const githubConfigVersion = '1.0.1'; // Bump when config changes in routines below.
 const githubEnvsVersion = '1.0.0'; // Bump when environments change in routines below.
 const npmjsConfigVersion = '1.0.0'; // Bump when config changes in routines below.
 
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 const c10nLogoDev = path.resolve(__dirname, '../../assets/brands/c10n/logo-dev.png');
+
+mc.addOperation('$default', (current, defaults) => {
+	const paths = Object.keys(defaults);
+
+	for (const path of paths) {
+		if (undefined === deeps.get(current, path, '.')) {
+			deeps.set(current, path, defaults[path], true, '.');
+		}
+	}
+	return paths.length > 0;
+});
+mc.addOperation('$ꓺdefault', (current, defaults) => {
+	const paths = Object.keys(defaults);
+
+	for (const path of paths) {
+		if (undefined === deeps.get(current, path, 'ꓺ')) {
+			deeps.set(current, path, defaults[path], true, 'ꓺ');
+		}
+	}
+	return paths.length > 0;
+});
 
 /**
  * Utilities.
@@ -86,7 +111,7 @@ export default class u {
 	 */
 
 	static async isInteractive() {
-		const isTTY = process.stdout.isTTY || process.env.PARENT_IS_TTY ? true : false;
+		const isTTY = process.stdout.isTTY || 'true' === process.env.PARENT_IS_TTY ? true : false;
 		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI && true !== process.env.CI;
 	}
 
@@ -109,8 +134,8 @@ export default class u {
 				PARENT_IS_TTY:
 					process.stdout.isTTY || //
 					process.env.PARENT_IS_TTY
-						? true
-						: false,
+						? 'true'
+						: 'false',
 			},
 			// Output handlers do not run when `stdio: 'inherit'` or `quiet: true`.
 			stdout: opts.quiet ? null : (buffer) => echo(chalk.white(buffer.toString())),
@@ -157,10 +182,59 @@ export default class u {
 			throw new Error('u.pkgIncrementVersion: Failed to increment version: `' + origVersion + '`.');
 		}
 		if (!opts.dryRun) {
-			pkg.version = version; // Update to incremented version.
-			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
-			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+			await u.updatePkg({ version });
 		}
+	}
+
+	static async updatePkg(propsOrPath, value = undefined, delimiter = '.') {
+		const pkg = await u.pkg(); // Parses current `./package.json` file.
+
+		if (typeof propsOrPath === 'string') {
+			const path = propsOrPath; // String path.
+			deeps.set(pkg, path, value, true, delimiter);
+			//
+		} else if (typeof propsOrPath === 'object') {
+			const props = propsOrPath; // Object props.
+			mc.patch(pkg, props); // Potentially declarative ops.
+		} else {
+			throw new Error('u.updatePkg: Invalid arguments.');
+		}
+		await fsp.writeFile(pkgFile, JSON.stringify(pkg, null, 4));
+		await u.prettifyPkg(); // Sorts and runs prettier.
+	}
+
+	static async prettifyPkg() {
+		const pkg = {}; // Sorted `./package.json`; i.e., using insertion order.
+		const curPkg = await u.pkg(); // Parses current `./package.json` file.
+
+		const updatesFile = path.resolve(projDir, './dev/.files/bin/updater/data/package.json/updates.json');
+		const sortOrderFile = path.resolve(projDir, './dev/.files/bin/updater/data/package.json/sort-order.json');
+
+		const updates = JSON.parse((await fsp.readFile(updatesFile)).toString());
+		const sortOrder = JSON.parse((await fsp.readFile(sortOrderFile)).toString());
+
+		if (typeof updates !== 'object') {
+			throw new Error('u.prettifyPkg: Unable to parse `' + updatesFile + '`.');
+		}
+		if (!Array.isArray(sortOrder)) {
+			throw new Error('u.prettifyPkg: Unable to parse `' + sortOrderFile + '`.');
+		}
+		if (await u.isPkgRepo('clevercanyon/skeleton-dev-deps')) {
+			if (updates.$ꓺdefault?.['devDependenciesꓺ@clevercanyon/skeleton-dev-deps']) {
+				delete updates.$ꓺdefault['devDependenciesꓺ@clevercanyon/skeleton-dev-deps'];
+			}
+		}
+		mc.patch(curPkg, updates); // Potentially declarative ops.
+
+		for (const path of sortOrder) {
+			const value = deeps.get(curPkg, path, 'ꓺ');
+			if (undefined !== value) deeps.set(pkg, path, value, true, 'ꓺ');
+		}
+		for (const [path, value] of Object.entries(deeps.flatten(curPkg, 'ꓺ'))) {
+			if (undefined === deeps.get(pkg, path, 'ꓺ')) deeps.set(pkg, path, value, true, 'ꓺ');
+		}
+		const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
+		await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
 	}
 
 	/*
@@ -267,17 +341,14 @@ export default class u {
 
 	static async githubReleaseTag() {
 		const { owner, repo } = await u.githubOrigin();
-
-		// Created by Vite build process.
 		const distZipFile = path.resolve(projDir, './.~dist.zip');
-
-		if (!fs.existsSync(distZipFile)) {
-			throw new Error('u.githubReleaseTag: Missing `./.~dist.zip`.');
-		}
 		const pkg = await u.pkg(); // Parses current `./package.json` file.
 
 		if (!pkg.version) {
 			throw new Error('u.githubReleaseTag: Package version is empty.');
+		}
+		if ((await u.isViteBuild()) && !fs.existsSync(distZipFile)) {
+			throw new Error('u.githubReleaseTag: Missing `./.~dist.zip` archive.');
 		}
 		const r = await octokit.request('POST /repos/{owner}/{repo}/releases', {
 			owner,
@@ -293,17 +364,19 @@ export default class u {
 		if (typeof r !== 'object' || typeof r.data !== 'object' || !r.data.id || !r.data.upload_url) {
 			throw new Error('u.githubReleaseTag: Failed to acquire GitHub release data.');
 		}
-		await octokit.request({
-			method: 'POST',
-			url: r.data.upload_url,
+		if ((await u.isViteBuild()) && fs.existsSync(distZipFile)) {
+			await octokit.request({
+				method: 'POST',
+				url: r.data.upload_url,
 
-			name: 'dist.zip',
-			headers: {
-				'content-type': 'application/zip',
-				'content-length': fs.statSync(distZipFile).size,
-			},
-			data: fs.readFileSync(distZipFile),
-		});
+				name: 'dist.zip',
+				headers: {
+					'content-type': 'application/zip',
+					'content-length': fs.statSync(distZipFile).size,
+				},
+				data: fs.readFileSync(distZipFile),
+			});
+		}
 	}
 
 	static async githubCheckRepoOrgWideStandards(opts = { dryRun: false }) {
@@ -328,6 +401,35 @@ export default class u {
 		if ('main' !== repoData.default_branch) {
 			throw new Error('githubCheckRepoOrgWideStandards: Default branch at GitHub must be `main`.');
 		}
+		const alwaysOnRequiredLabels = {
+			'bug report': {
+				color: 'b60205',
+				desc: 'Something isn’t working.',
+			},
+			'good first issue': {
+				color: 'fef2c0',
+				desc: 'Good first issue for newcomers.',
+			},
+			'question': {
+				color: '0e8a16',
+				desc: 'Something is being asked.',
+			},
+			'request': {
+				color: '1d76db',
+				desc: 'Something is being requested.',
+			},
+			'robotic': {
+				color: 'eeeeee',
+				desc: 'Something created robotically.',
+			},
+			'suggestion': {
+				color: 'fbca04',
+				desc: 'Something is being suggested.',
+			},
+		};
+		const labels = Object.assign({}, _.get(pkg, 'config.c10n.&.github.labels', {}), alwaysOnRequiredLabels);
+		const labelsToDelete = await u._githubRepoLabels(); // Current list of repo’s labels.
+
 		const alwaysOnRequiredTeams = { owners: 'admin', 'security-managers': 'pull' }; // No exceptions.
 		const teams = Object.assign({}, _.get(pkg, 'config.c10n.&.github.teams', {}), alwaysOnRequiredTeams);
 		const teamsToDelete = await u._githubRepoTeams(); // Current list of repo’s teams.
@@ -378,15 +480,38 @@ export default class u {
 			await octokit.request('PUT /repos/{owner}/{repo}/automated-security-fixes', { owner, repo });
 		}
 
+		for (const [labelName, labelData] of Object.entries(labels)) {
+			if (labelsToDelete[labelName]) {
+				delete labelsToDelete[labelName]; // Don't delete.
+
+				log(chalk.gray('Updating `' + labelName + '` label in GitHub repo to `#' + labelData.color + '` color.'));
+				if (!opts.dryRun) {
+					await octokit.request('PATCH /repos/{owner}/{repo}/labels/{labelName}', { owner, repo, labelName, ...labelData });
+				}
+			} else {
+				log(chalk.gray('Adding `' + labelName + '` label to GitHub repo with `#' + labelData.color + '` color.'));
+				if (!opts.dryRun) {
+					await octokit.request('POST /repos/{owner}/{repo}/labels', { owner, repo, name: labelName, ...labelData });
+				}
+			}
+		}
+		for (const [labelName, labelData] of Object.entries(labelsToDelete)) {
+			log(chalk.gray('Deleting `' + labelName + '` (unused) label with `#' + labelData.color + '` color from GitHub repo.'));
+			if (!opts.dryRun) {
+				await octokit.request('DELETE /repos/{owner}/{repo}/labels/{labelName}', { owner, repo, labelName });
+			}
+		}
+
 		for (const [team, permission] of Object.entries(teams)) {
 			delete teamsToDelete[team]; // Don't delete.
+
 			log(chalk.gray('Adding `' + team + '` team to GitHub repo with `' + permission + '` permission.'));
 			if (!opts.dryRun) {
 				await octokit.request('PUT /orgs/{org}/teams/{team}/repos/{owner}/{repo}', { org: owner, owner, repo, team, permission });
 			}
 		}
 		for (const [team, teamData] of Object.entries(teamsToDelete)) {
-			log(chalk.gray('Deleting `' + team + '` (unused) with `' + teamData.permission + '` permission from GitHub repo.'));
+			log(chalk.gray('Deleting `' + team + '` (unused) team with `' + teamData.permission + '` permission from GitHub repo.'));
 			if (!opts.dryRun) {
 				await octokit.request('DELETE /orgs/{org}/teams/{team}/repos/{owner}/{repo}', { org: owner, owner, repo, team });
 			}
@@ -394,6 +519,7 @@ export default class u {
 
 		for (const branch of ['main'] /* Always protect `main` branch. */) {
 			delete protectedBranchesToDelete[branch]; // Don't delete.
+
 			log(chalk.gray('Protecting `' + branch + '` branch in GitHub repo.'));
 			if (!opts.dryRun) {
 				await octokit.request('PUT /repos/{owner}/{repo}/branches/{branch}/protection', {
@@ -413,6 +539,7 @@ export default class u {
 					required_status_checks: null, // We don't use.
 
 					// @review Not implemented. See: <https://o5p.me/hfPAag>.
+					// Not currently a major issue since we already have an org-wide required workflow.
 					required_deployment_environments: { environments: ['ci'] },
 
 					restrictions: { users: [], teams: ['owners'], apps: [] },
@@ -435,9 +562,7 @@ export default class u {
 			}
 		}
 		if (!opts.dryRun) {
-			_.set(pkg, 'config.c10n.&.github.configVersion', githubConfigVersion);
-			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
-			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+			await u.updatePkg('config.c10n.&.github.configVersion', githubConfigVersion);
 		}
 	}
 
@@ -497,9 +622,7 @@ export default class u {
 			}
 		}
 		if (!opts.dryRun) {
-			_.set(pkg, 'config.c10n.&.github.envsVersion', githubEnvsVersion);
-			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
-			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+			await u.updatePkg('config.c10n.&.github.envsVersion', githubEnvsVersion);
 		}
 	}
 
@@ -511,6 +634,25 @@ export default class u {
 			throw new Error('u._githubRepo: Failed to acquire GitHub repository’s data.');
 		}
 		return r.data;
+	}
+
+	static async _githubRepoLabels() {
+		const labels = {}; // Initialize.
+		const { owner, repo } = await u.githubOrigin();
+		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/labels{?per_page}', { owner, repo, per_page: 100 });
+
+		if (typeof i6r !== 'object') {
+			throw new Error('u._githubRepoLabels: Failed to acquire GitHub repository’s labels.');
+		}
+		for await (const { data } of i6r) {
+			for (const label of data) {
+				if (typeof label !== 'object' || !label.name) {
+					throw new Error('u._githubRepoLabels: Failed to acquire GitHub repository’s label data.');
+				}
+				labels[label.name] = label;
+			}
+		}
+		return labels;
 	}
 
 	static async _githubRepoTeams() {
@@ -700,6 +842,8 @@ export default class u {
 				await u.spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes']);
 			}
 		}
+		await u.envsCompile({ dryRun: opts.dryRun });
+
 		log(chalk.gray('Encrypting all envs using latest Dotenv Vault data.'));
 		if (!opts.dryRun) {
 			await u.spawn('npx', ['dotenv-vault', 'build', '--yes']);
@@ -719,6 +863,25 @@ export default class u {
 			// log(chalk.gray('Deleting previous file for `' + envName + '` env.'));
 			if (!opts.dryRun) {
 				await fsp.rm(envFile + '.previous', { force: true });
+			}
+		}
+		await u.envsCompile({ dryRun: opts.dryRun });
+	}
+
+	static async envsCompile(opts = { dryRun: false }) {
+		log(chalk.gray('Compiling all Dotenv Vault envs; i.e., generating JSON files.'));
+		if (!opts.dryRun) {
+			const mainEnv = dotenv.parse(envFiles.main);
+
+			for (const [envName, envFile] of Object.entries(_.omit(envFiles, ['main']))) {
+				const thisEnv = dotenv.parse(envFile);
+				const env = mc.merge({}, mainEnv, thisEnv);
+
+				const compDir = path.resolve(path.dirname(envFile), './.~comp');
+				const envJSONFile = path.resolve(compDir, path.basename(envFile) + '.json');
+
+				await fsp.mkdir(compDir, { recursive: true });
+				await fsp.writeFile(envJSONFile, await u._envToJSON(envName, env));
 			}
 		}
 	}
@@ -754,7 +917,7 @@ export default class u {
 				const { parsed: env } = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
 
 				await fsp.mkdir(path.dirname(envFile), { recursive: true });
-				await fsp.writeFile(envFile, await u._envsToString(envName, env));
+				await fsp.writeFile(envFile, await u._envToText(envName, env));
 				process.env.DOTENV_KEY = origDotenvKey;
 			}
 		}
@@ -793,9 +956,9 @@ export default class u {
 				}
 				keys.push(env.USER_DOTENV_KEY_PROD);
 			}
-			await u.spawn(path.resolve(binDir, './envs.js'), ['decrypt', '--keys', ...keys]);
+			await u.spawn(path.resolve(binDir, './envs.mjs'), ['decrypt', '--keys', ...keys]);
 		} else {
-			await u.spawn(path.resolve(binDir, './envs.js'), ['install']);
+			await u.spawn(path.resolve(binDir, './envs.mjs'), ['install']);
 		}
 	}
 
@@ -817,16 +980,25 @@ export default class u {
 		return keys;
 	}
 
-	static async _envsToString(envName, env) {
-		let str = '# ' + envName + '\n';
+	static async _envToJSON(envName, env) {
+		let json = {}; // Initialize.
+
+		for (let [name, value] of Object.entries(env)) {
+			json[name] = String(value);
+		}
+		return JSON.stringify(json, null, 4);
+	}
+
+	static async _envToText(envName, env) {
+		let text = '# ' + envName + '\n';
 
 		for (let [name, value] of Object.entries(env)) {
 			value = String(value);
 			value = value.replace(/\r\n?/gu, '\n');
 			value = value.replace(/\n/gu, '\\n');
-			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
+			text += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
-		return str;
+		return text;
 	}
 
 	static propagateUserEnvVars() {
@@ -862,7 +1034,12 @@ export default class u {
 	}
 
 	static async isNPMPkgRegistry(registry) {
-		return registry.replace(/\/+$/, '') === String(await u.spawn('npm', ['config', 'get', 'registry'], { quiet: true })).replace(/\/+$/, '');
+		return (
+			registry.replace(/\/+$/, '') ===
+			String(await u.spawn('npm', ['config', 'get', 'registry'], { quiet: true }))
+				.trim()
+				.replace(/\/+$/, '')
+		);
 	}
 
 	static async isNPMPkgPublishable(opts = { mode: 'prod' }) {
@@ -879,6 +1056,7 @@ export default class u {
 
 	static async npmUpdate() {
 		await u.spawn('npm', ['update', '--save'], { stdio: 'inherit' });
+		await u.prettifyPkg(); // To our standards.
 	}
 
 	static async npmPublish(opts = { dryRun: false }) {
@@ -922,28 +1100,28 @@ export default class u {
 		}
 		log(chalk.gray('Configuring npmjs package using org-wide standards.'));
 
-		const alwaysOnRequiredTeams = { developers: 'read-write', owners: 'read-write', 'security-managers': 'read-only' }; // No exceptions.
-		let teams = Object.assign({}, _.get(pkg, 'config.c10n.&.npmjs.teams', _.get(pkg, 'config.c10n.&.github.teams', {})), alwaysOnRequiredTeams);
-		teams = Object.keys(teams).forEach((team) => (teams[team] = /^(?:read-write|push|maintain|admin)$/iu.test(teams[team]) ? 'read-write' : 'read-only'));
 		const teamsToDelete = await u._npmjsOrgTeams(org); // Current list of organization’s teams.
+		const alwaysOnRequiredTeams = { developers: 'read-write', owners: 'read-write', 'security-managers': 'read-only' }; // No exceptions.
+
+		const teams = Object.assign({}, _.get(pkg, 'config.c10n.&.npmjs.teams', _.get(pkg, 'config.c10n.&.github.teams', {})), alwaysOnRequiredTeams);
+		Object.keys(teams).forEach((team) => (teams[team] = /^(?:read-write|push|maintain|admin)$/iu.test(teams[team]) ? 'read-write' : 'read-only'));
 
 		for (const [team, permission] of Object.entries(teams)) {
 			delete teamsToDelete[team]; // Don't delete.
+
 			log(chalk.gray('Adding `' + team + '` team to npmjs package with `' + permission + '` permission.'));
 			if (!opts.dryRun) {
 				await u.spawn('npm', ['access', 'grant', permission, org + ':' + team], { quiet: true });
 			}
 		}
-		for (const [team, teamData] of Object.entries(teamsToDelete)) {
-			log(chalk.gray('Deleting `' + team + '` (unused) with `' + teamData.permission + '` permission from npmjs package.'));
+		for (const [team] of Object.entries(teamsToDelete)) {
+			log(chalk.gray('Deleting `' + team + '` (unused) from npmjs package.'));
 			if (!opts.dryRun) {
 				await u.spawn('npm', ['access', 'revoke', org + ':' + team], { quiet: true }).catch(() => null);
 			}
 		}
 		if (!opts.dryRun) {
-			_.set(pkg, 'config.c10n.&.npmjs.configVersions', githubConfigVersion + ',' + npmjsConfigVersion);
-			const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
-			await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
+			await u.updatePkg('config.c10n.&.npmjs.configVersions', githubConfigVersion + ',' + npmjsConfigVersion);
 		}
 	}
 
@@ -970,12 +1148,19 @@ export default class u {
 		if (!(teams instanceof Array)) {
 			throw new Error('u._npmjsOrgTeams: Failed to acquire list of NPM teams for `' + org + '` org.');
 		}
-		return teams.map((team) => team.replace(/^[^:]+:/u, '')); // Array of team slugs.
+		return teams.reduce((o, team) => {
+			o[team.replace(/^[^:]+:/u, '')] = team;
+			return o; // Object return.
+		}, {});
 	}
 
 	/*
 	 * Vite utilities.
 	 */
+
+	static async isViteBuild() {
+		return '' !== pkgBuildAppType;
+	}
 
 	static async viteBuild(opts = { mode: 'prod' }) {
 		await u.spawn('npx', ['vite', 'build', '--mode', opts.mode]);
@@ -985,7 +1170,7 @@ export default class u {
 	 * Error utilities.
 	 */
 	static async error(title, text) {
-		if (!process.stdout.isTTY || !supportsColor?.has16m) {
+		if (!process.stdout.isTTY || !supportsColor || !supportsColor?.has16m) {
 			return chalk.red(text); // No box.
 		}
 		return (
@@ -1012,7 +1197,7 @@ export default class u {
 	 * Finale utilities.
 	 */
 	static async finale(title, text) {
-		if (!process.stdout.isTTY || !supportsColor?.has16m) {
+		if (!process.stdout.isTTY || !supportsColor || !supportsColor?.has16m) {
 			return chalk.green(text); // No box.
 		}
 		return (

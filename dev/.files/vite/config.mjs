@@ -12,26 +12,24 @@
 /* eslint-env es2021, node */
 
 import _ from 'lodash';
+import mc from 'merge-change';
 
 import fs from 'node:fs';
 import path from 'node:path';
 import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
+import archiver from 'archiver';
 
 import mm from 'micromatch';
 import { globby } from 'globby';
-
-import mc from 'merge-change';
-import prettier from 'prettier';
-import spawn from 'spawn-please';
 
 import { loadEnv } from 'vite';
 import pluginBasicSSL from '@vitejs/plugin-basic-ssl';
 import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
 import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
-import { default as vitePluginZipPack } from 'vite-plugin-zip-pack';
 
-import importAliases from './includes/aliases.js';
+import u from '../bin/includes/utilities.mjs';
+import importAliases from './includes/aliases.mjs';
 
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -60,9 +58,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 	/**
 	 * Package-related vars.
 	 */
-	const pkgFile = path.resolve(projDir, './package.json');
-	const pkg = JSON.parse((await fsp.readFile(pkgFile)).toString());
-	const pkgPrettierCfg = { ...(await prettier.resolveConfig(pkgFile)), parser: 'json' };
+	const pkg = await u.pkg(); // Parses current `./package.json` file.
 
 	/**
 	 * Mode-related vars.
@@ -95,17 +91,18 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 	const mpaIndexes = await globby('**/index.html', { expandDirectories: false, cwd: srcDir, absolute: true });
 	const mpaIndexesSubPaths = mpaIndexes.map((absPath) => path.relative(srcDir, absPath));
 
-	const cmaEntries = await globby('*.{tsx,ts,jsx,mjs,js}', { expandDirectories: false, cwd: srcDir, absolute: true });
+	const cmaEntries = await globby('*.{ts,tsx}', { expandDirectories: false, cwd: srcDir, absolute: true });
 	const cmaEntriesRelPaths = cmaEntries.map((absPath) => './' + path.relative(srcDir, absPath));
 	const cmaEntriesSubpaths = cmaEntries.map((absPath) => path.relative(srcDir, absPath));
 	const cmaEntriesSubpathsNoExt = cmaEntriesSubpaths.map((subpath) => subpath.replace(/\.[^.]+$/u, ''));
 
 	const mpaEntryIndexSubpath = mpaIndexesSubPaths.find((subpath) => mm.isMatch(subpath, 'index.html'));
-	const cmaEntryIndexSubpath = cmaEntriesSubpaths.find((subpath) => mm.isMatch(subpath, 'index.{tsx,ts,jsx,mjs,js}'));
+	const cmaEntryIndexSubpath = cmaEntriesSubpaths.find((subpath) => mm.isMatch(subpath, 'index.{ts,tsx}'));
 	const cmaEntryIndexSubpathNoExt = cmaEntryIndexSubpath.replace(/\.[^.]+$/u, '');
 
 	const isWeb = ['web', 'webw'].includes(targetEnv);
 	const isSSR = ['cfp', 'cfw', 'node'].includes(targetEnv);
+	const isSSRNoExternals = isSSR && ['cfp', 'cfw'].includes(targetEnv);
 	const isSSRWorker = isSSR && ['cfw'].includes(targetEnv);
 
 	/**
@@ -124,41 +121,41 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		throw new Error('Multipage apps must have an `./index.html` entry point.');
 	}
 	if (isCMA && !cmaEntryIndexSubpath) {
-		throw new Error('Custom apps must have an `./index.{tsx,ts,jsx,mjs,js}` entry point.');
+		throw new Error('Custom apps must have an `./index.{ts,tsx}` entry point.');
 	}
 
 	/**
-	 * Prepares `package.json` property updates.
+	 * Prepares `package.json` build-related properties.
 	 */
-	const origPkg = { ...pkg };
+	const updatePkg = {}; // Initialize.
 
-	pkg.type = 'module'; // ES module.
-	pkg.files = ['/dist']; // Dist directory only.
-	pkg.exports = {}; // Exports object initialization.
-	pkg.sideEffects = ['./src/*.{html,scss,css,tsx,ts,jsx,mjs,js}'];
+	updatePkg.type = 'module'; // ES module; always.
+	updatePkg.files = ['/dist']; // Dist directory only.
+	updatePkg.exports = {}; // Exports object initialization.
+	updatePkg.sideEffects = ['./src/*.{html,scss,ts,tsx}']; // <https://o5p.me/xVY39g>.
 
 	if (isCMA && (isSSR || cmaEntries.length > 1)) {
-		mc.patch(pkg.exports, {
+		updatePkg.exports = {
 			'.': {
 				import: './dist/' + cmaEntryIndexSubpathNoExt + '.js',
 				require: './dist/' + cmaEntryIndexSubpathNoExt + '.cjs',
 				types: './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts',
 			},
-		});
-		pkg.module = './dist/' + cmaEntryIndexSubpathNoExt + '.js';
-		pkg.main = './dist/' + cmaEntryIndexSubpathNoExt + '.cjs';
+		};
+		updatePkg.module = './dist/' + cmaEntryIndexSubpathNoExt + '.js';
+		updatePkg.main = './dist/' + cmaEntryIndexSubpathNoExt + '.cjs';
 
-		pkg.browser = isWeb ? pkg.module : '';
-		pkg.unpkg = pkg.module;
+		updatePkg.browser = isWeb ? updatePkg.module : '';
+		updatePkg.unpkg = updatePkg.module;
 
-		pkg.types = './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts';
-		pkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
+		updatePkg.types = './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts';
+		updatePkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
 
 		for (const cmaEntrySubPathNoExt of cmaEntriesSubpathsNoExt) {
 			if (cmaEntrySubPathNoExt === cmaEntryIndexSubpathNoExt) {
 				continue; // Don't remap the entry index.
 			}
-			mc.patch(pkg.exports, {
+			mc.patch(updatePkg.exports, {
 				['./' + cmaEntrySubPathNoExt]: {
 					import: './dist/' + cmaEntrySubPathNoExt + '.js',
 					require: './dist/' + cmaEntrySubPathNoExt + '.cjs',
@@ -167,31 +164,31 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 			});
 		}
 	} else if (isCMA) {
-		mc.patch(pkg.exports, {
+		updatePkg.exports = {
 			'.': {
 				import: './dist/' + cmaEntryIndexSubpathNoExt + '.js',
 				require: './dist/' + cmaEntryIndexSubpathNoExt + '.umd.cjs',
 				types: './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts',
 			},
-		});
-		pkg.module = './dist/' + cmaEntryIndexSubpathNoExt + '.js';
-		pkg.main = './dist/' + cmaEntryIndexSubpathNoExt + '.umd.cjs';
+		};
+		updatePkg.module = './dist/' + cmaEntryIndexSubpathNoExt + '.js';
+		updatePkg.main = './dist/' + cmaEntryIndexSubpathNoExt + '.umd.cjs';
 
-		pkg.browser = isWeb ? pkg.main : '';
-		pkg.unpkg = pkg.main;
+		updatePkg.browser = isWeb ? updatePkg.main : '';
+		updatePkg.unpkg = updatePkg.main;
 
-		pkg.types = './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts';
-		pkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
+		updatePkg.types = './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts';
+		updatePkg.typesVersions = { '>=3.1': { './*': ['./dist/types/*'] } };
 	} else {
-		pkg.type = pkg.module = pkg.main = pkg.browser = pkg.unpkg = pkg.types = '';
-		(pkg.files = []), (pkg.exports = []), (pkg.sideEffects = []), (pkg.typesVersions = {});
+		updatePkg.type = 'module'; // Always a module when building with Vite.
+		updatePkg.module = updatePkg.main = updatePkg.browser = updatePkg.unpkg = updatePkg.types = '';
+		(updatePkg.exports = null), (updatePkg.files = updatePkg.sideEffects = []), (updatePkg.typesVersions = {});
 	}
 
 	/**
-	 * Updates `package.json` properties impacting builds.
+	 * Pre-updates `package.json` properties impacting build process.
 	 */
-	const preBuildPkg = { ...origPkg, type: pkg.type, sideEffects: pkg.sideEffects };
-	await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(preBuildPkg, null, 4), pkgPrettierCfg));
+	await u.updatePkg({ type: updatePkg.type, sideEffects: updatePkg.sideEffects });
 
 	/**
 	 * Configures plugins for Vite.
@@ -233,9 +230,14 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 			name: 'vite-plugin-c10n-post-process',
 			enforce: 'post', // After others on this hook.
 
-			async writeBundle(/* rollup hook */) {
+			async closeBundle(/* Rollup hook. */) {
 				if (postProcessed) return;
 				postProcessed = true;
+
+				/**
+				 * Updates `package.json`.
+				 */
+				await u.updatePkg(updatePkg);
 
 				/**
 				 * Copies `./.env.vault` to dist directory.
@@ -245,22 +247,25 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				}
 
 				/**
-				 * Writes prepared `package.json` property updates.
-				 */
-				await fsp.writeFile(pkgFile, prettier.format(JSON.stringify(pkg, null, 4), pkgPrettierCfg));
-
-				/**
 				 * Generates typescript type declaration file(s).
 				 */
 				if ('build' === command) {
-					await spawn('npx', ['tsc', '--emitDeclarationOnly'], { cwd: projDir });
+					await u.spawn('npx', ['tsc', '--emitDeclarationOnly']);
+				}
+
+				/**
+				 * Generates a zip archive containing `./dist` directory.
+				 */
+				if ('build' === command) {
+					const archive = archiver('zip', { zlib: { level: 9 } });
+					archive.pipe(fs.createWriteStream(path.resolve(projDir, './.~dist.zip')));
+					archive.directory(distDir + '/', false);
+					await archive.finalize();
 				}
 			},
 		};
 	})();
-	const pluginZipPackConfig = vitePluginZipPack({ inDir: distDir, outDir: projDir, outFileName: '.~dist.zip' });
-
-	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig, pluginC10NPostProcessConfig, pluginZipPackConfig];
+	const plugins = [pluginBasicSSLConfig, pluginEJSConfig, pluginMinifyHTMLConfig, pluginC10NPostProcessConfig];
 	const importedWorkerPlugins = []; // <https://vitejs.dev/guide/features.html#web-workers>.
 
 	/**
@@ -275,13 +280,13 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 			: mpaIndexes,
 
 		external: [
-			'__STATIC_CONTENT_MANIFEST', // CF workers.
 			...Object.keys(pkg.peerDependencies || {}),
+			'__STATIC_CONTENT_MANIFEST', // Cloudflare workers.
 		],
 		output: {
-			interop: 'auto', // Matches TypeScript.
-			exports: 'named', // Matches TypeScript.
-			esModule: true, // Matches TypeScript.
+			interop: 'auto', // Matches TypeScript config.
+			exports: 'named', // Matches TypeScript config.
+			esModule: true, // Matches TypeScript config.
 
 			extend: true, // i.e., Global `||` checks.
 			noConflict: true, // Like `jQuery.noConflict()`.
@@ -296,21 +301,21 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 	 * @see https://vitejs.dev/config/
 	 */
 	const baseConfig = {
-		c10n: { pkg },
+		c10n: { pkg, updatePkg },
 		define: {
 			// Static replacements.
-			$$__APP_PKG_NAME__$$: pkg.name || '',
-			$$__APP_PKG_VERSION__$$: pkg.version || '',
-			$$__APP_PKG_REPOSITORY__$$: pkg.repository || '',
-			$$__APP_PKG_HOMEPAGE__$$: pkg.homepage || '',
-			$$__APP_PKG_BUGS__$$: pkg.bugs || '',
+			$$__APP_PKG_NAME__$$: JSON.stringify(pkg.name || ''),
+			$$__APP_PKG_VERSION__$$: JSON.stringify(pkg.version || ''),
+			$$__APP_PKG_REPOSITORY__$$: JSON.stringify(pkg.repository || ''),
+			$$__APP_PKG_HOMEPAGE__$$: JSON.stringify(pkg.homepage || ''),
+			$$__APP_PKG_BUGS__$$: JSON.stringify(pkg.bugs || ''),
 		},
 		root: srcDir, // Absolute. Where entry indexes live.
 		publicDir: path.relative(srcDir, cargoDir), // Relative to `root` directory.
 		base: appBasePath + '/', // Analagous to `<base href="/">` — leading & trailing slash.
 
-		appType: isCMA ? 'custom' : 'mpa', // MPA = multipage app: <https://o5p.me/ZcTkEv>.
-		resolve: { alias: importAliases }, // See: `../typescript/config.json` and `./includes/aliases.js`.
+		appType: isCMA ? 'custom' : 'mpa', // See: <https://o5p.me/ZcTkEv>.
+		resolve: { alias: importAliases }, // Matches TypeScript config.
 
 		envDir: path.relative(srcDir, envsDir), // Relative to `root` directory.
 		envPrefix: appEnvPrefix, // Environment vars w/ this prefix become a part of the app.
@@ -318,16 +323,21 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		server: { open: true, https: true }, // Vite dev server.
 		plugins, // Additional Vite plugins that were configured above.
 
-		esbuild: { jsx: 'automatic' }, // ← Not necessary in Vite 4.0.x.
-		// See: <https://o5p.me/240y9w>, where `jsx` will be picked up from `tsconfig.json`.
-
+		...(isSSR // <https://vitejs.dev/config/ssr-options.html>.
+			? {
+					ssr: {
+						noExternal: isSSRNoExternals,
+						target: isSSRWorker ? 'webworker' : 'node',
+					},
+			  }
+			: {}),
 		worker: /* <https://vitejs.dev/guide/features.html#web-workers> */ {
 			format: 'es',
 			plugins: importedWorkerPlugins,
 			rollupOptions: importedWorkerRollupConfig,
 		},
 		build: /* <https://vitejs.dev/config/build-options.html> */ {
-			target: 'es2021', // Matches `tsconfig.json`.
+			target: 'es2021', // Matches TypeScript config.
 			emptyOutDir: true, // Must set as `true` explicitly.
 
 			outDir: path.relative(srcDir, distDir), // Relative to `root` directory.
@@ -352,14 +362,6 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				: {}),
 			rollupOptions: rollupConfig, // See: <https://o5p.me/5Vupql>.
 		},
-		...(isSSR // <https://vitejs.dev/config/ssr-options.html>.
-			? {
-					ssr: {
-						noExternal: true, // All server side.
-						target: isSSRWorker ? 'webworker' : 'node',
-					},
-			  }
-			: {}),
 	};
 
 	/**
