@@ -27,6 +27,8 @@ import chalk, { supportsColor } from 'chalk';
 
 import semver from 'semver';
 import prettier from 'prettier';
+
+import dotenv from 'dotenv';
 import dotenvVaultCore from 'dotenv-vault-core';
 
 import { Octokit as OctokitCore } from '@octokit/core';
@@ -840,6 +842,8 @@ export default class u {
 				await u.spawn('npx', ['dotenv-vault', 'push', envName, envFile, '--yes']);
 			}
 		}
+		await u.envsCompile({ dryRun: opts.dryRun });
+
 		log(chalk.gray('Encrypting all envs using latest Dotenv Vault data.'));
 		if (!opts.dryRun) {
 			await u.spawn('npx', ['dotenv-vault', 'build', '--yes']);
@@ -859,6 +863,25 @@ export default class u {
 			// log(chalk.gray('Deleting previous file for `' + envName + '` env.'));
 			if (!opts.dryRun) {
 				await fsp.rm(envFile + '.previous', { force: true });
+			}
+		}
+		await u.envsCompile({ dryRun: opts.dryRun });
+	}
+
+	static async envsCompile(opts = { dryRun: false }) {
+		log(chalk.gray('Compiling all Dotenv Vault envs; i.e., generating JSON files.'));
+		if (!opts.dryRun) {
+			const mainEnv = dotenv.parse(envFiles.main);
+
+			for (const [envName, envFile] of Object.entries(_.omit(envFiles, ['main']))) {
+				const thisEnv = dotenv.parse(envFile);
+				const env = mc.merge({}, mainEnv, thisEnv);
+
+				const compDir = path.resolve(path.dirname(envFile), './.~comp');
+				const envJSONFile = path.resolve(compDir, path.basename(envFile) + '.json');
+
+				await fsp.mkdir(compDir, { recursive: true });
+				await fsp.writeFile(envJSONFile, await u._envToJSON(envName, env));
 			}
 		}
 	}
@@ -894,7 +917,7 @@ export default class u {
 				const { parsed: env } = dotenvVaultCore.config({ path: path.resolve(projDir, './.env' /* .vault */) });
 
 				await fsp.mkdir(path.dirname(envFile), { recursive: true });
-				await fsp.writeFile(envFile, await u._envsToString(envName, env));
+				await fsp.writeFile(envFile, await u._envToText(envName, env));
 				process.env.DOTENV_KEY = origDotenvKey;
 			}
 		}
@@ -957,16 +980,25 @@ export default class u {
 		return keys;
 	}
 
-	static async _envsToString(envName, env) {
-		let str = '# ' + envName + '\n';
+	static async _envToJSON(envName, env) {
+		let json = {}; // Initialize.
+
+		for (let [name, value] of Object.entries(env)) {
+			json[name] = String(value);
+		}
+		return JSON.stringify(json, null, 4);
+	}
+
+	static async _envToText(envName, env) {
+		let text = '# ' + envName + '\n';
 
 		for (let [name, value] of Object.entries(env)) {
 			value = String(value);
 			value = value.replace(/\r\n?/gu, '\n');
 			value = value.replace(/\n/gu, '\\n');
-			str += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
+			text += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
-		return str;
+		return text;
 	}
 
 	static propagateUserEnvVars() {
