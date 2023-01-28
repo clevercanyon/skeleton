@@ -1,3 +1,3 @@
 # @clevercanyon/skeleton
 
-Another great project by Clever Canyon.
+Coming soon. Another great project by Clever Canyon. 🚧 Work is currently in progress!

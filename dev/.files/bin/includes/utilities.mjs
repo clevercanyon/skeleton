@@ -323,6 +323,33 @@ export default class u {
 			.split(/\s+/u)[0];
 	}
 
+	/**
+	 * Gist utilities.
+	 */
+
+	static async gistGetJSON(user, gistId) {
+		return await (await fetch('https://gist.github.com/' + encodeURIComponent(user) + '/' + encodeURIComponent(gistId) + '/raw')).json();
+	}
+
+	static async gistGetC10NUsers() {
+		// <https://gist.github.com/jaswrks/0a1780dc08ac30824858bbbb86294c73>
+		return await u.gistGetJSON('jaswrks', '0a1780dc08ac30824858bbbb86294c73');
+	}
+
+	static async gistGetC10NUser() {
+		if (!process.env.USER_GITHUB_USERNAME) {
+			return {}; // Not available.
+		}
+		const c10nUsers = await u.gistGetC10NUsers();
+		const githubUsername = String(process.env.USER_GITHUB_USERNAME).replace(/^@/u, '').toLowerCase();
+
+		let c10nUser = c10nUsers[githubUsername] || {};
+		c10nUser = c10nUser && typeof c10nUser === 'object' ? c10nUser : {};
+		_.set(c10nUser, 'github.username', githubUsername);
+
+		return c10nUser;
+	}
+
 	/*
 	 * GitHub utilities.
 	 */
@@ -539,8 +566,8 @@ export default class u {
 					required_status_checks: null, // We don't use.
 
 					// @review Not implemented. See: <https://o5p.me/hfPAag>.
-					// Not currently a major issue since we already have an org-wide required workflow.
-					required_deployment_environments: { environments: ['ci'] },
+					// Not currently an issue since we already have an org-wide required workflow.
+					// required_deployment_environments: { environments: ['ci'] },
 
 					restrictions: { users: [], teams: ['owners'], apps: [] },
 					required_pull_request_reviews: {
