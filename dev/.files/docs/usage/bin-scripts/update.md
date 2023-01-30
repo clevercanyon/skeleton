@@ -193,7 +193,7 @@ You can pass more than a single glob pattern, and more than a single ignore patt
 ```bash
 $ madrun update projects \
 	--glob 'foo-*' --ignore 'foo-{utils,addons}' \
-	--cmd 'git add --all && git commit -m "Message" && git push && git checkout main' \
+	--cmd 'git add --all' 'git commit -m "Message"' 'git push' \
 	--run 'script-one' 'script-two' 'script-three' \
 	--dryRun
 ```
@@ -202,8 +202,16 @@ $ madrun update projects \
 $ madrun update projects \
 	--glob 'foo' 'bar-{two,three,four}' 'baz-*-utils' \
 	--ignore 'baz-foo-utils' 'baz-bar-utils' \
-	--cmd 'git add --all && git commit -m "Message" && git push && git checkout main' \
-	--run 'script-one' 'script-two' 'script-three' \
+	--cmd 'git add --all' --cmd 'git commit -m "Message"' --cmd 'git push' \
+	--run 'script-one' --run 'script-two' --run 'script-three' \
+	--dryRun
+```
+
+```bash
+$ madrun update projects \
+	--glob 'foo-*' --ignore 'foo-{utils,addons}' \
+	--cmd 'git add --all && git commit -m "Message" && git push' \
+	--run 'script-one && script-two && script-three' \
 	--dryRun
 ```
 

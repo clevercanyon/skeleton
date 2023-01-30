@@ -31,6 +31,9 @@ import prettier from 'prettier';
 import dotenv from 'dotenv';
 import dotenvVaultCore from 'dotenv-vault-core';
 
+import yArgs from 'yargs';
+import { hideBin as yargsꓺhideBin } from 'yargs/helpers';
+
 import { Octokit as OctokitCore } from '@octokit/core';
 import { paginateRest as OctokitPluginPaginateRest } from '@octokit/plugin-paginate-rest';
 import sodium from 'libsodium-wrappers'; // Used to encrypt GitHub secret values.
@@ -56,13 +59,6 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType } = (() => 
 const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
 const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN || '' });
 
-const envFiles = {
-	main: path.resolve(projDir, './dev/.envs/.env'),
-	dev: path.resolve(projDir, './dev/.envs/.env.dev'),
-	ci: path.resolve(projDir, './dev/.envs/.env.ci'),
-	stage: path.resolve(projDir, './dev/.envs/.env.stage'),
-	prod: path.resolve(projDir, './dev/.envs/.env.prod'),
-};
 const githubConfigVersion = '1.0.1'; // Bump when config changes in routines below.
 const githubEnvsVersion = '1.0.0'; // Bump when environments change in routines below.
 const npmjsConfigVersion = '1.0.0'; // Bump when config changes in routines below.
@@ -91,37 +87,51 @@ mc.addOperation('$ꓺdefault', (current, defaults) => {
 	return paths.length > 0;
 });
 
+const yargsꓺdefaultOpts = {
+	bracketedArrays: true,
+	scriptName: '',
+	errorBoxName: '',
+	helpOption: 'help',
+	versionOption: 'version',
+	maxTerminalWidth: 80,
+	showHidden: false,
+	strict: true,
+};
+
 /**
  * Utilities.
  */
 export default class u {
+	/**
+	 * Synchronous utilities.
+	 */
+
 	/*
 	 * StdIO utilities.
 	 */
 
 	static log(...args) {
-		console.log(...args);
+		return console.log(...args);
 	}
 
-	static err(...args) {
-		console.err(...args);
+	static logError(...args) {
+		return console.error(...args);
+	}
+
+	static logDebug(...args) {
+		return console.debug(...args);
 	}
 
 	static echo(...args) {
-		process.stdout.write.bind(process.stdout)(...args);
+		return process.stdout.write.bind(process.stdout)(...args);
 	}
 
-	static echoErr(...args) {
-		process.stdout.write.bind(process.stderr)(...args);
+	static echoError(...args) {
+		return process.stdout.write.bind(process.stderr)(...args);
 	}
 
-	/*
-	 * TTY utilities.
-	 */
-
-	static async isInteractive() {
-		const isTTY = process.stdout.isTTY || 'true' === process.env.PARENT_IS_TTY ? true : false;
-		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI && true !== process.env.CI;
+	static echoDebug(...args) {
+		return process.stdout.write.bind(process.stdout)(...args);
 	}
 
 	/*
@@ -134,6 +144,121 @@ export default class u {
 
 	static escRegExp(str) {
 		return str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+	}
+
+	/**
+	 * Asynchronous utilities.
+	 */
+
+	/*
+	 * User environment var utilities.
+	 */
+
+	static async propagateUserEnvVars() {
+		process.env.NPM_TOKEN = process.env.USER_NPM_TOKEN || '';
+		process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || '';
+		process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || '';
+		process.env.CLOUDFLARE_API_TOKEN = process.env.USER_CLOUDFLARE_TOKEN || '';
+	}
+
+	/**
+	 * Yargs utilities.
+	 */
+
+	static async yargs(opts = yargsꓺdefaultOpts) {
+		let newYargs; // Initialize.
+		opts = Object.assign({}, opts, yargsꓺdefaultOpts);
+
+		if (opts.bracketedArrays) {
+			newYargs = await u._yArgsꓺwithBracketedArrays();
+		} else {
+			newYargs = yArgs(yargsꓺhideBin(process.argv));
+		}
+		if (opts.scriptName) {
+			newYargs.scriptName(opts.scriptName);
+		}
+		return newYargs
+			.parserConfiguration({
+				'strip-dashed': true,
+				'strip-aliased': true,
+				'greedy-arrays': true,
+				'dot-notation': false,
+				'boolean-negation': false,
+			})
+			.help(opts.helpOption) // Given explicitly.
+			.version(opts.versionOption, (await u.pkg()).version || '0.0.0')
+
+			.wrap(Math.max(opts.maxTerminalWidth, newYargs.terminalWidth() / 2))
+			.showHidden(opts.showHidden) // `false` = permanently hide hidden options.
+			.strict(opts.strict) // `true` = no arbitrary commands|options.
+
+			.fail(async (message, error /* , yargs */) => {
+				if (error?.stack && typeof error.stack === 'string') u.logError(chalk.gray(error.stack));
+				u.logError(await u.errorBox((opts.errorBoxName ? opts.errorBoxName + ': ' : '') + 'Problem', error ? error.toString() : message || 'Unexpected unknown errror.'));
+				process.exit(1);
+			});
+	}
+
+	static async _yArgsꓺwithBracketedArrays() {
+		const bracketedArrayArgNames = [];
+		const newYargsArgs = yargsꓺhideBin(process.argv);
+
+		for (const arg of newYargsArgs) {
+			let m = null; // Initializes variable.
+			if ((m = arg.match(/^-{1,2}((?:[^-[\]\s][^[\]\s]*)?\[\]?)$/u))) {
+				if ('[]' === m[1]) bracketedArrayArgNames.push('[');
+				bracketedArrayArgNames.push(m[1]);
+			}
+		}
+		if (!bracketedArrayArgNames.length) {
+			return yArgs(newYargsArgs); // New Yargs instance.
+		}
+		for (let i = 0, inBracketedArrayArgs = false; i < newYargsArgs.length; i++) {
+			if (inBracketedArrayArgs) {
+				if (']' === newYargsArgs[i] || '-]' === newYargsArgs[i]) {
+					inBracketedArrayArgs = false;
+					newYargsArgs[i] = '-]'; // Closing arg.
+				}
+			} else if (newYargsArgs[i].match(/^-{1,2}((?:[^-[\]\s][^[\]\s]*)?\[)$/u)) {
+				inBracketedArrayArgs = true;
+			}
+		}
+		return yArgs(newYargsArgs) // New Yargs instance.
+			.array(bracketedArrayArgNames)
+			.options({
+				']': {
+					hidden: true,
+					type: 'boolean',
+					requiresArg: false,
+					demandOption: false,
+					default: false,
+				},
+			})
+			.middleware((args) => {
+				delete args[']']; // Ditch closing brackets.
+
+				for (const [name] of Object.entries(args)) {
+					if (['$0', '_', ']'].includes(name)) {
+						continue; // Not applicable.
+					} else if (!bracketedArrayArgNames.includes(name)) {
+						continue; // Not applicable.
+					}
+					if (args[name] instanceof Array) {
+						args[name] = args[name] //
+							.map((v) => (typeof v === 'string' ? v.replace(/,$/u, '') : v))
+							.filter((v) => '' !== v);
+					}
+				}
+			}, true);
+	}
+
+	/*
+	 * TTY utilities.
+	 */
+
+	static async isInteractive() {
+		const isTTY = process.stdout.isTTY || 'true' === process.env.PARENT_IS_TTY ? true : false;
+		return isTTY && process.env.TERM && 'dumb' !== process.env.TERM && 'true' !== process.env.CI && true !== process.env.CI;
 	}
 
 	/**
@@ -160,7 +285,7 @@ export default class u {
 			},
 			// Output handlers do not run when `stdio: 'inherit'` or `quiet: true`.
 			stdout: opts.quiet ? null : (buffer) => u.echo(chalk.white(buffer.toString())),
-			stderr: opts.quiet ? null : (buffer) => u.echoErr(chalk.gray(buffer.toString())),
+			stderr: opts.quiet ? null : (buffer) => u.echoError(chalk.gray(buffer.toString())),
 
 			..._.omit(opts, ['quiet']),
 		});
@@ -634,6 +759,7 @@ export default class u {
 		}
 		u.log(chalk.gray('Configuring GitHub repo environments using org-wide standards.'));
 
+		const envFiles = await u.envFiles(); // All environment files.
 		const envKeys = await u._envsExtractKeys(); // Dotenv Vault decryption keys.
 		await u._githubEnsureRepoEnvs({ dryRun: opts.dryRun }); // Creates|deletes repo envs.
 
@@ -807,6 +933,7 @@ export default class u {
 	}
 
 	static async _githubEnsureRepoEnvs(opts = { dryRun: false }) {
+		const envFiles = await u.envFiles();
 		const { owner, repo } = await u.githubOrigin();
 		const repoEnvs = await u._githubRepoEnvs();
 		const repoEnvsToDelete = Object.assign({}, repoEnvs);
@@ -872,11 +999,23 @@ export default class u {
 	 * Env utilities.
 	 */
 
+	static async envFiles() {
+		return {
+			main: path.resolve(projDir, './dev/.envs/.env'),
+			dev: path.resolve(projDir, './dev/.envs/.env.dev'),
+			ci: path.resolve(projDir, './dev/.envs/.env.ci'),
+			stage: path.resolve(projDir, './dev/.envs/.env.stage'),
+			prod: path.resolve(projDir, './dev/.envs/.env.prod'),
+		};
+	}
+
 	static async isEnvsVault() {
 		return fs.existsSync(path.resolve(projDir, './.env.vault'));
 	}
 
 	static async envsPush(opts = { dryRun: false }) {
+		const envFiles = await u.envFiles();
+
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			if (!fs.existsSync(envFile)) {
 				u.log(chalk.gray('Creating file for `' + envName + '` env.'));
@@ -902,6 +1041,8 @@ export default class u {
 	}
 
 	static async envsPull(opts = { dryRun: false }) {
+		const envFiles = await u.envFiles();
+
 		for (const [envName, envFile] of Object.entries(envFiles)) {
 			u.log(chalk.gray('Pulling `' + envName + '` env from Dotenv Vault.'));
 			if (!opts.dryRun) {
@@ -917,10 +1058,11 @@ export default class u {
 	}
 
 	static async envsCompile(opts = { dryRun: false }) {
+		const envFiles = await u.envFiles();
+		const mainEnv = dotenv.parse(envFiles.main);
+
 		u.log(chalk.gray('Compiling all Dotenv Vault envs; i.e., generating JSON files.'));
 		if (!opts.dryRun) {
-			const mainEnv = dotenv.parse(envFiles.main);
-
 			for (const [envName, envFile] of Object.entries(_.omit(envFiles, ['main']))) {
 				const thisEnv = dotenv.parse(envFile);
 				const env = mc.merge({}, mainEnv, thisEnv);
@@ -949,6 +1091,8 @@ export default class u {
 	}
 
 	static async envsDecrypt(opts = { keys: [], dryRun: false }) {
+		const envFiles = await u.envFiles();
+
 		for (const key of opts.keys) {
 			const envName = key.split('?')[1]?.split('=')[1] || '';
 			const envFile = envFiles[envName] || '';
@@ -1012,6 +1156,7 @@ export default class u {
 
 	static async _envsExtractKeys() {
 		const keys = {}; // Initialize.
+		const envFiles = await u.envFiles();
 
 		u.log(chalk.gray('Extracting all Dotenv Vault keys.'));
 		const output = await u.spawn('npx', ['dotenv-vault', 'keys', '--yes'], { quiet: true });
@@ -1047,13 +1192,6 @@ export default class u {
 			text += name + '="' + value.replace(/"/gu, '\\"') + '"\n';
 		}
 		return text;
-	}
-
-	static propagateUserEnvVars() {
-		process.env.NPM_TOKEN = process.env.USER_NPM_TOKEN || '';
-		process.env.GH_TOKEN = process.env.USER_GITHUB_TOKEN || '';
-		process.env.GITHUB_TOKEN = process.env.USER_GITHUB_TOKEN || '';
-		process.env.CLOUDFLARE_API_TOKEN = process.env.USER_CLOUDFLARE_TOKEN || '';
 	}
 
 	/*
@@ -1217,7 +1355,8 @@ export default class u {
 	/**
 	 * Error utilities.
 	 */
-	static async error(title, text) {
+
+	static async errorBox(title, text) {
 		if (!process.stdout.isTTY || !supportsColor || !supportsColor?.has16m) {
 			return chalk.red(text); // No box.
 		}
@@ -1244,7 +1383,8 @@ export default class u {
 	/**
 	 * Finale utilities.
 	 */
-	static async finale(title, text) {
+
+	static async finaleBox(title, text) {
 		if (!process.stdout.isTTY || !supportsColor || !supportsColor?.has16m) {
 			return chalk.green(text); // No box.
 		}
