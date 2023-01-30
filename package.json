@@ -45,7 +45,7 @@
 	"optionalDependencies": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "^1.0.102"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.103"
 	},
 	"overrides": {},
 	"workspaces": [],
@@ -71,8 +71,8 @@
 						"architects": "push"
 					},
 					"labels": {},
-					"configVersion": "1.0.1",
-					"envsVersion": "1.0.0"
+					"configVersion": "1.0.2",
+					"envsVersion": "1.0.2"
 				},
 				"npmjs": {
 					"configVersions": ""
