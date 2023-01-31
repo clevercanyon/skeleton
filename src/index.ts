@@ -1,5 +1,5 @@
 /**
- * Skeleton.
+ * Module.
  */
 
 export {};
