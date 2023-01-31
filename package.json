@@ -45,7 +45,7 @@
 	"optionalDependencies": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "^1.0.105"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.106"
 	},
 	"overrides": {},
 	"workspaces": [],
