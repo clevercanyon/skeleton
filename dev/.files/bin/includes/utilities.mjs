@@ -8,7 +8,6 @@
 /* eslint-env es2021, node */
 
 import _ from 'lodash';
-import deeps from 'deeps';
 
 import os from 'node:os';
 import fs from 'node:fs';
@@ -166,7 +165,7 @@ export default class u {
 
 		if (typeof propsOrPath === 'string') {
 			const path = propsOrPath; // String path.
-			deeps.set(pkg, path, value, true, delimiter);
+			$obj.mc.u.set(pkg, path, value, false, delimiter);
 			//
 		} else if (_.isPlainObject(propsOrPath)) {
 			const props = propsOrPath; // Object props.
