@@ -8,6 +8,7 @@
  */
 /* eslint-env es2021, node */
 
+import fs from 'node:fs';
 import path from 'node:path';
 import { dirname } from 'desm';
 
@@ -18,10 +19,17 @@ const projDir = path.resolve(__dirname, '../../..');
  * Defines Jest configuration.
  */
 export default async (/* {} */) => {
+	const srcDir = path.resolve(projDir, './src');
+	const srcDirExists = fs.existsSync(srcDir);
+
+	const testsDir = path.resolve(projDir, './tests');
+	const testsDirExists = fs.existsSync(testsDir);
+
 	return {
 		roots: [
-			path.resolve(projDir, './src'), //
-			path.resolve(projDir, './tests'),
+			...(srcDirExists ? [srcDir] : []), //
+			...(testsDirExists ? [testsDir] : []),
+			...(!srcDirExists && !testsDirExists ? [projDir] : []),
 		],
 	};
 };
