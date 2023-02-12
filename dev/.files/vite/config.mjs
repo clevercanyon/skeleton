@@ -332,6 +332,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		exclude: vitestExcludes,
 		watchExclude: vitestExcludes,
 
+		uiBase: '/vitest/',
 		reporters: ['verbose', 'html'],
 
 		// @todo Enhance miniflare support.
