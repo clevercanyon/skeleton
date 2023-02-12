@@ -332,6 +332,8 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		exclude: vitestExcludes,
 		watchExclude: vitestExcludes,
 
+		reporters: ['verbose', 'html'],
+
 		// @todo Enhance miniflare support.
 		// @todo Add support for testing web workers.
 		environment: ['web'].includes(targetEnv) ? 'jsdom' // <https://o5p.me/Gf9Cy5>.
@@ -354,7 +356,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		outputFile: {
 			json: path.resolve(logsDir, './tests/vitest.json'),
 			junit: path.resolve(logsDir, './tests/vitest.junit'),
-			html: path.resolve(logsDir, './tests/vitest.html'),
+			html: path.resolve(logsDir, './tests/vitest/index.html'),
 		},
 		typecheck: {
 			include: vitestTypecheckIncludes,
