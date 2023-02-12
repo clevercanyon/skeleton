@@ -48,7 +48,7 @@
 		"@clevercanyon/skeleton-dev-deps": "^1.0.127"
 	},
 	"overrides": {},
-	"workspaces": [],
+	"workspaces": ["."],
 	"cpu": ["x64", "arm64"],
 	"os": ["darwin", "linux"],
 	"engines": {
