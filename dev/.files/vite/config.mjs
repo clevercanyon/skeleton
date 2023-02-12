@@ -339,6 +339,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 			: ['node', 'any'].includes(targetEnv) ? 'node' // <https://o5p.me/Gf9Cy5>.
 			: 'node', // prettier-ignore
 
+		cache: { dir: path.resolve(projDir, './node_modules/.vitest') },
 		deps: { external: ['**/dist/**', '**/node_modules/**'].concat(rollupConfig.external) },
 
 		// See: <https://vitest.dev/api/#test-only>
