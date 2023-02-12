@@ -310,20 +310,21 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		'**/*.d.{ts,tsx,cts,ctsx,mts,mtsx}',
 	];
 	const vitestIncludes = [
-		'**/*.{test|tests|spec|specs}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+		'**/*.{test,tests,spec,specs}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
 		'**/{__test__,__tests__,__spec__,__specs__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
 	];
-	const vitestBenchIncludes = [
-		'**/*.{bench|benchmark|benchmarks}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
-		'**/{__bench__,__benchmark__,__benchmarks__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
-	];
 	const vitestTypecheckIncludes = [
-		'**/*.{test|tests|spec|specs}-d.{ts,tsx,cts,ctsx,mts,mtsx}', //
+		'**/*.{test,tests,spec,specs}-d.{ts,tsx,cts,ctsx,mts,mtsx}', //
+		'**/{__test__,__tests__,__spec__,__specs__}/**/*-d.{ts,tsx,cts,ctsx,mts,mtsx}',
+	];
+	const vitestBenchIncludes = [
+		'**/*.{bench,benchmark,benchmarks}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+		'**/{__bench__,__benchmark__,__benchmarks__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
 	];
 	const vitestExtensions = ['.js', '.jsx', '.cjs', '.cjsx', '.json', '.node', '.mjs', '.mjsx', '.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'];
 
 	const vitestConfig = {
-		root: projDir,
+		root: srcDir,
 
 		include: vitestIncludes,
 		css: { include: /.+/u },
@@ -354,14 +355,18 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 			junit: path.resolve(reportsDir, './tests/vitest.junit'),
 			html: path.resolve(reportsDir, './tests/vitest.html'),
 		},
+		typecheck: {
+			include: vitestTypecheckIncludes,
+			exclude: vitestExcludes,
+		},
 		coverage: {
 			all: true,
 			src: srcDir,
 			include: ['**'],
 			exclude: vitestExcludes //
 				.concat(vitestIncludes)
-				.concat(vitestBenchIncludes)
-				.concat(vitestTypecheckIncludes),
+				.concat(vitestTypecheckIncludes)
+				.concat(vitestBenchIncludes),
 			extension: vitestExtensions,
 			reporter: ['text', 'html', 'clover', 'json'],
 			reportsDirectory: path.resolve(reportsDir, './coverage/vitest'),
@@ -376,10 +381,6 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				junit: path.resolve(reportsDir, './benchmarks/vitest.junit'),
 				html: path.resolve(reportsDir, './benchmarks/vitest.html'),
 			},
-		},
-		typecheck: {
-			include: vitestTypecheckIncludes,
-			exclude: vitestExcludes,
 		},
 	};
 
