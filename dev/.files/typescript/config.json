@@ -36,8 +36,8 @@
 		"forceConsistentCasingInFileNames": true,
 
 		"paths": {
-			// Note: Single array item for Vite/Jest compat.
-			"@/~*": ["./*"] // Relative to `baseUrl`.
+			// Note: Use just a single array item for Vite/Jest compatibility.
+			"@:src/*": ["./*"] // Relative to `baseUrl`.
 		},
 		"declaration": true,
 		"declarationMap": false,

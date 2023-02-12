@@ -14,7 +14,7 @@ import { dirname } from 'desm';
 import fsp from 'node:fs/promises';
 
 import u from '../../bin/includes/utilities.mjs';
-import { $url, $brand } from '@clevercanyon/utilities';
+import { $url, $brand } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 const __dirname = dirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../../..');

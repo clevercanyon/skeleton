@@ -22,8 +22,8 @@ import prettier from 'prettier';
 import dotenv from 'dotenv';
 import dotenvVaultCore from 'dotenv-vault-core';
 
-import { $str, $obj, $url } from '@clevercanyon/utilities';
-import { $cmd, $chalk } from '@clevercanyon/utilities.node';
+import { $str, $obj, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $cmd, $chalk } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 
 import { Octokit as OctokitCore } from '@octokit/core';
 import { paginateRest as OctokitPluginPaginateRest } from '@octokit/plugin-paginate-rest';

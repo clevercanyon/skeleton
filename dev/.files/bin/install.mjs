@@ -14,7 +14,7 @@ import { dirname } from 'desm';
 
 import chalk from 'chalk';
 import u from './includes/utilities.mjs';
-import { $yargs } from '@clevercanyon/utilities.node';
+import { $yargs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 
 const __dirname = dirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');

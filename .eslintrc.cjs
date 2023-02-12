@@ -9,8 +9,8 @@
  */
 /* eslint-env es2021, node */
 
-const $obj = require('@clevercanyon/utilities/obj');
 const baseConfig = require('./dev/.files/eslint/config.cjs');
+const { $obj } = require('./node_modules/@clevercanyon/utilities/dist/index.cjs');
 
 /*
  * Customizations.

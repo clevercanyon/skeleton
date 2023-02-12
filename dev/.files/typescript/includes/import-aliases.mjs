@@ -27,5 +27,5 @@ const srcDir = path.resolve(projDir, './src');
  * @note See also: `../jest/config.mjs`.
  */
 export default {
-	'^@\\/~(.+)$': path.resolve(srcDir, './$1'),
+	'^@:src/(.+)$': path.resolve(srcDir, './$1'),
 };

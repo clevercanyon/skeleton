@@ -17,9 +17,9 @@ import fsp from 'node:fs/promises';
 import chalk from 'chalk';
 import prettier from 'prettier';
 
-import { $str, $obj } from '@clevercanyon/utilities';
 import customRegexp from './data/custom-regexp.mjs';
-import { $cmd } from '@clevercanyon/utilities.node';
+import { $str, $obj } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $cmd } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 
 const { log } = console; // Shorter reference.
 

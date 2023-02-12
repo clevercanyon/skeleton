@@ -17,9 +17,9 @@ import fsp from 'node:fs/promises';
 
 import chalk from 'chalk';
 import u from './includes/utilities.mjs';
-import { $mm } from '@clevercanyon/utilities';
 import coreProjects from './includes/core-projects.mjs';
-import { $cmd, $glob, $yargs } from '@clevercanyon/utilities.node';
+import { $mm } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $cmd, $glob, $yargs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 
 const __dirname = dirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');

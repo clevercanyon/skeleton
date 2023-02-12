@@ -9,8 +9,8 @@
  */
 /* eslint-env es2021, node */
 
-import { $obj } from '@clevercanyon/utilities';
 import baseConfig from './dev/.files/jest/config.mjs';
+import { $obj } from './node_modules/@clevercanyon/utilities/dist/index.js';
 
 /*
  * Customizations.

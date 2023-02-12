@@ -25,9 +25,9 @@ import { ViteEjsPlugin as pluginEJS } from 'vite-plugin-ejs';
 import { ViteMinifyPlugin as pluginMinifyHTML } from 'vite-plugin-minify';
 
 import u from '../bin/includes/utilities.mjs';
-import { $obj, $mm } from '@clevercanyon/utilities';
-import { $glob } from '@clevercanyon/utilities.node';
 import importAliases from './includes/import-aliases.mjs';
+import { $obj, $mm } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $glob } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
