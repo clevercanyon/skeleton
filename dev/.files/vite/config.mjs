@@ -48,12 +48,12 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 
 	const srcDir = path.resolve(__dirname, '../../../src');
 	const cargoDir = path.resolve(__dirname, '../../../src/cargo');
+
 	const envsDir = path.resolve(__dirname, '../../../dev/.envs');
+	const logsDir = path.resolve(__dirname, '../../../dev/.logs');
 
 	const distDir = path.resolve(__dirname, '../../../dist');
 	const a16sDir = path.resolve(__dirname, '../../../dist/assets/a16s');
-
-	const reportsDir = path.resolve(__dirname, '../../../dev/.#reports');
 
 	/**
 	 * Package-related vars.
@@ -352,9 +352,9 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		forceRerunTriggers: ['**/package.json', '**/vitest.config.*', '**/vite.config.*'],
 
 		outputFile: {
-			json: path.resolve(reportsDir, './tests/vitest.json'),
-			junit: path.resolve(reportsDir, './tests/vitest.junit'),
-			html: path.resolve(reportsDir, './tests/vitest.html'),
+			json: path.resolve(logsDir, './tests/vitest.json'),
+			junit: path.resolve(logsDir, './tests/vitest.junit'),
+			html: path.resolve(logsDir, './tests/vitest.html'),
 		},
 		typecheck: {
 			include: vitestTypecheckIncludes,
@@ -370,7 +370,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				.concat(vitestBenchIncludes),
 			extension: vitestExtensions,
 			reporter: ['text', 'html', 'clover', 'json'],
-			reportsDirectory: path.resolve(reportsDir, './coverage/vitest'),
+			reportsDirectory: path.resolve(logsDir, './coverage/vitest'),
 		},
 		benchmark: {
 			include: vitestBenchIncludes,
@@ -378,9 +378,9 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 			exclude: vitestExcludes,
 
 			outputFile: {
-				json: path.resolve(reportsDir, './benchmarks/vitest.json'),
-				junit: path.resolve(reportsDir, './benchmarks/vitest.junit'),
-				html: path.resolve(reportsDir, './benchmarks/vitest.html'),
+				json: path.resolve(logsDir, './benchmarks/vitest.json'),
+				junit: path.resolve(logsDir, './benchmarks/vitest.junit'),
+				html: path.resolve(logsDir, './benchmarks/vitest.html'),
 			},
 		},
 	};
