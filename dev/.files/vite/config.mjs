@@ -281,14 +281,15 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 
 		external: [
 			...Object.keys(pkg.peerDependencies || {}),
-			'__STATIC_CONTENT_MANIFEST', // Cloudflare workers.
+			// Cloudflare workers use this for static assets.
+			'__STATIC_CONTENT_MANIFEST',
 		],
 		output: {
 			interop: 'auto', // Matches TypeScript config.
 			exports: 'named', // Matches TypeScript config.
 			esModule: true, // Matches TypeScript config.
 
-			extend: true, // i.e., Global `||` checks.
+			extend: true, // i.e., UMD global `||` checks.
 			noConflict: true, // Like `jQuery.noConflict()`.
 		},
 	};
@@ -393,8 +394,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 	 */
 	const baseConfig = {
 		c10n: { pkg, updatePkg },
-		define: {
-			// Static replacements.
+		define: /* Static replacements. */ {
 			$$__APP_PKG_NAME__$$: JSON.stringify(pkg.name || ''),
 			$$__APP_PKG_VERSION__$$: JSON.stringify(pkg.version || ''),
 			$$__APP_PKG_REPOSITORY__$$: JSON.stringify(pkg.repository || ''),

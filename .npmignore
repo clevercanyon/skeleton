@@ -206,45 +206,56 @@ Temporary Items
 
 !dist
 
-# Config files.
+# Configs.
 
 .*
 
-.github
-jsconfig.*
-tsconfig.*
-wrangler.*
-jest.config.*
-vite.config.*
-vitest.config.*
-tailwind.config.*
-.env.project
+*config.*
+!dist/**/*config.*
 
-# Source.
+*.config.*
+!dist/**/*.config.*
+
+wrangler.*
+!dist/**/wrangler.*
+
+# Uncompiled sources.
 
 *.scss
+!dist/**/*.scss
+
 *.less
+!dist/**/*.less
 
 *.ejs
+!dist/**/*.ejs
+
 *.jsx
+!dist/**/*.jsx
 
 *.ts
 !*.d.ts
+!dist/**/*.ts
 
 *.tsx
 !*.d.tsx
+!dist/**/*.tsx
 
 *.cts
 !*.d.cts
+!dist/**/*.cts
 
 *.ctsx
 !*.d.ctsx
+!dist/**/*.ctsx
 
 *.mts
 !*.d.mts
+!dist/**/*.mts
 
 *.mtsx
 !*.d.mtsx
+!dist/**/*.mtsx
 
 # Dev.
 
