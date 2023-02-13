@@ -41,7 +41,7 @@
 		"devDependenciesꓺ@clevercanyon/skeleton-dev-deps": "*",
 
 		"overrides": {},
-		"workspaces": ["."],
+		"workspaces": null,
 
 		"cpu": [],
 		"os": [],
@@ -61,7 +61,7 @@
 	},
 	"$ꓺset": {
 		"funding": "https://github.com/sponsors/clevercanyon",
-		"workspaces": ["."],
+		"workspaces": null,
 
 		"cpu": ["x64", "arm64"],
 		"os": ["darwin", "linux"],

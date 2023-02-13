@@ -44,7 +44,7 @@ See Also: [Prerequisites](./prerequisites.md)
     ```json
     "type": "",
     "files": [],
-    "exports": [],
+    "exports": {},
     "sideEffects": [],
     "module": "",
     "main": "",
