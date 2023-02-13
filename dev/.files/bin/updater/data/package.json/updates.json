@@ -39,9 +39,7 @@
 		"bundleDependencies": [],
 		"devDependencies": {},
 		"devDependenciesꓺ@clevercanyon/skeleton-dev-deps": "*",
-
 		"overrides": {},
-		"workspaces": null,
 
 		"cpu": [],
 		"os": [],
@@ -61,7 +59,6 @@
 	},
 	"$ꓺset": {
 		"funding": "https://github.com/sponsors/clevercanyon",
-		"workspaces": null,
 
 		"cpu": ["x64", "arm64"],
 		"os": ["darwin", "linux"],
@@ -70,7 +67,7 @@
 			"npm": "^8.19.3 || ^9.2.0"
 		}
 	},
-	"$ꓺunset": ["typings", "scripts"],
+	"$ꓺunset": ["typings", "scripts", "workspaces"],
 
 	"$ꓺpropSortOrder": [
 		"private",
@@ -108,9 +105,7 @@
 		"optionalDependencies",
 		"bundleDependencies",
 		"devDependencies",
-
 		"overrides",
-		"workspaces",
 
 		"cpu",
 		"os",
