@@ -32,11 +32,10 @@ See Also: [Prerequisites](./prerequisites.md)
     ```
 
     These are the properties that we explicitly disallow.
-    - Instead of `"files"` we use `./.npmignore` to establish which files are part of a package.
     - Instead of `"scripts"` we use `$ madrun` to configure scripts. See: [Prerequisites](./prerequisites.md).
 
     ```json
-    ["files", "typings", "scripts", "workspaces"]
+    ["typings", "scripts", "workspaces"]
     ```
 
     Additionally, when running the `$ madrun update project` script, the following `./package.json` properties will also be automatically updated to match your project build configuration. Therefore, you should never change any of these manually, as those changes would be lost during a project update.
@@ -52,6 +51,8 @@ See Also: [Prerequisites](./prerequisites.md)
     "types": "",
     "typesVersions": {}
     ```
+
+    - Note the absence of `"files": []` in the lists above, which we discourage. Instead, use `./.npmignore` as the recommended way to establish which files are part of a package. However, `files` is not forbidden, so define and customize `files`, if you must. Just keep in mind that `./.npmignore` is meaningless if you use `files`.
 
 ## Updates Project
 
