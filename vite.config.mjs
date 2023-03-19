@@ -17,7 +17,7 @@ import { $obj } from './node_modules/@clevercanyon/utilities/dist/index.js';
  * <custom:start> */
 
 export default async (vite) => {
-	return $obj.mc.merge({}, await baseConfig(vite), {});
+	return $obj.mergeDeep({}, await baseConfig(vite), {});
 };
 
 /* </custom:end> */

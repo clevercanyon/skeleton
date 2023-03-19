@@ -1,5 +1,5 @@
 {
-	"$ꓺdefault": {
+	"$ꓺdefaults": {
 		"private": true,
 		"publishConfigꓺaccess": "restricted",
 
@@ -20,7 +20,6 @@
 		"contributors": [],
 
 		"type": "module",
-		"files": [],
 		"bin": {},
 		"imports": {},
 		"exports": null,
@@ -67,9 +66,9 @@
 			"npm": "^8.19.3 || ^9.2.0"
 		}
 	},
-	"$ꓺunset": ["typings", "scripts", "workspaces"],
+	"$ꓺunset": ["files", "typings", "scripts", "workspaces"],
 
-	"$ꓺpropSortOrder": [
+	"$ꓺkeySortOrder": [
 		"private",
 		"publishConfigꓺaccess",
 

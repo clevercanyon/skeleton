@@ -17,7 +17,7 @@ import { $obj } from './node_modules/@clevercanyon/utilities/dist/index.js';
  * <custom:start> */
 
 export default async (madrun) => {
-	return $obj.mc.merge({}, await baseConfig(madrun), {
+	return $obj.mergeDeep({}, await baseConfig(madrun), {
 		// 'project:[cmd]': '', // Always prefix project CMDs.
 	});
 };

@@ -16,6 +16,6 @@ const { $obj } = require('./node_modules/@clevercanyon/utilities/dist/index.cjs'
  * Customizations.
  * <custom:start> */
 
-module.exports = $obj.mc.merge({}, baseConfig, {});
+module.exports = $obj.mergeDeep({}, baseConfig, {});
 
 /* </custom:end> */
