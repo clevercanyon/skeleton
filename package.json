@@ -44,7 +44,7 @@
 	"optionalDependencies": {},
 	"bundleDependencies": [],
 	"devDependencies": {
-		"@clevercanyon/skeleton-dev-deps": "^1.0.128"
+		"@clevercanyon/skeleton-dev-deps": "^1.0.129"
 	},
 	"overrides": {},
 	"cpu": ["x64", "arm64"],
