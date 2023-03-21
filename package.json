@@ -27,7 +27,7 @@
 			"types": "./dist/types/index.d.ts"
 		}
 	},
-	"sideEffects": ["./src/*.{html,scss,ts,tsx}"],
+	"sideEffects": ["./src/*.{html,scss,ts,tsx}", "./src/resources/init-env.ts"],
 	"module": "./dist/index.js",
 	"main": "./dist/index.umd.cjs",
 	"browser": "",
