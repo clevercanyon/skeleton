@@ -156,6 +156,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				},
 			});
 		}
+		updatePkg.exports = { $set: updatePkg.exports };
 		updatePkg.sideEffects = ['./src/*.{html,scss,ts,tsx}'];
 		//
 	} else if (isCMA) {
@@ -166,6 +167,8 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				types: './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts',
 			},
 		};
+		updatePkg.exports = { $set: updatePkg.exports };
+
 		updatePkg.module = './dist/' + cmaEntryIndexSubpathNoExt + '.js';
 		updatePkg.main = './dist/' + cmaEntryIndexSubpathNoExt + '.umd.cjs';
 
