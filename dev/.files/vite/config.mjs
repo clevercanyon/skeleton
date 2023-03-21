@@ -156,7 +156,6 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				},
 			});
 		}
-		updatePkg.exports = { $set: updatePkg.exports };
 		updatePkg.sideEffects = ['./src/*.{html,scss,ts,tsx}'];
 		//
 	} else if (isCMA) {
@@ -167,8 +166,6 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				types: './dist/types/' + cmaEntryIndexSubpathNoExt + '.d.ts',
 			},
 		};
-		updatePkg.exports = { $set: updatePkg.exports };
-
 		updatePkg.module = './dist/' + cmaEntryIndexSubpathNoExt + '.js';
 		updatePkg.main = './dist/' + cmaEntryIndexSubpathNoExt + '.umd.cjs';
 
@@ -192,7 +189,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 	/**
 	 * Pre-updates `package.json` properties impacting build process.
 	 */
-	await u.updatePkg({ type: updatePkg.type, sideEffects: updatePkg.sideEffects });
+	await u.updatePkg({ $set: { type: updatePkg.type, sideEffects: updatePkg.sideEffects } });
 
 	/**
 	 * Configures plugins for Vite.
@@ -241,7 +238,7 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 				/**
 				 * Updates `package.json`.
 				 */
-				await u.updatePkg(updatePkg);
+				await u.updatePkg({ $set: updatePkg });
 
 				/**
 				 * Copies `./.env.vault` to dist directory.
