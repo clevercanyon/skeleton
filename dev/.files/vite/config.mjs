@@ -178,7 +178,6 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 		updatePkg.sideEffects = ['./src/*.{html,scss,ts,tsx}'];
 		//
 	} /* Multipage app. */ else {
-		updatePkg.type = 'module'; // Always a module when building with Vite.
 		updatePkg.module = updatePkg.main = updatePkg.browser = updatePkg.unpkg = updatePkg.types = '';
 		(updatePkg.exports = null), (updatePkg.sideEffects = []), (updatePkg.typesVersions = {});
 	}
