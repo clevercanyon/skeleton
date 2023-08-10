@@ -77,6 +77,10 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 	const isMPA = 'mpa' === appType;
 	const isCMA = 'cma' === appType || !isMPA;
 
+	const isSSR = ['cfw', 'node'].includes(targetEnv);
+	const isSSRNoExternals = isSSR && ['cfw'].includes(targetEnv);
+	const isSSRWorker = isSSR && ['cfw'].includes(targetEnv);
+
 	let cmaName = (pkg.name || '').toLowerCase();
 	cmaName = cmaName.replace(/\bclevercanyon\b/gu, 'c10n');
 	cmaName = cmaName.replace(/@/gu, '').replace(/\./gu, '-').replace(/\/+/gu, '.');
@@ -85,19 +89,14 @@ export default async ({ mode, command /*, ssrBuild */ }) => {
 
 	const mpaIndexes = await $glob.promise('**/index.html', { cwd: srcDir });
 	const mpaIndexesSubPaths = mpaIndexes.map((absPath) => path.relative(srcDir, absPath));
+	const mpaEntryIndexSubpath = mpaIndexesSubPaths.find((subpath) => $str.mm.isMatch(subpath, 'index.html'));
 
 	const cmaEntries = await $glob.promise('*.{ts,tsx}', { cwd: srcDir });
 	const cmaEntriesRelPaths = cmaEntries.map((absPath) => './' + path.relative(srcDir, absPath));
 	const cmaEntriesSubpaths = cmaEntries.map((absPath) => path.relative(srcDir, absPath));
 	const cmaEntriesSubpathsNoExt = cmaEntriesSubpaths.map((subpath) => subpath.replace(/\.[^.]+$/u, ''));
-
-	const mpaEntryIndexSubpath = mpaIndexesSubPaths.find((subpath) => $str.mm.isMatch(subpath, 'index.html'));
 	const cmaEntryIndexSubpath = cmaEntriesSubpaths.find((subpath) => $str.mm.isMatch(subpath, 'index.{ts,tsx}'));
 	const cmaEntryIndexSubpathNoExt = cmaEntryIndexSubpath.replace(/\.[^.]+$/u, '');
-
-	const isSSR = ['cfw', 'node'].includes(targetEnv);
-	const isSSRNoExternals = isSSR && ['cfw'].includes(targetEnv);
-	const isSSRWorker = isSSR && ['cfw'].includes(targetEnv);
 
 	/**
 	 * Validates all of the above.
