@@ -403,19 +403,9 @@ export default async ({ mode, command, ssrBuild }) => {
 			['**/*.cfw.{test,tests,spec,specs}.{' + vitestExtensions.map((e) => e.slice(1)).join(',') + '}', 'miniflare'],
 			['**/*.node.{test,tests,spec,specs}.{' + vitestExtensions.map((e) => e.slice(1)).join(',') + '}', 'node'],
 		],
-		deps: {
-			interopDefault: true,
-			external: ['**/dist/**', '**/node_modules/**'].concat(rollupConfig.external),
-		},
+		server: { deps: { external: ['**/dist/**', '**/node_modules/**'].concat(rollupConfig.external) } },
 		cache: { dir: path.resolve(projDir, './node_modules/.vitest') },
 
-		transformMode: {
-			web: [], // See: <https://o5p.me/Nf6MGy> for further details.
-			ssr: [new RegExp('\\.(?:' + vitestExtensions.map((e) => $str.escRegExp(e.slice(1))).join('|') + ')$')],
-		},
-		// See: <https://vitest.dev/api/#test-only>
-		// See: <https://vitest.dev/api/#bench-only>
-		// See: <https://vitest.dev/api/#describe-only>
 		allowOnly: true, // Allows `describe.only`, `test.only`, `bench.only`.
 		passWithNoTests: true, // Pass if there are no tests to run.
 
@@ -434,7 +424,6 @@ export default async ({ mode, command, ssrBuild }) => {
 		},
 		coverage: {
 			all: true,
-			src: srcDir,
 			include: ['**'],
 			exclude: vitestExcludes //
 				.concat(vitestIncludes)
