@@ -40,14 +40,12 @@ const baseConfig = {
 
 	plugins: [
 		'import', //
-		'react',
 		'jsx-a11y',
 		'prettier',
 	],
 	extends: [
 		'eslint:recommended', //
 		'plugin:import/recommended',
-		'plugin:react/recommended',
 		'plugin:jsx-a11y/recommended',
 		'plugin:prettier/recommended',
 	],
@@ -69,7 +67,6 @@ const baseConfig = {
 			// See: <https://o5p.me/y2hSj8>.
 			exports: { conditions: [] },
 		},
-		react: { pragma: 'Preact' },
 	}, // None at this time.
 
 	parser: 'espree', // Default parser.
