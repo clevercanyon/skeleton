@@ -10,7 +10,6 @@
  * @see  https://www.typescriptlang.org/tsconfig
  * @see  https://vitejs.dev/guide/features.html#typescript-compiler-options
  */
-
 {
 	"include": [
 		"../../../src/**/*", //
