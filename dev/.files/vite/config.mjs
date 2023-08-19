@@ -557,6 +557,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 			sourcemap: 'dev' === mode, // Enables creation of sourcemaps.
 			manifest: 'dev' === mode, // Enables creation of manifest for assets.
 			minify: shouldMinify ? 'esbuild' : false, // See: <https://o5p.me/ZyQ4sv>.
+			...(isTargetEnvSSR ? { modulePreload: { resolveDependencies: () => [] } } : {}),
 
 			...(['cma'].includes(appType) // Custom-made apps = library code.
 				? {
