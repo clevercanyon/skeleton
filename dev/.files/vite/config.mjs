@@ -24,7 +24,7 @@ import u from '../bin/includes/utilities.mjs';
 import importAliases from './includes/import-aliases.mjs';
 import { $fs, $glob } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import { $http as $cfpꓺhttp } from '../../../node_modules/@clevercanyon/utilities.cfp/dist/index.js';
-import { $is, $str, $obj, $obp, $http, $time } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $is, $str, $obj, $obp, $time } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
