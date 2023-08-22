@@ -376,6 +376,15 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 	const importedWorkerPlugins = []; // <https://vitejs.dev/guide/features.html#web-workers>.
 
 	/**
+	 * Configures esbuild for Vite.
+	 */
+	const esbuildConfig = {
+		jsxFactory: 'h',
+		jsxFragment: 'Fragment',
+		jsxInject: `import { h, Fragment } from 'preact'`,
+	};
+
+	/**
 	 * Configures rollup for Vite.
 	 *
 	 * @see https://rollupjs.org/guide/en/#big-list-of-options
@@ -589,11 +598,6 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 			plugins: importedWorkerPlugins,
 			rollupOptions: importedWorkerRollupConfig,
 		},
-		esbuild: {
-			jsxFactory: 'h',
-			jsxFragment: 'Fragment',
-			jsxInject: `import { h, Fragment } from 'preact'`,
-		},
 		build: /* <https://vitejs.dev/config/build-options.html> */ {
 			target: 'es2021', // Matches TypeScript config.
 
@@ -623,6 +627,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 				: {}),
 			rollupOptions: rollupConfig, // See: <https://o5p.me/5Vupql>.
 		},
+		esbuild: esbuildConfig, // esBuild config options.
 		test: vitestConfig, // Vitest configuration options.
 	};
 
