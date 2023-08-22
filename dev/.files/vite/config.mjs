@@ -589,6 +589,11 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 			plugins: importedWorkerPlugins,
 			rollupOptions: importedWorkerRollupConfig,
 		},
+		esbuild: {
+			jsxFactory: 'h',
+			jsxFragment: 'Fragment',
+			jsxInject: `import { h, Fragment } from 'preact'`,
+		},
 		build: /* <https://vitejs.dev/config/build-options.html> */ {
 			target: 'es2021', // Matches TypeScript config.
 
