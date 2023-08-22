@@ -377,6 +377,8 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 
 	/**
 	 * Configures esbuild for Vite.
+	 *
+	 * @see https://o5p.me/XOFuJp
 	 */
 	const esbuildConfig = {
 		jsxFactory: 'h',
