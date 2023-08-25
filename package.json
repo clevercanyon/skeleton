@@ -3,7 +3,7 @@
 	"publishConfig": {
 		"access": "public"
 	},
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"license": "GPL-3.0-or-later",
 	"name": "@clevercanyon/skeleton",
 	"description": "Another great project by Clever Canyon.",
@@ -81,7 +81,7 @@
 					"envsVersion": "1.0.3"
 				},
 				"npmjs": {
-					"configVersions": ""
+					"configVersions": "1.0.3,1.0.3"
 				}
 			}
 		}
