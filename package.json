@@ -77,11 +77,11 @@
 						"architects": "push"
 					},
 					"labels": {},
-					"configVersion": "1.0.3",
-					"envsVersion": "1.0.3"
+					"configVersion": "",
+					"envsVersion": ""
 				},
 				"npmjs": {
-					"configVersions": "1.0.3,1.0.3"
+					"configVersions": ""
 				}
 			}
 		}
