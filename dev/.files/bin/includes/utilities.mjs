@@ -406,7 +406,7 @@ export default class u {
 				name: 'main',
 				target: 'branch',
 				enforcement: 'active',
-				conditions: { ref_name: { include: ['refs/heads/main'] } },
+				conditions: { ref_name: { include: ['refs/heads/main'], exclude: [] } },
 				rules: [
 					{ type: 'creation' },
 					{ type: 'deletion' },
@@ -442,9 +442,9 @@ export default class u {
 				required_conversation_resolution: true,
 				required_status_checks: null, // We don't use.
 
-				// @review Not currently implemented for branch protections via API ops.
-				// In order to pull this off we'll have to switch to rulesets; see <https://o5p.me/iVoafb>.
 				// required_deployment_environments: { environments: ['ci'] },
+				// Deployments not currently implemented for branch protections via API.
+				// In order to pull this off it has to be done through a ruleset.
 
 				restrictions: { users: [], teams: ['owners'], apps: [] },
 				required_pull_request_reviews: {
@@ -737,7 +737,7 @@ export default class u {
 	static async _githubRepoRulesets() {
 		const repoRulesets = {};
 		const { owner, repo } = await u.githubOrigin();
-		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/rulesets{?per_page}', { owner, repo, per_page: 100 });
+		const i6r = octokit.paginate.iterator('GET /repos/{owner}/{repo}/rulesets{?includes_parents,per_page}', { owner, repo, includes_parents: false, per_page: 100 });
 
 		if (!$is.object(i6r)) {
 			throw new Error('u._githubRepoRulesets: Failed to acquire GitHub repository’s rulesets.');
