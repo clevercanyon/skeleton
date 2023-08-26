@@ -44,9 +44,9 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType } = (() => 
 const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
 const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN || '' });
 
-const githubConfigVersion = '1.0.5'; // Bump when config changes in routines below.
-const githubEnvsVersion = '1.0.5'; // Bump when environments change in routines below.
-const npmjsConfigVersion = '1.0.5'; // Bump when config changes in routines below.
+const githubConfigVersion = '1.0.6'; // Bump when config changes in routines below.
+const githubEnvsVersion = '1.0.6'; // Bump when environments change in routines below.
+const npmjsConfigVersion = '1.0.6'; // Bump when config changes in routines below.
 
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 
@@ -452,7 +452,10 @@ export default class u {
 			});
 			await octokit.request('PUT /repos/{owner}/{repo}/vulnerability-alerts', { owner, repo });
 			await octokit.request('PUT /repos/{owner}/{repo}/automated-security-fixes', { owner, repo });
-			await octokit.request('PUT /repos/{owner}/{repo}/private-vulnerability-reporting', { owner, repo });
+
+			if (!repoData.private /* Available for public repos only. */) {
+				await octokit.request('PUT /repos/{owner}/{repo}/private-vulnerability-reporting', { owner, repo });
+			}
 		}
 
 		for (const [labelName, labelData] of Object.entries(labels)) {
