@@ -69,7 +69,7 @@ jobs:
           npx @clevercanyon/madrun install project --mode=ci;
 
       - name: Run Project Tests
-        if: fromJson(env.PKG_JSON).config.c10n.&.build.appType
+        if: fromJson(env.PKG_JSON).config.c10n.['&'].build.appType
         shell: bash
         run: |
           npx @clevercanyon/madrun tests --mode=ci;
