@@ -510,7 +510,7 @@ export default class u {
 					required_signatures: true,
 					required_linear_history: true,
 					required_conversation_resolution: true,
-					required_status_checks: { strict: null },
+					required_status_checks: null, // We don't use.
 
 					// @review Not currently implemented for branch protections via API ops.
 					// In order to pull this off we'll have to switch to rulesets; see <https://o5p.me/iVoafb>.
