@@ -44,9 +44,9 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType } = (() => 
 const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
 const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN || '' });
 
-const githubConfigVersion = '1.0.7'; // Bump when config changes in routines below.
-const githubEnvsVersion = '1.0.7'; // Bump when environments change in routines below.
-const npmjsConfigVersion = '1.0.7'; // Bump when config changes in routines below.
+const githubConfigVersion = '1.0.8'; // Bump when config changes in routines below.
+const githubEnvsVersion = '1.0.8'; // Bump when environments change in routines below.
+const npmjsConfigVersion = '1.0.8'; // Bump when config changes in routines below.
 
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 
