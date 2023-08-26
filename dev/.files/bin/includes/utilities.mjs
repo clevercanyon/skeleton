@@ -452,6 +452,7 @@ export default class u {
 			});
 			await octokit.request('PUT /repos/{owner}/{repo}/vulnerability-alerts', { owner, repo });
 			await octokit.request('PUT /repos/{owner}/{repo}/automated-security-fixes', { owner, repo });
+			await octokit.request('PUT /repos/{owner}/{repo}/private-vulnerability-reporting', { owner, repo });
 		}
 
 		for (const [labelName, labelData] of Object.entries(labels)) {
