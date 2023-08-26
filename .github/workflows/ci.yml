@@ -62,7 +62,7 @@ jobs:
         shell: bash
         run: |
           echo 'PKG_JSON='"$(jq -c . ./package.json)" >> $GITHUB_ENV;
-          echo 'PKG_JSON_C10N='"$(jq '.config | .c10n | .["&"]' ./package.json)" >> $GITHUB_ENV;
+          echo 'PKG_JSON_C10N='"$(jq -c '.config | .c10n | .["&"]' ./package.json)" >> $GITHUB_ENV;
 
       - name: Install Project
         shell: bash
