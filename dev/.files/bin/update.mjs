@@ -157,7 +157,16 @@ class Project {
 		}
 
 		/**
-		 * Pushes Dotenv Vault envs; else recompiles.
+		 * Checks org-wide GitHub repo standards.
+		 */
+
+		if (this.args.repos && (await u.isGitRepo()) && (await u.isGitRepoOriginGitHub())) {
+			u.log($chalk.green('Repos will update, so checking GitHub repo org-wide standards.'));
+			await u.githubCheckRepoOrgWideStandards({ dryRun: this.args.dryRun });
+		}
+
+		/**
+		 * Pushes Dotenv Vault envs; else recompiles only.
 		 */
 
 		if (this.args.repos && (await u.isEnvsVault())) {
@@ -168,15 +177,6 @@ class Project {
 		} else if (await u.isEnvsVault()) {
 			u.log($chalk.green('Recompiling all Dotenv Vault `.env*` files.'));
 			await u.envsCompile({ dryRun: this.args.dryRun });
-		}
-
-		/**
-		 * Checks org-wide GitHub repo standards.
-		 */
-
-		if (this.args.repos && (await u.isGitRepo()) && (await u.isGitRepoOriginGitHub())) {
-			u.log($chalk.green('Repos will update, so checking GitHub repo org-wide standards.'));
-			await u.githubCheckRepoOrgWideStandards({ dryRun: this.args.dryRun });
 		}
 
 		/**

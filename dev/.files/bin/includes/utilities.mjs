@@ -50,6 +50,8 @@ const npmjsConfigVersion = '1.0.9'; // Bump when config changes in routines belo
 
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 
+const s = {}; // Used instead of static class members, which are only supported in ES2022 or above.
+
 /**
  * Utilities.
  */
@@ -375,6 +377,8 @@ export default class u {
 		if ('main' !== repoData.default_branch) {
 			throw new Error('githubCheckRepoOrgWideStandards: Default branch at GitHub must be `main`.');
 		}
+		await u._githubEnsureRepoEnvs({ dryRun: opts.dryRun }); // Creates|deletes repo envs.
+
 		const requiredLabels = {
 			'bug report': {
 				color: 'b60205',
@@ -820,6 +824,9 @@ export default class u {
 	}
 
 	static async _githubEnsureRepoEnvs(opts = { dryRun: false }) {
+		if (s._githubRepoEnvsEnsured) return;
+		s._githubRepoEnvsEnsured = true; // Once only.
+
 		const envFiles = await u.envFiles();
 		const { owner, repo } = await u.githubOrigin();
 		const repoEnvs = await u._githubRepoEnvs();

@@ -44,8 +44,8 @@ jobs:
       USER_NPM_TOKEN: ${{secrets.USER_NPM_TOKEN}}
 
       # Supplied by repo environment secrets.
-      USER_DOTENV_KEY_MAIN: ${{secrets.USER_DOTENV_KEY_MAIN}}
-      USER_DOTENV_KEY_CI: ${{secrets.USER_DOTENV_KEY_CI}}
+      USER_DOTENV_KEY_MAIN: ${{secrets.USER_DOTENV_KEY_MAIN || ''}}
+      USER_DOTENV_KEY_CI: ${{secrets.USER_DOTENV_KEY_CI || ''}}
 
     steps:
       - name: Checkout Repo
