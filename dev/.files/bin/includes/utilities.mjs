@@ -499,7 +499,9 @@ export default class u {
 				...(!repoData.private // Available for public repos only.
 					? {
 							security_and_analysis: {
-								advanced_security: { status: 'enabled' },
+								// Always on for public repos.
+								// advanced_security: { status: 'enabled' },
+
 								secret_scanning: { status: 'enabled' },
 								secret_scanning_push_protection: { status: 'enabled' },
 							},

@@ -78,7 +78,7 @@
 					},
 					"labels": {},
 					"configVersion": "1.0.6",
-					"envsVersion": "1.0.6"
+					"envsVersion": "1.0.7"
 				},
 				"npmjs": {
 					"configVersions": "1.0.3,1.0.3"
