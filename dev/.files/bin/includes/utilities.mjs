@@ -44,9 +44,9 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType } = (() => 
 const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
 const octokit = new Octokit({ auth: process.env.USER_GITHUB_TOKEN || '' });
 
-const githubConfigVersion = '1.0.4'; // Bump when config changes in routines below.
-const githubEnvsVersion = '1.0.4'; // Bump when environments change in routines below.
-const npmjsConfigVersion = '1.0.4'; // Bump when config changes in routines below.
+const githubConfigVersion = '1.0.5'; // Bump when config changes in routines below.
+const githubEnvsVersion = '1.0.5'; // Bump when environments change in routines below.
+const npmjsConfigVersion = '1.0.5'; // Bump when config changes in routines below.
 
 const c10nLogo = path.resolve(__dirname, '../../assets/brands/c10n/logo.png');
 
@@ -426,8 +426,8 @@ export default class u {
 				has_discussions: true,
 				has_downloads: true,
 
-				// allow_forking: false,
-				// Cannot configure this via API.
+				// @review: allow_forking: false,
+				// Cannot configure this via API ops.
 				// Disabled already by org @ GitHub.com.
 
 				allow_auto_merge: false,
@@ -510,7 +510,7 @@ export default class u {
 					required_signatures: true,
 					required_linear_history: true,
 					required_conversation_resolution: true,
-					required_status_checks: { strict: true },
+					required_status_checks: { strict: null },
 
 					// @review Not currently implemented for branch protections via API ops.
 					// In order to pull this off we'll have to switch to rulesets; see <https://o5p.me/iVoafb>.
