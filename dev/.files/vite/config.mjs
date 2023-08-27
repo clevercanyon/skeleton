@@ -525,7 +525,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 		exclude: vitestExcludes,
 		watchExclude: vitestExcludes,
 
-		mockRestore: true, // Remove all mocks before a test begins.
+		restoreMocks: true, // Remove all mocks before a test begins.
 		unstubEnvs: true, // Remove all env stubs before a test begins.
 		unstubGlobals: true, // Remove all global stubs before a test begins.
 
