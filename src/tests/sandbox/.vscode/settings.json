@@ -1,0 +1,25 @@
+{
+	/**
+	 * JS/TS/React options.
+	 */
+
+	"eslint.format.enable": false,
+	"javascript.validate.enable": false,
+	"typescript.validate.enable": false,
+
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	"[javascriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+
+	"[typescriptreact]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	}
+}

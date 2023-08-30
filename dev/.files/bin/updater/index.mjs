@@ -106,6 +106,7 @@ export default async ({ projDir }) => {
 		'./.github/dependabot.yml',
 		'./.github/workflows/ci.yml',
 		'./.vscode/settings.json',
+		'./src/tests/sandbox/.vscode/settings.json',
 		'./.browserslistrc',
 		'./.editorconfig',
 		'./.eslintignore',
