@@ -505,20 +505,33 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 		...(vitestSandboxEnable ? [] : ['**/sandbox/**']),
 		'**/*.d.{ts,tsx,cts,ctsx,mts,mtsx}',
 	];
-	const vitestSandboxPrefix = vitestSandboxEnable ? '**/sandbox/' : '';
-
-	const vitestIncludes = [
-		vitestSandboxPrefix + '**/*.{test,tests,spec,specs}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
-		vitestSandboxPrefix + '**/{test,tests,spec,specs,__test__,__tests__,__spec__,__specs__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
-	];
-	const vitestTypecheckIncludes = [
-		vitestSandboxPrefix + '**/*.{test,tests,spec,specs}-d.{ts,tsx,cts,ctsx,mts,mtsx}', //
-		vitestSandboxPrefix + '**/{test,tests,spec,specs,__test__,__tests__,__spec__,__specs__}/**/*-d.{ts,tsx,cts,ctsx,mts,mtsx}',
-	];
-	const vitestBenchIncludes = [
-		vitestSandboxPrefix + '**/*.{bench,benchmark,benchmarks}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
-		vitestSandboxPrefix + '**/{bench,benchmark,benchmarks,__bench__,__benchmark__,__benchmarks__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
-	];
+	const vitestIncludes = vitestSandboxEnable
+		? [
+				'**/sandbox/**/*.{test,tests,spec,specs}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+				'**/{test,tests,spec,specs,__test__,__tests__,__spec__,__specs__}/**/sandbox/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+		  ]
+		: [
+				'**/*.{test,tests,spec,specs}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+				'**/{test,tests,spec,specs,__test__,__tests__,__spec__,__specs__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+		  ];
+	const vitestTypecheckIncludes = vitestSandboxEnable
+		? [
+				'**/sandbox/**/*.{test,tests,spec,specs}-d.{ts,tsx,cts,ctsx,mts,mtsx}', //
+				'**/{test,tests,spec,specs,__test__,__tests__,__spec__,__specs__}/**/sandbox/**/*-d.{ts,tsx,cts,ctsx,mts,mtsx}',
+		  ]
+		: [
+				'**/*.{test,tests,spec,specs}-d.{ts,tsx,cts,ctsx,mts,mtsx}', //
+				'**/{test,tests,spec,specs,__test__,__tests__,__spec__,__specs__}/**/*-d.{ts,tsx,cts,ctsx,mts,mtsx}',
+		  ];
+	const vitestBenchIncludes = vitestSandboxEnable
+		? [
+				'**/sandbox/**/*.{bench,benchmark,benchmarks}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+				'**/{bench,benchmark,benchmarks,__bench__,__benchmark__,__benchmarks__}/**/sandbox/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+		  ]
+		: [
+				'**/*.{bench,benchmark,benchmarks}.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+				'**/{bench,benchmark,benchmarks,__bench__,__benchmark__,__benchmarks__}/**/*.{js,jsx,cjs,cjsx,node,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}',
+		  ];
 	const vitestExtensions = ['.js', '.jsx', '.cjs', '.cjsx', '.json', '.node', '.mjs', '.mjsx', '.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'];
 
 	const vitestConfig = {
