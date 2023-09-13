@@ -230,7 +230,7 @@ export default async ({ projDir }) => {
 			}
 			$obj.patchDeep(json, jsonUpdates); // Potentially declarative ops.
 			const prettierCfg = { ...(await $prettier.resolveConfig(path.resolve(projDir, relPath))), parser: 'json' };
-			await fsp.writeFile(path.resolve(projDir, relPath), await $prettier.format($json.stringify(json), prettierCfg));
+			await fsp.writeFile(path.resolve(projDir, relPath), await $prettier.format($json.stringify(json, { pretty: true }), prettierCfg));
 		}
 	}
 
