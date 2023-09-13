@@ -1,6 +1,8 @@
 {
 	"private": true,
-	"publishConfig": { "access": "public" },
+	"publishConfig": {
+		"access": "public"
+	},
 	"version": "1.0.8",
 	"license": "GPL-3.0-or-later",
 	"name": "@clevercanyon/skeleton",
@@ -10,37 +12,77 @@
 	"bugs": "https://github.com/clevercanyon/skeleton/issues",
 	"funding": "https://github.com/sponsors/clevercanyon",
 	"keywords": ["clevercanyon"],
-	"author": { "name": "Clever Canyon", "url": "https://clevercanyon.com" },
+	"author": {
+		"name": "Clever Canyon",
+		"url": "https://clevercanyon.com"
+	},
 	"contributors": [],
 	"type": "module",
 	"bin": {},
 	"imports": {},
-	"exports": { ".": { "import": "./dist/index.js", "require": "./dist/index.umd.cjs", "types": "./dist/types/index.d.ts" } },
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./dist/index.umd.cjs",
+			"types": "./dist/types/index.d.ts"
+		}
+	},
 	"sideEffects": ["./src/resources/init-env.ts", "./src/index.ts"],
 	"module": "./dist/index.js",
 	"main": "./dist/index.umd.cjs",
 	"browser": "",
 	"unpkg": "./dist/index.umd.cjs",
 	"types": "./dist/types/index.d.ts",
-	"typesVersions": { ">=3.1": { "./*": ["./dist/types/*"] } },
-	"dependencies": { "@clevercanyon/utilities": "^1.0.228" },
+	"typesVersions": {
+		">=3.1": {
+			"./*": ["./dist/types/*"]
+		}
+	},
+	"dependencies": {
+		"@clevercanyon/utilities": "^1.0.228"
+	},
 	"peerDependencies": {},
 	"peerDependenciesMeta": {},
 	"optionalDependencies": {},
 	"bundleDependencies": [],
-	"devDependencies": { "@clevercanyon/dev-deps": "^1.0.195" },
+	"devDependencies": {
+		"@clevercanyon/dev-deps": "^1.0.195"
+	},
 	"overrides": {},
 	"cpu": ["x64", "arm64"],
 	"os": ["darwin", "linux"],
-	"engines": { "node": "^19.1.0 || ^20.5.1", "npm": "^8.19.3 || ^9.2.0" },
+	"engines": {
+		"node": "^19.1.0 || ^20.5.1",
+		"npm": "^8.19.3 || ^9.2.0"
+	},
 	"config": {
 		"c10n": {
 			"&": {
-				"dotfiles": { "lock": [] },
-				"build": { "appType": "cma", "targetEnv": "any", "entryFiles": [] },
-				"ssrBuild": { "appType": "", "targetEnv": "", "entryFiles": [] },
-				"github": { "teams": { "engineers": "pull", "architects": "push" }, "labels": {}, "configVersion": "1.0.9", "envsVersion": "1.0.9" },
-				"npmjs": { "configVersions": "1.0.3,1.0.3" }
+				"dotfiles": {
+					"lock": []
+				},
+				"build": {
+					"appType": "cma",
+					"targetEnv": "any",
+					"entryFiles": []
+				},
+				"ssrBuild": {
+					"appType": "",
+					"targetEnv": "",
+					"entryFiles": []
+				},
+				"github": {
+					"teams": {
+						"engineers": "pull",
+						"architects": "push"
+					},
+					"labels": {},
+					"configVersion": "1.0.9",
+					"envsVersion": "1.0.9"
+				},
+				"npmjs": {
+					"configVersions": "1.0.3,1.0.3"
+				}
 			}
 		}
 	}
