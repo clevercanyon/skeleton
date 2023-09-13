@@ -2,7 +2,7 @@
  * Module.
  */
 
-import './resources/init-env.js';
+import './resources/init-env.ts';
 
 /**
  * Exports.
