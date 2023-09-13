@@ -228,14 +228,7 @@ export default async () => {
 				rules: {
 					'no-redeclare': 'off', // Disable in favor of TypeScript rule below.
 					'no-unused-vars': 'off', // Disable in favor of TypeScript rule below.
-
-					// 'no-undef': 'off', // Already baked into TypeScript; {@see https://o5p.me/k9TDGC}.
-					// However, leaving this on as a fallback due to TypeScript’s inherent lib/type leakage.
-
-					// ↑ The fallback is ultimately powered by `globals`, based on the project’s target environment(s).
-					// Regarding TypeScript leakage. The issue is that if any node module dependencies (including our own)
-					// happen to load types for other environments (e.g., node, dom), then TypeScript won’t catch our mistakes.
-					// Whereas the `no-undef` rule is not TypeScript-aware, which is good, it can act as a fallback using `globals`.
+					'no-undef': 'off', // Already baked into TypeScript; {@see https://o5p.me/k9TDGC}.
 
 					'@typescript-eslint/no-redeclare': ['warn'],
 					'@typescript-eslint/require-await': ['off'],
