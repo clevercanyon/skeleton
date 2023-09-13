@@ -425,7 +425,7 @@ class Projects {
 /**
  * Yargs ⛵🏴‍☠.
  */
-void (async () => {
+await (async () => {
 	await u.propagateUserEnvVars();
 	await (
 		await $yargs.cli({
