@@ -55,21 +55,19 @@ export default async () => {
 	const baseConfigs = [
 		{
 			// In a config all by itself for these to be treated as global ignores; {@see https://o5p.me/RqSMYb}.
-			// Additionally, our own config files expect this to be at index position `0`.
+			// Important: Our own config files expect this to be at index position `0`.
 
 			ignores: [
 				...new Set([
 					...exclusions.vcsFilesDirs, //
 					...exclusions.packageDirs,
 					...exclusions.distDirs,
-					...exclusions.sandboxDirs,
-					...exclusions.exampleDirs,
 				]),
 			],
 		},
 		{
 			// In a config without a `files` filter for these to treated as global settings; {@see https://o5p.me/JiooH5}.
-			// Additionally, our own config files expect this to be at index position `1`.
+			// Important: Our own config files expect this to be at index position `1`.
 
 			languageOptions: {
 				ecmaVersion: esVersion.year,
@@ -155,7 +153,9 @@ export default async () => {
 
 			// Baseline JS/TS/JSX/TSX recommended rule configurations.
 			{
+				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.jts)],
+				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
 				rules: { ...eslintJS.configs.recommended.rules },
 			},
 
@@ -169,11 +169,18 @@ export default async () => {
 						ecmaFeatures: { jsx: true },
 					},
 				},
+			},
+			{
+				// Rules not applied to sandbox|examples.
+				files: ['**/*.' + extensions.asGlob(extensions.jtsx)],
+				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
 				rules: { ...pluginJSXA11y.configs.recommended.rules },
 			},
 
 			// TS/TSX configurations for TypeScript projects.
 			{
+				// Config not applied to MD/MDX fenced code-blocks.
+				// MD/MDX fenced code-blocks are handled separately, below.
 				files: ['**/*.' + extensions.asGlob(extensions.ts)],
 				ignores: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*' + extensions.asGlob(extensions.ts)],
 
@@ -189,14 +196,10 @@ export default async () => {
 						project: ['./tsconfig.json'],
 					},
 				},
-				rules: {
-					...pluginTypeScript.configs.recommended.rules,
-					...pluginTypeScript.configs['recommended-requiring-type-checking'].rules,
-				},
 			},
-
-			// TS/TSX configurations for code-blocks inside MD/MDX files.
 			{
+				// Specifically for MD/MDX fenced code-blocks.
+				// Config not applied to any other TypeScript files.
 				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*' + extensions.asGlob(extensions.ts)],
 				plugins: { '@typescript-eslint': pluginTypeScript },
 
@@ -209,9 +212,24 @@ export default async () => {
 					},
 				},
 			},
+			{
+				// Rules not applied to sandbox|examples.
+				// Rules not applied to MD/MDX fenced code-blocks.
+				files: ['**/*.' + extensions.asGlob(extensions.ts)],
+				ignores: [
+					...exclusions.sandboxDirs, ...exclusions.exampleDirs,
+					'**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*' + extensions.asGlob(extensions.ts),
+				], // prettier-ignore
+				rules: {
+					...pluginTypeScript.configs.recommended.rules,
+					...pluginTypeScript.configs['recommended-requiring-type-checking'].rules,
+				},
+			},
 
 			// MD/MDX configurations.
 			{
+				// Config not applied to MD/MDX fenced code-blocks.
+				// i.e., This is the processor for those fenced code-blocks.
 				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx])],
 				plugins: { mdx: pluginMDX },
 
@@ -236,19 +254,28 @@ export default async () => {
 						shellscript: 'sh',
 					},
 				}),
+			},
+			{
+				// Rules not applied to sandbox|examples.
+				// Rules not applied to MD/MDX fenced code-blocks.
+				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx])],
+				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
 				rules: { ...pluginMDX.flat.rules },
 			},
-
-			// MD/MDX code-block configurations.
-			// A few conflicting rules get disabled here inside code-blocks.
 			{
+				// MD/MDX fenced code-block rules.
+				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*'],
+				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
 				rules: { ...pluginMDX.flatCodeBlocks.rules },
 			},
 
 			// JS/TS/JSX/TSX/MD/MDX prettier configurations.
-			// Several conflicting rules get disabled here for Prettier compat.
+			// Several rules get disabled to avoid conflicts w/ Prettier.
 			{
+				// Applies to all ESLint-able file extensions.
+				// Such that formatting can occur even if no ESLint rules apply.
+				// Note that we do *not* exclude MDX fenced code-blocks or sandbox|examples.
 				files: ['**/*.' + extensions.asGlob([...extensions.jts, ...extensions.md, ...extensions.mdx])],
 				plugins: { prettier: pluginPrettier },
 
@@ -261,7 +288,9 @@ export default async () => {
 			// JS/TS/JSX/TSX rule override configurations.
 			// These are our own overrides against all of the above.
 			{
+				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.jts)],
+				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
 				rules: {
 					'no-empty': ['warn', { allowEmptyCatch: true }],
 					'no-unused-vars': [
@@ -283,7 +312,9 @@ export default async () => {
 			// TS/TSX rule override configurations.
 			// These are our own overrides against all of the above.
 			{
+				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.ts)],
+				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
 				rules: {
 					'no-redeclare': 'off', // Disable in favor of TypeScript rule below.
 					'no-unused-vars': 'off', // Disable in favor of TypeScript rule below.

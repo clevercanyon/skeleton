@@ -10,6 +10,7 @@
 
 import fs from 'node:fs';
 import path from 'node:path';
+import { $chalk } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import { $obj, $str } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import extensions from '../../../bin/includes/extensions.mjs';
 import u from '../../../bin/includes/utilities.mjs';
@@ -121,6 +122,7 @@ export default async ({ command, isSSRBuild, projDir, pkg, appType, targetEnv, a
 	updates.sideEffects = [...new Set(updates.sideEffects)]; // Unique array values.
 
 	if ('build' === command /* Only when building the app. */) {
+		u.log($chalk.gray('Updating `type,sideEffects` in `./package.json`.'));
 		await u.updatePkg({ $set: { type: updates.type, sideEffects: updates.sideEffects } });
 	}
 	return updates;

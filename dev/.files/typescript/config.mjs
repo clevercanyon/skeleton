@@ -53,13 +53,15 @@ export default async () => {
 			'./' + path.relative(projDir, path.resolve(projDir, './tsconfig.d.ts')),
 		],
 		exclude: exclusions.asRelativeGlobs(projDir, [
-			...exclusions.vcsFilesDirs, //
-			...exclusions.packageDirs,
-			...exclusions.distDirs,
-			...exclusions.devDirs,
-			...exclusions.docDirs,
-			...exclusions.dotFilesDirs,
-			...exclusions.dotConfigFilesDirs,
+			...new Set([
+				...exclusions.vcsFilesDirs,
+				...exclusions.packageDirs,
+				...exclusions.dotFilesDirs,
+				...exclusions.configFilesDirs,
+				...exclusions.distDirs,
+				...exclusions.devDirs,
+				...exclusions.docDirs,
+			]),
 		]),
 		compilerOptions: {
 			baseUrl: './' + path.relative(projDir, path.resolve(projDir, './src')),

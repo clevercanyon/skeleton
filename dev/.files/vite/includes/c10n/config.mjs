@@ -13,10 +13,11 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import * as preact from 'preact';
 import { $http as $cfpꓺhttp } from '../../../../../node_modules/@clevercanyon/utilities.cfp/dist/index.js';
-import { $fs, $glob } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
+import { $chalk, $fs, $glob } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import { $obp, $str } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import { renderToString as $preactꓺapisꓺssrꓺrenderToString } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/apis/ssr.js';
 import { StandAlone as $preactꓺcomponentsꓺ404ꓺStandAlone } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/routes/404.js';
+import exclusions from '../../../bin/includes/exclusions.mjs';
 import u from '../../../bin/includes/utilities.mjs';
 
 /**
@@ -27,105 +28,164 @@ import u from '../../../bin/includes/utilities.mjs';
  * @returns       C10n configuration.
  */
 export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, appType, targetEnv, staticDefs, pkgUpdates }) => {
-	return ((postProcessed = false) => {
-		return {
-			name: 'vite-plugin-c10n-post-process',
-			enforce: 'post', // After others on this hook.
+	let postProcessed = false; // Initialize.
+	return {
+		name: 'vite-plugin-c10n-post-process',
+		enforce: 'post', // After others on this hook.
 
-			async closeBundle(/* Rollup hook. */) {
-				if (postProcessed) return;
-				postProcessed = true;
+		async closeBundle(/* Rollup hook. */) {
+			if (postProcessed) return;
+			postProcessed = true;
 
-				/**
-				 * Not during SSR builds.
-				 */
-				if (isSSRBuild) return;
+			/**
+			 * Not during SSR builds.
+			 */
+			if (isSSRBuild) return;
 
-				/**
-				 * Updates `package.json`.
-				 */
-				if ('build' === command) {
-					await u.updatePkg({ $set: pkgUpdates });
+			/**
+			 * Recompiles `./package.json`.
+			 */
+			if ('build' === command) {
+				u.log($chalk.gray('Recompiling `./package.json`.'));
+				await u.updatePkg({ $set: pkgUpdates });
+			}
+
+			/**
+			 * Generates typescript type declaration file(s).
+			 */
+			if ('build' === command /* Also does important type checking at build time. */) {
+				u.log($chalk.gray('Generating TypeScript type declarations.'));
+				await u.spawn('npx', ['tsc', '--emitDeclarationOnly']);
+			}
+
+			/**
+			 * Deletes a few things we don’t include in any distribution.
+			 */
+			if ('build' === command) {
+				// One set of globs, but we run the glob twice.
+				// i.e., Directories-only first, to speed things up.
+
+				const fileDirGlobs = [
+					...new Set([
+						// TypeScript exclusions.
+						...exclusions.vcsFilesDirs,
+						...exclusions.packageDirs,
+						...exclusions.dotFilesDirs,
+						...exclusions.configFilesDirs,
+						...exclusions.distDirs,
+						...exclusions.devDirs,
+						...exclusions.docDirs,
+
+						// Should not have `./src` in a `./dist` directory.
+						...exclusions.srcDirs, // Should never actually happen.
+
+						// The rest of these may get into our `./dist` directory by way of TypeScript.
+						// These have to be included for TypeScript under `./src` (`rootDir`), but we
+						// don't want them to end up becoming a part of any distributable.
+						...exclusions.testDirs,
+						...exclusions.sandboxDirs,
+						...exclusions.exampleDirs,
+						...exclusions.benchmarkDirs,
+
+						// Make an exception for the case of `node_modules/assets/a16s`
+						// used for SSR-specific assets. See `../a16s/dir.mjs` for details.
+						'!**/dist/**/node_modules/assets/a16s/**',
+					]),
+				];
+				for (const fileOrDir of await $glob.promise(fileDirGlobs, { cwd: distDir, onlyFiles: true })) {
+					u.log($chalk.gray('Pruning `./' + path.relative(projDir, fileOrDir) + '`.'));
+					await fsp.rm(fileOrDir, { force: true, recursive: true });
 				}
-
-				/**
-				 * Copies `./.env.vault` to dist directory.
-				 */
-				if ('build' === command && fs.existsSync(path.resolve(projDir, './.env.vault'))) {
-					await fsp.copyFile(path.resolve(projDir, './.env.vault'), path.resolve(distDir, './.env.vault'));
+				for (const fileOrDir of await $glob.promise(fileDirGlobs, { cwd: distDir, onlyFiles: false })) {
+					u.log($chalk.gray('Pruning `./' + path.relative(projDir, fileOrDir) + '`.'));
+					await fsp.rm(fileOrDir, { force: true, recursive: true });
 				}
+			}
 
-				/**
-				 * Generates typescript type declaration file(s).
-				 */
-				if ('build' === command /* Also does important type checking at build time. */) {
-					await u.spawn('npx', ['tsc', '--emitDeclarationOnly']);
+			/**
+			 * Deletes a few things that are not needed by apps running on Cloudflare Pages.
+			 */
+			if ('build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
+				for (const fileOrDir of await $glob.promise(
+					[
+						'types', // Prunes TypeScript type declarations.
+						'index.*', // Prunes unused `index.*` files, in favor of SSR routes.
+					],
+					{ cwd: distDir, onlyFiles: false },
+				)) {
+					u.log($chalk.gray('Pruning `./' + path.relative(projDir, fileOrDir) + '`.'));
+					await fsp.rm(fileOrDir, { force: true, recursive: true });
 				}
+			}
 
-				/**
-				 * Deletes a few files that are not needed for apps running on Cloudflare Pages.
-				 */
-				if ('build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
-					for (const fileOrDir of await $glob.promise(['types', '.env.vault', 'index.*'], { cwd: distDir, onlyFiles: false })) {
-						await fsp.rm(fileOrDir, { force: true, recursive: true });
+			/**
+			 * Updates a few files that configure apps running on Cloudflare Pages.
+			 */
+			if ('build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
+				for (const file of await $glob.promise(
+					[
+						'_headers', //
+						'_redirects',
+						'_routes.json',
+						'404.html',
+						'robots.txt',
+						'sitemap.xml',
+						'sitemaps/**/*.xml',
+					],
+					{ cwd: distDir },
+				)) {
+					const fileExt = $str.trim(path.extname(file), '.');
+					const fileRelPath = path.relative(distDir, file);
+
+					let fileContents = fs.readFileSync(file).toString(); // Reads file contents.
+
+					for (const key of Object.keys(staticDefs) /* Replaces all static definition tokens. */) {
+						fileContents = fileContents.replace(new RegExp($str.escRegExp(key), 'gu'), staticDefs[key]);
 					}
-				}
-
-				/**
-				 * Updates a few files that configure apps running on Cloudflare Pages.
-				 */
-				if ('build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
-					for (const file of await $glob.promise(['_headers', '_redirects', '_routes.json', '404.html', 'robots.txt', 'sitemap.xml', 'sitemaps/**/*.xml'], {
-						cwd: distDir,
-					})) {
-						const fileExt = $str.trim(path.extname(file), '.');
-						const fileRelPath = path.relative(distDir, file);
-
-						let fileContents = fs.readFileSync(file).toString(); // Reads file contents.
-
-						for (const key of Object.keys(staticDefs) /* Replaces all static definition tokens. */) {
-							fileContents = fileContents.replace(new RegExp($str.escRegExp(key), 'gu'), staticDefs[key]);
-						}
-						if (['_headers'].includes(fileRelPath)) {
-							const cfpDefaultHeaders = $cfpꓺhttp.prepareDefaultHeaders({ appType, isC10n: env.APP_IS_C10N || false });
-							fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_HEADERS__$$', cfpDefaultHeaders);
-						}
-						if (['404.html'].includes(fileRelPath)) {
-							const cfpDefault404 = '<!DOCTYPE html>' + $preactꓺapisꓺssrꓺrenderToString(preact.h($preactꓺcomponentsꓺ404ꓺStandAlone));
-							fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_404_HTML__$$', cfpDefault404);
-						}
-						if (['_headers', '_redirects', 'robots.txt'].includes(fileRelPath)) {
-							fileContents = fileContents.replace(/^#[^\n]*\n/gmu, '');
-							//
-						} else if (['json'].includes(fileExt)) {
-							fileContents = fileContents.replace(/\/\*[\s\S]*?\*\/\n?/gu, '');
-							//
-						} else if (['xml', 'html'].includes(fileExt)) {
-							fileContents = fileContents.replace(/<!--[\s\S]*?-->\n?/gu, '');
-						}
-						fileContents = $str.trim(fileContents.replace(/\n{3,}/gu, '\n\n'));
-
-						await fsp.writeFile(file, fileContents);
+					if (['_headers'].includes(fileRelPath)) {
+						const cfpDefaultHeaders = $cfpꓺhttp.prepareDefaultHeaders({ appType, isC10n: env.APP_IS_C10N || false });
+						fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_HEADERS__$$', cfpDefaultHeaders);
 					}
-				}
+					if (['404.html'].includes(fileRelPath)) {
+						const cfpDefault404 = '<!DOCTYPE html>' + $preactꓺapisꓺssrꓺrenderToString(preact.h($preactꓺcomponentsꓺ404ꓺStandAlone));
+						fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_404_HTML__$$', cfpDefault404);
+					}
+					if (['_headers', '_redirects', 'robots.txt'].includes(fileRelPath)) {
+						fileContents = fileContents.replace(/^#[^\n]*\n/gmu, '');
+						//
+					} else if (['json'].includes(fileExt)) {
+						fileContents = fileContents.replace(/\/\*[\s\S]*?\*\/\n?/gu, '');
+						//
+					} else if (['xml', 'html'].includes(fileExt)) {
+						fileContents = fileContents.replace(/<!--[\s\S]*?-->\n?/gu, '');
+					}
+					fileContents = $str.trim(fileContents.replace(/\n{3,}/gu, '\n\n'));
 
-				/**
-				 * Generates SSR build on-the-fly internally.
-				 */
-				if ('build' === command && $obp.get(pkg, 'config.c10n.&.ssrBuild.appType')) {
-					await u.spawn('npx', ['vite', 'build', '--mode', mode, '--ssr']);
+					u.log($chalk.gray('Updating `./' + path.relative(projDir, file) + '`.'));
+					await fsp.writeFile(file, fileContents);
 				}
+			}
 
-				/**
-				 * Generates a zip archive containing `./dist` directory.
-				 */
-				if ('build' === command) {
-					const archive = $fs.archiver('zip', { zlib: { level: 9 } });
-					archive.pipe(fs.createWriteStream(path.resolve(projDir, './.~dist.zip')));
-					archive.directory(distDir + '/', false);
-					await archive.finalize();
-				}
-			},
-		};
-	})();
+			/**
+			 * Generates SSR build on-the-fly internally.
+			 */
+			if ('build' === command && $obp.get(pkg, 'config.c10n.&.ssrBuild.appType')) {
+				u.log($chalk.gray('Running secondary SSR build routine.'));
+				await u.spawn('npx', ['vite', 'build', '--mode', mode, '--ssr']);
+			}
+
+			/**
+			 * Generates a zip archive containing `./dist` directory.
+			 */
+			if ('build' === command) {
+				const zipFile = path.resolve(projDir, './.~dist.zip');
+				u.log($chalk.gray('Generating `' + path.relative(projDir, zipFile) + '`.'));
+
+				const archive = $fs.archiver('zip', { zlib: { level: 9 } });
+				archive.pipe(fs.createWriteStream(zipFile));
+				archive.directory(distDir + '/', false);
+				await archive.finalize();
+			}
+		},
+	};
 };

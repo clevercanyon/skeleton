@@ -7,6 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  *
+ * @see https://github.com/remarkjs/remark/tree/main/packages/remark-stringify#options
  * @see https://github.com/remarkjs/remark/tree/main/packages/remark-cli#example-config-files-json-yaml-js
  */
 
@@ -26,7 +27,6 @@ export default async () => {
 	 * Composition.
 	 */
 	return {
-		// {@see https://o5p.me/F9ILYY}.
 		settings: {
 			bullet: '-',
 			bulletOrdered: '.',
@@ -47,9 +47,9 @@ export default async () => {
 			tightDefinitions: false,
 		},
 		plugins: [
-			remarkLint, //
-			presetLintRecommended,
-			presetPrettier,
+			remarkLint, // Linter.
+			presetLintRecommended, // Basics.
+			presetPrettier, // No conflicting rules.
 
 			pluginGFM,
 			pluginDirective,

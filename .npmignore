@@ -212,15 +212,10 @@ Temporary Items
 # Configs.
 
 tsconfig.*
-!dist/**/tsconfig.*
-
 wrangler.*
-!dist/**/wrangler.*
-
 *.config.*
-!dist/**/*.config.*
 
-# Uncompiled sources.
+# Raw sources.
 
 *.scss
 !dist/**/*.scss
@@ -257,6 +252,15 @@ wrangler.*
 *.mtsx
 !*.d.mtsx
 !dist/**/*.mtsx
+
+# Note: Below we include several variants that we don’t actually use.
+# The reason they are here is to cover anything that might try to slip
+# through whenever we are working on forks of other repos.
+
+# Fair warning. Be very careful not to attempt to use of these variants in a project.
+# e.g., As a means of trying to slip by the standard file/directory names that we use regularly.
+# If in doubt, do NOT attempt to circumvent the special names that we use. Choose something else entirely.
+# Even if you find a way to make it work, in the future we may tighten things further, and it will break.
 
 # Dots.
 

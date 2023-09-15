@@ -18,7 +18,6 @@ import esVersion from '../bin/includes/es-version.mjs';
 import extensions from '../bin/includes/extensions.mjs';
 import importAliases from '../bin/includes/import-aliases.mjs';
 import u from '../bin/includes/utilities.mjs';
-
 import viteA16sDir from './includes/a16s/dir.mjs';
 import viteC10nConfig from './includes/c10n/config.mjs';
 import viteEJSConfig from './includes/ejs/config.mjs';
@@ -30,16 +29,23 @@ import viteRollupConfig from './includes/rollup/config.mjs';
 import viteSSLConfig from './includes/ssl/config.mjs';
 import viteVitestConfig from './includes/vitest/config.mjs';
 
-// @todo Implement Vite prefresh, which is already provided by dev-deps.
-
 /**
  * Defines Vite configuration.
  *
  * @param   vite Data passed in by Vite.
  *
  * @returns      Vite configuration object properties.
+ *
+ * @todo Implement Vite prefresh.
  */
 export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
+	/**
+	 * Configures `NODE_ENV` environment variable.
+	 */
+	process.env.NODE_ENV = // As detailed by Vite <https://o5p.me/DscTVM>.
+		'dev' === mode ? 'development' // Enforce development mode.
+		: 'production'; // prettier-ignore
+
 	/**
 	 * Directory vars.
 	 */
@@ -50,17 +56,12 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 	const distDir = path.resolve(__dirname, '../../../dist');
 	const envsDir = path.resolve(__dirname, '../../../dev/.envs');
 	const logsDir = path.resolve(__dirname, '../../../dev/.logs');
-	const a16sDir = viteA16sDir({ isSSRBuild, distDir });
+	const a16sDir = await viteA16sDir({ isSSRBuild, distDir });
 
 	/**
 	 * Properties of `./package.json` file.
 	 */
 	const pkg = await u.pkg(); // Parses `./package.json`.
-
-	/**
-	 * Configures node environment.
-	 */
-	process.env.NODE_ENV = 'dev' === mode ? 'development' : 'production'; // <https://o5p.me/DscTVM>.
 
 	/**
 	 * Environment-related vars.
@@ -152,44 +153,44 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 	 * Prepares `package.json` property updates.
 	 */
 	const pkgUpdates = await vitePkgUpdates({
-		command,
-		isSSRBuild,
-		projDir,
-		pkg,
-		appType,
-		targetEnv,
-		appEntriesAsProjRelPaths,
-		appEntriesAsSrcSubpaths,
-		appEntriesAsSrcSubpathsNoExt,
-		useUMD,
-	});
+		command, isSSRBuild, projDir, pkg, appType, targetEnv, useUMD,
+		appEntriesAsProjRelPaths, appEntriesAsSrcSubpaths, appEntriesAsSrcSubpathsNoExt
+	}); // prettier-ignore
+
 	/**
 	 * Configures plugins for Vite.
 	 */
-	const pluginMDXConfig = await viteMDXConfig();
-	const pluginEJSConfig = await viteEJSConfig({ mode, projDir, srcDir, pkg, env });
-	const pluginSSLConfig = await viteSSLConfig();
-	const pluginMinifyConfig = await viteMinifyConfig({ mode });
-	const pluginC10NConfig = await viteC10nConfig({ mode, command, isSSRBuild, projDir, distDir, pkg, env, appType, targetEnv, staticDefs, pkgUpdates });
-
-	const plugins = [pluginSSLConfig, pluginMDXConfig, pluginEJSConfig, pluginMinifyConfig, pluginC10NConfig];
-	const importedWorkerPlugins = []; // <https://vitejs.dev/guide/features.html#web-workers>.
+	const plugins = [
+		await viteSSLConfig(),
+		await viteMDXConfig(),
+		await viteEJSConfig({ mode, projDir, srcDir, pkg, env }),
+		await viteMinifyConfig({ mode }),
+		await viteC10nConfig({
+			mode, command, isSSRBuild, projDir, distDir,
+			pkg, env, appType, targetEnv, staticDefs, pkgUpdates
+		}), // prettier-ignore
+	];
 
 	/**
 	 * Configures esbuild for Vite.
 	 */
-	const esbuildConfig = await viteESBuildConfig();
+	const esbuildConfig = await viteESBuildConfig({}); // No props at this time.
 
 	/**
 	 * Configures rollup for Vite.
 	 */
 	const rollupConfig = await viteRollupConfig({ srcDir, distDir, a16sDir, appEntries, peerDepKeys, preserveModules, useMinifier, useUMD });
-	const importedWorkerRollupConfig = { ...$obj.omit(rollupConfig, ['input']) };
 
 	/**
 	 * Configures tests for Vite.
 	 */
 	const vitestConfig = await viteVitestConfig({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig });
+
+	/**
+	 * Configures imported workers.
+	 */
+	const importedWorkerPlugins = []; // No worker plugins at this time.
+	const importedWorkerRollupConfig = { ...$obj.omit(rollupConfig, ['input']) };
 
 	/**
 	 * Base config for Vite.
@@ -231,6 +232,9 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 			plugins: importedWorkerPlugins,
 			rollupOptions: importedWorkerRollupConfig,
 		},
+		test: vitestConfig, // Vitest configuration.
+
+		esbuild: esbuildConfig, // esBuild config options.
 		build: /* <https://vitejs.dev/config/build-options.html> */ {
 			target: 'es' + esVersion.year, // Matches TypeScript config.
 
@@ -260,8 +264,6 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 				: {}),
 			rollupOptions: rollupConfig, // See: <https://o5p.me/5Vupql>.
 		},
-		esbuild: esbuildConfig, // esBuild config options.
-		test: vitestConfig, // Vitest configuration options.
 	};
 
 	/**

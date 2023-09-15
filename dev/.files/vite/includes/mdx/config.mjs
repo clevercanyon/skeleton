@@ -35,7 +35,7 @@ export default async (/* {} */) => {
 				...exclusions.devDirs,
 				...exclusions.docDirs,
 				...exclusions.dotFilesDirs,
-				...exclusions.dotConfigFilesDirs,
+				...exclusions.configFilesDirs,
 			]),
 		],
 		include: [

@@ -86,7 +86,7 @@ export default {
 	dotFilesDirs: [
 		'**/.*/**', //
 	],
-	dotConfigFilesDirs: [
+	configFilesDirs: [
 		'**/.*/**', //
 		'**/tsconfig.*/**',
 		'**/*.config.*/**',
@@ -104,51 +104,36 @@ export default {
 	],
 	srcDirs: [
 		'**/src/**', //
-		'**/__src__/**',
 	],
 	distDirs: [
 		'**/dist/**', //
 	],
 	devDirs: [
 		'**/dev/**', //
-		'**/__dev__/**',
 	],
 	docDirs: [
 		'**/doc/**', //
 		'**/docs/**',
-		'**/__doc__/**',
-		'**/__docs__/**',
 	],
 	testDirs: [
 		'**/test/**', //
 		'**/tests/**',
 		'**/spec/**',
 		'**/specs/**',
-		'**/__test__/**',
-		'**/__tests__/**',
-		'**/__spec__/**',
-		'**/__specs__/**',
 	],
 	sandboxDirs: [
 		'**/sandbox/**', //
-		'**/__sandbox__/**',
 	],
 	exampleDirs: [
 		'**/example/**', //
 		'**/examples/**',
-		'**/__example__/**',
-		'**/__examples__/**',
 	],
 	benchmarkDirs: [
 		'**/bench/**', //
 		'**/benchmark/**',
 		'**/benchmarks/**',
-		'**/__bench__/**',
-		'**/__benchmark__/**',
-		'**/__benchmarks__/**',
 	],
 	xDirs: [
 		'**/x-*/**', //
-		'**/__x-*__/**',
 	],
 };

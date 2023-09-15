@@ -52,7 +52,7 @@ export default async () => {
 			...exclusions.vcsFilesDirs,
 			...exclusions.packageDirs,
 			...exclusions.dotFilesDirs,
-			...exclusions.dotConfigFilesDirs,
+			...exclusions.configFilesDirs,
 			...exclusions.distDirs,
 			...exclusions.devDirs,
 			...exclusions.docDirs,

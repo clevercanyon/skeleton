@@ -131,9 +131,6 @@ export default async ({ projDir }) => {
 		'./.editorconfig',
 		'./.vscode/settings.json',
 		'./.vscode/extensions.json',
-		// Sandbox files are not added or modified when updating fork repos.
-		...((await isPkgRepoFork()) ? [] : ['./src/tests/sandbox/.vscode/settings.json']),
-		...((await isPkgRepoFork()) ? [] : ['./src/tests/sandbox/.vscode/extensions.json']),
 
 		'./tsconfig.d.ts',
 		'./tsconfig.json',
