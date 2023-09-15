@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Thu, Sep 14, 2023, 11:00:59 PM EDT.
+ * Last generated using `./tsconfig.mjs` Fri, Sep 15, 2023, 3:08:18 AM EDT.
  */
 {
 	"include": ["./src/**/*", "./tsconfig.d.ts"],
@@ -29,19 +29,16 @@
 		"**/node_modules/**",
 		"**/jspm_packages/**",
 		"**/bower_components/**",
-		"**/dist/**",
-		"**/dev/**",
-		"**/__dev__/**",
-		"**/doc/**",
-		"**/docs/**",
-		"**/__doc__/**",
-		"**/__docs__/**",
 		"**/.*/**",
 		"**/tsconfig.*/**",
 		"**/*.config.*/**",
 		"**/wrangler.*/**",
 		"**/package.*/**",
-		"**/package-lock.*/**"
+		"**/package-lock.*/**",
+		"**/dist/**",
+		"**/dev/**",
+		"**/doc/**",
+		"**/docs/**"
 	],
 	"compilerOptions": {
 		"baseUrl": "./src",
