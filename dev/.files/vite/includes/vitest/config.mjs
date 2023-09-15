@@ -23,30 +23,34 @@ import extensions from '../../../bin/includes/extensions.mjs';
  */
 export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig }) => {
 	const vitestExcludes = [
-		...exclusions.vcsFilesDirs,
-		...exclusions.packageDirs,
-		...exclusions.dotFilesDirs,
-		...exclusions.dotConfigFilesDirs,
-		...exclusions.dtsFiles,
-		...exclusions.distDirs,
-		...exclusions.devDirs,
-		...exclusions.docDirs,
-		...(vitestSandboxEnable ? [] : [...exclusions.sandboxDirs]),
-		...(vitestExamplesEnable ? [] : [...exclusions.exampleDirs]),
-		...exclusions.xDirs, // Deliberate ad-hoc exclusions.
+		...new Set([
+			...exclusions.vcsFilesDirs,
+			...exclusions.packageDirs,
+			...exclusions.dotFilesDirs,
+			...exclusions.dotConfigFilesDirs,
+			...exclusions.dtsFiles,
+			...exclusions.distDirs,
+			...exclusions.devDirs,
+			...exclusions.docDirs,
+			...(vitestSandboxEnable ? [] : [...exclusions.sandboxDirs]),
+			...(vitestExamplesEnable ? [] : [...exclusions.exampleDirs]),
+			...exclusions.xDirs, // Deliberate ad-hoc exclusions.
+		]),
 	];
 	const vitestWatchExcludes = [
-		...exclusions.vcsFilesDirs,
-		...exclusions.packageDirs,
-		...exclusions.dotFilesDirs,
-		...exclusions.dotConfigFilesDirs,
-		...exclusions.dtsFiles,
-		...exclusions.distDirs,
-		...exclusions.devDirs,
-		...exclusions.docDirs,
-		...(vitestSandboxEnable ? [] : [...exclusions.sandboxDirs]),
-		...(vitestExamplesEnable ? [] : [...exclusions.exampleDirs]),
-		// ...exclusions.xDirs -- Excluded from tests, but we still watch these.
+		...new Set([
+			...exclusions.vcsFilesDirs,
+			...exclusions.packageDirs,
+			...exclusions.dotFilesDirs,
+			...exclusions.dotConfigFilesDirs,
+			...exclusions.dtsFiles,
+			...exclusions.distDirs,
+			...exclusions.devDirs,
+			...exclusions.docDirs,
+			...(vitestSandboxEnable ? [] : [...exclusions.sandboxDirs]),
+			...(vitestExamplesEnable ? [] : [...exclusions.exampleDirs]),
+			// ...exclusions.xDirs -- Excluded from tests, but we still watch these.
+		]),
 	];
 	const vitestIncludes =
 		vitestSandboxEnable || vitestExamplesEnable
@@ -114,7 +118,7 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 		allowOnly: true, // Allows `describe.only`, `test.only`, `bench.only`.
 
 		watch: false, // Disable watching by default.
-		forceRerunTriggers: [...exclusions.devDirs, ...exclusions.dotConfigFilesDirs],
+		forceRerunTriggers: [...new Set([...exclusions.devDirs, ...exclusions.dotConfigFilesDirs])],
 
 		reporters: ['verbose'], // Verbose reporting.
 		// {@see https://o5p.me/p0f9j5} for further details.
@@ -129,10 +133,11 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 			exclude: vitestExcludes,
 		},
 		coverage: {
-			all: true,
-			extension: [...extensions.jts],
+			all: true, // Include all of these.
+			extension: [...new Set([...extensions.jts])],
 			include: ['**/*.' + extensions.asGlob([...extensions.jts])],
 			exclude: [...new Set([...vitestExcludes, ...vitestIncludes, ...vitestTypecheckIncludes, ...vitestBenchIncludes])],
+
 			reporter: ['text', 'html', 'clover', 'json'], // Produces all report formats.
 			reportsDirectory: path.resolve(logsDir, './coverage/vitest'),
 		},

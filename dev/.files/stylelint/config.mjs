@@ -22,11 +22,13 @@ export default async () => {
 	 */
 	const baseConfig = {
 		ignoreFiles: [
-			...exclusions.vcsFilesDirs, //
-			...exclusions.packageDirs,
-			...exclusions.distDirs,
-			...exclusions.sandboxDirs,
-			...exclusions.exampleDirs,
+			...new Set([
+				...exclusions.vcsFilesDirs, //
+				...exclusions.packageDirs,
+				...exclusions.distDirs,
+				...exclusions.sandboxDirs,
+				...exclusions.exampleDirs,
+			]),
 		],
 		plugins: [
 			'stylelint-scss', //

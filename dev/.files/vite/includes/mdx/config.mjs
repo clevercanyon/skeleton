@@ -28,13 +28,15 @@ export default async (/* {} */) => {
 		mdxExtensions: [...extensions.mdx],
 
 		exclude: [
-			...exclusions.vcsFilesDirs, //
-			...exclusions.packageDirs,
-			...exclusions.distDirs,
-			...exclusions.devDirs,
-			...exclusions.docDirs,
-			...exclusions.dotFilesDirs,
-			...exclusions.dotConfigFilesDirs,
+			...new Set([
+				...exclusions.vcsFilesDirs, //
+				...exclusions.packageDirs,
+				...exclusions.distDirs,
+				...exclusions.devDirs,
+				...exclusions.docDirs,
+				...exclusions.dotFilesDirs,
+				...exclusions.dotConfigFilesDirs,
+			]),
 		],
 		include: [
 			'**/*.' +
