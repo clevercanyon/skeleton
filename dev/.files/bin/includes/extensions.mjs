@@ -43,22 +43,28 @@ export default {
 	asGlob,
 	asRegExpFrag,
 
-	css: ['.css'],
-	scss: ['.scss'],
+	md: ['.md'],
+	mdx: ['.mdx'],
 
 	xml: ['.xml'],
 	html: ['.html'],
-
-	ini: ['.ini'],
-	json: ['.json'],
-	toml: ['.toml'],
-	yaml: ['.yml', '.yaml'],
-	properties: ['.properties', '.env'],
 
 	php: ['.php'],
 	sql: ['.sql'],
 	ruby: ['.rb'],
 	bash: ['.bash'],
+
+	css: ['.css'],
+	scss: ['.scss'],
+	less: ['.less'],
+
+	json: ['.json'],
+	json5: ['.json5'],
+
+	ini: ['.ini'],
+	toml: ['.toml'],
+	yaml: ['.yml', '.yaml'],
+	properties: ['.properties', '.env'],
 
 	js: ['.js', '.jsx', '.cjs', '.cjsx', '.node', '.mjs', '.mjsx'],
 	ts: ['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
@@ -81,7 +87,14 @@ export default {
 	tsx: ['.tsx', '.ctsx', '.mtsx'],
 	jtsx: ['.jsx', '.cjsx', '.mjsx'].concat(['.tsx', '.ctsx', '.mtsx']),
 
-	content: ['.js', '.jsx', '.cjs', '.cjsx', '.node', '.mjs', '.mjsx']
-		.concat(['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'])
-		.concat(['md', 'xml', 'html', 'shtml', 'php', 'ejs']),
+	content: [
+		...['.js', '.jsx', '.cjs', '.cjsx', '.node', '.mjs', '.mjsx'], //
+		...['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
+		...['md', 'mdx', 'xml', 'html', 'shtml', 'php', 'ejs'],
+	],
+	onImportWithNoExtensionTry: [
+		...['.ts', '.tsx', '.mts', '.mtsx', '.cts', '.ctsx'],
+		...['.js', '.jsx', '.mjs', '.mjsx', '.cjs', '.cjsx', '.node'], //
+		...['json', 'md', 'mdx'],
+	],
 };

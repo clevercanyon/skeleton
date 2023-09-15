@@ -305,6 +305,12 @@ __specs__
 *.spec-d.*
 *.specs-d.*
 
+# Sandbox.
+
+sandbox
+__sandbox__
+*.sandbox.*
+
 # Examples.
 
 example

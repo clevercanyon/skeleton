@@ -86,6 +86,14 @@ export default {
 	dotFilesDirs: [
 		'**/.*/**', //
 	],
+	dotConfigFilesDirs: [
+		'**/.*/**', //
+		'**/config.*/**',
+		'**/tsconfig.*/**',
+		'**/*.config.*/**',
+		'**/package.*/**',
+		'**/package-lock.*/**',
+	],
 	dtsFiles: [
 		'**/*.d.ts', //
 		'**/*.d.tsx',
@@ -105,10 +113,6 @@ export default {
 		'**/dev/**', //
 		'**/__dev__/**',
 	],
-	sandboxDirs: [
-		'**/sandbox/**', //
-		'**/__sandbox__/**',
-	],
 	docDirs: [
 		'**/doc/**', //
 		'**/docs/**',
@@ -124,6 +128,10 @@ export default {
 		'**/__tests__/**',
 		'**/__spec__/**',
 		'**/__specs__/**',
+	],
+	sandboxDirs: [
+		'**/sandbox/**', //
+		'**/__sandbox__/**',
 	],
 	exampleDirs: [
 		'**/example/**', //

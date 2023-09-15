@@ -52,10 +52,11 @@ export default async () => {
 			...exclusions.vcsFilesDirs,
 			...exclusions.packageDirs,
 			...exclusions.dotFilesDirs,
+			...exclusions.dotConfigFilesDirs,
 			...exclusions.distDirs,
 			...exclusions.devDirs,
-			...exclusions.sandboxDirs,
 			...exclusions.docDirs,
+			...exclusions.sandboxDirs,
 			...exclusions.exampleDirs,
 			...exclusions.benchmarkDirs,
 			...exclusions.xDirs,
@@ -67,7 +68,7 @@ export default async () => {
 			'**/{__test__,__tests__,__spec__,__specs__}/**/*.' + extensions.asGlob(extensions.js),
 		],
 		moduleNameMapper: importAliases.asRegExpStrings,
-		moduleFileExtensions: extensions.noDot(extensions.json.concat(extensions.js)),
-		extensionsToTreatAsEsm: [...('module' === pkg.type ? extensions.sjs.concat(extensions.mjs) : extensions.mjs)],
+		moduleFileExtensions: extensions.noDot([...extensions.js, ...extensions.json]),
+		extensionsToTreatAsEsm: [...('module' === pkg.type ? [...extensions.sjs, ...extensions.mjs] : extensions.mjs)],
 	};
 };

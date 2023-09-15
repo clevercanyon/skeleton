@@ -215,6 +215,52 @@
 	"commentAnchors.workspace.excludeFiles": "**/{.git,dist,.yarn,vendor,node_modules,jspm_packages,bower_components}/**",
 
 	/**
+	 * ESLint options.
+	 */
+
+	"eslint.enable": true,
+	"eslint.format.enable": true,
+	"eslint.lintTask.enable": false,
+
+	"eslint.run": "onType",
+	"eslint.runtime": "node",
+
+	"eslint.codeActionsOnSave.mode": "all",
+	"eslint.experimental.useFlatConfig": true,
+
+	"eslint.validate": [
+		"mdx", //
+		"markdown",
+		"javascript",
+		"javascriptreact",
+		"typescript",
+		"typescriptreact"
+	],
+	"eslint.options": {
+		"overrideConfigFile": "eslint.config.mjs"
+	},
+	"javascript.validate.enable": true,
+	"typescript.validate.enable": true,
+
+	/**
+	 * Stylelint options.
+	 */
+
+	"scss.validate": false,
+	"less.validate": false,
+	"css.validate": false,
+	"stylelint.validate": [
+		"scss", //
+		"css"
+	],
+
+	/**
+	 * MDX options.
+	 */
+
+	"mdx-preview.build.useSucraseTranspiler": true,
+
+	/**
 	 * Prettier options.
 	 */
 
@@ -276,7 +322,7 @@
 	},
 
 	/**
-	 * XML/HTML/MD options.
+	 * XML/HTML options.
 	 */
 
 	"[xml]": {
@@ -293,22 +339,29 @@
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
 
+	/**
+	 * Markdown options.
+	 */
+
+	"[mdx]": {
+		"editor.wordWrap": "on",
+		"editor.codeActionsOnSave": {
+			"source.fixAll": true
+		},
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
+	},
+
 	"[markdown]": {
 		"editor.wordWrap": "on",
 		"editor.codeActionsOnSave": {
 			"source.fixAll": true
 		},
-		"editor.defaultFormatter": "esbenp.prettier-vscode"
+		"editor.defaultFormatter": "dbaeumer.vscode-eslint"
 	},
 
 	/**
 	 * SCSS/LESS/CSS options.
 	 */
-
-	"scss.validate": false,
-	"less.validate": false,
-	"css.validate": false,
-	"stylelint.validate": ["scss", "css"],
 
 	"[scss]": {
 		"editor.codeActionsOnSave": {
@@ -334,18 +387,6 @@
 	/**
 	 * JS/TS/React options.
 	 */
-
-	"eslint.run": "onType",
-	"eslint.format.enable": true,
-	"eslint.lintTask.enable": false,
-	"eslint.codeActionsOnSave.mode": "all",
-	"eslint.experimental.useFlatConfig": true,
-	"eslint.workingDirectories": [{ "mode": "auto" }],
-	"eslint.options": {
-		"overrideConfigFile": "eslint.config.mjs"
-	},
-	"javascript.validate.enable": true,
-	"typescript.validate.enable": true,
 
 	"[javascript]": {
 		"editor.codeActionsOnSave": {

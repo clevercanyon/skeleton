@@ -26,6 +26,7 @@ export default async () => {
 			...exclusions.packageDirs,
 			...exclusions.distDirs,
 			...exclusions.sandboxDirs,
+			...exclusions.exampleDirs,
 		],
 		plugins: [
 			'stylelint-scss', //

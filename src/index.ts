@@ -4,7 +4,10 @@
 
 import './resources/init-env.ts';
 
+import x from './md-check.md?raw';
+import y from './mdx-check.mdx';
+
 /**
  * Exports.
  */
-export {}; // Nothing at this time.
+export { x, y }; // Nothing at this time.

@@ -48,8 +48,37 @@ export default /* not async compatible */ () => {
 		],
 		theme: {
 			fontFamily: {
-				sans: ['Georama', 'sans-serif'],
-				serif: ['Georgia', 'serif'],
+				sans: [
+					'Georama', //
+					'ui-sans-serif',
+					'sans-serif',
+				],
+				serif: [
+					'Palatino', //
+					'"Palatino Linotype"',
+					'ui-serif',
+					'serif',
+				],
+				mono: [
+					'"Operator Mono"', //
+					'ui-monospace',
+					'monospace',
+				],
+			},
+			screens: {
+				'sm': { min: '320px' },
+				'md': { min: '480px' },
+				'lg': { min: '960px' },
+				'xl': { min: '1280px' },
+				'2xl': { min: '1440px' },
+				'3xl': { min: '2560px' },
+
+				'phone': { min: '320px' },
+				'tablet': { min: '480px' },
+				'notebook': { min: '960px' },
+				'laptop': { min: '1280px' },
+				'desktop': { min: '1440px' },
+				'widescreen': { min: '2560px' },
 			},
 		},
 		content: [

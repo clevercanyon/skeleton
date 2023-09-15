@@ -19,7 +19,9 @@ import eslintJS from '@eslint/js';
 import pluginTypeScript from '@typescript-eslint/eslint-plugin';
 import parserTypeScript from '@typescript-eslint/parser';
 import configPrettier from 'eslint-config-prettier';
+import * as parserMDX from 'eslint-mdx';
 import pluginJSXA11y from 'eslint-plugin-jsx-a11y';
+import * as pluginMDX from 'eslint-plugin-mdx';
 import pluginPrettier from 'eslint-plugin-prettier';
 import * as parserESPree from 'espree';
 import globals from 'globals';
@@ -60,6 +62,7 @@ export default async () => {
 				...exclusions.packageDirs,
 				...exclusions.distDirs,
 				...exclusions.sandboxDirs,
+				...exclusions.exampleDirs,
 			],
 		},
 		{
@@ -104,9 +107,6 @@ export default async () => {
 						: {}),
 				},
 			},
-			rules: {
-				...eslintJS.configs.recommended.rules,
-			},
 		},
 	];
 
@@ -130,8 +130,12 @@ export default async () => {
 				files: ['**/*.' + extensions.asGlob(extensions.cjts)],
 				languageOptions: { sourceType: 'commonjs' },
 			},
+			{
+				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx])],
+				languageOptions: { sourceType: 'module' }, // MDX only supports modules.
+			},
 
-			// Dotfile configurations.
+			// Adds Node globals for `dev/.files`, as these always run in Node.
 			{
 				files: [
 					'*.' + extensions.asGlob(extensions.jts), //
@@ -147,7 +151,13 @@ export default async () => {
 				languageOptions: { globals: { ...globals.node } },
 			},
 
-			// JSX/TSX configurations.
+			// Baseline JS/TS/JSX/TSX recommended rule configurations.
+			{
+				files: ['**/*.' + extensions.asGlob(extensions.jts)],
+				rules: { ...eslintJS.configs.recommended.rules },
+			},
+
+			// JSX/TSX accessbility plugin configurations.
 			{
 				files: ['**/*.' + extensions.asGlob(extensions.jtsx)],
 				plugins: { 'jsx-a11y': pluginJSXA11y },
@@ -160,16 +170,21 @@ export default async () => {
 				rules: { ...pluginJSXA11y.configs.recommended.rules },
 			},
 
-			// TypeScript configurations.
+			// TS/TSX configurations for TypeScript projects.
 			{
 				files: ['**/*.' + extensions.asGlob(extensions.ts)],
+				ignores: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*' + extensions.asGlob(extensions.ts)],
+
 				plugins: { '@typescript-eslint': pluginTypeScript },
 
 				languageOptions: {
 					parser: parserTypeScript,
+					// {@see https://o5p.me/lcIzIg}.
 					parserOptions: {
 						requireConfigFile: true,
-						project: ['**/tsconfig.json'],
+						ecmaFeatures: { globalReturn: false },
+						tsconfigRootDir: path.resolve(projDir),
+						project: ['./tsconfig.json'],
 					},
 				},
 				rules: {
@@ -178,9 +193,61 @@ export default async () => {
 				},
 			},
 
-			// Prettier configurations.
+			// TS/TSX configurations for code-blocks inside MD/MDX files.
 			{
-				files: ['**/*.' + extensions.asGlob(extensions.json.concat(extensions.jts))],
+				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*' + extensions.asGlob(extensions.ts)],
+				plugins: { '@typescript-eslint': pluginTypeScript },
+
+				languageOptions: {
+					parser: parserTypeScript,
+					// {@see https://o5p.me/lcIzIg}.
+					parserOptions: {
+						requireConfigFile: false,
+						ecmaFeatures: { globalReturn: false },
+					},
+				},
+			},
+
+			// MD/MDX configurations.
+			{
+				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx])],
+				plugins: { mdx: pluginMDX },
+
+				languageOptions: {
+					parser: parserMDX,
+					parserOptions: {
+						ignoreRemarkConfig: false,
+						extensions: [...extensions.mdx],
+						markdownExtensions: [...extensions.md],
+					},
+				},
+				processor: pluginMDX.createRemarkProcessor({
+					lintCodeBlocks: false,
+					languageMapper: {
+						javascript: 'js',
+						javascriptreact: 'jsx',
+
+						typescript: 'ts',
+						typescriptreact: 'tsx',
+
+						markdown: 'md',
+						shellscript: 'sh',
+					},
+				}),
+				rules: { ...pluginMDX.flat.rules },
+			},
+
+			// MD/MDX code-block configurations.
+			// A few conflicting rules get disabled here inside code-blocks.
+			{
+				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*'],
+				rules: { ...pluginMDX.flatCodeBlocks.rules },
+			},
+
+			// JS/TS/JSX/TSX/MD/MDX prettier configurations.
+			// Several conflicting rules get disabled here for Prettier compat.
+			{
+				files: ['**/*.' + extensions.asGlob([...extensions.jts, ...extensions.md, ...extensions.mdx])],
 				plugins: { prettier: pluginPrettier },
 
 				rules: {
@@ -189,9 +256,10 @@ export default async () => {
 				},
 			},
 
-			// Rule override configurations.
+			// JS/TS/JSX/TSX rule override configurations.
+			// These are our own overrides against all of the above.
 			{
-				files: ['**/*.' + extensions.asGlob(extensions.json.concat(extensions.jts))],
+				files: ['**/*.' + extensions.asGlob(extensions.jts)],
 				rules: {
 					'no-empty': ['warn', { allowEmptyCatch: true }],
 					'no-unused-vars': [
@@ -210,7 +278,8 @@ export default async () => {
 				},
 			},
 
-			// TS rule override configurations.
+			// TS/TSX rule override configurations.
+			// These are our own overrides against all of the above.
 			{
 				files: ['**/*.' + extensions.asGlob(extensions.ts)],
 				rules: {
