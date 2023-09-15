@@ -88,9 +88,9 @@ export default {
 	],
 	dotConfigFilesDirs: [
 		'**/.*/**', //
-		'**/config.*/**',
 		'**/tsconfig.*/**',
 		'**/*.config.*/**',
+		'**/wrangler.*/**',
 		'**/package.*/**',
 		'**/package-lock.*/**',
 	],

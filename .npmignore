@@ -211,14 +211,14 @@ Temporary Items
 
 # Configs.
 
-*config.*
-!dist/**/*config.*
-
-*.config.*
-!dist/**/*.config.*
+tsconfig.*
+!dist/**/tsconfig.*
 
 wrangler.*
 !dist/**/wrangler.*
+
+*.config.*
+!dist/**/*.config.*
 
 # Uncompiled sources.
 
