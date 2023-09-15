@@ -107,7 +107,7 @@ export default async ({ projDir }) => {
 	/**
 	 * Deletes outdated dotfiles no longer in use.
 	 */
-	for (const relPath of ['./.madrun.mjs']) {
+	for (const relPath of ['./.madrun.mjs', './tsconfig.d.ts']) {
 		if (await isLocked(relPath)) {
 			continue; // Locked 🔒.
 		}
@@ -132,7 +132,7 @@ export default async ({ projDir }) => {
 		'./.vscode/settings.json',
 		'./.vscode/extensions.json',
 
-		'./tsconfig.d.ts',
+		'./ts-types.d.ts',
 		'./tsconfig.json',
 		'./tsconfig.mjs',
 
