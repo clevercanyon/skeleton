@@ -58,11 +58,13 @@ export default async () => {
 			// Additionally, our own config files expect this to be at index position `0`.
 
 			ignores: [
-				...exclusions.vcsFilesDirs, //
-				...exclusions.packageDirs,
-				...exclusions.distDirs,
-				...exclusions.sandboxDirs,
-				...exclusions.exampleDirs,
+				...new Set([
+					...exclusions.vcsFilesDirs, //
+					...exclusions.packageDirs,
+					...exclusions.distDirs,
+					...exclusions.sandboxDirs,
+					...exclusions.exampleDirs,
+				]),
 			],
 		},
 		{

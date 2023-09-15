@@ -16,7 +16,7 @@ import { $str } from '../../../../node_modules/@clevercanyon/utilities/dist/inde
  *
  * @returns   Exclusions as regular expressions.
  */
-const asRegExps = (e) => asRegExpStrings(e).map((e) => new RegExp(e, 'u'));
+const asRegExps = (e) => asRegExpStrings([...new Set(e)]).map((e) => new RegExp(e, 'u'));
 
 /**
  * Converts an array of exclusions into regular expression strings.
@@ -26,7 +26,7 @@ const asRegExps = (e) => asRegExpStrings(e).map((e) => new RegExp(e, 'u'));
  * @returns   Exclusions as regular expression strings.
  */
 const asRegExpStrings = (e) =>
-	e.map(
+	[...new Set(e)].map(
 		(e) =>
 			'^' +
 			$str
@@ -44,7 +44,7 @@ const asRegExpStrings = (e) =>
  *
  * @returns   Exclusions as relative globs.
  */
-const asRelativeGlobs = (f, e) => e.map((e) => path.relative(f, e));
+const asRelativeGlobs = (f, e) => [...new Set(e)].map((e) => path.relative(f, e));
 
 /**
  * Defines exclusions.
