@@ -7,10 +7,10 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Fri, Sep 15, 2023, 3:19:45 AM EDT.
+ * Last generated using `./tsconfig.mjs` Fri, Sep 15, 2023, 3:48:10 AM EDT.
  */
 {
-	"include": ["./src/**/*", "./tsconfig.d.ts"],
+	"include": ["./src/**/*", "./ts-types.d.ts"],
 	"exclude": [
 		"**/.git/**",
 		"**/.svn/**",
@@ -38,8 +38,7 @@
 		"**/dist/**",
 		"**/dev/**",
 		"**/doc/**",
-		"**/docs/**",
-		"!**/tsconfig.d.ts"
+		"**/docs/**"
 	],
 	"compilerOptions": {
 		"baseUrl": "./src",
