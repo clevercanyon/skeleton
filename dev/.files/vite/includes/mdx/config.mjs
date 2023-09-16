@@ -29,13 +29,21 @@ export default async (/* {} */) => {
 
 		exclude: [
 			...new Set([
-				...exclusions.vcsFilesDirs, //
-				...exclusions.packageDirs,
-				...exclusions.distDirs,
-				...exclusions.devDirs,
-				...exclusions.docDirs,
-				...exclusions.dotFilesDirs,
-				...exclusions.configFilesDirs,
+				...exclusions.localIgnores, //
+				...exclusions.logIgnores,
+				...exclusions.backupIgnores,
+				...exclusions.patchIgnores,
+				...exclusions.editorIgnores,
+				...exclusions.pkgIgnores,
+				...exclusions.vcsIgnores,
+				...exclusions.osIgnores,
+				...exclusions.dotIgnores,
+				...exclusions.dtsIgnores,
+				...exclusions.configIgnores,
+				...exclusions.lockIgnores,
+				...exclusions.devIgnores,
+				...exclusions.distIgnores,
+				...exclusions.docIgnores,
 			]),
 		],
 		include: [

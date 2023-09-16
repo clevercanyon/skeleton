@@ -24,32 +24,46 @@ import extensions from '../../../bin/includes/extensions.mjs';
 export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig }) => {
 	const vitestExcludes = [
 		...new Set([
-			...exclusions.vcsFilesDirs,
-			...exclusions.packageDirs,
-			...exclusions.dotFilesDirs,
-			...exclusions.configFilesDirs,
-			...exclusions.dtsFiles,
-			...exclusions.distDirs,
-			...exclusions.devDirs,
-			...exclusions.docDirs,
-			...(vitestSandboxEnable ? [] : [...exclusions.sandboxDirs]),
-			...(vitestExamplesEnable ? [] : [...exclusions.exampleDirs]),
-			...exclusions.xDirs, // Deliberate ad-hoc exclusions.
+			...exclusions.localIgnores,
+			...exclusions.logIgnores,
+			...exclusions.backupIgnores,
+			...exclusions.patchIgnores,
+			...exclusions.editorIgnores,
+			...exclusions.pkgIgnores,
+			...exclusions.vcsIgnores,
+			...exclusions.osIgnores,
+			...exclusions.dotIgnores,
+			...exclusions.dtsIgnores,
+			...exclusions.configIgnores,
+			...exclusions.lockIgnores,
+			...exclusions.devIgnores,
+			...exclusions.distIgnores,
+			...exclusions.docIgnores,
+			...(vitestSandboxEnable ? [] : [...exclusions.sandboxIgnores]),
+			...(vitestExamplesEnable ? [] : [...exclusions.exampleIgnores]),
+			...exclusions.adhocXIgnores, // Deliberate ad-hoc exclusions.
 		]),
 	];
 	const vitestWatchExcludes = [
 		...new Set([
-			...exclusions.vcsFilesDirs,
-			...exclusions.packageDirs,
-			...exclusions.dotFilesDirs,
-			...exclusions.configFilesDirs,
-			...exclusions.dtsFiles,
-			...exclusions.distDirs,
-			...exclusions.devDirs,
-			...exclusions.docDirs,
-			...(vitestSandboxEnable ? [] : [...exclusions.sandboxDirs]),
-			...(vitestExamplesEnable ? [] : [...exclusions.exampleDirs]),
-			// ...exclusions.xDirs -- Excluded from tests, but we still watch these.
+			...exclusions.localIgnores,
+			...exclusions.logIgnores,
+			...exclusions.backupIgnores,
+			...exclusions.patchIgnores,
+			...exclusions.editorIgnores,
+			...exclusions.pkgIgnores,
+			...exclusions.vcsIgnores,
+			...exclusions.osIgnores,
+			...exclusions.dotIgnores,
+			...exclusions.dtsIgnores,
+			...exclusions.configIgnores,
+			...exclusions.lockIgnores,
+			...exclusions.devIgnores,
+			...exclusions.distIgnores,
+			...exclusions.docIgnores,
+			...(vitestSandboxEnable ? [] : [...exclusions.sandboxIgnores]),
+			...(vitestExamplesEnable ? [] : [...exclusions.exampleIgnores]),
+			// ...exclusions.adhocXIgnores -- Excluded from tests, but still watch.
 		]),
 	];
 	const vitestIncludes =
@@ -141,7 +155,7 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 			['**/*.{node,any}.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), 'node'],
 			['**/{test,tests,spec,specs}/**/*.{node,any}.' + extensions.asGlob(extensions.jts), 'node'],
 		],
-		server: { deps: { external: [...new Set([...exclusions.packageDirs].concat(rollupConfig.external))] } },
+		server: { deps: { external: [...new Set([...exclusions.pkgIgnores].concat(rollupConfig.external))] } },
 		cache: { dir: path.resolve(projDir, './node_modules/.vitest') },
 
 		passWithNoTests: true, // Pass if there are no tests to run.
@@ -150,9 +164,9 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 		watch: false, // Disable watching by default; instead use `--watch`.
 		forceRerunTriggers: [
 			...new Set([
-				...exclusions.devDirs, //
-				...exclusions.dotFilesDirs,
-				...exclusions.configFilesDirs,
+				...exclusions.dotIgnores, //
+				...exclusions.devIgnores,
+				...exclusions.configIgnores,
 			]),
 		],
 		reporters: ['verbose'], // Verbose reporting.

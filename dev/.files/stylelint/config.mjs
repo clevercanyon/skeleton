@@ -23,11 +23,16 @@ export default async () => {
 	const baseConfig = {
 		ignoreFiles: [
 			...new Set([
-				...exclusions.vcsFilesDirs, //
-				...exclusions.packageDirs,
-				...exclusions.distDirs,
-				...exclusions.sandboxDirs,
-				...exclusions.exampleDirs,
+				...exclusions.logIgnores, //
+				...exclusions.backupIgnores,
+				...exclusions.patchIgnores,
+				...exclusions.pkgIgnores,
+				...exclusions.vcsIgnores,
+				...exclusions.osIgnores,
+				...exclusions.lockIgnores,
+				...exclusions.distIgnores,
+				...exclusions.sandboxIgnores,
+				...exclusions.exampleIgnores,
 			]),
 		],
 		plugins: [

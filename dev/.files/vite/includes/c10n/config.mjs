@@ -60,43 +60,14 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
 
 			/**
 			 * Deletes a few things we don’t include in any distribution.
+			 *
+			 * There is an exception for the case of `node_modules/assets/a16s`, which is used for Cloudflare
+			 * SSR-specific assets. See `../a16s/dir.mjs` for details; i.e., `node_modules` is pruned here, which is why
+			 * we need to be aware of the exception. As of right now, we don’t actually have to deal with the exception
+			 * here, since this doesn’t run if `isSSRBuild`. Just please keep in mind for future reference.
 			 */
 			if ('build' === command) {
-				// One set of globs, but we run the glob twice.
-				// i.e., Directories-only first, to speed things up.
-
-				const fileDirGlobs = [
-					...new Set([
-						// TypeScript exclusions.
-						...exclusions.vcsFilesDirs,
-						...exclusions.packageDirs,
-						...exclusions.dotFilesDirs,
-						...exclusions.configFilesDirs,
-						...exclusions.distDirs,
-						...exclusions.devDirs,
-						...exclusions.docDirs,
-
-						// Should not have `./src` in a `./dist` directory.
-						...exclusions.srcDirs, // Should never actually happen.
-
-						// The rest of these may get into our `./dist` directory by way of TypeScript.
-						// These have to be included for TypeScript under `./src` (`rootDir`), but we
-						// don't want them to end up becoming a part of any distributable.
-						...exclusions.testDirs,
-						...exclusions.sandboxDirs,
-						...exclusions.exampleDirs,
-						...exclusions.benchmarkDirs,
-
-						// Make an exception for the case of `node_modules/assets/a16s`
-						// used for SSR-specific assets. See `../a16s/dir.mjs` for details.
-						'!**/dist/**/node_modules/assets/a16s/**',
-					]),
-				];
-				for (const fileOrDir of await $glob.promise(fileDirGlobs, { cwd: distDir, onlyFiles: true })) {
-					u.log($chalk.gray('Pruning `./' + path.relative(projDir, fileOrDir) + '`.'));
-					await fsp.rm(fileOrDir, { force: true, recursive: true });
-				}
-				for (const fileOrDir of await $glob.promise(fileDirGlobs, { cwd: distDir, onlyFiles: false })) {
+				for (const fileOrDir of await $glob.promise(exclusions.defaultNPMIgnores, { cwd: distDir, onlyFiles: false })) {
 					u.log($chalk.gray('Pruning `./' + path.relative(projDir, fileOrDir) + '`.'));
 					await fsp.rm(fileOrDir, { force: true, recursive: true });
 				}

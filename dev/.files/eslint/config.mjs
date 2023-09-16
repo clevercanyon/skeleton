@@ -59,9 +59,14 @@ export default async () => {
 
 			ignores: [
 				...new Set([
-					...exclusions.vcsFilesDirs, //
-					...exclusions.packageDirs,
-					...exclusions.distDirs,
+					...exclusions.logIgnores, //
+					...exclusions.backupIgnores,
+					...exclusions.patchIgnores,
+					...exclusions.pkgIgnores,
+					...exclusions.vcsIgnores,
+					...exclusions.osIgnores,
+					...exclusions.lockIgnores,
+					...exclusions.distIgnores,
 				]),
 			],
 		},
@@ -155,7 +160,7 @@ export default async () => {
 			{
 				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.jts)],
-				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
+				ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
 				rules: { ...eslintJS.configs.recommended.rules },
 			},
 
@@ -173,7 +178,7 @@ export default async () => {
 			{
 				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.jtsx)],
-				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
+				ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
 				rules: { ...pluginJSXA11y.configs.recommended.rules },
 			},
 
@@ -217,7 +222,7 @@ export default async () => {
 				// Rules not applied to MD/MDX fenced code-blocks.
 				files: ['**/*.' + extensions.asGlob(extensions.ts)],
 				ignores: [
-					...exclusions.sandboxDirs, ...exclusions.exampleDirs,
+					...exclusions.sandboxIgnores, ...exclusions.exampleIgnores,
 					'**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*' + extensions.asGlob(extensions.ts),
 				], // prettier-ignore
 				rules: {
@@ -259,14 +264,14 @@ export default async () => {
 				// Rules not applied to sandbox|examples.
 				// Rules not applied to MD/MDX fenced code-blocks.
 				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx])],
-				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
+				ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
 				rules: { ...pluginMDX.flat.rules },
 			},
 			{
 				// MD/MDX fenced code-block rules.
 				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob([...extensions.md, ...extensions.mdx]) + '/*'],
-				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
+				ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
 				rules: { ...pluginMDX.flatCodeBlocks.rules },
 			},
 
@@ -290,7 +295,7 @@ export default async () => {
 			{
 				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.jts)],
-				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
+				ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
 				rules: {
 					'no-empty': ['warn', { allowEmptyCatch: true }],
 					'no-unused-vars': [
@@ -314,7 +319,7 @@ export default async () => {
 			{
 				// Rules not applied to sandbox|examples.
 				files: ['**/*.' + extensions.asGlob(extensions.ts)],
-				ignores: [...exclusions.sandboxDirs, ...exclusions.exampleDirs],
+				ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
 				rules: {
 					'no-redeclare': 'off', // Disable in favor of TypeScript rule below.
 					'no-unused-vars': 'off', // Disable in favor of TypeScript rule below.
