@@ -7,35 +7,35 @@
 # @note This entire file will be updated automatically.
 # @note Instead of editing here, please review `./wrangler.mjs`.
 #
-# Last generated using `./wrangler.mjs` Sat, Sep 16, 2023, 7:49:14 AM EDT.
+# Last generated using `./wrangler.mjs` Sat, Sep 16, 2023, 7:58:29 AM EDT.
 ##
 
 compatibility_date = "2023-08-15"
 send_metrics = false
 usage_model = "bundled"
-workers_dev = false
-main = "./dist/index.js"
 account_id = "f1176464a976947aa5665d989814a4b1"
 name = "skeleton"
+workers_dev = false
+main = "./dist/index.js"
 
 [[rules]]
 type = "Data"
-globs = ["**/*.bin"]
+globs = [ "**/*.bin" ]
 fallthrough = false
 
 [[rules]]
 type = "CompiledWasm"
-globs = ["**/*.wasm"]
+globs = [ "**/*.wasm" ]
 fallthrough = false
 
 [[rules]]
 type = "ESModule"
-globs = ["**/*.js", "**/*.jsx", "**/*.mjs", "**/*.mjsx"]
+globs = [ "**/*.js", "**/*.jsx", "**/*.mjs", "**/*.mjsx" ]
 fallthrough = false
 
 [[rules]]
 type = "CommonJS"
-globs = ["**/*.cjs", "**/*.cjsx", "**/*.node"]
+globs = [ "**/*.cjs", "**/*.cjsx", "**/*.node" ]
 fallthrough = false
 
 [[rules]]
@@ -47,7 +47,7 @@ globs = [
   "**/*.html",
   "**/*.shtml",
   "**/*.ejs",
-  "**/*.json",
+  "**/*.json"
 ]
 fallthrough = false
 
@@ -59,8 +59,8 @@ command = "npx @clevercanyon/madrun build --mode=prod"
 [env.dev]
 workers_dev = false
 
-[env.dev.build]
-command = "npx @clevercanyon/madrun build --mode=dev"
+  [env.dev.build]
+  command = "npx @clevercanyon/madrun build --mode=dev"
 
 [site]
 bucket = "./dist/assets"
@@ -178,7 +178,7 @@ exclude = [
   "*.bench.*",
   "*.benchmark.*",
   "*.benchmarks.*",
-  "/a16s",
+  "/a16s"
 ]
 
 [route]
