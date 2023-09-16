@@ -162,11 +162,6 @@ bower_components
 _svn
 .svnignore
 
-# :: Concurrent
-
-CVS
-.cvsignore
-
 # :: Bazaar
 
 .bzr
@@ -177,27 +172,19 @@ CVS
 .hg
 .hgignore
 
-# :: Source
-
-SCCS
-
-# :: Revision
-
-RCS
-
 # Operating Systems
 
-# :: PC Files
+# :: Windows Files
 
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# :: PC Directories
+# :: Windows Directories
 
 $RECYCLE.BIN
 
-# :: Mac Files
+# :: MacOS Files
 
 # ._* Already listed above.
 Icon?
@@ -209,7 +196,7 @@ Icon?
 .VolumeIcon.icns
 .com.apple.timemachine.*
 
-# :: Mac Directories
+# :: MacOS Directories
 
 .apdisk
 *.icloud

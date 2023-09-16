@@ -323,24 +323,37 @@ const asNegatedGlobs = (globs) => [...new Set(globs)].map((glob) => '!' + glob);
 /**
  * Defines exclusions globs.
  *
- * Don’t declare any negations here. Instead, use {@see asNegatedGlobs()}.
- *
- * Don’t use `{}` brace expansions here. Not compatible with TypeScript config.
+ * - Don’t declare any negations here. Instead, use {@see asNegatedGlobs()}.
+ * - Don’t use `{}` brace expansions here. Not compatible with TypeScript config.
  */
 export default {
-	// From @clevercanyon/utilities...
+	/**
+	 * Default Git/NPM ignores, by category. Categories added to the default export here. Provided by
+	 * `@clevercanyon/utilities`. Includes everything we have in our default `./.gitignore`, `./.npmignore`.
+	 */
 	...$obj.map(defaultGitNPMIgnoresByCategory, (category) => {
 		return category.map((glob) => '**/' + glob + '/**');
 	}),
-	// From @clevercanyon/utilities...
+
+	/**
+	 * We intentionally use our 'default' NPM ignores when pruning; i.e., as opposed to using the current and
+	 * potentially customized `./.npmignore` file in the current project directory. The reason is because we intend to
+	 * enforce our standards. For further details {@see https://o5p.me/MuskgW}.
+	 */
 	defaultNPMIgnores: $path.defaultNPMIgnores.map((glob) => {
 		const isNegated = /^!/u.test(glob);
 		glob = isNegated ? glob.replace(/^!/u, '') : glob;
 		return (isNegated ? '!' : '') + '**/' + glob + '/**';
 	}),
-	// Specifically for use in our projects.
-	adhocXIgnores: ['**/x-*/**'], // Only for special use cases.
 
+	/**
+	 * Specifically for use in our projects.
+	 */
+	adhocXIgnores: ['**/x-*/**'], // For special use cases.
+
+	/**
+	 * Utilities.
+	 */
 	asRegExps,
 	asRegExpStrings,
 	asRelativeGlobs,

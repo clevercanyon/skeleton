@@ -59,16 +59,49 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
 			}
 
 			/**
-			 * Deletes a few things we don’t include in any distribution.
+			 * Prunes `./.npmignore`s, which we don’t include in any distribution.
 			 *
-			 * There is an exception for the case of `node_modules/assets/a16s`, which is used for Cloudflare
-			 * SSR-specific assets. See `../a16s/dir.mjs` for details; i.e., `node_modules` is pruned here, which is why
-			 * we need to be aware of the exception. As of right now, we don’t actually have to deal with the exception
-			 * here, since this doesn’t run if `isSSRBuild`. Just please keep in mind for future reference.
+			 * We only prune `./.npmignore`s when building for production, as it’s possible there are files being
+			 * compiled by TypeScript that are needed for development; i.e., they need to exist in dev mode in order to
+			 * be capable of serving their intended purpose; e.g., dev-only utilities, runners, sandbox files, etc.
+			 *
+			 * Regarding `node_modules`. There is an exception for the case of `node_modules/assets/a16s`, used for
+			 * Cloudflare SSR-specific assets. See `../a16s/dir.mjs` for details. The `node_modules` folder is pruned by
+			 * this routine (i.e., it’s in `./.npmignore`) which is why we need to be aware of the exception. As of
+			 * right now, we don’t actually have to deal with the exception here, since this particular routine is
+			 * bypassed if `isSSRBuild`. However, please keep it in mind for future reference.
+			 *
+			 * We intentionally use our 'default' NPM ignores when pruning; i.e., as opposed to using the current and
+			 * potentially customized `./.npmignore` file in the current project directory. The reason is because we
+			 * intend to enforce our standards. For further details {@see https://o5p.me/MuskgW}.
 			 */
-			if ('build' === command) {
-				for (const fileOrDir of await $glob.promise(exclusions.defaultNPMIgnores, { cwd: distDir, onlyFiles: false })) {
-					u.log($chalk.gray('Pruning `./' + path.relative(projDir, fileOrDir) + '`.'));
+			if ('build' === command && 'prod' === mode) {
+				for (const fileOrDir of await $glob.promise(exclusions.defaultNPMIgnores, { cwd: distDir, onlyFiles: false, ignoreCase: true })) {
+					const projRelPath = path.relative(projDir, fileOrDir);
+
+					if (
+						// These things we expect to prune regularly.
+						// Anything else warrants more attention (see below).
+						$str.matches(
+							projRelPath,
+							[
+								...exclusions.devIgnores, //
+								...exclusions.sandboxIgnores,
+								...exclusions.exampleIgnores,
+								...exclusions.docIgnores,
+								...exclusions.testIgnores,
+								...exclusions.specIgnores,
+								...exclusions.benchIgnores,
+							],
+							{ ignoreCase: true },
+						)
+					) {
+						// These things we expect to prune regularly.
+						u.log($chalk.gray('Pruning `./' + projRelPath + '`.'));
+					} else {
+						// Anything else warrants more attention (yellow).
+						u.log($chalk.yellow('Pruning `./' + projRelPath + '`.'));
+					}
 					await fsp.rm(fileOrDir, { force: true, recursive: true });
 				}
 			}
