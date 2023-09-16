@@ -430,7 +430,7 @@ class Projects {
 
 			const devFilesDir = path.resolve(projDir, './dev/.files');
 			const pkgFile = path.resolve(projDir, './package.json');
-			const madrunFile = path.resolve(projDir, './.madrun.mjs');
+			const madrunFile = path.resolve(projDir, './madrun.config.mjs');
 
 			/**
 			 * Validates the current glob result.
@@ -445,8 +445,8 @@ class Projects {
 				continue; // No `./package.json` file.
 			}
 			if (hasAllGlob && !fs.existsSync(madrunFile)) {
-				u.log($chalk.gray('Has glob `*`. No `./.madrun.mjs` in `' + projDisplayDir + '`. Bypassing.'));
-				continue; // No `./.madrun.mjs` file.
+				u.log($chalk.gray('Has glob `*`. No `./madrun.config.mjs` in `' + projDisplayDir + '`. Bypassing.'));
+				continue; // No `./madrun.config.mjs` file.
 			}
 
 			/**
