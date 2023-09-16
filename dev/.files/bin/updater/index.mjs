@@ -65,15 +65,6 @@ export default async ({ projDir }) => {
 	};
 
 	/**
-	 * Tests `pkgRepository` to see if it’s a fork.
-	 *
-	 * @returns {boolean} True if current package repo is a fork.
-	 */
-	const isPkgRepoFork = async () => {
-		return /[:/][^/]+\/[^/]+\.fork(?:\.git)?$/iu.test(pkgRepository);
-	};
-
-	/**
 	 * Checks dotfile locks.
 	 *
 	 * @param   {string}  relPath Relative dotfile path.
