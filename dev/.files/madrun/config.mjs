@@ -21,14 +21,14 @@ const nodeFile = path.resolve(__dirname, './includes/node.cjs');
 /**
  * Defines madrun configuration.
  */
-export default async ({ /* cmd, args, */ ctx }) => {
+export default async (/* { cmd, args, ctx } */) => {
 	/**
 	 * Node options.
 	 */
 	const n = 'NODE_OPTIONS=' + // See: <https://o5p.me/Z4rfwi>.
 		[
-			`--require=${nodeFile}`,
-			//
+			`--require='${nodeFile}'`,
+
 		].join(' ') + ' '; // prettier-ignore
 
 	/**
