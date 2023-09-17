@@ -17,7 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Sun, Sep 17, 2023, 2:08:08 AM EDT.
+# Last generated Sun, Sep 17, 2023, 2:34:59 AM EDT.
 
 # Locals
 
@@ -178,7 +178,7 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# » Windows Directories
+# » Windows Dirs
 
 $RECYCLE.BIN
 
@@ -192,7 +192,7 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.*
 
-# » MacOS Directories
+# » MacOS Dirs
 
 .apdisk
 *.icloud

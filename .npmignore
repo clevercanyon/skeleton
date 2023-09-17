@@ -25,7 +25,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Sun, Sep 17, 2023, 2:16:05 AM EDT.
+# Last generated Sun, Sep 17, 2023, 2:34:59 AM EDT.
 
 # Locals
 
@@ -186,7 +186,7 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# » Windows Directories
+# » Windows Dirs
 
 $RECYCLE.BIN
 
@@ -200,7 +200,7 @@ Icon
 .VolumeIcon.icns
 .com.apple.timemachine.*
 
-# » MacOS Directories
+# » MacOS Dirs
 
 .apdisk
 *.icloud
@@ -215,45 +215,45 @@ Icon
 Network Trash Folder
 Temporary Items
 
-# :Dist
+# npm:Dist
 
 !dist
 
-# :Configs
+# npm:Configs
 
 tsconfig.*
 wrangler.*
 *.config.*
 config.gypi
 
-# :Locks
+# npm:Locks
 
 yarn.lock
 composer.lock
 package-lock.json
 
-# :Dots
+# npm:Dots
 
 .*
 
-# :Src
+# npm:Src
 
 src
 
-# :Dev
+# npm:Dev
 
 dev
 
-# :Sandbox
+# npm:Sandbox
 
 sandbox
 
-# :Examples
+# npm:Examples
 
 example
 examples
 
-# :Docs
+# npm:Docs
 
 doc
 docs
@@ -262,7 +262,7 @@ docs
 readme.*
 *.readme.*
 
-# :Tests
+# npm:Tests
 
 test
 tests
@@ -271,7 +271,7 @@ tests
 *.test-d.*
 *.tests-d.*
 
-# :Specs
+# npm:Specs
 
 spec
 specs
@@ -280,7 +280,7 @@ specs
 *.spec-d.*
 *.specs-d.*
 
-# :Benchmarks
+# npm:Benchmarks
 
 bench
 benchmark
