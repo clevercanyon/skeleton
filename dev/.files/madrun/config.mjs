@@ -27,7 +27,7 @@ export default async ({ /* cmd, args, */ ctx }) => {
 	 */
 	const n = 'NODE_OPTIONS=' + // See: <https://o5p.me/Z4rfwi>.
 		[
-			`--require=./${path.relative(ctx.cwd, nodeFile)}`,
+			`--require=${nodeFile}`,
 			//
 		].join(' ') + ' '; // prettier-ignore
 
