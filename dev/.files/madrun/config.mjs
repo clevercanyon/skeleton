@@ -16,7 +16,7 @@ import url from 'node:url';
 import events from './includes/events.mjs';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-const nodeFile = path.resolve(__dirname, './includes/node.cjs');
+const nodeIncludeFile = path.resolve(__dirname, './includes/node.cjs');
 
 /**
  * Defines madrun configuration.
@@ -26,10 +26,7 @@ export default async (/* { cmd, args, ctx } */) => {
 	 * Node options.
 	 */
 	const n = 'NODE_OPTIONS=' + // See: <https://o5p.me/Z4rfwi>.
-		[
-			`--require='${nodeFile}'`,
-
-		].join(' ') + ' '; // prettier-ignore
+		[ `--require='${nodeIncludeFile}'` ].join(' ') + ' '; // prettier-ignore
 
 	/**
 	 * Composition.

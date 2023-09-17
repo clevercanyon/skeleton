@@ -33,7 +33,6 @@ export default async ({ projDir }) => {
 	for (const targetEnv of ['production', 'any', 'node', 'cfw', 'cfp', 'web', 'webw']) {
 		switch (targetEnv) {
 			default: {
-				browserslistrcFileContentsEnvs += '\n\n # ' + targetEnv;
 				browserslistrcFileContentsEnvs += '\n\n[' + targetEnv + ']';
 			}
 		}

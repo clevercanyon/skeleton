@@ -17,9 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Sun, Sep 17, 2023, 6:40:27 AM EDT.
-
- # production
+# Last generated Sun, Sep 17, 2023, 6:44:59 AM EDT.
 
 [production]
 last 1 chrome versions
@@ -46,8 +44,6 @@ unreleased opera versions
 unreleased firefox versions
 not dead
 
- # any
-
 [any]
 last 1 chrome versions
 node >= 20.5.1
@@ -73,25 +69,17 @@ unreleased opera versions
 unreleased firefox versions
 not dead
 
- # node
-
 [node]
 node >= 20.5.1
 not dead
-
- # cfw
 
 [cfw]
 last 1 chrome versions
 not dead
 
- # cfp
-
 [cfp]
 last 1 chrome versions
 not dead
-
- # web
 
 [web]
 and_chr >= 92
@@ -115,8 +103,6 @@ unreleased ios_saf versions
 unreleased opera versions
 unreleased firefox versions
 not dead
-
- # webw
 
 [webw]
 and_chr >= 92
