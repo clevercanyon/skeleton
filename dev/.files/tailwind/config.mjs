@@ -83,11 +83,11 @@ export default /* not async compatible */ () => {
 			},
 		},
 		content: [
-			path.resolve(projDir, './src') + '/**/*.' + extensions.asGlob(extensions.content),
+			path.resolve(projDir, './src') + '/**/*.' + extensions.asGlob([...extensions.tailwindContent]),
 
 			// If this package is using `@clevercanyon/utilities` we can also scan preact files.
 			...(fs.existsSync(path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact'))
-				? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact') + '/**/*.' + extensions.asGlob(extensions.content)]
+				? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact') + '/**/*.' + extensions.asGlob([...extensions.tailwindContent])]
 				: []),
 
 			// Exclusions using negated glob patterns, which should simply be a reflection of `./.npmignore`.

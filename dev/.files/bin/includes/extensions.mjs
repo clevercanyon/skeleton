@@ -6,6 +6,8 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
+import { $obj, $path } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+
 /**
  * Strips leading dot from extensions.
  *
@@ -44,69 +46,87 @@ const asRegExpFrag = (e) => {
 /**
  * Defines extensions.
  */
-export default {
+const extensions = {
 	noDot,
 	asGlob,
 	asRegExpFrag,
 
-	md: ['.md'],
-	mdx: ['.mdx'],
+	/**
+	 * MIME type extensions by VS Code language. VS Code languages added to the default export here. Provided by
+	 * `@clevercanyon/utilities`. This includes everything we have in our MIME types library.
+	 */
+	...$obj.map($path.extsByVSCodeLang(), (vsCodeLang) => {
+		return vsCodeLang.map((ext) => '.' + ext);
+	}),
+	// True HTML/SHTML.
 
-	xml: ['.xml'],
-	html: ['.html'],
+	trueHTML: ['.htm', '.html'],
+	trueSHTML: ['.shtm', '.shtml'],
 
-	php: ['.php'],
-	sql: ['.sql'],
-	ruby: ['.rb'],
-	bash: ['.bash'],
+	// Standard JS/TS.
 
-	css: ['.css'],
-	scss: ['.scss'],
-	less: ['.less'],
+	sJavaScript: ['.js'],
+	sJavaScriptReact: ['.jsx'],
 
-	json: ['.json'],
-	json5: ['.json5'],
+	sTypeScript: ['.ts'],
+	sTypeScriptReact: ['.tsx'],
 
-	ini: ['.ini'],
-	toml: ['.toml'],
-	yaml: ['.yml', '.yaml'],
-	properties: ['.properties', '.env'],
+	// Common JS/TS.
 
-	node: ['.node'], // Compiled JavaScript module.
-	wasm: ['.wasm'], // Compiled JavaScript module.
+	cJavaScript: ['.cjs'],
+	cJavaScriptReact: ['.cjsx'],
 
-	js: ['.js', '.jsx', '.cjs', '.cjsx', '.mjs', '.mjsx'],
-	ts: ['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
-	jts: [...['.js', '.jsx', '.cjs', '.cjsx', '.mjs', '.mjsx'], ...['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx']],
+	cTypeScript: ['.cts'],
+	cTypeScriptReact: ['.ctsx'],
 
-	sjs: ['.js', '.jsx'],
-	sts: ['.ts', '.tsx'],
-	sjts: [...['.js', '.jsx'], ...['.ts', '.tsx']],
+	// Module JS/TS.
 
-	cjs: ['.cjs', '.cjsx'],
-	cts: ['.cts', '.ctsx'],
-	cjts: [...['.cjs', '.cjsx'], ...['.cts', '.ctsx']],
+	mJavaScript: ['.mjs'],
+	mJavaScriptReact: ['.mjsx'],
 
-	mjs: ['.mjs', '.mjsx'],
-	mts: ['.mts', '.mtsx'],
-	mjts: [...['.mjs', '.mjsx'], ...['.mts', '.mtsx']],
+	mTypeScript: ['.mts'],
+	mTypeScriptReact: ['.mtsx'],
 
-	jsx: ['.jsx', '.cjsx', '.mjsx'],
-	tsx: ['.tsx', '.ctsx', '.mtsx'],
-	jtsx: [...['.jsx', '.cjsx', '.mjsx'], ...['.tsx', '.ctsx', '.mtsx']],
+	// All flavors of JSX/TSX.
 
-	content: [
-		...['.js', '.jsx', '.cjs', '.cjsx', '.mjs', '.mjsx'], //
-		...['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
-		...['.md', '.mdx', '.xml', '.html', '.shtml', '.ejs'],
-		...['.php', '.bash'],
-	],
-	onImportWithNoExtensionTry: [
-		...['.ts', '.tsx', '.mts', '.mtsx', '.cts', '.ctsx'],
-		...['.js', '.jsx', '.mjs', '.mjsx', '.cjs', '.cjsx'],
-		...['.mdx', '.md'],
-		...['.json'],
-		...['.wasm'],
-		...['.node'],
-	],
+	allJavaScriptReact: ['.jsx', '.cjsx', '.mjsx'],
+	allTypeScriptReact: ['.tsx', '.ctsx', '.mtsx'],
+
+	// All flavors of JS/TS.
+
+	allJavaScript: ['.js', '.jsx', '.cjs', '.cjsx', '.mjs', '.mjsx'],
+	allTypeScript: ['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
 };
+
+/**
+ * Content (Tailwind).
+ */
+extensions.tailwindContent = [
+	...extensions.mdx,
+	...extensions.markdown,
+
+	...extensions.xml,
+	...extensions.html,
+	...extensions.liquid,
+
+	...extensions.php,
+	...extensions.ruby,
+	...extensions.perl,
+	...extensions.perl6,
+	...extensions.python,
+	...extensions.shellscript,
+
+	...extensions.allJavaScript,
+	...extensions.allTypeScript,
+];
+extensions.tailwindPrettierContent = [...extensions.tailwindContent];
+
+/**
+ * Extensions to try on import w/o extension.
+ */
+extensions.onImportWithNoExtensionTry = [...extensions.allTypeScript, ...extensions.allJavaScript];
+
+/**
+ * Default export.
+ */
+export default extensions;

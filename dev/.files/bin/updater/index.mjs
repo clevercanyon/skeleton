@@ -99,7 +99,7 @@ export default async ({ projDir }) => {
 	/**
 	 * Deletes outdated dotfiles no longer in use.
 	 */
-	for (const relPath of ['./.madrun.mjs', './tsconfig.d.ts']) {
+	for (const relPath of ['./.vscode/mdx-layout.mjsx', './.madrun.mjs', './tsconfig.d.ts']) {
 		if (await isLocked(relPath)) {
 			continue; // Locked 🔒.
 		}
@@ -124,7 +124,6 @@ export default async ({ projDir }) => {
 		'./.vscodeignore',
 		'./.vscode/settings.json',
 		'./.vscode/extensions.json',
-		'./.vscode/mdx-layout.mjsx',
 
 		'./eslint.config.mjs',
 		'./stylelint.config.mjs',

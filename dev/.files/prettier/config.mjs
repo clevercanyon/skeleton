@@ -82,7 +82,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/sj8jjz
 				 */
-				files: ['*.' + extensions.asGlob([...extensions.js])],
+				files: ['*.' + extensions.asGlob([...extensions.allJavaScript])],
 				options: { parser: 'babel' },
 			},
 
@@ -92,7 +92,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/sj8jjz
 				 */
-				files: ['*.' + extensions.asGlob([...extensions.ts])],
+				files: ['*.' + extensions.asGlob([...extensions.allTypeScript])],
 				options: { parser: 'typescript' },
 			},
 
@@ -102,7 +102,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/sj8jjz
 				 */
-				files: ['*.' + extensions.asGlob([...extensions.html])],
+				files: ['*.' + extensions.asGlob([...extensions.trueHTML, ...extensions.trueSHTML])],
 				options: { parser: 'html' },
 			},
 
@@ -112,7 +112,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/sj8jjz
 				 */
-				files: ['*.' + extensions.asGlob([...extensions.md])],
+				files: ['*.' + extensions.asGlob([...extensions.markdown])],
 				options: { parser: 'markdown' },
 			},
 
@@ -163,7 +163,7 @@ export default async () => {
 				 * @see https://o5p.me/sj8jjz
 				 */
 				files: ['*.' + extensions.asGlob([...extensions.yaml])],
-				options: { parser: 'yaml' },
+				options: { parser: 'yaml', tabWidth: 2, useTabs: false },
 			},
 
 			{
@@ -172,7 +172,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/sj8jjz
 				 */
-				files: ['*.' + extensions.asGlob(extensions.json)],
+				files: ['*.' + extensions.asGlob([...extensions.json])],
 				options: { parser: 'json' },
 			},
 
@@ -182,7 +182,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/sj8jjz
 				 */
-				files: ['*.' + extensions.asGlob(extensions.json5)],
+				files: ['*.' + extensions.asGlob([...extensions.jsonc])],
 				options: { parser: 'json5' },
 			},
 
@@ -192,7 +192,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/dTTfse
 				 */
-				files: ['*.' + extensions.asGlob(extensions.jts)],
+				files: ['*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
 				options: {
 					jsdocAddDefaultToDescription: false,
 					jsdocCapitalizeDescription: true,
@@ -217,7 +217,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/o7OmDG
 				 */
-				files: ['*.' + extensions.asGlob(extensions.jts)],
+				files: ['*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
 				options: {
 					organizeImportsSkipDestructiveCodeActions: true,
 				},
@@ -229,7 +229,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/RleCLk
 				 */
-				files: ['*.' + extensions.asGlob(extensions.content)],
+				files: ['*.' + extensions.asGlob([...extensions.tailwindPrettierContent])],
 				options: {
 					tailwindConfig: path.resolve(projDir, './tailwind.config.mjs'),
 					tailwindAttributes: ['class', 'classes', 'className', 'classNames'],
@@ -243,7 +243,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/BHsZj8
 				 */
-				files: ['*.' + extensions.asGlob(extensions.php)],
+				files: ['*.' + extensions.asGlob([...extensions.php])],
 				options: {
 					parser: 'php',
 					braceStyle: '1tbs',
@@ -258,7 +258,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/tuKNvU
 				 */
-				files: ['*.' + extensions.asGlob(extensions.ruby)],
+				files: ['*.' + extensions.asGlob([...extensions.ruby])],
 				options: {
 					parser: 'ruby',
 					rubyPlugins: '',
@@ -268,13 +268,14 @@ export default async () => {
 
 			{
 				/**
-				 * SH plugin options.
+				 * Sh plugin options.
 				 *
 				 * @see https://o5p.me/D0rlOV
 				 */
-				files: ['*.' + extensions.asGlob(extensions.bash), '{,*.}Dockerfile'],
+				files: ['*.' + extensions.asGlob([...extensions.shellscript.filter((ext) => /^sh/iu.test(ext))])],
 				options: {
-					parser: 'sh',
+					parser: 'sh', // Posix variant!
+					variant: 1, // Posix variant only.
 					binaryNextLine: false,
 					experimentalWasm: false,
 					functionNextLine: false,
@@ -285,7 +286,32 @@ export default async () => {
 					spaceRedirects: true,
 					stopAt: undefined,
 					switchCaseIndent: true,
-					variant: 0, // Bash.
+				},
+			},
+
+			{
+				/**
+				 * Bash plugin options.
+				 *
+				 * @see https://o5p.me/D0rlOV
+				 */
+				files: [
+					'*.' + extensions.asGlob([...extensions.shellscript.filter((ext) => /^bash/iu.test(ext))]), //
+					'{,*.}Dockerfile', // Safe to assume ours always uses bash.
+				],
+				options: {
+					parser: 'sh', // Bash variant!
+					variant: 0, // Bash variant only.
+					binaryNextLine: false,
+					experimentalWasm: false,
+					functionNextLine: false,
+					indent: 4,
+					keepComments: true,
+					keepPadding: false,
+					minify: false,
+					spaceRedirects: true,
+					stopAt: undefined,
+					switchCaseIndent: true,
 				},
 			},
 
@@ -295,7 +321,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/kYq5bx
 				 */
-				files: ['*.' + extensions.asGlob(extensions.sql)],
+				files: ['*.' + extensions.asGlob([...extensions.sql])],
 				options: {
 					parser: 'sql',
 					commaPosition: 'after',
@@ -322,7 +348,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/OiLPzn
 				 */
-				files: ['*.' + extensions.asGlob(extensions.xml)],
+				files: ['*.' + extensions.asGlob([...extensions.xml])],
 				options: {
 					parser: 'xml',
 					xmlSelfClosingSpace: true,
@@ -338,7 +364,7 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/1fqazf
 				 */
-				files: ['*.' + extensions.asGlob(extensions.ini)],
+				files: ['*.' + extensions.asGlob([...extensions.ini])],
 				options: {
 					parser: 'ini',
 					iniSpaceAroundEquals: true,
@@ -351,24 +377,11 @@ export default async () => {
 				 *
 				 * @see https://o5p.me/IyzRSp
 				 */
-				files: ['*.' + extensions.asGlob(extensions.properties), '*.env{,.*}'],
+				files: ['*.' + extensions.asGlob([...extensions.properties]), '*.env{,.*}'],
 				options: {
 					parser: 'dot-properties',
 					keySeparator: '=',
 					escapeNonLatin1: false,
-				},
-			},
-
-			{
-				/**
-				 * YAML spec options.
-				 *
-				 * @see https://o5p.me/jJH2xY
-				 */
-				files: ['*.' + extensions.asGlob(extensions.yaml)],
-				options: {
-					tabWidth: 2,
-					useTabs: false,
 				},
 			},
 		],

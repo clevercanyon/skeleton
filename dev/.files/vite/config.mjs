@@ -101,9 +101,9 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 	const entryFiles = $obp.get(pkg, 'config.c10n.&.' + (isSSRBuild ? 'ssrBuild' : 'build') + '.entryFiles') || [];
 
 	const appDefaultEntryFiles = // Based on app type.
-		['spa'].includes(appType) ? ['./src/index.' + extensions.asGlob(extensions.html)]
-		: ['mpa'].includes(appType) ? ['./src/**/index.' + extensions.asGlob(extensions.html)]
-		: ['./src/*.' + extensions.asGlob(extensions.sts)]; // prettier-ignore
+		['spa'].includes(appType) ? ['./src/index.' + extensions.asGlob([...extensions.trueHTML])]
+		: ['mpa'].includes(appType) ? ['./src/**/index.' + extensions.asGlob([...extensions.trueHTML])]
+		: ['./src/*.' + extensions.asGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])]; // prettier-ignore
 
 	const appEntryFiles = (entryFiles.length ? entryFiles : appDefaultEntryFiles).map((v) => $str.lTrim(v, './'));
 	const appEntries = appEntryFiles.length ? await $glob.promise(appEntryFiles, { cwd: projDir }) : [];
@@ -225,7 +225,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 		},
 		resolve: {
 			alias: importAliases.asFindReplaceRegExps,
-			extensions: extensions.onImportWithNoExtensionTry,
+			extensions: [...extensions.onImportWithNoExtensionTry],
 		},
 		worker: /* <https://vitejs.dev/guide/features.html#web-workers> */ {
 			format: 'es',

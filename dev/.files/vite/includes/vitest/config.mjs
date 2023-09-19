@@ -71,60 +71,60 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 			? [
 					...(vitestSandboxEnable
 						? [
-								'**/sandbox/**/*.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), //
-								'**/sandbox/**/{test,tests,spec,specs}/**/*.' + extensions.asGlob(extensions.jts),
+								'**/sandbox/**/*.{test,tests,spec,specs}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), //
+								'**/sandbox/**/{test,tests,spec,specs}/**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]),
 						  ]
 						: []),
 					...(vitestExamplesEnable
 						? [
-								'**/{example,examples}/**/*.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), //
-								'**/{example,examples}/**/{test,tests,spec,specs}/**/*.' + extensions.asGlob(extensions.jts),
+								'**/{example,examples}/**/*.{test,tests,spec,specs}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), //
+								'**/{example,examples}/**/{test,tests,spec,specs}/**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]),
 						  ]
 						: []),
 			  ]
 			: [
-					'**/*.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), //
-					'**/{test,tests,spec,specs}/**/*.' + extensions.asGlob(extensions.jts),
+					'**/*.{test,tests,spec,specs}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), //
+					'**/{test,tests,spec,specs}/**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]),
 			  ];
 	const vitestTypecheckIncludes =
 		vitestSandboxEnable || vitestExamplesEnable
 			? [
 					...(vitestSandboxEnable
 						? [
-								'**/sandbox/**/*.{test,tests,spec,specs}-d.' + extensions.asGlob(extensions.ts), //
-								'**/sandbox/**/{test,tests,spec,specs}/**/*-d.' + extensions.asGlob(extensions.ts),
+								'**/sandbox/**/*.{test,tests,spec,specs}-d.' + extensions.asGlob([...extensions.allTypeScript]), //
+								'**/sandbox/**/{test,tests,spec,specs}/**/*-d.' + extensions.asGlob([...extensions.allTypeScript]),
 						  ]
 						: []),
 					...(vitestExamplesEnable
 						? [
-								'**/{example,examples}/**/*.{test,tests,spec,specs}-d.' + extensions.asGlob(extensions.ts), //
-								'**/{example,examples}/**/{test,tests,spec,specs}/**/*-d.' + extensions.asGlob(extensions.ts),
+								'**/{example,examples}/**/*.{test,tests,spec,specs}-d.' + extensions.asGlob([...extensions.allTypeScript]), //
+								'**/{example,examples}/**/{test,tests,spec,specs}/**/*-d.' + extensions.asGlob([...extensions.allTypeScript]),
 						  ]
 						: []),
 			  ]
 			: [
-					'**/*.{test,tests,spec,specs}-d.' + extensions.asGlob(extensions.ts), //
-					'**/{test,tests,spec,specs}/**/*-d.' + extensions.asGlob(extensions.ts),
+					'**/*.{test,tests,spec,specs}-d.' + extensions.asGlob([...extensions.allTypeScript]), //
+					'**/{test,tests,spec,specs}/**/*-d.' + extensions.asGlob([...extensions.allTypeScript]),
 			  ];
 	const vitestBenchIncludes =
 		vitestSandboxEnable || vitestExamplesEnable
 			? [
 					...(vitestSandboxEnable
 						? [
-								'**/sandbox/**/*.{bench,benchmark,benchmarks}.' + extensions.asGlob(extensions.jts), //
-								'**/sandbox/**/{bench,benchmark,benchmarks}/**/*.' + extensions.asGlob(extensions.jts),
+								'**/sandbox/**/*.{bench,benchmark,benchmarks}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), //
+								'**/sandbox/**/{bench,benchmark,benchmarks}/**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]),
 						  ]
 						: []),
 					...(vitestExamplesEnable
 						? [
-								'**/{example,examples}/**/*.{bench,benchmark,benchmarks}.' + extensions.asGlob(extensions.jts), //
-								'**/{example,examples}/**/{bench,benchmark,benchmarks}/**/*.' + extensions.asGlob(extensions.jts),
+								'**/{example,examples}/**/*.{bench,benchmark,benchmarks}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), //
+								'**/{example,examples}/**/{bench,benchmark,benchmarks}/**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]),
 						  ]
 						: []),
 			  ]
 			: [
-					'**/*.{bench,benchmark,benchmarks}.' + extensions.asGlob(extensions.jts), //
-					'**/{bench,benchmark,benchmarks}/**/*.' + extensions.asGlob(extensions.jts),
+					'**/*.{bench,benchmark,benchmarks}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), //
+					'**/{bench,benchmark,benchmarks}/**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]),
 			  ];
 	return {
 		root: srcDir,
@@ -146,14 +146,14 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 
 		// See: <https://o5p.me/8Pjw1d> for `environment`, `environmentMatchGlobs` precedence.
 		environmentMatchGlobs: [
-			['**/*.{cfp,web}.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), 'jsdom'],
-			['**/{test,tests,spec,specs}/**/*.{cfp,web}.' + extensions.asGlob(extensions.jts), 'jsdom'],
+			['**/*.{cfp,web}.{test,tests,spec,specs}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), 'jsdom'],
+			['**/{test,tests,spec,specs}/**/*.{cfp,web}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), 'jsdom'],
 
-			['**/*.{cfw,webw}.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), 'miniflare'],
-			['**/{test,tests,spec,specs}/**/*.{cfw,webw}.' + extensions.asGlob(extensions.jts), 'miniflare'],
+			['**/*.{cfw,webw}.{test,tests,spec,specs}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), 'miniflare'],
+			['**/{test,tests,spec,specs}/**/*.{cfw,webw}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), 'miniflare'],
 
-			['**/*.{node,any}.{test,tests,spec,specs}.' + extensions.asGlob(extensions.jts), 'node'],
-			['**/{test,tests,spec,specs}/**/*.{node,any}.' + extensions.asGlob(extensions.jts), 'node'],
+			['**/*.{node,any}.{test,tests,spec,specs}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), 'node'],
+			['**/{test,tests,spec,specs}/**/*.{node,any}.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript]), 'node'],
 		],
 		server: { deps: { external: [...new Set([...exclusions.pkgIgnores].concat(rollupConfig.external))] } },
 		cache: { dir: path.resolve(projDir, './node_modules/.vitest') },
@@ -183,8 +183,8 @@ export default async ({ projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable
 		},
 		coverage: {
 			all: true, // All of the below.
-			extension: extensions.jts, // All JTS files.
-			include: ['**/*.' + extensions.asGlob(extensions.jts)],
+			extension: [...extensions.allJavaScript, ...extensions.allTypeScript],
+			include: ['**/*.' + extensions.asGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
 			exclude: [...new Set([...vitestExcludes, ...vitestIncludes, ...vitestTypecheckIncludes, ...vitestBenchIncludes])],
 
 			reporter: ['text', 'html', 'clover', 'json'], // Produces all report formats.

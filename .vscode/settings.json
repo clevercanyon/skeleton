@@ -33,20 +33,11 @@
 	"files.trimTrailingWhitespace": true,
 
 	"files.associations": {
-		"**/*.{js,cjs,mjs}": "javascript",
-		"**/*.{jsx,cjsx,mjsx}": "javascriptreact",
-
-		"**/*.{ts,cts,mts}": "typescript",
-		"**/*.{tsx,ctsx,mtsx}": "typescriptreact",
-
-		".inputrc": "text",
-		"CODEOWNERS": "ignore",
-
+		// Specials.
+		"**/CODEOWNERS": "ignore",
 		".env{,.*}": "properties",
-		"**/*.exacolors": "properties",
-
-		"**/src/_headers": "text",
-		"**/src/_redirects": "text",
+		"**/src/_headers": "plaintext",
+		"**/src/_redirects": "plaintext",
 		"**/src/cargo/_routes.json": "jsonc"
 	},
 	"files.exclude": {
@@ -268,13 +259,14 @@
 	],
 
 	/**
-	 * MDX options.
+	 * Markdown options.
 	 */
 
-	"mdx-preview.build.useSucraseTranspiler": true,
-	"mdx-preview.preview.useWhiteBackground": false,
-	"mdx-preview.preview.useVscodeMarkdownStyles": false,
-	"mdx-preview.preview.mdx.customLayoutFilePath": "/tmp/.vscode/mdx-layout.mjsx",
+	"markdown.styles": [],
+	"markdown.preview.fontSize": 16,
+	"markdown.preview.lineHeight": 1.5,
+	"markdown.preview.typographer": true,
+	"markdown.preview.fontFamily": "Georama, ui-sans-serif, sans-serif",
 
 	/**
 	 * Prettier options.

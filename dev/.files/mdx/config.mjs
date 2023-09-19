@@ -22,7 +22,7 @@ export default async () => {
 	return {
 		jsxImportSource: 'preact',
 
-		mdExtensions: [...extensions.md],
+		mdExtensions: [...extensions.markdown],
 		mdxExtensions: [...extensions.mdx],
 
 		remarkPlugins: [

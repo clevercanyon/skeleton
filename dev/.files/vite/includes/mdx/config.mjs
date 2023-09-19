@@ -45,7 +45,7 @@ export default async ({ projDir }) => {
 		include: [
 			'**/*.' +
 				extensions.asGlob([
-					...extensions.md, // Single default export only.
+					...extensions.markdown, // Single default export only.
 					...extensions.mdx, // Default + potentially other exports.
 				]),
 		],

@@ -53,7 +53,7 @@ export default async () => {
 			presetPrettier, // Removes conflicting lint rules.
 
 			pluginFrontmatter, // YAML properties.
-			pluginGFM, // GitHub-flavored markdown syntax.
+			pluginGFM, // GitHub-flavored markdown features.
 			pluginSmartyPants, // (em dash) `--` to `—`, quotes, etc.
 			[pluginOembed, { syncWidget: true }], // oEmbeds for markdown.
 			pluginMermaid, // Charting and diagramming; {@see https://o5p.me/5z7Yrt}.
@@ -66,7 +66,7 @@ export default async () => {
 		tsconfigMDX: {
 			plugins: [
 				'remark-frontmatter', // YAML properties.
-				'remark-gfm', // GitHub-flavored markdown syntax.
+				'remark-gfm', // GitHub-flavored markdown features.
 				'remark-smartypants', // (em dash) `--` to `—`, quotes, etc.
 				['remark-oembed', { syncWidget: true }], // oEmbeds for markdown.
 				'remark-mermaidjs', // Charting and diagramming; {@see https://o5p.me/5z7Yrt}.
