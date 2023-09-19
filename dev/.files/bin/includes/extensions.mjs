@@ -102,22 +102,24 @@ const extensions = {
  * Content (Tailwind).
  */
 extensions.tailwindContent = [
-	...extensions.mdx,
-	...extensions.markdown,
+	...new Set([
+		...extensions.mdx,
+		...extensions.markdown,
 
-	...extensions.xml,
-	...extensions.html,
-	...extensions.liquid,
+		...extensions.xml,
+		...extensions.html,
+		...extensions.trueHTML,
+		...extensions.trueSHTML,
 
-	...extensions.php,
-	...extensions.ruby,
-	...extensions.perl,
-	...extensions.perl6,
-	...extensions.python,
-	...extensions.shellscript,
+		...extensions.php,
+		...extensions.ruby,
+		...extensions.perl,
+		...extensions.python,
+		...extensions.shellscript,
 
-	...extensions.allJavaScript,
-	...extensions.allTypeScript,
+		...extensions.allJavaScript,
+		...extensions.allTypeScript,
+	]),
 ];
 extensions.tailwindPrettierContent = [...extensions.tailwindContent];
 
