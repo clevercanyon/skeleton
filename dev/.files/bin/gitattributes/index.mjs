@@ -26,6 +26,10 @@ export default async ({ projDir }) => {
 		# Default
 
 		* text=auto
+
+		# Env Prefixes
+
+		*.env.* text
 	`);
 	for (const [groupName, group] of Object.entries($mime.types)) {
 		gitAttributesFileContentsTextBinary += '\n\n# ' + groupName + '\n';
