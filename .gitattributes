@@ -17,7 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Tue, Sep 19, 2023, 6:07:39 AM EDT.
+# Last generated Tue, Sep 19, 2023, 6:09:55 AM EDT.
 
 # Default
 
@@ -78,8 +78,6 @@
 
 # Perl
 
-*.pl6 text
-*.perl6 text
 *.cgi text
 *.pl text
 *.plx text
@@ -162,13 +160,11 @@
 
 # Liquid
 
-*.liq text
 *.liquid text
 
 # Other Template
 
 *.tpl text
-*.tmpl text
 
 # SQL
 
@@ -205,7 +201,6 @@
 *.env.* text
 *.properties text
 *.props text
-*.exacolors text
 
 # Apache
 
