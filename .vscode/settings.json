@@ -34,8 +34,8 @@
 
 	"files.associations": {
 		// Specials.
-		"**/CODEOWNERS": "ignore",
 		".env{,.*}": "properties",
+		"**/CODEOWNERS": "ignore",
 		"**/src/_headers": "plaintext",
 		"**/src/_redirects": "plaintext",
 		"**/src/cargo/_routes.json": "jsonc"

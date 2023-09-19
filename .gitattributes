@@ -17,11 +17,15 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Tue, Sep 19, 2023, 6:10:50 AM EDT.
+# Last generated Tue, Sep 19, 2023, 6:25:29 AM EDT.
 
 # Default
 
 * text=auto
+
+# Env Prefixes
+
+*.env.* text
 
 # Text
 
@@ -198,7 +202,6 @@
 # Properties
 
 *.env text
-*.env.* text
 *.properties text
 *.props text
 

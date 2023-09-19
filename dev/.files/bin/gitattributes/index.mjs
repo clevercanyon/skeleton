@@ -26,10 +26,6 @@ export default async ({ projDir }) => {
 		# Default
 
 		* text=auto
-
-		# Env Prefixes
-
-		*.env.* text
 	`);
 	for (const [groupName, group] of Object.entries($mime.types)) {
 		gitAttributesFileContentsTextBinary += '\n\n# ' + groupName + '\n';
@@ -40,6 +36,15 @@ export default async ({ projDir }) => {
 			}
 		}
 	}
+	gitAttributesFileContentsTextBinary += $str.dedent(`
+		# Specials
+
+		*.env.* text
+		CODEOWNERS text
+		**/src/_headers text
+		**/src/_redirects text
+		**/src/cargo/_routes.json text
+	`);
 
 	/**
 	 * Defines large file storage contents.
