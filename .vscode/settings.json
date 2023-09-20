@@ -7,23 +7,23 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Wed, Sep 20, 2023, 9:06:35 AM EDT.
+ * Last generated using `./settings.mjs` Wed, Sep 20, 2023, 9:26:36 AM EDT.
  */
 {
+    "editor.autoIndent": "full",
+    "editor.detectIndentation": false,
     "editor.tabSize": 4,
     "editor.insertSpaces": true,
-    "editor.detectIndentation": false,
-    "editor.autoIndent": "full",
     "editor.wordWrap": "off",
-    "editor.wordWrapColumn": 180,
     "editor.wrappingIndent": "indent",
+    "editor.wordWrapColumn": 180,
     "files.eol": "\n",
     "files.encoding": "utf8",
     "files.trimFinalNewlines": true,
     "files.insertFinalNewline": true,
     "files.trimTrailingWhitespace": true,
     "files.associations": {
-        "**/*.{asc,asp,aspx,c,cc,crt,csr,csv,gitattributes,gitchange,h,hta,htc,ics,inputrc,log,pem,po,srt,tpl,tsbuildinfo,tsv,txt,vtt,yarnrc}": "plaintext",
+        "**/*.{asc,asp,aspx,c,cc,crt,csr,csv,h,hta,htc,ics,inputrc,log,pem,po,srt,tpl,tsbuildinfo,tsv,txt,vtt,yarnrc}": "plaintext",
         "**/*.md": "markdown",
         "**/*.mdx": "mdx",
         "**/*.{3g2,3gp,3gp2,3gpp,7z,aac,ai,apng,app,asf,asx,avi,bin,blend,bmp,class,com,dfxp,divx,dll,dmg,doc,docm,docx,dotm,dotx,eot,eps,exe,fla,flac,flv,gif,gtar,gz,gzip,heic,ico,iso,jar,jpe,jpeg,jpg,key,kmz,m4a,m4b,m4v,mdb,mid,midi,mka,mkv,mo,mov,mp3,mp4,mpe,mpeg,mpg,mpp,node,numbers,odb,odc,odf,odg,odp,ods,odt,oga,ogg,ogv,onepkg,onetmp,onetoc,onetoc2,otf,oxps,pages,pdf,phar,pict,pls,png,pot,potm,potx,ppam,pps,ppsm,ppsx,ppt,pptm,pptx,ps,psd,pspimage,qt,ra,ram,rar,rtf,rtx,sketch,sldm,sldx,so,svgz,swf,tar,tgz,tif,tiff,ttf,wasm,wav,wax,webm,webp,wm,wma,wmv,wmx,woff,woff2,wp,wpd,wri,xcf,xla,xlam,xls,xlsb,xlsm,xlsx,xlt,xltm,xltx,xlw,xps,zip}": "code-text-binary",
@@ -58,7 +58,7 @@
         "**/*.editorconfig": "editorconfig",
         "**/*.shellcheckrc": "shellcheckrc",
         "**/*.browserslistrc": "browserslist",
-        "**/*.{eslintignore,gitignore,npmignore,prettierignore}": "ignore",
+        "**/*.{eslintignore,gitattributes,gitchange,gitignore,npmignore,prettierignore}": "ignore",
         "**/.env.*": "properties",
         "**/CODEOWNERS": "ignore",
         "**/tsconfig.{json,×××××××}": "jsonc",

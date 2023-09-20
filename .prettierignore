@@ -17,10 +17,10 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Wed, Sep 20, 2023, 4:26:53 AM EDT.
+# Last generated Wed, Sep 20, 2023, 9:26:36 AM EDT.
 
-# `.npmrc` unsupported at this time.
-# Prettier chokes on `:` in auth tokens.
+# `.npmrc` unsupported by Prettier at this time.
+# It's a properties file, but Prettier chokes on `:` in auth tokens.
 
 *.npmrc
 
