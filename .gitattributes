@@ -17,15 +17,11 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Tue, Sep 19, 2023, 6:25:29 AM EDT.
+# Last generated Tue, Sep 19, 2023, 6:47:07 AM EDT.
 
 # Default
 
 * text=auto
-
-# Env Prefixes
-
-*.env.* text
 
 # Text
 
@@ -439,12 +435,18 @@
 *.numbers binary
 *.pages binary
 
+# Special Cases
+
+*.env.* text
+CODEOWNERS text
+/src/cargo/_headers text
+/src/cargo/_redirects text
+
 ##
 # LFS storage rules.
 ##
 
 lfs/** filter=lfs diff=lfs merge=lfs -text
-lfs-*/** filter=lfs diff=lfs merge=lfs -text
 
 # </generated:end>
 

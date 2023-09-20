@@ -35,14 +35,14 @@ export default async ({ command, isSSRBuild, projDir, pkg, appType, targetEnv, a
 
 		switch (true /* Conditional case handlers. */) {
 			case ['spa', 'mpa'].includes(appType): {
-				const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) => $str.mm.isMatch(subpath, 'index.' + extensions.asGlob([...extensions.trueHTML])));
+				const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) => $str.mm.isMatch(subpath, 'index.' + extensions.asBracedGlob([...extensions.trueHTML])));
 				const appEntryIndexAsSrcSubpathNoExt = appEntryIndexAsSrcSubpath.replace(/\.[^.]+$/u, '');
 
 				if (['spa'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-					throw new Error('Single-page apps must have an `./index.' + extensions.asGlob([...extensions.trueHTML]) + '` entry point.');
+					throw new Error('Single-page apps must have an `./index.' + extensions.asBracedGlob([...extensions.trueHTML]) + '` entry point.');
 					//
 				} else if (['mpa'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-					throw new Error('Multipage apps must have an `./index.' + extensions.asGlob([...extensions.trueHTML]) + '` entry point.');
+					throw new Error('Multipage apps must have an `./index.' + extensions.asBracedGlob([...extensions.trueHTML]) + '` entry point.');
 				}
 				(updates.exports = null), (updates.typesVersions = {});
 				updates.module = updates.main = updates.browser = updates.unpkg = updates.types = '';
@@ -50,14 +50,18 @@ export default async ({ command, isSSRBuild, projDir, pkg, appType, targetEnv, a
 				break; // Stop here.
 			}
 			case ['cma', 'lib'].includes(appType): {
-				const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) => $str.mm.isMatch(subpath, 'index.' + extensions.asGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])));
+				const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) =>
+					$str.mm.isMatch(subpath, 'index.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])),
+				);
 				const appEntryIndexAsSrcSubpathNoExt = appEntryIndexAsSrcSubpath.replace(/\.[^.]+$/u, '');
 
 				if (['cma'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-					throw new Error('Custom apps must have an `./index.' + extensions.asGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact]) + '` entry point.');
+					throw new Error('Custom apps must have an `./index.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact]) + '` entry point.');
 					//
 				} else if (['lib'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-					throw new Error('Library apps must have an `./index.' + extensions.asGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact]) + '` entry point.');
+					throw new Error(
+						'Library apps must have an `./index.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact]) + '` entry point.',
+					);
 				}
 				if (useUMD) {
 					updates.exports = {

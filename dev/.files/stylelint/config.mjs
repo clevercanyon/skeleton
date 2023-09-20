@@ -61,7 +61,7 @@ export default async () => {
 
 		overrides: [
 			{
-				files: ['**/*.' + extensions.asGlob([...extensions.css])],
+				files: ['**/*.' + extensions.asBracedGlob([...extensions.css])],
 
 				plugins: [...baseConfig.plugins],
 				extends: [...baseConfig.extends],
@@ -71,7 +71,7 @@ export default async () => {
 				rules: { ...baseConfig.rules },
 			},
 			{
-				files: ['**/*.' + extensions.asGlob([...extensions.scss])],
+				files: ['**/*.' + extensions.asBracedGlob([...extensions.scss])],
 
 				plugins: [...baseConfig.plugins],
 				extends: [...baseConfig.extends],

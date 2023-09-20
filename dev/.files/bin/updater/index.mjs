@@ -122,8 +122,9 @@ export default async ({ projDir }) => {
 
 		'./.editorconfig',
 		'./.vscodeignore',
-		'./.vscode/settings.json',
 		'./.vscode/extensions.json',
+		'./.vscode/settings.json',
+		'./.vscode/settings.mjs',
 
 		'./eslint.config.mjs',
 		'./stylelint.config.mjs',
@@ -236,6 +237,7 @@ export default async ({ projDir }) => {
 	 */
 	log($chalk.green('Recompiling static configurations using latest dotfiles.'));
 
+	await (await import(path.resolve(projDir, './dev/.files/bin/vscode/index.mjs'))).default({ projDir });
 	await (await import(path.resolve(projDir, './dev/.files/bin/gitattributes/index.mjs'))).default({ projDir });
 	await (await import(path.resolve(projDir, './dev/.files/bin/gitignore/index.mjs'))).default({ projDir });
 	await (await import(path.resolve(projDir, './dev/.files/bin/npmignore/index.mjs'))).default({ projDir });

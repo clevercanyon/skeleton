@@ -83,11 +83,11 @@ export default /* not async compatible */ () => {
 			},
 		},
 		content: [
-			path.resolve(projDir, './src') + '/**/*.' + extensions.asGlob([...extensions.tailwindContent]),
+			path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
 
 			// If this package is using `@clevercanyon/utilities` we can also scan preact files.
 			...(fs.existsSync(path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact'))
-				? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact') + '/**/*.' + extensions.asGlob([...extensions.tailwindContent])]
+				? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent])]
 				: []),
 
 			// Exclusions using negated glob patterns, which should simply be a reflection of `./.npmignore`.
@@ -95,38 +95,41 @@ export default /* not async compatible */ () => {
 			// It’s also tricky because we *do* need to find content inside `node_modules/@clevercanyon/utilities/dist/preact`.
 			// Therefore, instead of using `./.npmignore`, we come as close as we can, with just a few exceptions.
 
-			exclusions.asNegatedGlobs([
-				...new Set([
-					...exclusions.localIgnores,
-					...exclusions.logIgnores,
-					...exclusions.backupIgnores,
-					...exclusions.patchIgnores,
-					...exclusions.editorIgnores,
+			exclusions.asNegatedGlobs(
+				[
+					...new Set([
+						...exclusions.localIgnores,
+						...exclusions.logIgnores,
+						...exclusions.backupIgnores,
+						...exclusions.patchIgnores,
+						...exclusions.editorIgnores,
 
-					...exclusions.pkgIgnores //
-						.filter((e) => e !== '**/node_modules/**'),
-					'**/src/**/node_modules/**', // More specific.
+						...exclusions.pkgIgnores //
+							.filter((ignore) => ignore !== '**/node_modules/**'),
+						'**/src/**/node_modules/**', // More specific.
 
-					...exclusions.vcsIgnores,
-					...exclusions.osIgnores,
-					...exclusions.dotIgnores,
-					...exclusions.dtsIgnores,
-					...exclusions.configIgnores,
-					...exclusions.lockIgnores,
-					...exclusions.devIgnores,
+						...exclusions.vcsIgnores,
+						...exclusions.osIgnores,
+						...exclusions.dotIgnores,
+						...exclusions.dtsIgnores,
+						...exclusions.configIgnores,
+						...exclusions.lockIgnores,
+						...exclusions.devIgnores,
 
-					...exclusions.distIgnores //
-						.filter((e) => e !== '**/dist/**'),
-					'**/src/**/dist/**', // More specific.
+						...exclusions.distIgnores //
+							.filter((ignore) => ignore !== '**/dist/**'),
+						'**/src/**/dist/**', // More specific.
 
-					...exclusions.sandboxIgnores,
-					...exclusions.exampleIgnores,
-					...exclusions.docIgnores,
-					...exclusions.testIgnores,
-					...exclusions.specIgnores,
-					...exclusions.benchIgnores,
-				]),
-			]),
+						...exclusions.sandboxIgnores,
+						...exclusions.exampleIgnores,
+						...exclusions.docIgnores,
+						...exclusions.testIgnores,
+						...exclusions.specIgnores,
+						...exclusions.benchIgnores,
+					]),
+				],
+				{ dropExistingNegations: true },
+			),
 		],
 	};
 };

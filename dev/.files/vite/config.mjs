@@ -101,9 +101,9 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 	const entryFiles = $obp.get(pkg, 'config.c10n.&.' + (isSSRBuild ? 'ssrBuild' : 'build') + '.entryFiles') || [];
 
 	const appDefaultEntryFiles = // Based on app type.
-		['spa'].includes(appType) ? ['./src/index.' + extensions.asGlob([...extensions.trueHTML])]
-		: ['mpa'].includes(appType) ? ['./src/**/index.' + extensions.asGlob([...extensions.trueHTML])]
-		: ['./src/*.' + extensions.asGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])]; // prettier-ignore
+		['spa'].includes(appType) ? ['./src/index.' + extensions.asBracedGlob([...extensions.trueHTML])]
+		: ['mpa'].includes(appType) ? ['./src/**/index.' + extensions.asBracedGlob([...extensions.trueHTML])]
+		: ['./src/*.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])]; // prettier-ignore
 
 	const appEntryFiles = (entryFiles.length ? entryFiles : appDefaultEntryFiles).map((v) => $str.lTrim(v, './'));
 	const appEntries = appEntryFiles.length ? await $glob.promise(appEntryFiles, { cwd: projDir }) : [];

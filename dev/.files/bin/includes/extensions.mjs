@@ -9,55 +9,64 @@
 import { $obj, $path } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 /**
- * Strips leading dot from extensions.
+ * Adds leading dot to extensions.
  *
- * @param   e Array of extensions.
+ * @param   exts Array of extensions.
  *
- * @returns   Array of extensions (not dot).
+ * @returns      Array of extensions (with dot).
  */
-const noDot = (e) => [...new Set(e)].map((e) => e.replace(/^\./u, ''));
+const dot = (exts) => noDot(exts).map((ext) => '.' + ext);
 
 /**
- * Converts an array of extensions into a glob pattern.
+ * Strips leading dot from extensions.
  *
- * @param   e Array of extensions.
+ * @param   exts Array of extensions.
  *
- * @returns   Extensions as a glob pattern.
- *
- * @note Don’t use these `{}` brace expansions in TypeScript config files; i.e., incompatible.
+ * @returns      Array of extensions (not dot).
  */
-const asGlob = (e) => {
-	e = [...new Set(e)]; // Unique.
-	return (e.length > 1 ? '{' : '') + noDot(e).join(',') + (e.length > 1 ? '}' : '');
+const noDot = (exts) => [...new Set(exts)].map((ext) => ext.replace(/^\./u, ''));
+
+/**
+ * Converts an array of extensions into a braced glob.
+ *
+ * @param   exts Array of extensions.
+ *
+ * @returns      Extensions as a braced glob.
+ *
+ * @note Don’t use `{}` braces in TypeScript config files; i.e., incompatible.
+ */
+const asBracedGlob = (exts) => {
+	exts = [...new Set(exts)]; // Unique.
+	return (exts.length > 1 ? '{' : '') + noDot(exts).join(',') + (exts.length > 1 ? '}' : '');
 };
 
 /**
  * Converts an array of extensions into a regular expression fragment.
  *
- * @param   e Array of extensions.
+ * @param   exts Array of extensions.
  *
- * @returns   Extensions as a regular expression fragment.
+ * @returns      Extensions as a regular expression fragment.
  */
-const asRegExpFrag = (e) => {
-	e = [...new Set(e)]; // Unique.
-	return (e.length > 1 ? '(?:' : '') + noDot(e).join('|') + (e.length > 1 ? ')' : '');
+const asRegExpFrag = (exts) => {
+	exts = [...new Set(exts)]; // Unique.
+	return (exts.length > 1 ? '(?:' : '') + noDot(exts).join('|') + (exts.length > 1 ? ')' : '');
 };
 
 /**
  * Defines extensions.
  */
 const extensions = {
+	dot,
 	noDot,
-	asGlob,
+	asBracedGlob,
 	asRegExpFrag,
 
 	/**
 	 * MIME type extensions by VS Code language. VS Code languages added to the default export here. Provided by
 	 * `@clevercanyon/utilities`. This includes everything we have in our MIME types library.
 	 */
-	...$obj.map($path.extsByVSCodeLang(), (vsCodeLang) => {
-		return vsCodeLang.map((ext) => '.' + ext);
-	}),
+	...$obj.map($path.extsByVSCodeLang(), (exts) => dot(exts)),
+
 	// True HTML/SHTML.
 
 	trueHTML: ['.htm', '.html'],
@@ -99,7 +108,7 @@ const extensions = {
 };
 
 /**
- * Content (Tailwind).
+ * Content (tailwind).
  */
 extensions.tailwindContent = [
 	...new Set([
@@ -122,6 +131,11 @@ extensions.tailwindContent = [
 	]),
 ];
 extensions.tailwindPrettierContent = [...extensions.tailwindContent];
+
+/**
+ * Content (comment anchors).
+ */
+extensions.commentAnchorsContent = [...extensions.tailwindContent];
 
 /**
  * Extensions to try on import w/o extension.

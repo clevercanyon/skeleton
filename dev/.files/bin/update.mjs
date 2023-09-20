@@ -21,7 +21,50 @@ const projDir = path.resolve(__dirname, '../../..');
 const projsDir = path.resolve(__dirname, '../../../..');
 
 /**
- * GitAttributes command.
+ * VS Code command.
+ */
+class VSCode {
+	/**
+	 * Constructor.
+	 */
+	constructor(args) {
+		this.args = args;
+	}
+
+	/**
+	 * Runs CMD.
+	 */
+	async run() {
+		await this.update();
+
+		if (this.args.dryRun) {
+			u.log($chalk.cyanBright('Dry run. This was all a simulation.'));
+		}
+	}
+
+	/**
+	 * Runs update.
+	 */
+	async update() {
+		/**
+		 * Recompiles `./.vscode/settings.json` file.
+		 */
+
+		u.log($chalk.green('Updating `./.vscode`.'));
+		if (!this.args.dryRun) {
+			await (await import(path.resolve(projDir, './dev/.files/bin/vscode/index.mjs'))).default({ projDir });
+		}
+
+		/**
+		 * Signals completion with success.
+		 */
+
+		u.log(await u.finaleBox('Success', 'VS Code config update complete.'));
+	}
+}
+
+/**
+ * Git attributes command.
  */
 class GitAttributes {
 	/**
@@ -64,7 +107,7 @@ class GitAttributes {
 }
 
 /**
- * GitIgnore command.
+ * Git ignore command.
  */
 class GitIgnore {
 	/**
@@ -107,7 +150,7 @@ class GitIgnore {
 }
 
 /**
- * NPMIgnore command.
+ * NPM ignore command.
  */
 class NPMIgnore {
 	/**
@@ -150,7 +193,7 @@ class NPMIgnore {
 }
 
 /**
- * VSCodeIgnore command.
+ * VS Code ignore command.
  */
 class VSCodeIgnore {
 	/**
@@ -193,7 +236,7 @@ class VSCodeIgnore {
 }
 
 /**
- * PrettierIgnore command.
+ * Prettier ignore command.
  */
 class PrettierIgnore {
 	/**
@@ -236,9 +279,9 @@ class PrettierIgnore {
 }
 
 /**
- * BrowsersList command.
+ * Browserslist command.
  */
-class BrowsersList {
+class Browserslist {
 	/**
 	 * Constructor.
 	 */
@@ -279,7 +322,7 @@ class BrowsersList {
 }
 
 /**
- * TSConfig command.
+ * TS config command.
  */
 class TSConfig {
 	/**
@@ -781,6 +824,31 @@ await (async () => {
 		})
 	)
 		.command({
+			command: ['vscode'],
+			describe: 'Updates project `./.vscode/settings.json`.',
+			builder: (yargs) => {
+				return yargs
+					.options({
+						dryRun: {
+							type: 'boolean',
+							requiresArg: false,
+							demandOption: false,
+							default: false,
+							description: 'Dry run?',
+						},
+					})
+					.check(async (/* args */) => {
+						if (!(await u.isInteractive())) {
+							throw new Error('This *must* be performed interactively.');
+						}
+						return true;
+					});
+			},
+			handler: async (args) => {
+				await new VSCode(args).run();
+			},
+		})
+		.command({
 			command: ['gitattributes'],
 			describe: 'Updates project `./.gitattributes`.',
 			builder: (yargs) => {
@@ -927,7 +995,7 @@ await (async () => {
 					});
 			},
 			handler: async (args) => {
-				await new BrowsersList(args).run();
+				await new Browserslist(args).run();
 			},
 		})
 		.command({

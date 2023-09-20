@@ -1,7 +1,7 @@
 /**
- * VSCode config file.
+ * VS Code config file.
  *
- * VSCode is aware of this config file's location.
+ * VS Code is aware of this config file's location.
  *
  * @note CUSTOM EDITS ONLY PLEASE!
  * @note In the future this file will be updated automatically.
@@ -32,12 +32,17 @@
 	"files.insertFinalNewline": true,
 	"files.trimTrailingWhitespace": true,
 
+	/**
+	 * Generated data.
+	 * <generated:start>
+	 */
+
 	"files.associations": {
-		// Specials.
+		// Special cases.
 		".env{,.*}": "properties",
 		"**/CODEOWNERS": "ignore",
-		"**/src/_headers": "plaintext",
-		"**/src/_redirects": "plaintext",
+		"**/src/cargo/_headers": "plaintext",
+		"**/src/cargo/_redirects": "plaintext",
 		"**/src/cargo/_routes.json": "jsonc"
 	},
 	"files.exclude": {
@@ -195,6 +200,8 @@
 	"search.useGlobalIgnoreFiles": false,
 	"search.useParentIgnoreFiles": false,
 
+	/* </generated:end> */
+
 	/**
 	 * Comment anchor options.
 	 */
@@ -215,8 +222,15 @@
 	"commentAnchors.tags.matchCase": true,
 	"commentAnchors.tags.separators": [" ", ": "],
 
+	/**
+	 * Generated data.
+	 * <generated:start>
+	 */
+
 	"commentAnchors.workspace.excludeFiles": "**/{.git,dist,.yarn,vendor,node_modules,jspm_packages,bower_components}/**",
 	"commentAnchors.workspace.matchFiles": "{**/.*/**/.*,**/.*/**/*,**/.*,**/*}.{js,jsx,cjs,cjsx,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx,md,mdx,xml,html,shtml,ejs,php,bash}",
+
+	/* </generated:end> */
 
 	/**
 	 * ESLint options.

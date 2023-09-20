@@ -44,13 +44,59 @@ const asRelativeGlobs = (from, globs) => {
 /**
  * Converts an array of exclusions into negated globs.
  *
- * @param   globs Array of exclusion globs.
+ * @param   globs   Array of exclusion globs.
+ * @param   options Explicit options required for acknowledgment of concerns.
  *
- * @returns       Exclusions as negated globs.
+ * @returns         Exclusions as negated globs; potentially dropping existing negations.
  *
- * @note We don’t re-include anything that’s already a negation.
+ * @note If existing negations are not dropped, they become inclusions, typically causing problems.
+ *       Normally, we don’t need to re-include the existing negations, as they are narrower in scope.
  */
-const asNegatedGlobs = (globs) => [...new Set(globs)].filter((glob) => !/^!/u.test(glob)).map((glob) => '!' + glob);
+const asNegatedGlobs = (globs, { dropExistingNegations }) => {
+	if (undefined === dropExistingNegations) {
+		throw new Error('Missing option: `dropExistingNegations`.');
+	}
+	if (dropExistingNegations) {
+		return [...new Set(globs)].filter((glob) => !/^!/u.test(glob)).map((glob) => '!' + glob);
+	}
+	return [...new Set(globs)].map((glob) => (/^!/u.test(glob) ? glob.replace(/^!/u, '') : '!' + glob));
+};
+
+/**
+ * Converts an array of exclusions into a braced glob.
+ *
+ * @param   globs   Array of exclusion globs.
+ * @param   options Explicit options required for acknowledgment of concerns.
+ *
+ * @returns         Exclusions as braced glob; potentially dropping negations.
+ *
+ * @note `dropExistingNegations` can *only* be set as true. There’s no other way to handle.
+ */
+const asBracedGlob = (globs, { dropExistingNegations }) => {
+	if (true !== dropExistingNegations) {
+		throw new Error('Missing option: `dropExistingNegations`; must be `true`.');
+	}
+	const oneGlobs = []; // Initialize.
+
+	[...new Set(globs)].forEach((glob) => {
+		if (/^!/u.test(glob)) return; // Dropping.
+		oneGlobs.push(glob.replace(/^\*\*\//u, '').replace(/\/\*\*$/u, ''));
+	});
+	return '**/{' + [...new Set(oneGlobs)].join(',') + '}/**';
+};
+
+/**
+ * Converts an array of exclusions into boolean properties.
+ *
+ * @param   globs Array of of exclusion globs.
+ *
+ * @returns       Exclusions as boolean properties.
+ */
+const asBoolProps = (globs) => {
+	const props = {}; // Initialize.
+	for (const glob of globs) props[glob.replace(/^!/u, '')] = /^!/u.test(glob) ? false : true;
+	return props; // Plain object properties.
+};
 
 /**
  * Defines exclusions globs.
@@ -88,4 +134,6 @@ export default {
 	asRegExpStrings,
 	asRelativeGlobs,
 	asNegatedGlobs,
+	asBracedGlob,
+	asBoolProps,
 };
