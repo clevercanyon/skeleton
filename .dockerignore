@@ -1,0 +1,33 @@
+##
+# Docker ignore file.
+#
+# Docker is aware of this config file's location.
+#
+# The generated portion of this file can be updated using:
+#
+#     $ madrun update dockerignore
+#     or: $ madrun update dotfiles
+#
+# @note CUSTOM EDITS ONLY PLEASE!
+# @note In the future this file will be updated automatically.
+# @note Only `<custom:start.../custom:end>` will be preserved below.
+##
+
+##
+# Generated data.
+# <generated:start>
+
+# </generated:end>
+
+##
+# Customizations.
+#
+# Please do not attempt to inject exceptions by customizing your project’s `./.dockerignore` file
+# in ways that loosen our standard defaults. We have tooling in place that will conflict with your efforts.
+# For example, `vite-plugin-c10n-post-process` will automatically prune files from a resulting `./dist`
+# built with our tooling. The pruning that it does strictly adheres to our default `./.dockerignore` rules,
+# and intentionally does not factor in your customizations.
+#
+# <custom:start>
+
+# </custom:end>

@@ -134,6 +134,7 @@ export default async ({ projDir }) => {
         './prettier.config.mjs',
         './.prettierignore',
 
+        './.dockerignore',
         './.shellcheckrc',
         './.browserslistrc',
 
@@ -241,6 +242,7 @@ export default async ({ projDir }) => {
     await (await import(path.resolve(projDir, './dev/.files/bin/gitattributes/index.mjs'))).default({ projDir });
     await (await import(path.resolve(projDir, './dev/.files/bin/gitignore/index.mjs'))).default({ projDir });
     await (await import(path.resolve(projDir, './dev/.files/bin/npmignore/index.mjs'))).default({ projDir });
+    await (await import(path.resolve(projDir, './dev/.files/bin/dockerignore/index.mjs'))).default({ projDir });
     await (await import(path.resolve(projDir, './dev/.files/bin/vscodeignore/index.mjs'))).default({ projDir });
     await (await import(path.resolve(projDir, './dev/.files/bin/prettierignore/index.mjs'))).default({ projDir });
     await (await import(path.resolve(projDir, './dev/.files/bin/browserslist/index.mjs'))).default({ projDir });

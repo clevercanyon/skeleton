@@ -193,6 +193,49 @@ class NPMIgnore {
 }
 
 /**
+ * Docker ignore command.
+ */
+class DockerIgnore {
+    /**
+     * Constructor.
+     */
+    constructor(args) {
+        this.args = args;
+    }
+
+    /**
+     * Runs CMD.
+     */
+    async run() {
+        await this.update();
+
+        if (this.args.dryRun) {
+            u.log($chalk.cyanBright('Dry run. This was all a simulation.'));
+        }
+    }
+
+    /**
+     * Runs update.
+     */
+    async update() {
+        /**
+         * Recompiles `./.dockerignore` file.
+         */
+
+        u.log($chalk.green('Updating `./.dockerignore`.'));
+        if (!this.args.dryRun) {
+            await (await import(path.resolve(projDir, './dev/.files/bin/dockerignore/index.mjs'))).default({ projDir });
+        }
+
+        /**
+         * Signals completion with success.
+         */
+
+        u.log(await u.finaleBox('Success', '`./.dockerignore` update complete.'));
+    }
+}
+
+/**
  * VS Code ignore command.
  */
 class VSCodeIgnore {
@@ -921,6 +964,31 @@ await (async () => {
             },
             handler: async (args) => {
                 await new NPMIgnore(args).run();
+            },
+        })
+        .command({
+            command: ['dockerignore'],
+            describe: 'Updates project `./.dockerignore`.',
+            builder: (yargs) => {
+                return yargs
+                    .options({
+                        dryRun: {
+                            type: 'boolean',
+                            requiresArg: false,
+                            demandOption: false,
+                            default: false,
+                            description: 'Dry run?',
+                        },
+                    })
+                    .check(async (/* args */) => {
+                        if (!(await u.isInteractive())) {
+                            throw new Error('This *must* be performed interactively.');
+                        }
+                        return true;
+                    });
+            },
+            handler: async (args) => {
+                await new DockerIgnore(args).run();
             },
         })
         .command({

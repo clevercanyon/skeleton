@@ -17,7 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Wed, Sep 20, 2023, 6:36:09 PM EDT.
+# Last generated Wed, Sep 20, 2023, 6:55:54 PM EDT.
 
 # Locals
 
@@ -281,7 +281,7 @@ benchmarks
 #
 # Please do not attempt to inject exceptions by customizing your project’s `./.vscodeignore` file
 # in ways that loosen our standard defaults. We have tooling in place that will conflict with your efforts.
-# For example, `vite-plugin-c10n-post-process` will automatically prune files from a resulting `./.dist`
+# For example, `vite-plugin-c10n-post-process` will automatically prune files from a resulting `./dist`
 # built with our tooling. The pruning that it does strictly adheres to our default `./.vscodeignore` rules,
 # and intentionally does not factor in your customizations.
 #

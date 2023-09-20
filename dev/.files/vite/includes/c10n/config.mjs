@@ -98,7 +98,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                                     ...exclusions.specIgnores,
                                     ...exclusions.benchIgnores,
                                 ],
-                                { ignoreCase: true, dot: false },
+                                { ignoreCase: true, dot: true },
                             )
                         ) {
                             // These things we expect to prune regularly.

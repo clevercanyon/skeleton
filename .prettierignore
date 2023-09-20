@@ -17,22 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Wed, Sep 20, 2023, 6:36:09 PM EDT.
-
-# `.editorconfig` unsupported by Prettier at this time.
-# It's a properties file, but Prettier chokes on `[*]` section.
-
-*.editorconfig
-
-# `.npmrc` unsupported by Prettier at this time.
-# It's a properties file, but Prettier chokes on `:` in auth tokens.
-
-*.npmrc
-
-# EJS unsupported at this time.
-# @todo Build or find an EJS plugin.
-
-*.ejs
+# Last generated Wed, Sep 20, 2023, 6:55:54 PM EDT.
 
 # Packages
 
@@ -118,6 +103,21 @@ Temporary Items
 # Dist
 
 dist
+
+# `.editorconfig` unsupported by Prettier at this time.
+# It's a properties file, but Prettier chokes on `[*]` section.
+
+*.editorconfig
+
+# `.npmrc` unsupported by Prettier at this time.
+# It's a properties file, but Prettier chokes on `:` in auth tokens.
+
+*.npmrc
+
+# EJS unsupported at this time.
+# @todo Build or find an EJS plugin.
+
+*.ejs
 
 # </generated:end>
 
