@@ -31,7 +31,7 @@ const testsDirExists = fs.existsSync(testsDir);
 const pkgFile = path.resolve(projDir, './package.json');
 
 if (!fs.existsSync(pkgFile)) {
-	throw new Error('jest/config.mjs: Missing `./package.json`.');
+    throw new Error('jest/config.mjs: Missing `./package.json`.');
 }
 const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
 
@@ -39,50 +39,50 @@ const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
  * Defines Jest configuration.
  */
 export default async () => {
-	/**
-	 * Composition.
-	 */
-	return {
-		roots: [
-			...(srcDirExists ? [srcDir] : []), //
-			...(testsDirExists ? [testsDir] : []),
-			...(!srcDirExists && !testsDirExists ? [projDir] : []),
-		],
-		testPathIgnorePatterns: exclusions.asRegExpStrings([
-			...new Set([
-				...exclusions.localIgnores,
-				...exclusions.logIgnores,
-				...exclusions.backupIgnores,
-				...exclusions.patchIgnores,
-				...exclusions.editorIgnores,
-				...exclusions.pkgIgnores,
-				...exclusions.vcsIgnores,
-				...exclusions.osIgnores,
-				...exclusions.dotIgnores,
-				...exclusions.dtsIgnores,
-				...exclusions.configIgnores,
-				...exclusions.lockIgnores,
-				...exclusions.devIgnores,
-				...exclusions.distIgnores,
-				...exclusions.sandboxIgnores,
-				...exclusions.exampleIgnores,
-				...exclusions.docIgnores,
-				...exclusions.benchIgnores,
-				...exclusions.adhocXIgnores,
-			]),
-		]),
-		// Configured to run JS tests only; not TypeScript tests.
-		// To create and run TypeScript tests, use Vitest instead of Jest.
-		testMatch: [
-			'**/*.{test|tests|spec|specs}.' + extensions.asBracedGlob([...extensions.allJavaScript]), //
-			'**/{test,tests,spec,specs}/**/*.' + extensions.asBracedGlob([...extensions.allJavaScript]),
-		],
-		moduleNameMapper: importAliases.asRegExpStrings,
-		moduleFileExtensions: extensions.noDot([...extensions.allJavaScript]),
-		extensionsToTreatAsEsm: [
-			...('module' === pkg.type
-				? [...extensions.sJavaScript, ...extensions.sJavaScriptReact, ...extensions.mJavaScript, ...extensions.mJavaScriptReact]
-				: [...extensions.mJavaScript, ...extensions.mJavaScriptReact]),
-		],
-	};
+    /**
+     * Composition.
+     */
+    return {
+        roots: [
+            ...(srcDirExists ? [srcDir] : []), //
+            ...(testsDirExists ? [testsDir] : []),
+            ...(!srcDirExists && !testsDirExists ? [projDir] : []),
+        ],
+        testPathIgnorePatterns: exclusions.asRegExpStrings([
+            ...new Set([
+                ...exclusions.localIgnores,
+                ...exclusions.logIgnores,
+                ...exclusions.backupIgnores,
+                ...exclusions.patchIgnores,
+                ...exclusions.editorIgnores,
+                ...exclusions.pkgIgnores,
+                ...exclusions.vcsIgnores,
+                ...exclusions.osIgnores,
+                ...exclusions.dotIgnores,
+                ...exclusions.dtsIgnores,
+                ...exclusions.configIgnores,
+                ...exclusions.lockIgnores,
+                ...exclusions.devIgnores,
+                ...exclusions.distIgnores,
+                ...exclusions.sandboxIgnores,
+                ...exclusions.exampleIgnores,
+                ...exclusions.docIgnores,
+                ...exclusions.benchIgnores,
+                ...exclusions.adhocXIgnores,
+            ]),
+        ]),
+        // Configured to run JS tests only; not TypeScript tests.
+        // To create and run TypeScript tests, use Vitest instead of Jest.
+        testMatch: [
+            '**/*.{test|tests|spec|specs}.' + extensions.asBracedGlob([...extensions.allJavaScript]), //
+            '**/{test,tests,spec,specs}/**/*.' + extensions.asBracedGlob([...extensions.allJavaScript]),
+        ],
+        moduleNameMapper: importAliases.asRegExpStrings,
+        moduleFileExtensions: extensions.noDot([...extensions.allJavaScript]),
+        extensionsToTreatAsEsm: [
+            ...('module' === pkg.type
+                ? [...extensions.sJavaScript, ...extensions.sJavaScriptReact, ...extensions.mJavaScript, ...extensions.mJavaScriptReact]
+                : [...extensions.mJavaScript, ...extensions.mJavaScriptReact]),
+        ],
+    };
 };

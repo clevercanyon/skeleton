@@ -30,7 +30,7 @@ const projDir = path.resolve(__dirname, '../../..');
 const pkgFile = path.resolve(projDir, './package.json');
 
 if (!fs.existsSync(pkgFile)) {
-	throw new Error('jest/config.mjs: Missing `./package.json`.');
+    throw new Error('jest/config.mjs: Missing `./package.json`.');
 }
 const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
 
@@ -43,74 +43,74 @@ const defaultWorkerName = $str.kebabCase(path.basename(pkg.name || ''), { asciiO
  * Defines Wrangler configuration.
  */
 export default async () => {
-	/**
-	 * Base config.
-	 */
-	const baseConfig = {
-		// Platform settings.
+    /**
+     * Base config.
+     */
+    const baseConfig = {
+        // Platform settings.
 
-		compatibility_date: '2023-08-15',
-		send_metrics: false, // Don't share usage.
-		usage_model: 'bundled', // 10M/mo free + $0.50/M.
+        compatibility_date: '2023-08-15',
+        send_metrics: false, // Don't share usage.
+        usage_model: 'bundled', // 10M/mo free + $0.50/M.
 
-		// Account ID and worker name.
+        // Account ID and worker name.
 
-		account_id: defaultAccountId,
-		name: defaultWorkerName,
+        account_id: defaultAccountId,
+        name: defaultWorkerName,
 
-		// Workers.dev configuration.
+        // Workers.dev configuration.
 
-		workers_dev: false,
+        workers_dev: false,
 
-		// App main entry configuration.
+        // App main entry configuration.
 
-		main: './' + path.relative(projDir, './dist/index.js'),
+        main: './' + path.relative(projDir, './dist/index.js'),
 
-		// Dynamic import configuration.
+        // Dynamic import configuration.
 
-		rules: [
-			{ type: 'Data', globs: ['**/*.bin'], fallthrough: false },
-			{ type: 'CompiledWasm', globs: ['**/*.wasm'], fallthrough: false },
-			{ type: 'ESModule', globs: ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.mjsx'], fallthrough: false },
-			{ type: 'CommonJS', globs: ['**/*.cjs', '**/*.cjsx', '**/*.node'], fallthrough: false },
-			{ type: 'Text', globs: ['**/*.md', '**/*.txt', '**/*.xml', '**/*.html', '**/*.shtml', '**/*.ejs', '**/*.json'], fallthrough: false },
-		],
-		// Custom build configuration.
+        rules: [
+            { type: 'Data', globs: ['**/*.bin'], fallthrough: false },
+            { type: 'CompiledWasm', globs: ['**/*.wasm'], fallthrough: false },
+            { type: 'ESModule', globs: ['**/*.js', '**/*.jsx', '**/*.mjs', '**/*.mjsx'], fallthrough: false },
+            { type: 'CommonJS', globs: ['**/*.cjs', '**/*.cjsx', '**/*.node'], fallthrough: false },
+            { type: 'Text', globs: ['**/*.md', '**/*.txt', '**/*.xml', '**/*.html', '**/*.shtml', '**/*.ejs', '**/*.json'], fallthrough: false },
+        ],
+        // Custom build configuration.
 
-		build: {
-			cwd: './' + path.relative(projDir, './'),
-			watch_dir: './' + path.relative(projDir, './src'),
-			command: 'npx @clevercanyon/madrun build --mode=prod',
-		},
-		// Other environments used by this worker.
+        build: {
+            cwd: './' + path.relative(projDir, './'),
+            watch_dir: './' + path.relative(projDir, './src'),
+            command: 'npx @clevercanyon/madrun build --mode=prod',
+        },
+        // Other environments used by this worker.
 
-		env: {
-			dev: {
-				workers_dev: false,
-				build: { command: 'npx @clevercanyon/madrun build --mode=dev' },
-			},
-		},
-		// Worker sites; i.e., bucket configuration.
+        env: {
+            dev: {
+                workers_dev: false,
+                build: { command: 'npx @clevercanyon/madrun build --mode=dev' },
+            },
+        },
+        // Worker sites; i.e., bucket configuration.
 
-		site: {
-			bucket: './' + path.relative(projDir, './dist/assets'),
-			exclude: [
-				...$path.defaultNPMIgnores,
-				'/a16s', // A16s (top-level only).
-			],
-		},
-		// Worker route configuration.
+        site: {
+            bucket: './' + path.relative(projDir, './dist/assets'),
+            exclude: [
+                ...$path.defaultNPMIgnores,
+                '/a16s', // A16s (top-level only).
+            ],
+        },
+        // Worker route configuration.
 
-		route: {
-			zone_name: defaultZoneName,
-			pattern: defaultZoneDomain + '/' + $url.encode(defaultWorkerName) + '/*',
-		},
-	};
+        route: {
+            zone_name: defaultZoneName,
+            pattern: defaultZoneDomain + '/' + $url.encode(defaultWorkerName) + '/*',
+        },
+    };
 
-	/**
-	 * Composition.
-	 */
-	return {
-		...baseConfig,
-	};
+    /**
+     * Composition.
+     */
+    return {
+        ...baseConfig,
+    };
 };

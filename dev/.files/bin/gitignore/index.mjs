@@ -12,53 +12,53 @@ import { $is, $path, $str, $time } from '../../../../node_modules/@clevercanyon/
 import generatedRegExp from '../updater/data/generated-regexp.mjs';
 
 export default async ({ projDir }) => {
-	/**
-	 * Initializes vars.
-	 */
-	const gitIgnoreFile = path.resolve(projDir, './.gitignore');
+    /**
+     * Initializes vars.
+     */
+    const gitIgnoreFile = path.resolve(projDir, './.gitignore');
 
-	/**
-	 * Defines ignore contents.
-	 */
-	let gitIgnoreFileContentsIgnores = $str.dedent(`
-		# Last generated ${$time.i18n()}.
+    /**
+     * Defines ignore contents.
+     */
+    let gitIgnoreFileContentsIgnores = $str.dedent(`
+        # Last generated ${$time.i18n()}.
 	`);
-	for (const [groupName, group] of Object.entries($path.defaultGitIgnoresByGroup)) {
-		gitIgnoreFileContentsIgnores += '\n\n# ' + groupName;
+    for (const [groupName, group] of Object.entries($path.defaultGitIgnoresByGroup)) {
+        gitIgnoreFileContentsIgnores += '\n\n# ' + groupName;
 
-		if (!$is.array(group)) {
-			for (const [subgroupName, subgroup] of Object.entries(group)) {
-				gitIgnoreFileContentsIgnores += '\n\n# » ' + subgroupName + '\n';
+        if (!$is.array(group)) {
+            for (const [subgroupName, subgroup] of Object.entries(group)) {
+                gitIgnoreFileContentsIgnores += '\n\n# » ' + subgroupName + '\n';
 
-				for (const subgroupIgnore of subgroup) {
-					gitIgnoreFileContentsIgnores += '\n' + subgroupIgnore;
-				}
-			}
-		} else {
-			gitIgnoreFileContentsIgnores += '\n'; // Spacing.
+                for (const subgroupIgnore of subgroup) {
+                    gitIgnoreFileContentsIgnores += '\n' + subgroupIgnore;
+                }
+            }
+        } else {
+            gitIgnoreFileContentsIgnores += '\n'; // Spacing.
 
-			for (const groupIgnore of group) {
-				gitIgnoreFileContentsIgnores += '\n' + groupIgnore;
-			}
-		}
-	}
+            for (const groupIgnore of group) {
+                gitIgnoreFileContentsIgnores += '\n' + groupIgnore;
+            }
+        }
+    }
 
-	/**
-	 * Defines `./.gitignore` file contents.
-	 */
-	const oldFileContents = fs.readFileSync(gitIgnoreFile).toString();
-	const gitIgnoreFileContents = oldFileContents.replace(
-		generatedRegExp,
-		($_, $1, $2, $3) =>
-			$1 + //
-			'\n\n' +
-			gitIgnoreFileContentsIgnores +
-			'\n\n' +
-			$3,
-	);
+    /**
+     * Defines `./.gitignore` file contents.
+     */
+    const oldFileContents = fs.readFileSync(gitIgnoreFile).toString();
+    const gitIgnoreFileContents = oldFileContents.replace(
+        generatedRegExp,
+        ($_, $1, $2, $3) =>
+            $1 + //
+            '\n\n' +
+            gitIgnoreFileContentsIgnores +
+            '\n\n' +
+            $3,
+    );
 
-	/**
-	 * Compiles `./.gitignore` file contents.
-	 */
-	fs.writeFileSync(gitIgnoreFile, gitIgnoreFileContents);
+    /**
+     * Compiles `./.gitignore` file contents.
+     */
+    fs.writeFileSync(gitIgnoreFile, gitIgnoreFileContents);
 };

@@ -21,18 +21,18 @@ export default async ({ projDir }) => {
      * Defines ignore contents.
      */
     let prettierIgnoreFileContentsIgnores = $str.dedent(`
-		# Last generated ${$time.i18n()}.
+        # Last generated ${$time.i18n()}.
 
-		# \`.npmrc\` unsupported by Prettier at this time.
-		# It's a properties file, but Prettier chokes on \`:\` in auth tokens.
+        # \`.npmrc\` unsupported by Prettier at this time.
+        # It's a properties file, but Prettier chokes on \`:\` in auth tokens.
 
-		*.npmrc
+        *.npmrc
 
-		# EJS unsupported at this time.
-		# @todo Build or find an EJS plugin.
+        # EJS unsupported at this time.
+        # @todo Build or find an EJS plugin.
 
-		*.ejs
-	`);
+        *.ejs
+    `);
     for (const [groupName, group] of Object.entries($path.defaultGitIgnoresByGroup)) {
         if (!['Dist', 'Packages', 'Version Control', 'Operating Systems'].includes(groupName)) {
             continue; // Not applicable; we only include select groups.

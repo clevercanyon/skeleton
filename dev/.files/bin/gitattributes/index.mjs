@@ -12,70 +12,70 @@ import { $mime, $str, $time } from '../../../../node_modules/@clevercanyon/utili
 import generatedRegExp from '../updater/data/generated-regexp.mjs';
 
 export default async ({ projDir }) => {
-	/**
-	 * Initializes vars.
-	 */
-	const gitAttributesFile = path.resolve(projDir, './.gitattributes');
+    /**
+     * Initializes vars.
+     */
+    const gitAttributesFile = path.resolve(projDir, './.gitattributes');
 
-	/**
-	 * Defines text|binary contents.
-	 */
-	let gitAttributesFileContentsTextBinary = $str.dedent(`
-		# Last generated ${$time.i18n()}.
+    /**
+     * Defines text|binary contents.
+     */
+    let gitAttributesFileContentsTextBinary = $str.dedent(`
+        # Last generated ${$time.i18n()}.
 
-		# Default
+        # Default
 
-		* text=auto
-	`);
-	for (const [groupName, group] of Object.entries($mime.types)) {
-		gitAttributesFileContentsTextBinary += '\n\n# ' + groupName + '\n';
+        * text=auto
+    `);
+    for (const [groupName, group] of Object.entries($mime.types)) {
+        gitAttributesFileContentsTextBinary += '\n\n# ' + groupName + '\n';
 
-		for (const [subgroupExts, subgroup] of Object.entries(group)) {
-			for (const subgroupExt of subgroupExts.split('|')) {
-				gitAttributesFileContentsTextBinary += '\n*.' + subgroupExt + ' ' + (subgroup.isTextual ? 'text' : 'binary');
-			}
-		}
-	}
-	gitAttributesFileContentsTextBinary +=
-		'\n\n' +
-		$str.dedent(`
-		# Special Cases
+        for (const [subgroupExts, subgroup] of Object.entries(group)) {
+            for (const subgroupExt of subgroupExts.split('|')) {
+                gitAttributesFileContentsTextBinary += '\n*.' + subgroupExt + ' ' + (subgroup.isTextual ? 'text' : 'binary');
+            }
+        }
+    }
+    gitAttributesFileContentsTextBinary +=
+        '\n\n' +
+        $str.dedent(`
+        # Special Cases
 
-		*.env.* text
-		CODEOWNERS text
-		/src/cargo/_headers text
-		/src/cargo/_redirects text
-	`);
+        *.env.* text
+        CODEOWNERS text
+        /src/cargo/_headers text
+        /src/cargo/_redirects text
+    `);
 
-	/**
-	 * Defines large file storage contents.
-	 */
-	let gitAttributesFileContentsLFStorage = $str.dedent(`
-		##
-		# LFS storage rules.
-		##
+    /**
+     * Defines large file storage contents.
+     */
+    let gitAttributesFileContentsLFStorage = $str.dedent(`
+        ##
+        # LFS storage rules.
+        ##
 
-		lfs/** filter=lfs diff=lfs merge=lfs -text
-	`);
+        lfs/** filter=lfs diff=lfs merge=lfs -text
+    `);
 
-	/**
-	 * Defines `./.gitattributes` file contents.
-	 */
-	const oldFileContents = fs.readFileSync(gitAttributesFile).toString();
-	const gitAttributesFileContents = oldFileContents.replace(
-		generatedRegExp,
-		($_, $1, $2, $3) =>
-			$1 + //
-			'\n\n' +
-			gitAttributesFileContentsTextBinary +
-			'\n\n' +
-			gitAttributesFileContentsLFStorage +
-			'\n\n' +
-			$3,
-	);
+    /**
+     * Defines `./.gitattributes` file contents.
+     */
+    const oldFileContents = fs.readFileSync(gitAttributesFile).toString();
+    const gitAttributesFileContents = oldFileContents.replace(
+        generatedRegExp,
+        ($_, $1, $2, $3) =>
+            $1 + //
+            '\n\n' +
+            gitAttributesFileContentsTextBinary +
+            '\n\n' +
+            gitAttributesFileContentsLFStorage +
+            '\n\n' +
+            $3,
+    );
 
-	/**
-	 * Compiles `./.gitattributes` file contents.
-	 */
-	fs.writeFileSync(gitAttributesFile, gitAttributesFileContents);
+    /**
+     * Compiles `./.gitattributes` file contents.
+     */
+    fs.writeFileSync(gitAttributesFile, gitAttributesFileContents);
 };

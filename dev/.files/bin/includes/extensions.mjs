@@ -36,8 +36,8 @@ const noDot = (exts) => [...new Set(exts)].map((ext) => ext.replace(/^\./u, ''))
  * @note Don’t use `{}` braces in TypeScript config files; i.e., incompatible.
  */
 const asBracedGlob = (exts) => {
-	exts = [...new Set(exts)]; // Unique.
-	return (exts.length > 1 ? '{' : '') + noDot(exts).join(',') + (exts.length > 1 ? '}' : '');
+    exts = [...new Set(exts)]; // Unique.
+    return (exts.length > 1 ? '{' : '') + noDot(exts).join(',') + (exts.length > 1 ? '}' : '');
 };
 
 /**
@@ -48,87 +48,87 @@ const asBracedGlob = (exts) => {
  * @returns      Extensions as a regular expression fragment.
  */
 const asRegExpFrag = (exts) => {
-	exts = [...new Set(exts)]; // Unique.
-	return (exts.length > 1 ? '(?:' : '') + noDot(exts).join('|') + (exts.length > 1 ? ')' : '');
+    exts = [...new Set(exts)]; // Unique.
+    return (exts.length > 1 ? '(?:' : '') + noDot(exts).join('|') + (exts.length > 1 ? ')' : '');
 };
 
 /**
  * Defines extensions.
  */
 const extensions = {
-	dot,
-	noDot,
-	asBracedGlob,
-	asRegExpFrag,
+    dot,
+    noDot,
+    asBracedGlob,
+    asRegExpFrag,
 
-	/**
-	 * MIME type extensions by VS Code language. VS Code languages added to the default export here. Provided by
-	 * `@clevercanyon/utilities`. This includes everything we have in our MIME types library.
-	 */
-	...$obj.map($path.extsByVSCodeLang(), (exts) => dot(exts)),
+    /**
+     * MIME type extensions by VS Code language. VS Code languages added to the default export here. Provided by
+     * `@clevercanyon/utilities`. This includes everything we have in our MIME types library.
+     */
+    ...$obj.map($path.extsByVSCodeLang(), (exts) => dot(exts)),
 
-	// True HTML/SHTML.
+    // True HTML/SHTML.
 
-	trueHTML: ['.htm', '.html'],
-	trueSHTML: ['.shtm', '.shtml'],
+    trueHTML: ['.htm', '.html'],
+    trueSHTML: ['.shtm', '.shtml'],
 
-	// Standard JS/TS.
+    // Standard JS/TS.
 
-	sJavaScript: ['.js'],
-	sJavaScriptReact: ['.jsx'],
+    sJavaScript: ['.js'],
+    sJavaScriptReact: ['.jsx'],
 
-	sTypeScript: ['.ts'],
-	sTypeScriptReact: ['.tsx'],
+    sTypeScript: ['.ts'],
+    sTypeScriptReact: ['.tsx'],
 
-	// Common JS/TS.
+    // Common JS/TS.
 
-	cJavaScript: ['.cjs'],
-	cJavaScriptReact: ['.cjsx'],
+    cJavaScript: ['.cjs'],
+    cJavaScriptReact: ['.cjsx'],
 
-	cTypeScript: ['.cts'],
-	cTypeScriptReact: ['.ctsx'],
+    cTypeScript: ['.cts'],
+    cTypeScriptReact: ['.ctsx'],
 
-	// Module JS/TS.
+    // Module JS/TS.
 
-	mJavaScript: ['.mjs'],
-	mJavaScriptReact: ['.mjsx'],
+    mJavaScript: ['.mjs'],
+    mJavaScriptReact: ['.mjsx'],
 
-	mTypeScript: ['.mts'],
-	mTypeScriptReact: ['.mtsx'],
+    mTypeScript: ['.mts'],
+    mTypeScriptReact: ['.mtsx'],
 
-	// All flavors of JSX/TSX.
+    // All flavors of JSX/TSX.
 
-	allJavaScriptReact: ['.jsx', '.cjsx', '.mjsx'],
-	allTypeScriptReact: ['.tsx', '.ctsx', '.mtsx'],
+    allJavaScriptReact: ['.jsx', '.cjsx', '.mjsx'],
+    allTypeScriptReact: ['.tsx', '.ctsx', '.mtsx'],
 
-	// All flavors of JS/TS.
+    // All flavors of JS/TS.
 
-	allJavaScript: ['.js', '.jsx', '.cjs', '.cjsx', '.mjs', '.mjsx'],
-	allTypeScript: ['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
+    allJavaScript: ['.js', '.jsx', '.cjs', '.cjsx', '.mjs', '.mjsx'],
+    allTypeScript: ['.ts', '.tsx', '.cts', '.ctsx', '.mts', '.mtsx'],
 };
 
 /**
  * Content (tailwind).
  */
 extensions.tailwindContent = [
-	...new Set([
-		...extensions.mdx,
-		...extensions.markdown,
+    ...new Set([
+        ...extensions.mdx,
+        ...extensions.markdown,
 
-		...extensions.xml,
-		...extensions.html,
-		...extensions.trueHTML,
-		...extensions.trueSHTML,
+        ...extensions.xml,
+        ...extensions.html,
+        ...extensions.trueHTML,
+        ...extensions.trueSHTML,
 
-		...extensions.php,
-		...extensions.ruby,
-		...extensions.perl,
-		...extensions.python,
-		...extensions.shellscript,
+        ...extensions.php,
+        ...extensions.ruby,
+        ...extensions.perl,
+        ...extensions.python,
+        ...extensions.shellscript,
 
-		...extensions.allJavaScript,
-		...extensions.allTypeScript,
-	]),
+        ...extensions.allJavaScript,
+        ...extensions.allTypeScript,
+    ]),
 ];
 extensions.tailwindPrettierContent = [...extensions.tailwindContent];
 
