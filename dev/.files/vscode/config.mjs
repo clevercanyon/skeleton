@@ -18,7 +18,7 @@
 
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $path, $to } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $path } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
 import u from '../bin/includes/utilities.mjs';
