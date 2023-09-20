@@ -90,7 +90,7 @@ const asNegatedGlobs = (globs, { dropExistingNegations }) => {
  *
  * @note `dropExistingNegations` can *only* be set as true. There’s no other way to handle.
  */
-const asBracedGlob = (globs, { dropExistingNegations }) => {
+const asBracedGlob = (globs, { dropExistingNegations, dotGlobstars = false }) => {
     if (true !== dropExistingNegations) {
         throw new Error('Missing option: `dropExistingNegations`; must be `true`.');
     }
@@ -101,7 +101,14 @@ const asBracedGlob = (globs, { dropExistingNegations }) => {
         oneGlobs.push(glob.replace(/^\*\*\//u, '').replace(/\/\*\*$/u, ''));
     });
     oneGlobs = [...new Set(oneGlobs)]; // Unique; i.e., again, after processing.
-    return '**/' + (oneGlobs.length > 1 ? '{' : '') + oneGlobs.join(',') + (oneGlobs.length > 1 ? '}' : '') + '/**';
+
+    return (
+        (dotGlobstars ? $path.dotGlobstarHead : '**/') +
+        (oneGlobs.length > 1 ? '{' : '') +
+        oneGlobs.join(',') +
+        (oneGlobs.length > 1 ? '}' : '') +
+        (dotGlobstars ? $path.dotGlobstarTail : '/**')
+    );
 };
 
 /**

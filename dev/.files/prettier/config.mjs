@@ -201,7 +201,7 @@ export default async () => {
                     jsdocKeepUnParseAbleExampleIndent: false,
                     jsdocLineWrappingStyle: 'greedy',
                     jsdocPreferCodeFences: false,
-                    jsdocPrintWidth: 120,
+                    jsdocPrintWidth: baseConfig.printWidth - 60,
                     jsdocSeparateReturnsFromParam: false,
                     jsdocSeparateTagGroups: true,
                     jsdocSingleLineComment: false,

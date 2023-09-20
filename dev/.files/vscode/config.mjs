@@ -121,7 +121,7 @@ export default async () => {
             // ... plus these additional search ignores.
 
             ...((await u.isPkgRepo('clevercanyon/skeleton'))
-                ? {} // Only search these in `clevercanyon/skeleton`.
+                ? {} // Search in `clevercanyon/skeleton`.
                 : {
                       '/dev/.files': true,
                       ...exclusions.asBoolProps(
@@ -179,7 +179,7 @@ export default async () => {
                 ...exclusions.lockIgnores,
                 ...exclusions.distIgnores,
             ],
-            { dropExistingNegations: true },
+            { dropExistingNegations: true, dotGlobstars: true },
         ),
         'commentAnchors.workspace.matchFiles': $path.dotGlobstarHead + '*.' + extensions.asBracedGlob([...extensions.commentAnchorsContent]),
 
@@ -247,79 +247,7 @@ export default async () => {
         'evenBetterToml.formatter.indentString': ' '.repeat(prettierConfig.tabWidth),
 
         /**
-         * PHP options.
-         */
-
-        '[php]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-
-        /**
-         * Ruby options.
-         */
-
-        '[ruby]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-
-        /**
-         * SQL options.
-         */
-
-        '[sql]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-
-        /**
-         * INI options.
-         */
-
-        '[ini]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-
-        /**
-         * Properties options.
-         */
-
-        '[properties]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-
-        /**
-         * XML/HTML options.
-         */
-
-        '[xml]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-        '[html]': {
-            'editor.codeActionsOnSave': {
-                'source.fixAll': true,
-            },
-            'editor.defaultFormatter': 'esbenp.prettier-vscode',
-        },
-
-        /**
-         * Markdown options.
+         * Documents.
          */
 
         '[mdx]': {
@@ -336,24 +264,42 @@ export default async () => {
             },
             'editor.defaultFormatter': 'dbaeumer.vscode-eslint',
         },
+        '[html]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
 
         /**
-         * CSS/SCSS/LESS options.
+         * Backend code.
          */
 
-        '[css]': {
+        '[php]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
             'editor.defaultFormatter': 'esbenp.prettier-vscode',
         },
-        '[scss]': {
+        '[ruby]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
             'editor.defaultFormatter': 'esbenp.prettier-vscode',
         },
-        '[less]': {
+        '[python]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'ms-python.black-formatter',
+        },
+        '[shellscript]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
+        '[dockerfile]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
@@ -361,7 +307,7 @@ export default async () => {
         },
 
         /**
-         * JS/TS/React options.
+         * Frontend code (most of the time).
          */
 
         '[javascript]': {
@@ -388,11 +334,35 @@ export default async () => {
             },
             'editor.defaultFormatter': 'dbaeumer.vscode-eslint',
         },
+        '[css]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
+        '[scss]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
+        '[less]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
 
         /**
-         * JSON options.
+         * Data|config files.
          */
 
+        '[sql]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
         '[json]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
@@ -405,45 +375,31 @@ export default async () => {
             },
             'editor.defaultFormatter': 'esbenp.prettier-vscode',
         },
-
-        /**
-         * TOML options.
-         */
-
         '[toml]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
             'editor.defaultFormatter': 'tamasfe.even-better-toml',
         },
-
-        /**
-         * YAML options.
-         */
-
         '[yaml]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
             'editor.defaultFormatter': 'esbenp.prettier-vscode',
         },
-
-        /**
-         * Shell options.
-         */
-
-        '[shellscript]': {
+        '[ini]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
             'editor.defaultFormatter': 'esbenp.prettier-vscode',
         },
-
-        /**
-         * Docker options.
-         */
-
-        '[dockerfile]': {
+        '[properties]': {
+            'editor.codeActionsOnSave': {
+                'source.fixAll': true,
+            },
+            'editor.defaultFormatter': 'esbenp.prettier-vscode',
+        },
+        '[xml]': {
             'editor.codeActionsOnSave': {
                 'source.fixAll': true,
             },
