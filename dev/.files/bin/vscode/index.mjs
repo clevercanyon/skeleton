@@ -39,7 +39,7 @@ export default async ({ projDir }) => {
 	/**
 	 * Defines `./.vscode/settings.json` file contents.
 	 */
-	const vsCodeSettingsFileObj = (await import(path.resolve(projDir, './.vscode/settings.mjs'))).default;
+	const vsCodeSettingsFileObj = await (await import(path.resolve(projDir, './.vscode/settings.mjs'))).default();
 	const vsCodeSettingsFileContents = await $prettier.format($json.stringify(vsCodeSettingsFileObj, { pretty: true }), prettierConfig);
 
 	/**
