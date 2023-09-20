@@ -23,6 +23,11 @@ export default async ({ projDir }) => {
     let prettierIgnoreFileContentsIgnores = $str.dedent(`
         # Last generated ${$time.i18n()}.
 
+        # \`.editorconfig\` unsupported by Prettier at this time.
+        # It's a properties file, but Prettier chokes on \`[*]\` section.
+
+        *.editorconfig
+
         # \`.npmrc\` unsupported by Prettier at this time.
         # It's a properties file, but Prettier chokes on \`:\` in auth tokens.
 

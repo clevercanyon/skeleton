@@ -7,7 +7,7 @@
 # @note In the future this file will be updated automatically.
 # @note Only `<custom:start.../custom:end>` will be preserved below.
 ##
-#
+
 root=true
 
 [*]
@@ -18,7 +18,7 @@ indent_style=space
 max_line_length=180
 insert_final_newline=true
 trim_trailing_whitespace=true
-#
+
 ##
 # Customizations.
 # <custom:start>

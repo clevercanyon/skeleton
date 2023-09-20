@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Wed, Sep 20, 2023, 9:50:05 AM EDT.
+ * Last generated using `./settings.mjs` Wed, Sep 20, 2023, 5:49:49 PM EDT.
  */
 {
     "editor.autoIndent": "full",
@@ -52,10 +52,9 @@
         "**/*.toml": "toml",
         "**/*.{yaml,yml}": "yaml",
         "**/*.ini": "ini",
-        "**/*.{env,gitconfig,npmrc,properties,props}": "properties",
+        "**/*.{editorconfig,env,gitconfig,npmrc,properties,props}": "properties",
         "**/*.{conf,htaccess,htpasswd}": "apacheconf",
         "**/*.hex": "hexEditor.hexedit",
-        "**/*.editorconfig": "editorconfig",
         "**/*.shellcheckrc": "shellcheckrc",
         "**/*.browserslistrc": "browserslist",
         "**/*.{eslintignore,gitattributes,gitchange,gitignore,npmignore,prettierignore}": "ignore",
@@ -150,7 +149,7 @@
     },
     "commentAnchors.tags.matchCase": true,
     "commentAnchors.tags.separators": [" ", ": "],
-    "commentAnchors.workspace.excludeFiles": "**/{*.log,*.logs,*~,*.bak,*.rej,*.orig,*.patch,*.diff,*.code-*,.idea,.*.swp,*.ctags,.env.me,.tscache,*.tsbuildinfo,.vite,.vitest,.wrangler,.dev.vars,.dev.vars.*,.rollup,.webpack,.linaria-cache,.sass-cache,.docker,.vagrant,.elasticbeanstalk,.yarn,vendor,node_modules,jspm_packages,bower_components,.git,.svn,_svn,.svnignore,.bzr,.bzrignore,.hg,.hgignore,Thumbs.db,ehthumbs.db,Desktop.ini,$RECYCLE.BIN,._*,Icon,*.icloud,.DS_Store,.disk_label,.LSOverride,.VolumeIcon.icns,.com.apple.timemachine.*,.apdisk,.fseventsd,.AppleDB,.AppleDesktop,.AppleDouble,.Trashes,.TemporaryItems,.Spotlight-V100,.DocumentRevisions-V100,Network Trash Folder,Temporary Items,yarn.lock,composer.lock,package-lock.json,dist}/**",
+    "commentAnchors.workspace.excludeFiles": "{,**/,*(/|[^/\r\n])/}{*.log,*.logs,*~,*.bak,*.rej,*.orig,*.patch,*.diff,*.code-*,.idea,.*.swp,*.ctags,.env.me,.tscache,*.tsbuildinfo,.vite,.vitest,.wrangler,.dev.vars,.dev.vars.*,.rollup,.webpack,.linaria-cache,.sass-cache,.docker,.vagrant,.elasticbeanstalk,.yarn,vendor,node_modules,jspm_packages,bower_components,.git,.svn,_svn,.svnignore,.bzr,.bzrignore,.hg,.hgignore,Thumbs.db,ehthumbs.db,Desktop.ini,$RECYCLE.BIN,._*,Icon,*.icloud,.DS_Store,.disk_label,.LSOverride,.VolumeIcon.icns,.com.apple.timemachine.*,.apdisk,.fseventsd,.AppleDB,.AppleDesktop,.AppleDouble,.Trashes,.TemporaryItems,.Spotlight-V100,.DocumentRevisions-V100,Network Trash Folder,Temporary Items,yarn.lock,composer.lock,package-lock.json,dist}{,/**,/*(/|[^/\r\n])}",
     "commentAnchors.workspace.matchFiles": "{,**/,*(/|[^/\r\n])/}*.{mdx,md,atom,dtd,kml,rdf,rss,rss-http,rss2,svg,xhtm,xhtml,xml,xsd,xsl,xslt,ejs,htm,html,liquid,shtm,shtml,php,phps,phtm,phtml,rb,cgi,perl,pl,plx,ppl,py,bash,sh,zsh,js,jsx,cjs,cjsx,mjs,mjsx,ts,tsx,cts,ctsx,mts,mtsx}",
     "eslint.enable": true,
     "eslint.format.enable": true,
@@ -176,48 +175,6 @@
     "markdown.preview.fontFamily": "Georama, ui-sans-serif, sans-serif",
     "prettier.ignorePath": ".prettierignore",
     "evenBetterToml.formatter.indentString": "    ",
-    "[php]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[ruby]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[sql]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[ini]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[properties]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[xml]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
-    "[html]": {
-        "editor.codeActionsOnSave": {
-            "source.fixAll": true
-        },
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
-    },
     "[mdx]": {
         "editor.wordWrap": "on",
         "editor.codeActionsOnSave": {
@@ -232,19 +189,37 @@
         },
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },
-    "[css]": {
+    "[html]": {
         "editor.codeActionsOnSave": {
             "source.fixAll": true
         },
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "[scss]": {
+    "[php]": {
         "editor.codeActionsOnSave": {
             "source.fixAll": true
         },
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "[less]": {
+    "[ruby]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[python]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "[shellscript]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[dockerfile]": {
         "editor.codeActionsOnSave": {
             "source.fixAll": true
         },
@@ -274,6 +249,30 @@
         },
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },
+    "[css]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[scss]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[less]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[sql]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
     "[json]": {
         "editor.codeActionsOnSave": {
             "source.fixAll": true
@@ -298,13 +297,19 @@
         },
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "[shellscript]": {
+    "[ini]": {
         "editor.codeActionsOnSave": {
             "source.fixAll": true
         },
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
-    "[dockerfile]": {
+    "[properties]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": true
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[xml]": {
         "editor.codeActionsOnSave": {
             "source.fixAll": true
         },

@@ -76,29 +76,31 @@ export default async () => {
         ...baseConfig,
 
         overrides: [
-            {
-                /**
-                 * Enforce Babel parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.allJavaScript])],
-                options: { parser: 'babel' },
-            },
+            /**
+             * Documents.
+             */
 
             {
                 /**
-                 * Enforce TypeScript parser.
+                 * MD parser.
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.allTypeScript])],
-                options: { parser: 'typescript' },
+                files: ['*.' + extensions.asBracedGlob([...extensions.markdown])],
+                options: { parser: 'markdown' },
             },
-
             {
                 /**
-                 * Enforce HTML parser.
+                 * MDX parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.mdx])],
+                options: { parser: 'mdx' },
+            },
+            {
+                /**
+                 * HTML parser.
                  *
                  * @see https://o5p.me/sj8jjz
                  */
@@ -106,136 +108,9 @@ export default async () => {
                 options: { parser: 'html' },
             },
 
-            {
-                /**
-                 * Enforce MD parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.markdown])],
-                options: { parser: 'markdown' },
-            },
-
-            {
-                /**
-                 * Enforce MDX parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.mdx])],
-                options: { parser: 'mdx' },
-            },
-
-            {
-                /**
-                 * Enforce CSS parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.css])],
-                options: { parser: 'css' },
-            },
-
-            {
-                /**
-                 * Enforce SCSS parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.scss])],
-                options: { parser: 'scss' },
-            },
-
-            {
-                /**
-                 * Enforce Less parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.less])],
-                options: { parser: 'less' },
-            },
-
-            {
-                /**
-                 * Enforce Yaml parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.yaml])],
-                options: { parser: 'yaml' },
-            },
-
-            {
-                /**
-                 * Enforce JSON parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.json])],
-                options: { parser: 'json' },
-            },
-
-            {
-                /**
-                 * Enforce JSON5 parser.
-                 *
-                 * @see https://o5p.me/sj8jjz
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.jsonc])],
-                options: { parser: 'json5' },
-            },
-
-            {
-                /**
-                 * JSDoc plugin options.
-                 *
-                 * @see https://o5p.me/dTTfse
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
-                options: {
-                    jsdocAddDefaultToDescription: false,
-                    jsdocCapitalizeDescription: true,
-                    jsdocDescriptionTag: false,
-                    jsdocDescriptionWithDot: true,
-                    jsdocKeepUnParseAbleExampleIndent: false,
-                    jsdocLineWrappingStyle: 'greedy',
-                    jsdocPreferCodeFences: false,
-                    jsdocPrintWidth: baseConfig.printWidth - 60,
-                    jsdocSeparateReturnsFromParam: false,
-                    jsdocSeparateTagGroups: true,
-                    jsdocSingleLineComment: false,
-                    jsdocSpaces: 1,
-                    jsdocVerticalAlignment: true,
-                    tsdoc: false,
-                },
-            },
-
-            {
-                /**
-                 * Organize import plugin options.
-                 *
-                 * @see https://o5p.me/o7OmDG
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
-                options: {
-                    organizeImportsSkipDestructiveCodeActions: true,
-                },
-            },
-
-            {
-                /**
-                 * Tailwind CSS plugin options.
-                 *
-                 * @see https://o5p.me/RleCLk
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.tailwindPrettierContent])],
-                options: {
-                    tailwindConfig: path.resolve(projDir, './tailwind.config.mjs'),
-                    tailwindAttributes: ['class', 'classes', 'className', 'classNames'],
-                    tailwindFunctions: ['$preact.classes'], // See: <https://o5p.me/33VJpO>.
-                },
-            },
+            /**
+             * Backend code.
+             */
 
             {
                 /**
@@ -251,7 +126,6 @@ export default async () => {
                     trailingCommaPHP: true,
                 },
             },
-
             {
                 /**
                  * Ruby plugin options.
@@ -265,7 +139,15 @@ export default async () => {
                     rubySingleQuote: true,
                 },
             },
-
+            {
+                /**
+                 * Python plugin options.
+                 *
+                 * @see https://o5p.me/wWDiYK
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.python])],
+                options: { parser: '' }, // N/A ... instead, use <https://github.com/microsoft/vscode-black-formatter>.
+            },
             {
                 /**
                  * Sh plugin options.
@@ -288,7 +170,6 @@ export default async () => {
                     switchCaseIndent: true,
                 },
             },
-
             {
                 /**
                  * Bash plugin options.
@@ -314,6 +195,108 @@ export default async () => {
                     switchCaseIndent: true,
                 },
             },
+
+            /**
+             * Frontend code (most of the time).
+             */
+
+            {
+                /**
+                 * JavaScript parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.allJavaScript])],
+                options: { parser: 'babel' },
+            },
+            {
+                /**
+                 * TypeScript parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.allTypeScript])],
+                options: { parser: 'typescript' },
+            },
+            {
+                /**
+                 * JSDoc plugin options.
+                 *
+                 * @see https://o5p.me/dTTfse
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
+                options: {
+                    jsdocAddDefaultToDescription: false,
+                    jsdocCapitalizeDescription: true,
+                    jsdocDescriptionTag: false,
+                    jsdocDescriptionWithDot: true,
+                    jsdocKeepUnParseAbleExampleIndent: false,
+                    jsdocLineWrappingStyle: 'greedy',
+                    jsdocPreferCodeFences: false,
+                    jsdocPrintWidth: baseConfig.printWidth - 60,
+                    jsdocSeparateReturnsFromParam: false,
+                    jsdocSeparateTagGroups: true,
+                    jsdocSingleLineComment: false,
+                    jsdocSpaces: 1,
+                    jsdocVerticalAlignment: true,
+                    tsdoc: false,
+                },
+            },
+            {
+                /**
+                 * Organize import plugin options.
+                 *
+                 * @see https://o5p.me/o7OmDG
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.allJavaScript, ...extensions.allTypeScript])],
+                options: {
+                    organizeImportsSkipDestructiveCodeActions: true,
+                },
+            },
+            {
+                /**
+                 * Tailwind plugin options.
+                 *
+                 * @see https://o5p.me/RleCLk
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.tailwindPrettierContent])],
+                options: {
+                    tailwindConfig: path.resolve(projDir, './tailwind.config.mjs'),
+                    tailwindAttributes: ['class', 'classes', 'className', 'classNames'],
+                    tailwindFunctions: ['$preact.classes'], // See: <https://o5p.me/33VJpO>.
+                },
+            },
+            {
+                /**
+                 * CSS parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.css])],
+                options: { parser: 'css' },
+            },
+            {
+                /**
+                 * SCSS parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.scss])],
+                options: { parser: 'scss' },
+            },
+            {
+                /**
+                 * Less parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.less])],
+                options: { parser: 'less' },
+            },
+
+            /**
+             * Data/config files.
+             */
 
             {
                 /**
@@ -341,7 +324,67 @@ export default async () => {
                     type: 'table',
                 },
             },
-
+            {
+                /**
+                 * JSON parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.json])],
+                options: { parser: 'json' },
+            },
+            {
+                /**
+                 * JSON5 parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.jsonc])],
+                options: { parser: 'json5' },
+            },
+            {
+                /**
+                 * TOML parser.
+                 *
+                 * @see https://o5p.me/GI5Eiw
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.toml])],
+                options: { parser: '' }, // Not ready for production yet, but coming soon.
+            },
+            {
+                /**
+                 * Yaml parser.
+                 *
+                 * @see https://o5p.me/sj8jjz
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.yaml])],
+                options: { parser: 'yaml' },
+            },
+            {
+                /**
+                 * INI plugin options.
+                 *
+                 * @see https://o5p.me/1fqazf
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.ini])],
+                options: {
+                    parser: 'ini',
+                    iniSpaceAroundEquals: true,
+                },
+            },
+            {
+                /**
+                 * Properties plugin options.
+                 *
+                 * @see https://o5p.me/IyzRSp
+                 */
+                files: ['*.' + extensions.asBracedGlob([...extensions.properties]), '*.env{,.*}'],
+                options: {
+                    parser: 'dot-properties',
+                    keySeparator: '=',
+                    escapeNonLatin1: false,
+                },
+            },
             {
                 /**
                  * XML plugin options.
@@ -355,33 +398,6 @@ export default async () => {
                     xmlSortAttributesByKey: false,
                     xmlQuoteAttributes: 'preserve',
                     xmlWhitespaceSensitivity: 'ignore',
-                },
-            },
-
-            {
-                /**
-                 * INI plugin options.
-                 *
-                 * @see https://o5p.me/1fqazf
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.ini])],
-                options: {
-                    parser: 'ini',
-                    iniSpaceAroundEquals: true,
-                },
-            },
-
-            {
-                /**
-                 * Properties plugin options.
-                 *
-                 * @see https://o5p.me/IyzRSp
-                 */
-                files: ['*.' + extensions.asBracedGlob([...extensions.properties]), '*.env{,.*}'],
-                options: {
-                    parser: 'dot-properties',
-                    keySeparator: '=',
-                    escapeNonLatin1: false,
                 },
             },
         ],
