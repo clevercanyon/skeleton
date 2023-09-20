@@ -12,19 +12,19 @@ import { $is, $path, $str, $time } from '../../../../node_modules/@clevercanyon/
 import generatedRegExp from '../updater/data/generated-regexp.mjs';
 
 export default async ({ projDir }) => {
-	/**
-	 * Initializes vars.
-	 */
-	const prettierIgnoreFile = path.resolve(projDir, './.prettierignore');
+    /**
+     * Initializes vars.
+     */
+    const prettierIgnoreFile = path.resolve(projDir, './.prettierignore');
 
-	/**
-	 * Defines ignore contents.
-	 */
-	let prettierIgnoreFileContentsIgnores = $str.dedent(`
+    /**
+     * Defines ignore contents.
+     */
+    let prettierIgnoreFileContentsIgnores = $str.dedent(`
 		# Last generated ${$time.i18n()}.
 
-		# \`.npmrc\` unsupported at this time.
-		# Prettier chokes on \`:\` in auth tokens.
+		# \`.npmrc\` unsupported by Prettier at this time.
+		# It's a properties file, but Prettier chokes on \`:\` in auth tokens.
 
 		*.npmrc
 
@@ -33,45 +33,45 @@ export default async ({ projDir }) => {
 
 		*.ejs
 	`);
-	for (const [groupName, group] of Object.entries($path.defaultGitIgnoresByGroup)) {
-		if (!['Dist', 'Packages', 'Version Control', 'Operating Systems'].includes(groupName)) {
-			continue; // Not applicable; we only include select groups.
-		}
-		prettierIgnoreFileContentsIgnores += '\n\n# ' + groupName;
+    for (const [groupName, group] of Object.entries($path.defaultGitIgnoresByGroup)) {
+        if (!['Dist', 'Packages', 'Version Control', 'Operating Systems'].includes(groupName)) {
+            continue; // Not applicable; we only include select groups.
+        }
+        prettierIgnoreFileContentsIgnores += '\n\n# ' + groupName;
 
-		if (!$is.array(group)) {
-			for (const [subgroupName, subgroup] of Object.entries(group)) {
-				prettierIgnoreFileContentsIgnores += '\n\n# » ' + subgroupName + '\n';
+        if (!$is.array(group)) {
+            for (const [subgroupName, subgroup] of Object.entries(group)) {
+                prettierIgnoreFileContentsIgnores += '\n\n# » ' + subgroupName + '\n';
 
-				for (const subgroupIgnore of subgroup) {
-					prettierIgnoreFileContentsIgnores += '\n' + subgroupIgnore;
-				}
-			}
-		} else {
-			prettierIgnoreFileContentsIgnores += '\n'; // Spacing.
+                for (const subgroupIgnore of subgroup) {
+                    prettierIgnoreFileContentsIgnores += '\n' + subgroupIgnore;
+                }
+            }
+        } else {
+            prettierIgnoreFileContentsIgnores += '\n'; // Spacing.
 
-			for (const groupIgnore of group) {
-				prettierIgnoreFileContentsIgnores += '\n' + groupIgnore;
-			}
-		}
-	}
+            for (const groupIgnore of group) {
+                prettierIgnoreFileContentsIgnores += '\n' + groupIgnore;
+            }
+        }
+    }
 
-	/**
-	 * Defines `./.prettierignore` file contents.
-	 */
-	const oldFileContents = fs.readFileSync(prettierIgnoreFile).toString();
-	const prettierIgnoreFileContents = oldFileContents.replace(
-		generatedRegExp,
-		($_, $1, $2, $3) =>
-			$1 + //
-			'\n\n' +
-			prettierIgnoreFileContentsIgnores +
-			'\n\n' +
-			$3,
-	);
+    /**
+     * Defines `./.prettierignore` file contents.
+     */
+    const oldFileContents = fs.readFileSync(prettierIgnoreFile).toString();
+    const prettierIgnoreFileContents = oldFileContents.replace(
+        generatedRegExp,
+        ($_, $1, $2, $3) =>
+            $1 + //
+            '\n\n' +
+            prettierIgnoreFileContentsIgnores +
+            '\n\n' +
+            $3,
+    );
 
-	/**
-	 * Compiles `./.prettierignore` file contents.
-	 */
-	fs.writeFileSync(prettierIgnoreFile, prettierIgnoreFileContents);
+    /**
+     * Compiles `./.prettierignore` file contents.
+     */
+    fs.writeFileSync(prettierIgnoreFile, prettierIgnoreFileContents);
 };

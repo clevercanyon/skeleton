@@ -12,15 +12,15 @@ import path from 'node:path';
 import { $str, $time } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 export default async ({ projDir }) => {
-	/**
-	 * Initializes vars.
-	 */
-	const wranglerFile = path.resolve(projDir, './wrangler.toml');
+    /**
+     * Initializes vars.
+     */
+    const wranglerFile = path.resolve(projDir, './wrangler.toml');
 
-	/**
-	 * Defines `./wrangler.toml` file comments.
-	 */
-	const wranglerFileComments = $str.dedent(`
+    /**
+     * Defines `./wrangler.toml` file comments.
+     */
+    const wranglerFileComments = $str.dedent(`
 		##
 		# Auto-generated Wrangler config file.
 		#
@@ -34,14 +34,14 @@ export default async ({ projDir }) => {
 		##
 	`);
 
-	/**
-	 * Defines `./wrangler.toml` file contents.
-	 */
-	const wranglerFileObj = (await import(path.resolve(projDir, './wrangler.mjs'))).default;
-	const wranglerFileContents = toml.stringify(wranglerFileObj);
+    /**
+     * Defines `./wrangler.toml` file contents.
+     */
+    const wranglerFileObj = (await import(path.resolve(projDir, './wrangler.mjs'))).default;
+    const wranglerFileContents = toml.stringify(wranglerFileObj);
 
-	/**
-	 * Compiles `./wrangler.toml` file contents.
-	 */
-	fs.writeFileSync(wranglerFile, wranglerFileComments + '\n\n' + wranglerFileContents);
+    /**
+     * Compiles `./wrangler.toml` file contents.
+     */
+    fs.writeFileSync(wranglerFile, wranglerFileComments + '\n\n' + wranglerFileContents);
 };
