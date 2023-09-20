@@ -22,21 +22,6 @@ export default async ({ projDir }) => {
      */
     let prettierIgnoreFileContentsIgnores = $str.dedent(`
         # Last generated ${$time.i18n()}.
-
-        # \`.editorconfig\` unsupported by Prettier at this time.
-        # It's a properties file, but Prettier chokes on \`[*]\` section.
-
-        *.editorconfig
-
-        # \`.npmrc\` unsupported by Prettier at this time.
-        # It's a properties file, but Prettier chokes on \`:\` in auth tokens.
-
-        *.npmrc
-
-        # EJS unsupported at this time.
-        # @todo Build or find an EJS plugin.
-
-        *.ejs
     `);
     for (const [groupName, group] of Object.entries($path.defaultGitIgnoresByGroup)) {
         if (!['Dist', 'Packages', 'Version Control', 'Operating Systems'].includes(groupName)) {
@@ -60,6 +45,24 @@ export default async ({ projDir }) => {
             }
         }
     }
+    prettierIgnoreFileContentsIgnores +=
+        '\n\n' +
+        $str.dedent(`
+        # \`.editorconfig\` unsupported by Prettier at this time.
+        # It's a properties file, but Prettier chokes on \`[*]\` section.
+
+        *.editorconfig
+
+        # \`.npmrc\` unsupported by Prettier at this time.
+        # It's a properties file, but Prettier chokes on \`:\` in auth tokens.
+
+        *.npmrc
+
+        # EJS unsupported at this time.
+        # @todo Build or find an EJS plugin.
+
+        *.ejs
+    `);
 
     /**
      * Defines `./.prettierignore` file contents.
