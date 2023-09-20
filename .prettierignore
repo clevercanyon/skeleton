@@ -17,7 +17,12 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Wed, Sep 20, 2023, 5:49:49 PM EDT.
+# Last generated Wed, Sep 20, 2023, 6:32:50 PM EDT.
+
+# `.editorconfig` unsupported by Prettier at this time.
+# It's a properties file, but Prettier chokes on `[*]` section.
+
+*.editorconfig
 
 # `.npmrc` unsupported by Prettier at this time.
 # It's a properties file, but Prettier chokes on `:` in auth tokens.

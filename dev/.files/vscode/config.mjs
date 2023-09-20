@@ -218,10 +218,7 @@ export default async () => {
         'css.validate': true,
         'scss.validate': true,
         'less.validate': true,
-        'stylelint.validate': [
-            'scss', //
-            'css',
-        ],
+        'stylelint.validate': ['scss', 'css'],
 
         /**
          * Markdown options.
