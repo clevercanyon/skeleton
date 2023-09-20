@@ -16,9 +16,15 @@
  * @see https://code.visualstudio.com/docs/getstarted/settings
  */
 
+import path from 'node:path';
+import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import { $path } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
+import u from '../bin/includes/utilities.mjs';
+
+const __dirname = $fs.imuDirname(import.meta.url);
+const projDir = path.resolve(__dirname, '../../..');
 
 /**
  * Defines VS Code configuration.
@@ -27,17 +33,20 @@ export default async () => {
 	/**
 	 * File associations.
 	 */
-	const fileAssociations = {
+	let fileAssociations = {}; // Initialize.
+
+	for (const [vsCodeLang, exts] of Object.entries($path.extsByVSCodeLang())) {
+		fileAssociations['**/*.' + extensions.asBracedGlob(exts)] = vsCodeLang;
+	}
+	fileAssociations = {
+		...fileAssociations,
 		// Special cases.
-		'.env{,.*}': 'properties',
+		'.env.*': 'properties',
 		'**/CODEOWNERS': 'ignore',
 		'**/src/cargo/_headers': 'plaintext',
 		'**/src/cargo/_redirects': 'plaintext',
 		'**/src/cargo/_routes.json': 'jsonc',
 	};
-	for (const [vsCodeLang, exts] of Object.entries($path.extsByVSCodeLang())) {
-		fileAssociations['**/*.' + extensions.asBracedGlob(exts)] = vsCodeLang;
-	}
 
 	/**
 	 * Base config.
@@ -70,26 +79,33 @@ export default async () => {
 		'files.associations': fileAssociations,
 		'files.exclude': {
 			...exclusions.asBoolProps(
-				exclusions.localIgnores //
+				[...exclusions.localIgnores] //
 					.filter((ignore) => !['**/.#*/**'].includes(ignore)),
 			),
 			...exclusions.asBoolProps(
-				exclusions.editorIgnores //
-					.filter((ignore) => !['**/*.code-search/**', '**/*.code-workspace/**'].includes(ignore)),
+				[...exclusions.editorIgnores] //
+					.filter((ignore) => !['**/*.code-*/**'].includes(ignore)),
 			),
-			...exclusions.asBoolProps(
-				exclusions.toolingIgnores //
-					.filter((ignore) => !['**/.dev.vars/**', '**/.dev.vars.*/**'].includes(ignore)),
-			),
-			...exclusions.asBoolProps(exclusions.vcsIgnores),
-			...exclusions.asBoolProps(exclusions.osIgnores),
+			...exclusions.asBoolProps([...exclusions.toolingIgnores]),
+			...exclusions.asBoolProps([...exclusions.vcsIgnores]),
+			...exclusions.asBoolProps([...exclusions.osIgnores]),
 		},
 		'search.useIgnoreFiles': true,
 		'search.useGlobalIgnoreFiles': false,
 		'search.useParentIgnoreFiles': false,
 		'search.exclude': {
-			...exclusions.asBoolProps(exclusions.lockIgnores),
-			'**/.vscode/**': true,
+			// Inherits everything in `files.exclude`.
+			// Plus everything in `../../../.gitignore`.
+			// ... plus these additional search ignores.
+
+			...((await u.isPkgRepo('clevercanyon/skeleton'))
+				? {} // Only search these in `clevercanyon/skeleton`.
+				: {
+						'LICENSE.txt': true,
+						'dev/.files/**': true,
+						...exclusions.asBoolProps(exclusions.asRelativeGlobs(projDir, [...exclusions.dotIgnores, ...exclusions.configIgnores])),
+				  }),
+			...exclusions.asBoolProps([...exclusions.lockIgnores]),
 		},
 
 		/**

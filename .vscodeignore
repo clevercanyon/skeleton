@@ -17,7 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Tue, Sep 19, 2023, 6:28:42 AM EDT.
+# Last generated Wed, Sep 20, 2023, 12:00:57 AM EDT.
 
 # Locals
 
@@ -71,9 +71,58 @@
 
 *.ctags
 
-# Dist
+# Tooling
 
-dist
+# » Dotenv
+
+.env*
+.flaskenv*
+!.env.vault
+!.env.project
+
+# » TypeScript
+
+.tscache
+*.tsbuildinfo
+
+# » Vite
+
+.vite
+.vitest
+
+# » Wrangler
+
+.wrangler
+.dev.vars
+.dev.vars.*
+
+# » Rollup
+
+.rollup
+
+# » Webpack
+
+.webpack
+
+# » Linaria
+
+.linaria-cache
+
+# » SASS
+
+.sass-cache
+
+# » Docker
+
+.docker
+
+# » Vagrant
+
+.vagrant
+
+# » Elastic Beanstalk
+
+.elasticbeanstalk
 
 # Packages
 
@@ -96,57 +145,6 @@ jspm_packages
 # » Bower
 
 bower_components
-
-# Dotenv
-
-.env*
-.flaskenv*
-!.env.vault
-!.env.project
-
-# TypeScript
-
-.tscache
-*.tsbuildinfo
-
-# Vite
-
-.vite
-.vitest
-
-# Wrangler
-
-.wrangler
-.dev.vars
-.dev.vars.*
-
-# Rollup
-
-.rollup
-
-# Webpack
-
-.webpack
-
-# Linaria
-
-.linaria-cache
-
-# SASS
-
-.sass-cache
-
-# Docker
-
-.docker
-
-# Vagrant
-
-.vagrant
-
-# Elastic Beanstalk
-
-.elasticbeanstalk
 
 # Version Control
 
@@ -207,9 +205,17 @@ Icon
 Network Trash Folder
 Temporary Items
 
+# Dist
+
+dist
+
 # npm:Dist
 
 !dist
+
+# npm:Dots
+
+.*
 
 # npm:Configs
 
@@ -223,10 +229,6 @@ config.gypi
 yarn.lock
 composer.lock
 package-lock.json
-
-# npm:Dots
-
-.*
 
 # npm:Src
 
