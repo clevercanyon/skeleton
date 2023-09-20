@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Wed, Sep 20, 2023, 6:55:54 PM EDT.
+ * Last generated using `./settings.mjs` Wed, Sep 20, 2023, 7:33:23 PM EDT.
  */
 {
     "editor.autoIndent": "full",
@@ -57,7 +57,7 @@
         "**/*.hex": "hexEditor.hexedit",
         "**/*.shellcheckrc": "shellcheckrc",
         "**/*.browserslistrc": "browserslist",
-        "**/*.{eslintignore,gitattributes,gitchange,gitignore,npmignore,prettierignore}": "ignore",
+        "**/*.{dockerignore,eslintignore,gitattributes,gitchange,gitignore,npmignore,prettierignore,vscodeignore}": "ignore",
         "**/.env.*": "properties",
         "**/CODEOWNERS": "ignore",
         "**/tsconfig.{json,×××××××}": "jsonc",
