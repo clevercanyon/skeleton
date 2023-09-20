@@ -30,14 +30,32 @@ const asRegExps = (globs) => asRegExpStrings(globs).map((rxs) => new RegExp(rxs,
 /**
  * Converts an array of exclusions into relative globs.
  *
- * @param   from  From path.
- * @param   globs Array of exclusion globs.
+ * @param   from    From path.
+ * @param   globs   Array of exclusion globs.
+ * @param   options Default is `{ forceRelative: false }`.
  *
- * @returns       Exclusions as relative globs.
+ * @returns         Exclusions as relative globs.
  */
-const asRelativeGlobs = (from, globs) => {
+const asRelativeGlobs = (from, globs, { forceRelative = false } = {}) => {
 	return [...new Set(globs)].map((glob) => {
+		glob = forceRelative ? glob.replace(/^\*\*\//u, '') : glob;
 		return /^\*\*/u.test(glob) ? glob : path.relative(from, glob);
+	});
+};
+
+/**
+ * Converts an array of exclusions into rooted relative globs.
+ *
+ * @param   from    From path.
+ * @param   globs   Array of exclusion globs.
+ * @param   options Default is `{ forceRootedRelative: false }`.
+ *
+ * @returns         Exclusions as rooted relative globs.
+ */
+const asRootedRelativeGlobs = (from, globs, { forceRelative = false } = {}) => {
+	return [...new Set(globs)].map((glob) => {
+		glob = forceRelative ? glob.replace(/^\*\*\//u, '') : glob;
+		return /^\*\*/u.test(glob) ? glob : '/' + path.relative(from, glob);
 	});
 };
 
@@ -76,25 +94,30 @@ const asBracedGlob = (globs, { dropExistingNegations }) => {
 	if (true !== dropExistingNegations) {
 		throw new Error('Missing option: `dropExistingNegations`; must be `true`.');
 	}
-	const oneGlobs = []; // Initialize.
+	let oneGlobs = []; // Initialize.
 
 	[...new Set(globs)].forEach((glob) => {
 		if (/^!/u.test(glob)) return; // Dropping.
 		oneGlobs.push(glob.replace(/^\*\*\//u, '').replace(/\/\*\*$/u, ''));
 	});
-	return '**/{' + [...new Set(oneGlobs)].join(',') + '}/**';
+	oneGlobs = [...new Set(oneGlobs)]; // Unique; i.e., again, after processing.
+	return '**/' + (oneGlobs.length > 1 ? '{' : '') + oneGlobs.join(',') + (oneGlobs.length > 1 ? '}' : '') + '/**';
 };
 
 /**
  * Converts an array of exclusions into boolean properties.
  *
- * @param   globs Array of of exclusion globs.
+ * @param   globs   Array of of exclusion globs.
+ * @param   options Default is `{ tailGreedy: true }`.
  *
- * @returns       Exclusions as boolean properties.
+ * @returns         Exclusions as boolean properties.
  */
-const asBoolProps = (globs) => {
+const asBoolProps = (globs, { tailGreedy = true } = {}) => {
 	const props = {}; // Initialize.
-	for (const glob of globs) props[glob.replace(/^!/u, '')] = /^!/u.test(glob) ? false : true;
+	for (let glob of globs) {
+		glob = !tailGreedy ? glob.replace(/\/\*\*$/u, '') : glob;
+		props[glob.replace(/^!/u, '')] = /^!/u.test(glob) ? false : true;
+	}
 	return props; // Plain object properties.
 };
 
@@ -133,6 +156,7 @@ export default {
 	asRegExps,
 	asRegExpStrings,
 	asRelativeGlobs,
+	asRootedRelativeGlobs,
 	asNegatedGlobs,
 	asBracedGlob,
 	asBoolProps,

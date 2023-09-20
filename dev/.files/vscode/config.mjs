@@ -18,7 +18,7 @@
 
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $path } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $path, $to } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
 import u from '../bin/includes/utilities.mjs';
@@ -34,18 +34,33 @@ export default async () => {
 	 * File associations.
 	 */
 	let fileAssociations = {}; // Initialize.
+	const extsByVSCodeLang = $path.extsByVSCodeLang();
 
-	for (const [vsCodeLang, exts] of Object.entries($path.extsByVSCodeLang())) {
+	for (const [vsCodeLang, exts] of Object.entries(extsByVSCodeLang)) {
 		fileAssociations['**/*.' + extensions.asBracedGlob(exts)] = vsCodeLang;
 	}
+	const fileAssociationsOverrideExt = (ext) => {
+		let currentExts = ''; // Initialize.
+		for (const [, exts] of Object.entries(extsByVSCodeLang))
+			if (exts.includes(ext)) { currentExts = exts.join(','); break; } // prettier-ignore
+		return '{' + ext + ',' + '×'.repeat(Math.max(1, currentExts.length - ext.length)) + '}';
+	};
 	fileAssociations = {
 		...fileAssociations,
-		// Special cases.
-		'.env.*': 'properties',
-		'**/CODEOWNERS': 'ignore',
-		'**/src/cargo/_headers': 'plaintext',
-		'**/src/cargo/_redirects': 'plaintext',
-		'**/src/cargo/_routes.json': 'jsonc',
+
+		// Overrides; for special cases.
+		// Note: order of precedence is tricky.
+		// For details, see: <https://o5p.me/AcvdMc>.
+
+		['**/.env.*']: 'properties', // Suffix, not extension.
+		['**/CODEOWNERS']: 'ignore', // File has no extension.
+
+		['**/tsconfig.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/ comments.
+		['**/.vscode/*.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/ comments.
+
+		['**/src/cargo/_headers']: 'plaintext', // File has no extension.
+		['**/src/cargo/_redirects']: 'plaintext', // File has no extension.
+		['**/src/cargo/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/ comments.
 	};
 
 	/**
@@ -81,14 +96,16 @@ export default async () => {
 			...exclusions.asBoolProps(
 				[...exclusions.localIgnores] //
 					.filter((ignore) => !['**/.#*/**'].includes(ignore)),
+				{ tailGreedy: false },
 			),
 			...exclusions.asBoolProps(
 				[...exclusions.editorIgnores] //
 					.filter((ignore) => !['**/*.code-*/**'].includes(ignore)),
+				{ tailGreedy: false },
 			),
-			...exclusions.asBoolProps([...exclusions.toolingIgnores]),
-			...exclusions.asBoolProps([...exclusions.vcsIgnores]),
-			...exclusions.asBoolProps([...exclusions.osIgnores]),
+			...exclusions.asBoolProps([...exclusions.toolingIgnores], { tailGreedy: false }),
+			...exclusions.asBoolProps([...exclusions.vcsIgnores], { tailGreedy: false }),
+			...exclusions.asBoolProps([...exclusions.osIgnores], { tailGreedy: false }),
 		},
 		'search.useIgnoreFiles': true,
 		'search.useGlobalIgnoreFiles': false,
@@ -98,14 +115,24 @@ export default async () => {
 			// Plus everything in `../../../.gitignore`.
 			// ... plus these additional search ignores.
 
-			...((await u.isPkgRepo('clevercanyon/skeleton'))
+			...(!(await u.isPkgRepo('clevercanyon/skeleton'))
 				? {} // Only search these in `clevercanyon/skeleton`.
 				: {
-						'LICENSE.txt': true,
-						'dev/.files/**': true,
-						...exclusions.asBoolProps(exclusions.asRelativeGlobs(projDir, [...exclusions.dotIgnores, ...exclusions.configIgnores])),
+						'/dev/.files': true,
+						...exclusions.asBoolProps(
+							exclusions.asRootedRelativeGlobs(
+								projDir,
+								[
+									...exclusions.dotIgnores, //
+									...exclusions.configIgnores,
+								],
+								{ forceRelative: true },
+							),
+							{ tailGreedy: false },
+						),
+						'/LICENSE.txt': true,
 				  }),
-			...exclusions.asBoolProps([...exclusions.lockIgnores]),
+			...exclusions.asBoolProps([...exclusions.lockIgnores], { tailGreedy: false }),
 		},
 
 		/**
@@ -193,7 +220,7 @@ export default async () => {
 		'markdown.preview.fontSize': 16,
 		'markdown.preview.lineHeight': 1.5,
 		'markdown.preview.typographer': true,
-		'markdown.preview.fontFamily': 'Georama, ui-sans-serif, sans-serif',
+		'markdown.preview.fontFamily': 'Georama, ui-sans-serif, sans-serif', // @todo Use Tailwind config.
 
 		/**
 		 * Prettier options.

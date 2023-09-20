@@ -17,7 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Wed, Sep 20, 2023, 12:00:57 AM EDT.
+# Last generated Wed, Sep 20, 2023, 2:02:08 AM EDT.
 
 # Default
 
@@ -198,8 +198,8 @@
 # Properties
 
 *.env text
-*.properties text
 *.props text
+*.properties text
 
 # Apache
 

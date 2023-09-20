@@ -7,7 +7,7 @@
 # @note This entire file will be updated automatically.
 # @note Instead of editing here, please review `./wrangler.mjs`.
 #
-# Last generated using `./wrangler.mjs` Wed, Sep 20, 2023, 12:00:59 AM EDT.
+# Last generated using `./wrangler.mjs` Wed, Sep 20, 2023, 2:02:10 AM EDT.
 ##
 
 compatibility_date = "2023-08-15"
@@ -68,7 +68,8 @@ exclude = [
   "._*",
   ".~*",
   ".#*",
-  "*.local",
+  ".envs",
+  "*.env",
   "*.log",
   "*.logs",
   "*~",
@@ -77,18 +78,11 @@ exclude = [
   "*.orig",
   "*.patch",
   "*.diff",
-  ".*.swp",
+  "*.code-*",
   ".idea",
-  "*.sublime-project",
-  "*.sublime-workspace",
-  "*.nbproject",
-  "*.code-search",
-  "*.code-workspace",
+  ".*.swp",
   "*.ctags",
-  ".env*",
-  ".flaskenv*",
-  "!.env.vault",
-  "!.env.project",
+  ".env.me",
   ".tscache",
   "*.tsbuildinfo",
   ".vite",
