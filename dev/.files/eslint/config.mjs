@@ -25,23 +25,18 @@ import * as pluginMDX from 'eslint-plugin-mdx';
 import pluginPrettier from 'eslint-plugin-prettier';
 import * as parserESPree from 'espree';
 import globals from 'globals';
-import fs from 'node:fs';
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $json, $obp } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $obp } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import esVersion from '../bin/includes/es-version.mjs';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
+import u from '../bin/includes/utilities.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
-const pkgFile = path.resolve(projDir, './package.json');
 
-if (!fs.existsSync(pkgFile)) {
-    throw new Error('eslint/config.cjs: Missing `./package.json`.');
-}
-const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
-
+const pkg = await u.pkg(); // From utilities.
 const targetEnv = $obp.get(pkg, 'config.c10n.&.build.targetEnv', 'any');
 const ssrTargetEnv = $obp.get(pkg, 'config.c10n.&.ssrBuild.targetEnv', '');
 

@@ -14,10 +14,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $json } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
 import importAliases from '../bin/includes/import-aliases.mjs';
+import u from '../bin/includes/utilities.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
@@ -28,12 +28,7 @@ const srcDirExists = fs.existsSync(srcDir);
 const testsDir = path.resolve(projDir, './tests');
 const testsDirExists = fs.existsSync(testsDir);
 
-const pkgFile = path.resolve(projDir, './package.json');
-
-if (!fs.existsSync(pkgFile)) {
-    throw new Error('jest/config.mjs: Missing `./package.json`.');
-}
-const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
+const pkg = await u.pkg(); // From utilities.
 
 /**
  * Defines Jest configuration.

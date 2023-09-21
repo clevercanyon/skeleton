@@ -20,19 +20,15 @@
  * @see https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 
-import fs from 'node:fs';
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $json, $path, $str, $url } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $path, $str, $url } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import u from '../bin/includes/utilities.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
-const pkgFile = path.resolve(projDir, './package.json');
 
-if (!fs.existsSync(pkgFile)) {
-    throw new Error('jest/config.mjs: Missing `./package.json`.');
-}
-const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
+const pkg = await u.pkg(); // From utilities.
 
 const defaultZoneName = 'hop.gdn';
 const defaultZoneDomain = 'workers.hop.gdn';
