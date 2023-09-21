@@ -18,6 +18,7 @@ import { $obp, $str } from '../../../../../node_modules/@clevercanyon/utilities/
 import { renderToString as $preactꓺapisꓺssrꓺrenderToString } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/apis/ssr.js';
 import { StandAlone as $preactꓺcomponentsꓺ404ꓺStandAlone } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/routes/404.js';
 import exclusions from '../../../bin/includes/exclusions.mjs';
+import extensions from '../../../bin/includes/extensions.mjs';
 import u from '../../../bin/includes/utilities.mjs';
 
 /**
@@ -119,7 +120,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                 for (const fileOrDir of await $glob.promise(
                     [
                         'types', // Prunes TypeScript type declarations.
-                        'index.*', // Prunes unused `index.*` files, in favor of SSR routes.
+                        'index.' + extensions.asBracedGlob([...extensions.trueHTML]),
                     ],
                     { cwd: distDir, onlyFiles: false },
                 )) {
