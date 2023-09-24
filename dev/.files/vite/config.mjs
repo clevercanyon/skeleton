@@ -93,11 +93,12 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     const appType = $obp.get(pkg, 'config.c10n.&.' + (isSSRBuild ? 'ssrBuild' : 'build') + '.appType') || 'cma';
     const targetEnv = $obp.get(pkg, 'config.c10n.&.' + (isSSRBuild ? 'ssrBuild' : 'build') + '.targetEnv') || 'any';
     const entryFiles = $obp.get(pkg, 'config.c10n.&.' + (isSSRBuild ? 'ssrBuild' : 'build') + '.entryFiles') || [];
+    const sideEffects = $obp.get(pkg, 'config.c10n.&.' + (isSSRBuild ? 'ssrBuild' : 'build') + '.sideEffects') || [];
 
     const appDefaultEntryFiles = // Based on app type.
-		['spa'].includes(appType) ? ['./src/index.' + extensions.asBracedGlob([...extensions.trueHTML])]
-		: ['mpa'].includes(appType) ? ['./src/**/index.' + extensions.asBracedGlob([...extensions.trueHTML])]
-		: ['./src/*.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])]; // prettier-ignore
+        ['spa'].includes(appType) ? ['./src/index.' + extensions.asBracedGlob([...extensions.trueHTML])]
+        : ['mpa'].includes(appType) ? ['./src/**/index.' + extensions.asBracedGlob([...extensions.trueHTML])]
+        : ['./src/*.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])]; // prettier-ignore
 
     const appEntryFiles = (entryFiles.length ? entryFiles : appDefaultEntryFiles).map((v) => $str.lTrim(v, './'));
     const appEntries = appEntryFiles.length ? await $glob.promise(appEntryFiles, { cwd: projDir }) : [];
@@ -146,7 +147,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
      * Prepares `package.json` property updates.
      */
     const pkgUpdates = await vitePkgUpdates({
-        command, isSSRBuild, projDir, pkg, appType, targetEnv,
+        command, isSSRBuild, projDir, srcDir, distDir, pkg, appType, targetEnv, sideEffects,
         appEntriesAsProjRelPaths, appEntriesAsSrcSubpaths, appEntriesAsSrcSubpathsNoExt
     }); // prettier-ignore
 

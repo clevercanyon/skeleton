@@ -27,7 +27,7 @@
             "default": "./dist/index.js"
         }
     },
-    "sideEffects": ["./src/resources/init-env.ts", "./src/index.ts"],
+    "sideEffects": ["./src/resources/init-env.ts"],
     "module": "./dist/index.js",
     "main": "./dist/index.js",
     "browser": "",
@@ -64,12 +64,14 @@
                 "build": {
                     "appType": "cma",
                     "targetEnv": "any",
-                    "entryFiles": []
+                    "entryFiles": [],
+                    "sideEffects": []
                 },
                 "ssrBuild": {
                     "appType": "",
                     "targetEnv": "",
-                    "entryFiles": []
+                    "entryFiles": [],
+                    "sideEffects": []
                 },
                 "github": {
                     "teams": {
