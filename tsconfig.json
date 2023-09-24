@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Thu, Sep 21, 2023, 9:01:40 AM EDT.
+ * Last generated using `./tsconfig.mjs` Sat, Sep 23, 2023, 10:29:08 PM EDT.
  */
 {
     "include": ["./*.d.ts", "./src/**/*"],
@@ -90,7 +90,6 @@
         "emitDeclarationOnly": true,
         "strict": true,
         "skipLibCheck": true,
-        "experimentalDecorators": true,
         "target": "es2022",
         "lib": ["es2022"],
         "types": ["vite/client", "@types/mdx"],
