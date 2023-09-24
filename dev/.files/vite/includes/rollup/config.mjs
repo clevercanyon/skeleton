@@ -22,11 +22,15 @@ import extensions from '../../../bin/includes/extensions.mjs';
  *
  * @returns       Rollup configuration.
  */
-export default async ({ srcDir, distDir, a16sDir, appEntries, useLibMode, peerDepKeys, preserveModules, useMinifier }) => {
+export default async ({ srcDir, distDir, a16sDir, appEntries, sideEffects, useLibMode, peerDepKeys, preserveModules, useMinifier }) => {
     return {
         input: appEntries, // App entry file paths.
         ...(useLibMode || preserveModules ? { preserveEntrySignatures: 'strict' } : {}),
 
+        treeshake: {
+            moduleSideEffects: sideEffects,
+            manualPureFunctions: [], // None for now.
+        },
         external: [
             ...peerDepKeys.map((k) => new RegExp('^' + $str.escRegExp(k) + '(?:$|[/?])')),
             '__STATIC_CONTENT_MANIFEST', // Cloudflare worker sites use this for static assets.
