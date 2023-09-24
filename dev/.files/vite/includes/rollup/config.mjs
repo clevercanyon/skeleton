@@ -24,8 +24,8 @@ import extensions from '../../../bin/includes/extensions.mjs';
  */
 export default async ({ srcDir, distDir, a16sDir, appEntries, useLibMode, peerDepKeys, preserveModules, useMinifier }) => {
     return {
-        input: appEntries, // App entry files.
-        ...(useLibMode ? { preserveEntrySignatures: 'strict' } : {}),
+        input: appEntries, // App entry file paths.
+        ...(useLibMode || preserveModules ? { preserveEntrySignatures: 'strict' } : {}),
 
         external: [
             ...peerDepKeys.map((k) => new RegExp('^' + $str.escRegExp(k) + '(?:$|[/?])')),
@@ -66,14 +66,8 @@ export default async ({ srcDir, distDir, a16sDir, appEntries, useLibMode, peerDe
             assetFileNames: (/* asset */) => path.join(path.relative(distDir, a16sDir), '[name]-[hash].[ext]'),
 
             // Preserves module structure in apps built explicitly as multi-entry libraries.
-            // The expectation is that its peers will build w/ this flag set as false, which is
-            // recommended, because preserving module structure in a final build has performance costs.
-            // However, in builds that are not final (e.g., apps with peer dependencies), preserving modules
-            // has performance benefits, as it allows for tree-shaking optimization in final builds.
-            ...(preserveModules ? { preserveModules: true } : {}),
-
             // Cannot inline dynamic imports when `preserveModules` is enabled, so set as `false` explicitly.
-            ...(preserveModules ? { inlineDynamicImports: false } : {}),
+            ...(preserveModules ? { preserveModules: true, hoistTransitiveImports: false, inlineDynamicImports: false } : {}),
         },
     };
 };

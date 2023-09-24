@@ -114,7 +114,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     const peerDepKeys = Object.keys(pkg.peerDependencies || {});
     const targetEnvIsServer = ['cfw', 'node'].includes(targetEnv);
     const useMinifier = 'dev' !== mode && !['lib'].includes(appType);
-    const preserveModules = ['lib'].includes(appType) && appEntries.length > 1;
+    const preserveModules = ['lib'].includes(appType); // Always preserve lib modules.
     const vitestSandboxEnable = $str.parseValue(String(process.env.VITEST_SANDBOX_ENABLE || ''));
     const vitestExamplesEnable = $str.parseValue(String(process.env.VITEST_EXAMPLES_ENABLE || ''));
 
@@ -230,7 +230,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
 
         esbuild: esbuildConfig, // esBuild config options.
         build: /* <https://vitejs.dev/config/build-options.html> */ {
-            target: 'es' + esVersion.year, // Matches TypeScript config.
+            target: esVersion.lcnYear, // Matches TypeScript config.
 
             emptyOutDir: isSSRBuild ? false : true, // Not during SSR builds.
             outDir: path.relative(srcDir, distDir), // Relative to `root` directory.
