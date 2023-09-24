@@ -173,7 +173,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     /**
      * Configures rollup for Vite.
      */
-    const rollupConfig = await viteRollupConfig({ srcDir, distDir, a16sDir, appEntries, peerDepKeys, preserveModules, useMinifier });
+    const rollupConfig = await viteRollupConfig({ srcDir, distDir, a16sDir, appEntries, useLibMode, peerDepKeys, preserveModules, useMinifier });
 
     /**
      * Configures tests for Vite.

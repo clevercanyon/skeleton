@@ -46,7 +46,7 @@ export default async ({
         updates.type = 'module'; // ESM; always.
         updates.exports = {}; // Exports object initialization.
         // Regarding `sideEffects`, {@see https://o5p.me/xVY39g}.
-        updates.sideEffects = [].concat(sideEffects);
+        updates.sideEffects = ['**/*.{css,scss}'].concat(sideEffects);
 
         if (fs.existsSync(path.resolve(srcDir, './resources/init-env.ts'))) {
             updates.sideEffects.push('./' + path.relative(projDir, path.resolve(srcDir, './resources/init-env.ts')));

@@ -22,9 +22,10 @@ import extensions from '../../../bin/includes/extensions.mjs';
  *
  * @returns       Rollup configuration.
  */
-export default async ({ srcDir, distDir, a16sDir, appEntries, peerDepKeys, preserveModules, useMinifier }) => {
+export default async ({ srcDir, distDir, a16sDir, appEntries, useLibMode, peerDepKeys, preserveModules, useMinifier }) => {
     return {
-        input: appEntries,
+        input: appEntries, // App entry files.
+        ...(useLibMode ? { preserveEntrySignatures: 'strict' } : {}),
 
         external: [
             ...peerDepKeys.map((k) => new RegExp('^' + $str.escRegExp(k) + '(?:$|[/?])')),
