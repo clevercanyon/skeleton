@@ -211,10 +211,10 @@ export default async ({ projDir }) => {
             if (!$is.plainObject(jsonUpdates)) {
                 throw new Error('updater: Unable to parse `' + jsonUpdatesFile + '`.');
             }
-            if ($obj.hasOwn(jsonUpdates.$ꓺset?.engines, 'node')) {
+            if (Object.hasOwn(jsonUpdates.$ꓺset?.engines || {}, 'node')) {
                 jsonUpdates.$ꓺset.engines.node = '^' + nodeVersion.previous + ' || ^' + nodeVersion.current;
             }
-            if ($obj.hasOwn(jsonUpdates.$ꓺset?.engines, 'npm')) {
+            if (Object.hasOwn(jsonUpdates.$ꓺset?.engines || {}, 'npm')) {
                 jsonUpdates.$ꓺset.engines.npm = '^' + nodeVersion.npm.previous + ' || ^' + nodeVersion.npm.current;
             }
             if ('./package.json' === relPath && (await isPkgRepo('clevercanyon/dev-deps'))) {

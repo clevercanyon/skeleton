@@ -177,10 +177,10 @@ export default class u {
         if (!$is.plainObject(updates)) {
             throw new Error('u.updatePkg: Unable to parse `' + updatesFile + '`.');
         }
-        if ($obj.hasOwn(updates.$ꓺset?.engines, 'node')) {
+        if (Object.hasOwn(updates.$ꓺset?.engines || {}, 'node')) {
             updates.$ꓺset.engines.node = '^' + nodeVersion.previous + ' || ^' + nodeVersion.current;
         }
-        if ($obj.hasOwn(updates.$ꓺset?.engines, 'npm')) {
+        if (Object.hasOwn(updates.$ꓺset?.engines || {}, 'npm')) {
             updates.$ꓺset.engines.npm = '^' + nodeVersion.npm.previous + ' || ^' + nodeVersion.npm.current;
         }
         if (await u.isPkgRepo('clevercanyon/dev-deps')) {
