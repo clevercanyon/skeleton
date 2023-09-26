@@ -110,11 +110,9 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     /**
      * Other misc. configuration properties.
      */
-    const useLibMode = ['cma', 'lib'].includes(appType);
     const peerDepKeys = Object.keys(pkg.peerDependencies || {});
     const targetEnvIsServer = ['cfw', 'node'].includes(targetEnv);
-    const useMinifier = 'dev' !== mode && !['lib'].includes(appType);
-    const preserveModules = ['lib'].includes(appType); // Always preserve lib modules.
+    const minifyEnable = 'dev' !== mode && !['lib'].includes(appType);
     const vitestSandboxEnable = $str.parseValue(String(process.env.VITEST_SANDBOX_ENABLE || ''));
     const vitestExamplesEnable = $str.parseValue(String(process.env.VITEST_EXAMPLES_ENABLE || ''));
 
@@ -168,12 +166,12 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     /**
      * Configures esbuild for Vite.
      */
-    const esbuildConfig = await viteESBuildConfig({}); // No props at this time.
+    const esbuildConfig = await viteESBuildConfig({}); // Minimal config; no props at this time.
 
     /**
      * Configures rollup for Vite.
      */
-    const rollupConfig = await viteRollupConfig({ srcDir, distDir, a16sDir, appEntries, sideEffects, useLibMode, peerDepKeys, preserveModules, useMinifier });
+    const rollupConfig = await viteRollupConfig({ srcDir, distDir, a16sDir, appType, appEntries, sideEffects, peerDepKeys, minifyEnable });
 
     /**
      * Configures tests for Vite.
@@ -244,10 +242,10 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
             manifest: !isSSRBuild, // Enables creation of manifest (for assets).
             sourcemap: 'dev' === mode, // Enables creation of sourcemaps (for debugging).
 
-            minify: useMinifier ? 'esbuild' : false, // Minify userland code?
+            minify: minifyEnable ? 'esbuild' : false, // Minify userland code?
             modulePreload: false, // Disable. DOM injections conflict with our SPAs.
 
-            ...(useLibMode ? { lib: { entry: appEntries, formats: ['es'] } } : {}),
+            ...(['cma', 'lib'].includes(appType) ? { lib: { entry: appEntries, formats: ['es'] } } : {}),
             rollupOptions: rollupConfig, // See: <https://o5p.me/5Vupql>.
         },
     };
