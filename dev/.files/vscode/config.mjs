@@ -196,6 +196,7 @@ export default async () => {
 
         'eslint.codeActionsOnSave.mode': 'all',
         'eslint.experimental.useFlatConfig': true,
+        'eslint.workingDirectories': [{ 'mode': 'auto' }],
 
         'eslint.validate': [
             'mdx', //

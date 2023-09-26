@@ -47,7 +47,7 @@ export default async ({
         updates.exports = {}; // Exports object initialization.
 
         // Regarding `sideEffects`, {@see https://o5p.me/xVY39g}.
-        updates.sideEffects = ['**/*.' + extensions.asBracedGlob([...extensions.css, ...extensions.scss, ...extensions.less])];
+        updates.sideEffects = ['**/*.' + extensions.asBracedGlob([...extensions.vsc.css, ...extensions.vsc.scss, ...extensions.vsc.less])];
         updates.sideEffects = updates.sideEffects.concat(sideEffects);
 
         if (fs.existsSync(path.resolve(srcDir, './resources/init-env.ts'))) {
@@ -57,15 +57,15 @@ export default async ({
 
         switch (true /* Conditional case handlers. */) {
             case ['spa', 'mpa'].includes(appType): {
-                const trueHTMLExtRegExp = new RegExp('\\.' + extensions.asRegExpFrag([...extensions.trueHTML]) + '$', 'ui');
-                const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) => $str.mm.isMatch(subpath, 'index.' + extensions.asBracedGlob([...extensions.trueHTML])));
+                const trueHTMLExtRegExp = new RegExp('\\.' + extensions.asRegExpFrag([...extensions.can.html]) + '$', 'ui');
+                const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) => $str.mm.isMatch(subpath, 'index.' + extensions.asBracedGlob([...extensions.can.html])));
                 const appEntryIndexAsSrcSubpathNoExt = appEntryIndexAsSrcSubpath.replace(/\.[^.]+$/u, '');
 
                 if (['spa'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-                    throw new Error('Single-page apps must have an `./index.' + extensions.asBracedGlob([...extensions.trueHTML]) + '` entry point.');
+                    throw new Error('Single-page apps must have an `./index.' + extensions.asBracedGlob([...extensions.can.html]) + '` entry point.');
                     //
                 } else if (['mpa'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-                    throw new Error('Multipage apps must have an `./index.' + extensions.asBracedGlob([...extensions.trueHTML]) + '` entry point.');
+                    throw new Error('Multipage apps must have an `./index.' + extensions.asBracedGlob([...extensions.can.html]) + '` entry point.');
                 }
                 (updates.exports = null), (updates.typesVersions = {});
                 updates.main = updates.module = updates.unpkg = updates.browser = updates.types = '';
@@ -83,16 +83,16 @@ export default async ({
             }
             case ['cma', 'lib'].includes(appType): {
                 const appEntryIndexAsSrcSubpath = appEntriesAsSrcSubpaths.find((subpath) =>
-                    $str.mm.isMatch(subpath, 'index.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact])),
+                    $str.mm.isMatch(subpath, 'index.' + extensions.asBracedGlob([...extensions.dev.sTypeScript, ...extensions.dev.sTypeScriptReact])),
                 );
                 const appEntryIndexAsSrcSubpathNoExt = appEntryIndexAsSrcSubpath.replace(/\.[^.]+$/u, '');
 
                 if (['cma'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
-                    throw new Error('Custom apps must have an `./index.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact]) + '` entry point.');
+                    throw new Error('Custom apps must have an `./index.' + extensions.asBracedGlob([...extensions.dev.sTypeScript, ...extensions.dev.sTypeScriptReact]) + '` entry point.');
                     //
                 } else if (['lib'].includes(appType) && (!appEntryIndexAsSrcSubpath || !appEntryIndexAsSrcSubpathNoExt)) {
                     throw new Error(
-                        'Library apps must have an `./index.' + extensions.asBracedGlob([...extensions.sTypeScript, ...extensions.sTypeScriptReact]) + '` entry point.',
+                        'Library apps must have an `./index.' + extensions.asBracedGlob([...extensions.dev.sTypeScript, ...extensions.dev.sTypeScriptReact]) + '` entry point.',
                     );
                 }
                 updates.exports = {

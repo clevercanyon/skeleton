@@ -63,34 +63,36 @@ export default async () => {
 
         main: './' + path.relative(projDir, './dist/index.js'),
 
-        // Dynamic import configuration.
+        // Bundling configuration; {@see <https://o5p.me/JRHxfC>}.
 
         rules: [
             {
-                type: 'Text',
-                globs: extensions.asNoBraceGlobstars([]),
-                fallthrough: false,
-            },
-            {
                 type: 'ESModule',
                 globs: extensions.asNoBraceGlobstars([
-                    ...extensions.sJavaScript, //
-                    ...extensions.mJavaScript,
-                    ...extensions.sJavaScriptReact,
-                    ...extensions.mJavaScriptReact,
+                    ...extensions.dev.sJavaScript, //
+                    ...extensions.dev.sJavaScriptReact,
+                    ...extensions.dev.mJavaScript,
+                    ...extensions.dev.mJavaScriptReact,
                 ]),
                 fallthrough: false,
             },
             {
                 type: 'CommonJS',
                 globs: extensions.asNoBraceGlobstars([
-                    ...extensions.cJavaScript, //
-                    ...extensions.cJavaScriptReact,
+                    ...extensions.dev.cJavaScript, //
+                    ...extensions.dev.cJavaScriptReact,
                 ]),
                 fallthrough: false,
             },
-            { type: 'CompiledWasm', globs: extensions.asNoBraceGlobstars([...extensions.wasm]), fallthrough: false },
-            { type: 'Data', globs: extensions.asNoBraceGlobstars([].filter((ext) => '.wasm' !== ext)), fallthrough: false },
+            {
+                type: 'Text',
+                globs: extensions.asNoBraceGlobstars([
+                    ...extensions.vsc.plainText, // @todo Finish this.
+                ]),
+                fallthrough: false,
+            },
+            { type: 'CompiledWasm', globs: extensions.asNoBraceGlobstars([...extensions.can.wasm]), fallthrough: false },
+            { type: 'Data', globs: extensions.asNoBraceGlobstars([...extensions.vsc.codeTextBinary].filter((ext) => ![...extensions.can.wasm].includes(ext))), fallthrough: false },
         ],
         // Custom build configuration.
 

@@ -69,15 +69,15 @@ export default async () => {
         // Configured to run JS tests only; not TypeScript tests.
         // To create and run TypeScript tests, use Vitest instead of Jest.
         testMatch: [
-            '**/*.{test|tests|spec|specs}.' + extensions.asBracedGlob([...extensions.allJavaScript]), //
-            '**/{test,tests,spec,specs}/**/*.' + extensions.asBracedGlob([...extensions.allJavaScript]),
+            '**/*.{test|tests|spec|specs}.' + extensions.asBracedGlob([...extensions.dev.allJavaScript]), //
+            '**/{test,tests,spec,specs}/**/*.' + extensions.asBracedGlob([...extensions.dev.allJavaScript]),
         ],
         moduleNameMapper: importAliases.asRegExpStrings,
-        moduleFileExtensions: extensions.noDot([...extensions.allJavaScript]),
+        moduleFileExtensions: extensions.noDot([...extensions.dev.allJavaScript]),
         extensionsToTreatAsEsm: [
             ...('module' === pkg.type
-                ? [...extensions.sJavaScript, ...extensions.sJavaScriptReact, ...extensions.mJavaScript, ...extensions.mJavaScriptReact]
-                : [...extensions.mJavaScript, ...extensions.mJavaScriptReact]),
+                ? [...extensions.dev.sJavaScript, ...extensions.dev.sJavaScriptReact, ...extensions.dev.mJavaScript, ...extensions.dev.mJavaScriptReact]
+                : [...extensions.dev.mJavaScript, ...extensions.dev.mJavaScriptReact]),
         ],
     };
 };
