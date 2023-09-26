@@ -86,7 +86,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.markdown])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.markdown])],
                 options: { parser: 'markdown' },
             },
             {
@@ -95,7 +95,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.mdx])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.mdx])],
                 options: { parser: 'mdx' },
             },
             {
@@ -104,7 +104,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.can.html, ...extensions.can.shtml])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byCanonical.html, ...extensions.byCanonical.shtml])],
                 options: { parser: 'html' },
             },
 
@@ -118,7 +118,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/BHsZj8
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.php])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.php])],
                 options: {
                     parser: 'php',
                     braceStyle: '1tbs',
@@ -132,7 +132,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/tuKNvU
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.ruby])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.ruby])],
                 options: {
                     parser: 'ruby',
                     rubyPlugins: '',
@@ -145,7 +145,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/wWDiYK
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.python])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.python])],
                 options: { parser: '' }, // N/A ... instead, use <https://github.com/microsoft/vscode-black-formatter>.
             },
             {
@@ -154,7 +154,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/D0rlOV
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.can.sh])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byCanonical.sh])],
                 options: {
                     parser: 'sh', // Posix variant!
                     variant: 1, // Posix variant only.
@@ -177,7 +177,7 @@ export default async () => {
                  * @see https://o5p.me/D0rlOV
                  */
                 files: [
-                    '*.' + extensions.asBracedGlob([...extensions.can.bash]), //
+                    '*.' + extensions.asBracedGlob([...extensions.byCanonical.bash]), //
                     '{,*.}Dockerfile', // Safe to assume ours always uses bash.
                 ],
                 options: {
@@ -206,7 +206,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.dev.allJavaScript])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScript])],
                 options: { parser: 'babel' },
             },
             {
@@ -215,7 +215,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.dev.allTypeScript])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byDevGroup.allTypeScript])],
                 options: { parser: 'typescript' },
             },
             {
@@ -224,7 +224,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/dTTfse
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.dev.allJavaScript, ...extensions.dev.allTypeScript])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScript, ...extensions.byDevGroup.allTypeScript])],
                 options: {
                     jsdocAddDefaultToDescription: false,
                     jsdocCapitalizeDescription: true,
@@ -248,7 +248,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/o7OmDG
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.dev.allJavaScript, ...extensions.dev.allTypeScript])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScript, ...extensions.byDevGroup.allTypeScript])],
                 options: {
                     organizeImportsSkipDestructiveCodeActions: true,
                 },
@@ -272,7 +272,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.css])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.css])],
                 options: { parser: 'css' },
             },
             {
@@ -281,7 +281,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.scss])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.scss])],
                 options: { parser: 'scss' },
             },
             {
@@ -290,7 +290,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.less])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.less])],
                 options: { parser: 'less' },
             },
 
@@ -304,7 +304,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/kYq5bx
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.sql])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.sql])],
                 options: {
                     parser: 'sql',
                     commaPosition: 'after',
@@ -330,7 +330,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.json])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.json])],
                 options: { parser: 'json' },
             },
             {
@@ -339,7 +339,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.jsonc])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.jsonc])],
                 options: { parser: 'json5' },
             },
             {
@@ -348,7 +348,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/GI5Eiw
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.toml])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.toml])],
                 options: { parser: '' }, // Not ready for production yet, but coming soon.
             },
             {
@@ -357,7 +357,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/sj8jjz
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.yaml])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.yaml])],
                 options: { parser: 'yaml' },
             },
             {
@@ -366,7 +366,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/1fqazf
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.ini])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.ini])],
                 options: {
                     parser: 'ini',
                     iniSpaceAroundEquals: true,
@@ -378,7 +378,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/IyzRSp
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.properties]), '*.env{,.*}'],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.properties]), '*.env{,.*}'],
                 options: {
                     parser: 'dot-properties',
                     keySeparator: '=',
@@ -391,7 +391,7 @@ export default async () => {
                  *
                  * @see https://o5p.me/OiLPzn
                  */
-                files: ['*.' + extensions.asBracedGlob([...extensions.vsc.xml])],
+                files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.xml])],
                 options: {
                     parser: 'xml',
                     xmlSelfClosingSpace: true,

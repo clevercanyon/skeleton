@@ -7,10 +7,10 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Mon, Sep 25, 2023, 11:28:33 PM EDT.
+ * Last generated using `./tsconfig.mjs` Tue, Sep 26, 2023, 9:32:23 AM EDT.
  */
 {
-    "include": ["./*.d.ts", "./src/**/*"],
+    "include": ["./src/**/*", "./dev-types.d.ts"],
     "exclude": [
         "**/._*/**",
         "**/.~*/**",
@@ -64,11 +64,11 @@
         "**/Temporary Items/**",
         "**/.*/**",
         "**/*.tsbuildinfo/**",
-        "**/tsconfig.*/**",
-        "**/wrangler.*/**",
         "**/*.config.*/**",
-        "**/config.gypi/**",
+        "**/wrangler.*/**",
+        "**/tsconfig.*/**",
         "**/package.json/**",
+        "**/config.gypi/**",
         "**/yarn.lock/**",
         "**/composer.lock/**",
         "**/package-lock.json/**",

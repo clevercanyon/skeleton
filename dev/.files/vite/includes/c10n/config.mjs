@@ -119,7 +119,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                 for (const fileOrDir of await $glob.promise(
                     [
                         'types', // Prunes TypeScript type declarations.
-                        'index.' + extensions.asBracedGlob([...extensions.can.html]),
+                        'index.' + extensions.asBracedGlob([...extensions.byCanonical.html]),
                     ],
                     { cwd: distDir, onlyFiles: false },
                 )) {

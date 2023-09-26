@@ -61,7 +61,7 @@ export default async () => {
 
         overrides: [
             {
-                files: ['**/*.' + extensions.asBracedGlob([...extensions.vsc.css])],
+                files: ['**/*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.css])],
 
                 plugins: [...baseConfig.plugins],
                 extends: [...baseConfig.extends],
@@ -71,7 +71,7 @@ export default async () => {
                 rules: { ...baseConfig.rules },
             },
             {
-                files: ['**/*.' + extensions.asBracedGlob([...extensions.vsc.scss])],
+                files: ['**/*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.scss])],
 
                 plugins: [...baseConfig.plugins],
                 extends: [...baseConfig.extends],

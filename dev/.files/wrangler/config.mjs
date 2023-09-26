@@ -69,30 +69,65 @@ export default async () => {
             {
                 type: 'ESModule',
                 globs: extensions.asNoBraceGlobstars([
-                    ...extensions.dev.sJavaScript, //
-                    ...extensions.dev.sJavaScriptReact,
-                    ...extensions.dev.mJavaScript,
-                    ...extensions.dev.mJavaScriptReact,
+                    ...extensions.byDevGroup.sJavaScript, //
+                    ...extensions.byDevGroup.sJavaScriptReact,
+
+                    ...extensions.byDevGroup.mJavaScript,
+                    ...extensions.byDevGroup.mJavaScriptReact,
                 ]),
                 fallthrough: false,
             },
             {
                 type: 'CommonJS',
                 globs: extensions.asNoBraceGlobstars([
-                    ...extensions.dev.cJavaScript, //
-                    ...extensions.dev.cJavaScriptReact,
+                    ...extensions.byDevGroup.cJavaScript, //
+                    ...extensions.byDevGroup.cJavaScriptReact,
                 ]),
                 fallthrough: false,
             },
             {
                 type: 'Text',
-                globs: extensions.asNoBraceGlobstars([
-                    ...extensions.vsc.plainText, // @todo Finish this.
-                ]),
+                globs: extensions.asNoBraceGlobstars(
+                    [...extensions.byVSCodeLang.codeTextual].filter(
+                        (ext) =>
+                            ![
+                                ...extensions.byDevGroup.sJavaScript, //
+                                ...extensions.byDevGroup.sJavaScriptReact,
+
+                                ...extensions.byDevGroup.mJavaScript,
+                                ...extensions.byDevGroup.mJavaScriptReact,
+
+                                ...extensions.byDevGroup.cJavaScript,
+                                ...extensions.byDevGroup.cJavaScriptReact,
+
+                                ...extensions.byCanonical.wasm,
+                            ].includes(ext),
+                    ),
+                ),
                 fallthrough: false,
             },
-            { type: 'CompiledWasm', globs: extensions.asNoBraceGlobstars([...extensions.can.wasm]), fallthrough: false },
-            { type: 'Data', globs: extensions.asNoBraceGlobstars([...extensions.vsc.codeTextBinary].filter((ext) => ![...extensions.can.wasm].includes(ext))), fallthrough: false },
+            {
+                type: 'Data',
+                globs: extensions.asNoBraceGlobstars(
+                    [...extensions.byVSCodeLang.codeTextBinary].filter(
+                        (ext) =>
+                            ![
+                                ...extensions.byDevGroup.sJavaScript, //
+                                ...extensions.byDevGroup.sJavaScriptReact,
+
+                                ...extensions.byDevGroup.mJavaScript,
+                                ...extensions.byDevGroup.mJavaScriptReact,
+
+                                ...extensions.byDevGroup.cJavaScript,
+                                ...extensions.byDevGroup.cJavaScriptReact,
+
+                                ...extensions.byCanonical.wasm,
+                            ].includes(ext),
+                    ),
+                ),
+                fallthrough: false,
+            },
+            { type: 'CompiledWasm', globs: extensions.asNoBraceGlobstars([...extensions.byCanonical.wasm]), fallthrough: false },
         ],
         // Custom build configuration.
 

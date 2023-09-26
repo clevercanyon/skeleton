@@ -22,8 +22,8 @@ export default async () => {
     return {
         jsxImportSource: 'preact',
 
-        mdExtensions: [...extensions.vsc.markdown],
-        mdxExtensions: [...extensions.vsc.mdx],
+        mdExtensions: [...extensions.byVSCodeLang.markdown],
+        mdxExtensions: [...extensions.byVSCodeLang.mdx],
 
         remarkPlugins: [
             (await import('remark-frontmatter')).default, // YAML properties.

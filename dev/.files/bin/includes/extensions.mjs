@@ -77,19 +77,19 @@ const extensions = {
     asRegExpFrag,
 
     /**
-     * Canonical extensions.
+     * By canonical.
      */
-    can: $obj.map($path.jsTSExtsByDevGroup(), (exts) => dot(exts)),
+    byCanonical: $obj.map($path.extsByCanonical(), (exts) => dot(exts)),
 
     /**
-     * VS Code lang extensions (camelCase).
+     * By VS Code lang (camelCase, includes `codeTextual`).
      */
-    vsc: $obj.map($path.extsByVSCodeLang({camelCase: true}), (exts) => dot(exts)),
+    byVSCodeLang: $obj.map($path.extsByVSCodeLang({ camelCase: true, enableCodeTextual: true }), (exts) => dot(exts)),
 
     /**
-     * Dev group extensions.
+     * By dev group.
      */
-    dev: $obj.map($path.jsTSExtsByDevGroup(), (exts) => dot(exts)),
+    byDevGroup: $obj.map($path.jsTSExtsByDevGroup(), (exts) => dot(exts)),
 };
 
 /**
@@ -97,21 +97,21 @@ const extensions = {
  */
 extensions.tailwindContent = [
     ...new Set([
-        ...extensions.vsc.mdx,
-        ...extensions.vsc.markdown,
-        ...extensions.vsc.html,
+        ...extensions.byVSCodeLang.mdx,
+        ...extensions.byVSCodeLang.markdown,
+        ...extensions.byVSCodeLang.html,
 
-        ...extensions.vsc.php,
-        ...extensions.vsc.asp,
-        ...extensions.vsc.ruby,
-        ...extensions.vsc.python,
-        ...extensions.vsc.perl,
-        ...extensions.vsc.shellscript,
+        ...extensions.byVSCodeLang.php,
+        ...extensions.byVSCodeLang.asp,
+        ...extensions.byVSCodeLang.ruby,
+        ...extensions.byVSCodeLang.python,
+        ...extensions.byVSCodeLang.perl,
+        ...extensions.byVSCodeLang.shellscript,
 
-        ...extensions.dev.allJavaScript,
-        ...extensions.dev.allTypeScript,
+        ...extensions.byDevGroup.allJavaScript,
+        ...extensions.byDevGroup.allTypeScript,
 
-        ...extensions.vsc.xml, // e.g., SVGs.
+        ...extensions.byVSCodeLang.xml, // e.g., SVGs.
     ]),
 ];
 extensions.tailwindPrettierContent = [...extensions.tailwindContent];
@@ -124,7 +124,7 @@ extensions.commentAnchorsContent = [...extensions.tailwindContent];
 /**
  * Extensions to try on import w/o extension.
  */
-extensions.onImportWithNoExtensionTry = [...extensions.dev.allTypeScript, ...extensions.dev.allJavaScript];
+extensions.onImportWithNoExtensionTry = [...extensions.byDevGroup.allTypeScript, ...extensions.byDevGroup.allJavaScript];
 
 /**
  * Default export.
