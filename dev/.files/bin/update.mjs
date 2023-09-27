@@ -572,12 +572,6 @@ class Project {
 
     /**
      * Runs update.
-     *
-     * @review Check.
-     *
-     * @someday Check.
-     *
-     * @todo Check .
      */
     async update() {
         /**

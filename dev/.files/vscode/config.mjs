@@ -187,15 +187,21 @@ export default async () => {
             ],
             { dropExistingNegations: true, dropExistingRelatives: true },
         ),
-        /* Comment Anchors uses two things under the hood:
+        /**
+         * Comment Anchors uses two things under the hood:
          *
          * 1. `workspace.findFiles()` from VS Code API; {@see https://o5p.me/wTHsX1}.
          * 2. Minimatch with default `{ dot: false }` option; {@see https://o5p.me/l6XWRg}.
          *
-         * VS Code doesn’t support extglob patterns, so we can’t use dotGlobstars. For that reason, an adhoc solution is
-         * used in an effort to get Comment Anchors working in .[dirs|files]; e.g., for `clevercanyon/skeleton`.
+         * VS Code doesn’t support extglob patterns, unfortunately, so we can’t use dotGlobstars. For that reason, an
+         * adhoc and highly imperfect solution is used to get Comment Anchors at least working well inside of
+         * `clevercanyon/skeleton/dev/.files`. Outside of `.` dirs/files, Comment Anchors work fine.
+         *
+         * @see https://github.com/StarlaneStudios/vscode-comment-anchors/issues/209
          */
-        'commentAnchors.workspace.matchFiles': '{**/,dev/.files/}*.' + extensions.asBracedGlob([...extensions.commentAnchorsContent]),
+        'commentAnchors.workspace.matchFiles': (await u.isPkgRepo('clevercanyon/skeleton'))
+            ? '{**/,**/dev/.files/,**/dev/.files/**/}*.' + extensions.asBracedGlob([...extensions.commentAnchorsContent])
+            : '**/*.' + extensions.asBracedGlob([...extensions.commentAnchorsContent]),
 
         /**
          * ESLint options.
