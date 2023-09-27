@@ -124,7 +124,7 @@ export default async () => {
                 ? {
                       ...exclusions.asBoolProps(
                           exclusions.asRootedRelativeGlobs(
-                              projDir, // Skeleton `**/dev/.files`.
+                              projDir, // Skeleton `/dev/.files`.
                               [...exclusions.devDotFileIgnores],
                               { forceRelative: true },
                           ),
