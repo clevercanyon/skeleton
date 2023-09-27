@@ -7,6 +7,8 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  *
+ * @fastglob Prettier uses fast-glob under the hood, with `{ dot: true }`.
+ *
  * @see https://prettier.io/docs/en/configuration.html
  */
 

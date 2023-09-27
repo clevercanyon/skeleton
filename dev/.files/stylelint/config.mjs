@@ -7,6 +7,8 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  *
+ * @micromatch Stylelint uses micromatch under the hood, with `{ dot: true, matchBase: true }`.
+ *
  * @see https://stylelint.io/user-guide/configure
  */
 

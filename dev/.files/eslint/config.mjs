@@ -11,6 +11,8 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  *
+ * @minimatch ES Lint uses minimatch under the hood, with `{ dot: true, matchBase: true }`.
+ *
  * @see https://eslint.org/docs/latest/user-guide/command-line-interface
  * @see https://eslint.org/docs/latest/use/configure/configuration-files-new
  */
