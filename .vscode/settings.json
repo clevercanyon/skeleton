@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Fri, Sep 29, 2023, 4:45:07 AM EDT.
+ * Last generated using `./settings.mjs` Fri, Sep 29, 2023, 5:11:32 AM EDT.
  */
 {
     "editor.formatOnType": false,
@@ -183,13 +183,13 @@
     ],
     "eslint.validate": ["mdx", "markdown", "javascript", "javascriptreact", "typescript", "typescriptreact"],
     "eslint.options": {
-        "overrideConfigFile": "eslint.config.mjs"
+        "overrideConfigFile": "./eslint.config.mjs"
     },
     "stylelint.validate": ["scss", "css"],
     "tailwindCSS.validate": true,
+    "tailwindCSS.experimental.configFile": "./tailwind.config.mjs",
     "tailwindCSS.classAttributes": ["class", "classes", "className", "classNames"],
     "tailwindCSS.includeLanguages": {},
-    "tailwindCSS.experimental.configFile": "./tailwind.config.mjs",
     "tailwindCSS.files.exclude": [
         "**/*.log/**",
         "**/*.logs/**",

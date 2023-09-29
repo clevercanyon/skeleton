@@ -12,8 +12,13 @@
  * @see https://prettier.io/docs/en/configuration.html
  */
 
+import path from 'node:path';
+import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import extensions from '../bin/includes/extensions.mjs';
 import tailwindSettings from '../tailwind/settings.mjs';
+
+const __dirname = $fs.imuDirname(import.meta.url);
+const projDir = path.resolve(__dirname, '../../..');
 
 /**
  * Defines Prettier configuration.
@@ -259,9 +264,9 @@ export default async () => {
                  */
                 files: ['*.' + extensions.asBracedGlob([...extensions.tailwindPrettierContent])],
                 options: {
-                    tailwindConfig: tailwindSettings.configFile,
                     tailwindFunctions: tailwindSettings.classFunctions,
                     tailwindAttributes: tailwindSettings.classAttributes,
+                    tailwindConfig: path.resolve(projDir, './tailwind.config.mjs'),
                 },
             },
             {

@@ -9,12 +9,6 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
-import path from 'node:path';
-import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-
-const __dirname = $fs.imuDirname(import.meta.url);
-const projDir = path.resolve(__dirname, '../../..');
-
 /**
  * Defines Tailwind settings.
  */
@@ -23,5 +17,4 @@ export default {
     classAttributesRegExpStr: '^class(?:es|Names?)?$',
     classAttributesRegExp: new RegExp('^class(?:es|Names?)?$', 'u'),
     classAttributes: ['class', 'classes', 'className', 'classNames'],
-    configFile: path.resolve(projDir, './tailwind.config.mjs'),
 };

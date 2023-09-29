@@ -246,9 +246,9 @@ export default async () => {
                 plugins: { tailwindcss: pluginTailwind },
                 settings: {
                     tailwindcss: {
-                        config: tailwindSettings.configFile,
                         callees: tailwindSettings.classFunctions,
                         classRegex: tailwindSettings.classAttributesRegExpStr,
+                        config: path.resolve(projDir, './tailwind.config.mjs'),
 
                         cssFiles: ['!**/*'], // Choosing not to use CSS file scans, for now.
                         // As of 2023-09-29, this only impacts the `no-custom-classname` rule, which we don’t use.
