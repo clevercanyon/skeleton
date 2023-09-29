@@ -117,16 +117,6 @@ export default async () => {
                           }
                         : {}),
                 },
-                settings: {
-                    tailwindcss: {
-                        config: tailwindSettings.configFile,
-                        callees: tailwindSettings.classFunctions,
-                        classRegex: tailwindSettings.classAttributesRegExpStr,
-
-                        cssFiles: ['!**/*'], // Choosing not to use CSS file scans, for now.
-                        // As of 2023-09-29, this only impacts the `no-custom-classname` rule, which we don’t use.
-                    },
-                },
             },
         },
     ];
@@ -224,23 +214,6 @@ export default async () => {
             },
 
             /**
-             * Tailwind CSS-in-JS/TS/JSX/TSX plugin configurations.
-             *
-             * - Plugin is loaded for all JS/TS/JSX/TSX.
-             * - However, rules are not applied to sandbox|examples.
-             */
-            {
-                files: ['**/*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScript, ...extensions.byDevGroup.allTypeScript])],
-                plugins: { tailwindcss: pluginTailwind },
-                //
-            }, // Rules, which are not applied to sandbox|examples.
-            {
-                files: ['**/*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScript, ...extensions.byDevGroup.allTypeScript])],
-                ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
-                rules: { ...pluginTailwind.configs.recommended.rules },
-            },
-
-            /**
              * JSX/TSX accessbility plugin configurations.
              *
              * - Plugin is loaded for all JSX/TSX.
@@ -260,6 +233,32 @@ export default async () => {
                 files: ['**/*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScriptReact, ...extensions.byDevGroup.allTypeScriptReact])],
                 ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
                 rules: { ...pluginJSXA11y.configs.recommended.rules },
+            },
+
+            /**
+             * Tailwind CSS-in-JSX/TSX plugin configurations.
+             *
+             * - Plugin is loaded for all JSX/TSX.
+             * - However, rules are not applied to sandbox|examples.
+             */
+            {
+                files: ['**/*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScriptReact, ...extensions.byDevGroup.allTypeScriptReact])],
+                plugins: { tailwindcss: pluginTailwind },
+                settings: {
+                    tailwindcss: {
+                        config: tailwindSettings.configFile,
+                        callees: tailwindSettings.classFunctions,
+                        classRegex: tailwindSettings.classAttributesRegExpStr,
+
+                        cssFiles: ['!**/*'], // Choosing not to use CSS file scans, for now.
+                        // As of 2023-09-29, this only impacts the `no-custom-classname` rule, which we don’t use.
+                    },
+                },
+            }, // Rules, which are not applied to sandbox|examples.
+            {
+                files: ['**/*.' + extensions.asBracedGlob([...extensions.byDevGroup.allJavaScriptReact, ...extensions.byDevGroup.allTypeScriptReact])],
+                ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
+                rules: { ...pluginTailwind.configs.recommended.rules },
             },
 
             /**
@@ -422,7 +421,7 @@ export default async () => {
                             destructuredArrayIgnorePattern: '^unusedꓺ',
                         },
                     ],
-                    'tailwindcss/no-custom-classname': 'off',
+                    'tailwindcss/no-custom-classname': ['off'],
                 },
             },
 
@@ -436,9 +435,9 @@ export default async () => {
                 files: ['**/*.' + extensions.asBracedGlob([...extensions.byDevGroup.allTypeScript])],
                 ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
                 rules: {
-                    'no-redeclare': 'off', // Disable in favor of TypeScript rule below.
-                    'no-unused-vars': 'off', // Disable in favor of TypeScript rule below.
-                    'no-undef': 'off', // Already baked into TypeScript; {@see https://o5p.me/k9TDGC}.
+                    'no-redeclare': ['off'], // Disable in favor of TypeScript rule below.
+                    'no-unused-vars': ['off'], // Disable in favor of TypeScript rule below.
+                    'no-undef': ['off'], // Already baked into TypeScript; {@see https://o5p.me/k9TDGC}.
 
                     '@typescript-eslint/no-redeclare': ['warn'],
                     '@typescript-eslint/require-await': ['off'],

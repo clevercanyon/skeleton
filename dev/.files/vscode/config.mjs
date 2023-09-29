@@ -260,7 +260,7 @@ export default async () => {
             'typescriptreact',
         ],
         'eslint.options': {
-            'overrideConfigFile': 'eslint.config.mjs',
+            'overrideConfigFile': './eslint.config.mjs',
         },
 
         /**
@@ -277,9 +277,9 @@ export default async () => {
          */
 
         'tailwindCSS.validate': true,
+        'tailwindCSS.experimental.configFile': './tailwind.config.mjs',
         'tailwindCSS.classAttributes': tailwindSettings.classAttributes,
         'tailwindCSS.includeLanguages': {}, // Defaults ok; {@see https://o5p.me/kaPo3F}.
-        'tailwindCSS.experimental.configFile': './' + path.relative(projDir, tailwindSettings.configFile),
         'tailwindCSS.files.exclude': [
             ...(!(await u.isPkgRepo('clevercanyon/skeleton')) ? [...exclusions.devDotFileIgnores] : []),
             ...exclusions.logIgnores, //

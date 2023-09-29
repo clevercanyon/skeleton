@@ -19,7 +19,7 @@ const projDir = path.resolve(__dirname, '../../..');
  * Defines Tailwind settings.
  */
 export default {
-    classFunctions: ['$preact.classes'],
+    classFunctions: ['$preact.classes', 'classnames'],
     classAttributesRegExpStr: '^class(?:es|Names?)?$',
     classAttributesRegExp: new RegExp('^class(?:es|Names?)?$', 'u'),
     classAttributes: ['class', 'classes', 'className', 'classNames'],
