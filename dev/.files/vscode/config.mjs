@@ -279,7 +279,7 @@ export default async () => {
         'tailwindCSS.validate': true,
         'tailwindCSS.classAttributes': tailwindSettings.classAttributes,
         'tailwindCSS.includeLanguages': {}, // Defaults ok; {@see https://o5p.me/kaPo3F}.
-        'tailwindCSS.experimental.configFile': tailwindSettings.configFile,
+        'tailwindCSS.experimental.configFile': path.relative(projDir, './' + tailwindSettings.configFile),
         'tailwindCSS.files.exclude': [
             ...(!(await u.isPkgRepo('clevercanyon/skeleton')) ? [...exclusions.devDotFileIgnores] : []),
             ...exclusions.logIgnores, //

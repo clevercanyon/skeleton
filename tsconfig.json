@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Thu, Sep 28, 2023, 11:26:06 PM EDT.
+ * Last generated using `./tsconfig.mjs` Fri, Sep 29, 2023, 4:35:31 AM EDT.
  */
 {
     "include": ["./src/**/*", "./dev-types.d.ts"],
@@ -27,6 +27,21 @@
         "**/.idea/**",
         "**/.*.swp/**",
         "**/*.ctags/**",
+        "**/.env.me/**",
+        "**/.tscache/**",
+        "**/*.tsbuildinfo/**",
+        "**/.vite/**",
+        "**/.vitest/**",
+        "**/.wrangler/**",
+        "**/.dev.vars/**",
+        "**/.dev.vars.*/**",
+        "**/.rollup/**",
+        "**/.webpack/**",
+        "**/.linaria-cache/**",
+        "**/.sass-cache/**",
+        "**/.docker/**",
+        "**/.vagrant/**",
+        "**/.elasticbeanstalk/**",
         "**/.yarn/**",
         "**/vendor/**",
         "**/node_modules/**",
@@ -63,7 +78,6 @@
         "**/Network Trash Folder/**",
         "**/Temporary Items/**",
         "**/.*/**",
-        "**/*.tsbuildinfo/**",
         "**/*.config.*/**",
         "**/wrangler.*/**",
         "**/tsconfig.*/**",
