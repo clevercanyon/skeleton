@@ -22,6 +22,7 @@ import { $path } from '../../../node_modules/@clevercanyon/utilities/dist/index.
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
 import u from '../bin/includes/utilities.mjs';
+import tailwindSettings from '../tailwind/settings.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
@@ -222,6 +223,20 @@ export default async () => {
         'extensions.ignoreRecommendations': false,
 
         /**
+         * Native lint options.
+         */
+
+        'css.validate': false,
+        'scss.validate': false,
+        'less.validate': false,
+
+        'json.validate.enable': true,
+        'javascript.validate.enable': true,
+        'typescript.validate.enable': true,
+        // <https://stackoverflow.com/a/52397123>.
+        'javascript.suggestionActions.enabled': false,
+
+        /**
          * ESLint options.
          */
 
@@ -247,19 +262,37 @@ export default async () => {
         'eslint.options': {
             'overrideConfigFile': 'eslint.config.mjs',
         },
-        'javascript.validate.enable': true,
-        'typescript.validate.enable': true,
-        // <https://stackoverflow.com/a/52397123>.
-        'javascript.suggestionActions.enabled': false,
 
         /**
          * Stylelint options.
          */
 
-        'css.validate': false,
-        'scss.validate': false,
-        'less.validate': false,
         'stylelint.validate': ['scss', 'css'],
+
+        /**
+         * Tailwind CSS options.
+         *
+         * This extension adds a `tailwindcss` language to VS Code that we don’t use. Not sure why it even exists,
+         * because the language mapping that this extension does already covers CSS files.
+         */
+
+        'tailwindCSS.validate': true,
+        'tailwindCSS.classAttributes': tailwindSettings.classAttributes,
+        'tailwindCSS.includeLanguages': {}, // Defaults ok; {@see https://o5p.me/kaPo3F}.
+        'tailwindCSS.experimental.configFile': tailwindSettings.configFile,
+        'tailwindCSS.files.exclude': [
+            ...(!(await u.isPkgRepo('clevercanyon/skeleton')) ? [...exclusions.devDotFileIgnores] : []),
+            ...exclusions.logIgnores, //
+            ...exclusions.backupIgnores,
+            ...exclusions.patchIgnores,
+            ...exclusions.editorIgnores,
+            ...exclusions.toolingIgnores,
+            ...exclusions.pkgIgnores,
+            ...exclusions.vcsIgnores,
+            ...exclusions.osIgnores,
+            ...exclusions.lockIgnores,
+            ...exclusions.distIgnores,
+        ],
 
         /**
          * Markdown options.

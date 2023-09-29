@@ -105,6 +105,7 @@ export default /* not async compatible */ () => {
                         ...exclusions.backupIgnores,
                         ...exclusions.patchIgnores,
                         ...exclusions.editorIgnores,
+                        ...exclusions.toolingIgnores,
 
                         ...exclusions.pkgIgnores //
                             .filter((ignore) => ignore !== '**/node_modules/**'),

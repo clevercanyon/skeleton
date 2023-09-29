@@ -12,12 +12,8 @@
  * @see https://prettier.io/docs/en/configuration.html
  */
 
-import path from 'node:path';
-import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import extensions from '../bin/includes/extensions.mjs';
-
-const __dirname = $fs.imuDirname(import.meta.url);
-const projDir = path.resolve(__dirname, '../../..');
+import tailwindSettings from '../tailwind/settings.mjs';
 
 /**
  * Defines Prettier configuration.
@@ -148,7 +144,7 @@ export default async () => {
                  * @see https://o5p.me/wWDiYK
                  */
                 files: ['*.' + extensions.asBracedGlob([...extensions.byVSCodeLang.python])],
-                options: { parser: '' }, // N/A ... instead, use <https://github.com/microsoft/vscode-black-formatter>.
+                options: { parser: '' }, // Work-in-progress. For now, use <https://o5p.me/M18xzK>.
             },
             {
                 /**
@@ -263,9 +259,9 @@ export default async () => {
                  */
                 files: ['*.' + extensions.asBracedGlob([...extensions.tailwindPrettierContent])],
                 options: {
-                    tailwindConfig: path.resolve(projDir, './tailwind.config.mjs'),
-                    tailwindAttributes: ['class', 'classes', 'className', 'classNames'],
-                    tailwindFunctions: ['$preact.classes'], // See: <https://o5p.me/33VJpO>.
+                    tailwindConfig: tailwindSettings.configFile,
+                    tailwindFunctions: tailwindSettings.classFunctions,
+                    tailwindAttributes: tailwindSettings.classAttributes,
                 },
             },
             {
