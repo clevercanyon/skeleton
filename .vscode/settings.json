@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Fri, Sep 29, 2023, 4:35:30 AM EDT.
+ * Last generated using `./settings.mjs` Fri, Sep 29, 2023, 4:36:47 AM EDT.
  */
 {
     "editor.formatOnType": false,
@@ -189,7 +189,7 @@
     "tailwindCSS.validate": true,
     "tailwindCSS.classAttributes": ["class", "classes", "className", "classNames"],
     "tailwindCSS.includeLanguages": {},
-    "tailwindCSS.experimental.configFile": "/Users/Jason/Mounts/XDrive/Projects/clevercanyon/skeleton/tailwind.config.mjs",
+    "tailwindCSS.experimental.configFile": "Users/Jason/Mounts/XDrive/Projects/clevercanyon/skeleton/tailwind.config.mjs",
     "tailwindCSS.files.exclude": [
         "**/*.log/**",
         "**/*.logs/**",
