@@ -220,7 +220,7 @@ export default async () => {
          * Extension options.
          */
 
-        'extensions.ignoreRecommendations': false,
+        'extensions.ignoreRecommendations': true, // Let’s not nag ourselves.
 
         /**
          * Native lint options.
