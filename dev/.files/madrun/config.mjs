@@ -139,9 +139,16 @@ export default async () => {
         },
         'pages': async ({ args }) => {
             if (fs.existsSync(osWranglerDir)) {
+                // Ensure `~/.wrangler/local-cert` directory exists.
                 fs.mkdirSync(osWranglerSSLCertDir, { recursive: true, mode: 0o700 });
-                fs.rmSync(osWranglerSSLKeyFile, { recursive: true, force: true }), fs.rmSync(osWranglerSSLCertFile, { recursive: true, force: true });
-                fs.symlinkSync(sslKeyFile, osWranglerSSLKeyFile), fs.symlinkSync(sslCertFile, osWranglerSSLCertFile);
+
+                // Link our custom SSL key to that used by Wrangler.
+                fs.rmSync(osWranglerSSLKeyFile, { recursive: true, force: true });
+                fs.symlinkSync(sslKeyFile, osWranglerSSLKeyFile);
+
+                // Link our custom SSL certificate to that used by Wrangler.
+                fs.rmSync(osWranglerSSLCertFile, { recursive: true, force: true });
+                fs.symlinkSync(sslCertFile, osWranglerSSLCertFile);
             }
             return {
                 env: { ...nodeEnvVars, ...cloudflareEnvVars },
