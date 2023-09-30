@@ -135,27 +135,27 @@ export default async () => {
                         'pages',
 
                         // Default `project` command args.
-                        ...('project' === args._?.[1] && 'create' === args._?.[2] ? (args._?.[3] ? [] : [wranglerSettings.defaultProjectName]) : []),
-                        ...('project' === args._?.[1] && 'create' === args._?.[2] ? (args.productionBranch ? [] : ['--production-branch', 'production']) : []),
+                        ...('project' === args._?.[0] && 'create' === args._?.[1] ? (args._?.[2] ? [] : [wranglerSettings.defaultProjectName]) : []),
+                        ...('project' === args._?.[0] && 'create' === args._?.[1] ? (args.productionBranch ? [] : ['--production-branch', 'production']) : []),
 
                         // Default `dev` command args.
-                        ...('dev' === args._?.[1] ? (args._?.[2] ? [] : [distDir]) : []),
-                        ...('dev' === args._?.[1] ? (args.liveReload ? [] : ['--live-reload']) : []),
-                        ...('dev' === args._?.[1] ? (args.compatibilityDate ? [] : ['--compatibility-date', wranglerSettings.compatibilityDate]) : []),
-                        ...('dev' === args._?.[1]
+                        ...('dev' === args._?.[0] ? (args._?.[1] ? [] : [distDir]) : []),
+                        ...('dev' === args._?.[0] ? (args.liveReload ? [] : ['--live-reload']) : []),
+                        ...('dev' === args._?.[0] ? (args.compatibilityDate ? [] : ['--compatibility-date', wranglerSettings.compatibilityDate]) : []),
+                        ...('dev' === args._?.[0]
                             ? args.compatibilityFlag || args.compatibilityFlags
                                 ? [] // `--compatibility-flag` is an alias of `--compatibility-flags`.
                                 : wranglerSettings.compatibilityFlags.map((f) => ['--compatibility-flag', f]).flat()
                             : []),
 
                         // Default `deploy` command args.
-                        ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
-                        ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.branch ? [] : ['--branch', 'production']) : []),
+                        ...(['deploy', 'publish'].includes(args._?.[0]) ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
+                        ...(['deploy', 'publish'].includes(args._?.[0]) ? (args.branch ? [] : ['--branch', 'production']) : []),
 
                         // Default `deployment` command args.
-                        ...('deployment' === args._?.[1] && 'list' === args._?.[2] ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
-                        ...('deployment' === args._?.[1] && 'tail' === args._?.[2] ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
-                        ...('deployment' === args._?.[1] && 'tail' === args._?.[2] ? (args.environment ? [] : ['--environment', 'production']) : []),
+                        ...('deployment' === args._?.[0] && 'list' === args._?.[1] ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
+                        ...('deployment' === args._?.[0] && 'tail' === args._?.[1] ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
+                        ...('deployment' === args._?.[0] && 'tail' === args._?.[1] ? (args.environment ? [] : ['--environment', 'production']) : []),
 
                         // User-provided args.
                         '{{@}}',
