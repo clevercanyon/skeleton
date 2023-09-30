@@ -52,7 +52,9 @@ subject=$(
 # See: <https://o5p.me/YPcyex> for further details.
 subject_alt_names=$(
     tr -d '\n' <<- 'ooo'
+	IP:::,
 	IP:::1,
+	IP:0.0.0.0,
 	IP:127.0.0.1,
 	DNS:mac,
 	DNS:*.mac,
