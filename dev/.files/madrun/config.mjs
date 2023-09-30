@@ -162,7 +162,6 @@ export default async () => {
                         ...('dev' === args._?.[0] ? (args.ip ? [] : ['--ip', '0.0.0.0']) : []),
                         ...('dev' === args._?.[0] ? (args.port ? [] : ['--port', '443']) : []),
                         ...('dev' === args._?.[0] ? (args.localProtocol ? [] : ['--local-protocol', 'https']) : []),
-                        ...('dev' === args._?.[0] ? (args.liveReload ? [] : ['--live-reload']) : []),
                         ...('dev' === args._?.[0] ? (args.compatibilityDate ? [] : ['--compatibility-date', wranglerSettings.compatibilityDate]) : []),
                         ...('dev' === args._?.[0]
                             ? args.compatibilityFlag || args.compatibilityFlags
