@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Sat, Sep 30, 2023, 12:23:39 AM EDT.
+ * Last generated using `./settings.mjs` Sat, Sep 30, 2023, 2:23:14 AM EDT.
  */
 {
     "editor.formatOnType": false,
@@ -77,6 +77,12 @@
         "**/src/cargo/_routes.{json,×××××××}": "jsonc"
     },
     "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true,
         "**/._*": true,
         "**/.~*": true,
         "**/.idea": true,
@@ -97,21 +103,16 @@
         "**/.docker": true,
         "**/.vagrant": true,
         "**/.elasticbeanstalk": true,
-        "**/.git": true,
-        "**/.svn": true,
         "**/_svn": true,
         "**/.svnignore": true,
         "**/.bzr": true,
         "**/.bzrignore": true,
-        "**/.hg": true,
         "**/.hgignore": true,
-        "**/Thumbs.db": true,
         "**/ehthumbs.db": true,
         "**/Desktop.ini": true,
         "**/$RECYCLE.BIN": true,
         "**/Icon": true,
         "**/*.icloud": true,
-        "**/.DS_Store": true,
         "**/.disk_label": true,
         "**/.LSOverride": true,
         "**/.VolumeIcon.icns": true,
@@ -126,9 +127,27 @@
         "**/.Spotlight-V100": true,
         "**/.DocumentRevisions-V100": true,
         "**/Network Trash Folder": true,
-        "**/Temporary Items": true
+        "**/Temporary Items": true,
+        ".*": true,
+        "*.tsbuildinfo": true,
+        "*.config.*": true,
+        "wrangler.*": true,
+        "tsconfig.*": true,
+        "dev-types.d.ts": true,
+        "config.gypi": true,
+        "dev/.files": true,
+        ".yarn": true,
+        "vendor": true,
+        "node_modules": true,
+        "jspm_packages": true,
+        "bower_components": true,
+        "yarn.lock": true,
+        "composer.lock": true,
+        "package-lock.json": true,
+        "LICENSE.txt": true
     },
     "explorer.excludeGitIgnore": false,
+    "explorerExclude.backup": {},
     "search.useIgnoreFiles": true,
     "search.useGlobalIgnoreFiles": false,
     "search.useParentIgnoreFiles": false,
