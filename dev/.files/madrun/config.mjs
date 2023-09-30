@@ -151,6 +151,7 @@ export default async () => {
                 fs.symlinkSync(sslCertFile, osWranglerSSLCertFile);
             }
             return {
+                opts: { cwd: distDir }, // See: <https://o5p.me/k9Fqml>.
                 env: { ...nodeEnvVars, ...cloudflareEnvVars },
                 cmds: [
                     [
