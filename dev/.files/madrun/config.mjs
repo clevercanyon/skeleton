@@ -11,6 +11,8 @@
  * @see https://github.com/clevercanyon/madrun
  */
 
+import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
 import url from 'node:url';
 import { $cmd } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
@@ -19,7 +21,17 @@ import events from './includes/events.mjs';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const nodeIncludeFile = path.resolve(__dirname, './includes/node.cjs');
+
+const projDir = path.resolve(__dirname, '../../..');
 const distDir = path.resolve(__dirname, '../../../dist');
+
+const osWranglerDir = path.resolve(os.homedir(), './.wrangler');
+const osWranglerSSLCertDir = path.resolve(osWranglerDir, './local-cert');
+const osWranglerSSLKeyFile = path.resolve(osWranglerSSLCertDir, './key.pem');
+const osWranglerSSLCertFile = path.resolve(osWranglerSSLCertDir, './cert.pem');
+
+const sslKeyFile = path.resolve(projDir, './dev/.files/bin/ssl-certs/i10e-ca-key.pem');
+const sslCertFile = path.resolve(projDir, './dev/.files/bin/ssl-certs/i10e-ca-crt.pem');
 
 const nodeEnvVars = { NODE_OPTIONS: $cmd.quote([`--require ${$cmd.esc(nodeIncludeFile)}`].join(' ')) };
 const cloudflareEnvVars = { CLOUDFLARE_API_TOKEN: process.env.USER_CLOUDFLARE_TOKEN || '' };
@@ -126,6 +138,10 @@ export default async () => {
             };
         },
         'pages': async ({ args }) => {
+            if (fs.existsSync(osWranglerDir)) {
+                fs.mkdirSync(osWranglerSSLCertDir, { recursive: true, mode: 0o700 });
+                fs.symlinkSync(sslKeyFile, osWranglerSSLKeyFile), fs.symlinkSync(sslCertFile, osWranglerSSLCertFile);
+            }
             return {
                 env: { ...nodeEnvVars, ...cloudflareEnvVars },
                 cmds: [
