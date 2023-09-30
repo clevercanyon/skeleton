@@ -48,13 +48,13 @@ subject=$(
 	ooo
 )
 # Browsers don’t acknowledge `*.tld`, because that would effectively
-# cover everything on an entire TLD. That’s why we have `*.x.tld`.
+# cover everything on an entire TLD. That’s why we also have `*.x.[tld]`.
 # See: <https://o5p.me/YPcyex> for further details.
 subject_alt_names=$(
     tr -d '\n' <<- 'ooo'
 	IP:::,
-	IP:::1,
 	IP:0.0.0.0,
+	IP:::1,
 	IP:127.0.0.1,
 	DNS:mac,
 	DNS:*.mac,
