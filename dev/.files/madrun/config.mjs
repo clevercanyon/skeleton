@@ -60,19 +60,19 @@ export default async () => {
         'dev': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars },
-                cmds: [['npx', 'vite', 'dev', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vite', 'dev', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
         'preview': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars },
-                cmds: [['npx', 'vite', 'preview', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vite', 'preview', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
         'build': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars },
-                cmds: [['npx', 'vite', 'build', ...(args.mode ? [] : ['--mode', 'prod']), '{{@}}']],
+                cmds: [['npx', 'vite', 'build', '{{@}}', ...(args.mode ? [] : ['--mode', 'prod'])]],
             };
         },
 
@@ -88,31 +88,31 @@ export default async () => {
         'vitest': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars },
-                cmds: [['npx', 'vitest', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vitest', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
         'tests': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars },
-                cmds: [['npx', 'vitest', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vitest', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
         'tests:bench': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars },
-                cmds: [['npx', 'vitest', 'bench', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vitest', 'bench', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
         'tests:sandbox': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars, VITEST_SANDBOX_ENABLE: 'true' },
-                cmds: [['npx', 'vitest', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vitest', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
         'tests:examples': async ({ args }) => {
             return {
                 env: { ...nodeEnvVars, VITEST_EXAMPLES_ENABLE: 'true' },
-                cmds: [['npx', 'vitest', ...(args.mode ? [] : ['--mode', 'dev']), '{{@}}']],
+                cmds: [['npx', 'vitest', '{{@}}', ...(args.mode ? [] : ['--mode', 'dev'])]],
             };
         },
 
@@ -133,6 +133,7 @@ export default async () => {
                         'npx',
                         'wrangler',
                         'pages',
+                        '{{@}}',
 
                         // Default `project` command args.
                         ...('project' === args._?.[0] && 'create' === args._?.[1] ? (args._?.[2] ? [] : [wranglerSettings.defaultProjectName]) : []),
@@ -156,9 +157,6 @@ export default async () => {
                         ...('deployment' === args._?.[0] && 'list' === args._?.[1] ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
                         ...('deployment' === args._?.[0] && 'tail' === args._?.[1] ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
                         ...('deployment' === args._?.[0] && 'tail' === args._?.[1] ? (args.environment ? [] : ['--environment', 'production']) : []),
-
-                        // User-provided args.
-                        '{{@}}',
                     ],
                 ],
             };
