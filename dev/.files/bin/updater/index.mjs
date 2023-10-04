@@ -99,7 +99,7 @@ export default async ({ projDir }) => {
     /**
      * Deletes outdated dotfiles no longer in use.
      */
-    for (const relPath of ['./.vscode/mdx-layout.mjsx', './.madrun.mjs', './ts-types.d.ts', './tsconfig.d.ts']) {
+    for (const relPath of ['./dev/.envs/.~comp', './.vscode/mdx-layout.mjsx', './.madrun.mjs', './ts-types.d.ts', './tsconfig.d.ts']) {
         if (await isLocked(relPath)) {
             continue; // Locked 🔒.
         }
