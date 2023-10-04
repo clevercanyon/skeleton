@@ -37,12 +37,6 @@ const { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType } = (() => 
     const pkgRepository = $obp.get(pkg, 'repository', '');
     const pkgBuildAppType = $obp.get(pkg, 'config.c10n.&.build.appType', '');
 
-    if (!pkgName /* Throw if name is missing, we depend heavily on this. */) {
-        throw new Error('u: Unable to parse `./package.json`; missing `name`.');
-    }
-    if (!pkgRepository /* Throw if repo is missing, we depend heavily on this. */) {
-        throw new Error('u: Unable to parse `./package.json`; missing `repository`.');
-    }
     return { pkgFile, pkgName, pkgPrivate, pkgRepository, pkgBuildAppType };
 })();
 const Octokit = OctokitCore.plugin(OctokitPluginPaginateRest);
@@ -120,43 +114,20 @@ export default class u {
      * Pkg utilities.
      */
 
-    static async pkg() {
-        if (!fs.existsSync(pkgFile)) {
-            throw new Error('u.pkg: Missing `./package.json`.');
+    static async pkg(file = pkgFile) {
+        if (!fs.existsSync(file)) {
+            throw new Error('u.pkg: Missing `' + file + '`.');
         }
-        const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
+        const pkg = $json.parse(fs.readFileSync(file).toString());
 
         if (!$is.plainObject(pkg)) {
-            throw new Error('u.pkg: Unable to parse `./package.json`.');
-        }
-        if (!pkg.name /* Throw if name is missing, we depend heavily on this. */) {
-            throw new Error('u.pkg: Unable to parse `./package.json`; missing `name`.');
-        }
-        if (!pkg.repository /* Throw if repository is missing, we depend heavily on this. */) {
-            throw new Error('u.pkg: Unable to parse `./package.json`; missing `repository`.');
+            throw new Error('u.pkg: Unable to parse `' + file + '`.');
         }
         return pkg; // JSON object data.
     }
 
     static async depPkg(dependency) {
-        // This is a dependency-specific package file.
-        const pkgFile = path.resolve(projDir, './node_modules', dependency, './package.json');
-
-        if (!fs.existsSync(pkgFile)) {
-            return undefined; // Not possible.
-        }
-        const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
-
-        if (!$is.plainObject(pkg)) {
-            throw new Error('u.pkg: Unable to parse `' + pkgFile + '`.');
-        }
-        if (!pkg.name /* Throw if name is missing, we depend heavily on this. */) {
-            throw new Error('u.pkg: Unable to parse `./package.json`; missing `name`.');
-        }
-        if (!pkg.repository /* Throw if repository is missing, we depend heavily on this. */) {
-            throw new Error('u.pkg: Unable to parse `./package.json`; missing `repository`.');
-        }
-        return pkg; // JSON object data.
+        return u.pkg(path.resolve(projDir, './node_modules', dependency, './package.json'));
     }
 
     static async isPkgRepo(ownerRepo) {
