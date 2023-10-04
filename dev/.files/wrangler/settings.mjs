@@ -20,7 +20,7 @@ const projDir = path.resolve(__dirname, '../../..');
 
 const pkg = await u.pkg();
 const pkgSlug = $app.pkgSlug(pkg.name);
-const hop = $brand.get('hop');
+const hop = $brand.get('@clevercanyon/hop.gdn');
 
 /**
  * Defines Wrangler settings.

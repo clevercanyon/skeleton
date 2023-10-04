@@ -931,25 +931,6 @@ export default class u {
         return fs.existsSync(path.resolve(projDir, './.env.vault'));
     }
 
-    static async loadEnv({ mode }) {
-        const envFiles = await u.envFiles();
-
-        if (!mode || 'main' === mode || !envFiles[mode]) {
-            throw new Error('u.loadEnv: Invalid mode: `' + mode + '`.');
-        }
-        return Object.fromEntries(
-            [envFiles.main, envFiles[mode]].flatMap((envFile) => {
-                if (!fs.existsSync(envFile)) return [];
-
-                const props = fs.readFileSync(envFile).toString();
-                const env = $dotenv.parse(props);
-
-                // @todo Add support for dotenv-expand here.
-                return Object.entries(env);
-            }),
-        );
-    }
-
     static async envsPush(opts = { dryRun: false }) {
         const envFiles = await u.envFiles();
 
@@ -1014,6 +995,9 @@ export default class u {
             }
             u.log($chalk.gray('Decrypting `' + envName + '` env using Dotenv Vault key.'));
             if (!opts.dryRun) {
+                // Note: this doesn’t leak our environment variables, but it does leak all of the
+                // variables in `./.env.vault`, because of the way it is processed internally by dotenv.
+                // Issue opened at dotenv regarding the problem; {@see https://o5p.me/DBbi7j}.
                 const env = $dotenv.$._parseVault({
                     DOTENV_KEY: key, // Pass explicitly.
                     path: path.resolve(projDir, './.env.vault'),
@@ -1061,6 +1045,15 @@ export default class u {
         } else {
             await u.spawn(path.resolve(binDir, './envs.mjs'), ['install']);
         }
+    }
+
+    static async loadEnv({ mode }) {
+        const envFiles = await u.envFiles();
+
+        if (!mode || 'main' === mode || !envFiles[mode]) {
+            throw new Error('u.loadEnv: Invalid mode: `' + mode + '`.');
+        }
+        return $dotenv.parseExpand([envFiles.main, envFiles[mode]]);
     }
 
     static async _envsExtractKeys() {

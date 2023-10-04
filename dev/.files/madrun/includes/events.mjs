@@ -17,8 +17,7 @@ import u from '../../bin/includes/utilities.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../../..');
-
-const hop = $brand.get('hop');
+const hop = $brand.get('@clevercanyon/hop.gdn');
 
 /**
  * Defines event handlers.
@@ -57,11 +56,11 @@ export default {
                 _.parentDirBasename = path.basename(path.dirname(projDir));
                 _.dirBasename = path.basename(projDir);
 
-                _.maybeParentDirBrand = $fn.try(() => $brand.get(_.parentDirBasename))(); // Maybe `undefined`!
+                _.maybeParentDirBrand = $fn.try(() => $brand.get('@' + _.parentDirBasename + '/' + _.dirBasename))();
                 _.parentDirOwner = $is.brand(_.maybeParentDirBrand) ? _.maybeParentDirBrand.org.slug : _.parentDirBasename;
 
                 const pkgName = args.pkgName || '@' + _.parentDirOwner + '/' + _.dirBasename;
-                const pkgSlug = $app.pkgSlug(pkgName); // `@org/[slug]` from a scoped package, or `slug` from an unscoped package.
+                const pkgSlug = $app.pkgSlug(pkgName); // Slug from `@org/[slug]` in a scoped package, or `slug` from an unscoped package.
 
                 const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || _.parentDirOwner;
                 const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || _.dirBasename;
