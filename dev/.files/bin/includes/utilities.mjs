@@ -1014,7 +1014,7 @@ export default class u {
             }
             u.log($chalk.gray('Decrypting `' + envName + '` env using Dotenv Vault key.'));
             if (!opts.dryRun) {
-                const env = $dotenv._parseVault({
+                const env = $dotenv.$._parseVault({
                     DOTENV_KEY: key, // Pass explicitly.
                     path: path.resolve(projDir, './.env.vault'),
                 });
