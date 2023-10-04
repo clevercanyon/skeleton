@@ -107,7 +107,7 @@ export default {
                     .readFile((_.envProdFile = path.resolve(projDir, './dev/.envs/.env.prod')))
                     .then(async (envProd) => {
                         envProd = envProd.toString();
-                        envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + pkgSlug + '.' + hop.domain + "'");
+                        envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + pkgSlug + '.' + hop.hostname + "'");
                         await fsp.writeFile(_.envProdFile, envProd);
                     })
                     .catch((error) => {

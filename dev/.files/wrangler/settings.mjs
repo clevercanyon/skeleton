@@ -19,6 +19,7 @@ const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../..');
 
 const pkg = await u.pkg();
+const pkgSlug = $app.pkgSlug(pkg.name);
 const hop = $brand.get('hop');
 
 /**
@@ -35,14 +36,14 @@ export default {
     defaultLocalProtocol: 'https',
     defaultLocalPort: '443',
 
-    defaultZoneName: hop.domain,
-    defaultZoneDomain: 'workers.' + hop.domain,
+    defaultZoneName: hop.hostname,
+    defaultZoneDomain: 'workers.' + hop.hostname,
 
     defaultEnvironment: 'production',
     defaultProductionBranch: 'production',
 
-    defaultWorkerName: $app.pkgSlug(pkg.name),
-    defaultProjectName: $app.pkgSlug(pkg.name),
+    defaultWorkerName: pkgSlug,
+    defaultProjectName: pkgSlug,
 
     osDir: path.resolve(os.homedir(), './.wrangler'),
     projDir: path.resolve(projDir, './.wrangler'),
