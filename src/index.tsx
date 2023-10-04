@@ -2,7 +2,7 @@
  * Module.
  */
 
-import './resources/init-env.ts';
+import './resources/init.ts';
 
 /**
  * Exports.

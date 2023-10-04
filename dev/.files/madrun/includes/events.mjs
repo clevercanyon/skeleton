@@ -12,12 +12,13 @@
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $brand, $fn, $is, $str, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $app, $brand, $fn, $is, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import u from '../../bin/includes/utilities.mjs';
-import wranglerSettings from '../../wrangler/settings.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../../..');
+
+const hop = $brand.get('hop');
 
 /**
  * Defines event handlers.
@@ -51,24 +52,25 @@ export default {
                 /**
                  * Initializes a few variables.
                  */
-                const _ = {}; // Initialize.
+                const _ = {}; // Initialize temp vars.
 
-                const parentDirBasename = path.basename(path.dirname(projDir));
-                const dirBasename = path.basename(projDir);
+                _.parentDirBasename = path.basename(path.dirname(projDir));
+                _.dirBasename = path.basename(projDir);
 
-                const maybeParentDirBrand = $fn.try(() => $brand.get(parentDirBasename))(); // Maybe.
-                const parentDirOwner = $is.brand(maybeParentDirBrand) ? maybeParentDirBrand.org.slug : parentDirBasename;
+                _.maybeParentDirBrand = $fn.try(() => $brand.get(_.parentDirBasename))(); // Maybe `undefined`!
+                _.parentDirOwner = $is.brand(_.maybeParentDirBrand) ? _.maybeParentDirBrand.org.slug : _.parentDirBasename;
 
-                const pkgName = args.pkgName || '@' + parentDirOwner + '/' + dirBasename;
-                const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || parentDirOwner;
-                const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || dirBasename;
-                const subdomain = $str.kebabCase(repoName) + '.' + wranglerSettings.defaultZoneName;
+                const pkgName = args.pkgName || '@' + _.parentDirOwner + '/' + _.dirBasename;
+                const pkgSlug = $app.pkgSlug(pkgName); // `@org/[slug]` from a scoped package, or `slug` from an unscoped package.
+
+                const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || _.parentDirOwner;
+                const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || _.dirBasename;
 
                 /**
                  * Updates `./package.json` file.
                  */
                 await u.updatePkg({
-                    name: pkgName, // e.g., `@clevercanyon/dir-basename`.
+                    name: pkgName, // e.g., `@org/[slug]` forms a package name.
                     repository: 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName),
                     homepage: 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '#readme',
                     bugs: 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '/issues',
@@ -105,7 +107,7 @@ export default {
                     .readFile((_.envProdFile = path.resolve(projDir, './dev/.envs/.env.prod')))
                     .then(async (envProd) => {
                         envProd = envProd.toString();
-                        envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + subdomain + "'");
+                        envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + pkgSlug + '.' + hop.domain + "'");
                         await fsp.writeFile(_.envProdFile, envProd);
                     })
                     .catch((error) => {
