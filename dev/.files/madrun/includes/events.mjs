@@ -9,6 +9,7 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
+import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { $chalk, $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
@@ -66,10 +67,11 @@ export default {
                 const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || _parentDirOwner;
                 const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || _dirBasename;
 
-                const envProdFile = path.resolve(projDir, './dev/.envs/.env.prod');
+                const envsDir = path.resolve(projDir, './dev/.envs');
+                const envProdFile = path.resolve(envsDir, './.env.prod');
                 const readmeFile = path.resolve(projDir, './README.md');
 
-                u.log($chalk.gray($json.stringify({ pkgName, pkgSlug, repoOwner, repoName, envProdFile, readmeFile }, { pretty: true })));
+                u.log($chalk.gray($json.stringify({ pkgName, pkgSlug, repoOwner, repoName }, { pretty: true })));
 
                 /**
                  * Updates `./package.json` file.
@@ -108,19 +110,21 @@ export default {
                 u.log($chalk.gray($json.stringify(await u.pkg(), { pretty: true })));
 
                 /**
-                 * Updates `./dev/.envs/.env.prod` file, if exists.
+                 * Updates `./dev/.envs`, if applicable.
                  */
-                u.log($chalk.green('Updating `./dev/.envs`.'));
-                await fsp
-                    .readFile(envProdFile)
-                    .then(async (envProd) => {
-                        envProd = envProd.toString();
-                        envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + pkgSlug + '.' + hop.hostname + "'");
-                        await fsp.writeFile(envProdFile, envProd);
-                    })
-                    .catch((error) => {
-                        if ('ENOENT' !== error.code) throw error;
-                    });
+                if (fs.existsSync(envsDir)) {
+                    u.log($chalk.green('Updating `./dev/.envs`.'));
+                    await fsp
+                        .readFile(envProdFile)
+                        .then(async (envProd) => {
+                            envProd = envProd.toString();
+                            envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + pkgSlug + '.' + hop.hostname + "'");
+                            await fsp.writeFile(envProdFile, envProd);
+                        })
+                        .catch((error) => {
+                            if ('ENOENT' !== error.code) throw error;
+                        });
+                }
 
                 /**
                  * Updates `./README.md` file in new project directory.
