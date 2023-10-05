@@ -11,8 +11,8 @@
 
 import fsp from 'node:fs/promises';
 import path from 'node:path';
-import { $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $app, $brand, $fn, $is, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $chalk, $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
+import { $app, $brand, $fn, $is, $json, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import u from '../../bin/includes/utilities.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
@@ -45,12 +45,15 @@ export default {
                 /**
                  * Deletes Dotenv Vault associated with template.
                  */
+                u.log($chalk.green('Removing `./env.{me,vault}` files.'));
                 await fsp.rm(path.resolve(projDir, './.env.me'), { force: true });
                 await fsp.rm(path.resolve(projDir, './.env.vault'), { force: true });
 
                 /**
                  * Initializes a few variables.
                  */
+                u.log($chalk.green('Configuring project variables.'));
+
                 const _parentDirBasename = path.basename(path.dirname(projDir));
                 const _dirBasename = path.basename(projDir);
 
@@ -66,9 +69,12 @@ export default {
                 const envProdFile = path.resolve(projDir, './dev/.envs/.env.prod');
                 const readmeFile = path.resolve(projDir, './README.md');
 
+                u.log($chalk.gray($json.stringify({ pkgName, pkgSlug, repoOwner, repoName, envProdFile, readmeFile }, { pretty: true })));
+
                 /**
                  * Updates `./package.json` file.
                  */
+                u.log($chalk.green('Updating `./package.json` properties.'));
                 await u.updatePkg({
                     name: pkgName, // e.g., `@org/[slug]` forms a package name.
                     repository: 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName),
@@ -99,10 +105,12 @@ export default {
                     ...(args.pkg ? { $set: { private: false } } : {}),
                     ...(args.pkg && args.public ? { $set: { 'publishConfig.access': 'public' } } : {}),
                 });
+                u.log($chalk.gray($json.stringify(await u.pkg(), { pretty: true })));
 
                 /**
                  * Updates `./dev/.envs/.env.prod` file, if exists.
                  */
+                u.log($chalk.green('Updating `./dev/.envs`.'));
                 await fsp
                     .readFile(envProdFile)
                     .then(async (envProd) => {
@@ -117,6 +125,7 @@ export default {
                 /**
                  * Updates `./README.md` file in new project directory.
                  */
+                u.log($chalk.green('Updating `./README.md`.'));
                 await fsp
                     .readFile(readmeFile)
                     .then(async (readme) => {
@@ -131,21 +140,25 @@ export default {
                 /**
                  * Initializes this as a new git repository.
                  */
+                u.log($chalk.green('Initializing git repository.'));
                 await u.spawn('git', ['init']);
 
                 /**
                  * Updates dotfiles after the above changes.
                  */
+                u.log($chalk.green('Updating project dotfiles.'));
                 await u.updateDotfiles(/* Recompiles statics. */);
 
                 /**
                  * Updates Vite build after the above changes.
                  */
+                u.log($chalk.green('Updating project build directory.'));
                 if (await u.isViteBuild()) await u.viteBuild();
 
                 /**
                  * Saves changes made here as first initial commit.
                  */
+                u.log($chalk.green('Adding first git commit with project files.'));
                 await u.gitAddCommit('Initializing project directory. [n]');
 
                 /**
@@ -153,15 +166,19 @@ export default {
                  */
                 if ('clevercanyon' === repoOwner) {
                     if (process.env.GH_TOKEN && 'owner' === (await u.gistGetC10NUser()).github?.role) {
+                        u.log($chalk.green('Creating remote project repo at GitHub [' + (args.public ? 'public' : 'private') + '].'));
                         await u.spawn('gh', ['repo', 'create', repoOwner + '/' + repoName, '--source', projDir, args.public ? '--public' : '--private']);
                     } else {
+                        u.log($chalk.green('Configuring a remote repo origin.'));
                         const origin = 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git';
                         await u.spawn('git', ['remote', 'add', 'origin', origin]);
                     }
                 } else if (process.env.USER_GITHUB_USERNAME === repoOwner) {
                     if (process.env.GH_TOKEN) {
+                        u.log($chalk.green('Creating remote project repo at GitHub [' + (args.public ? 'public' : 'private') + '].'));
                         await u.spawn('gh', ['repo', 'create', repoOwner + '/' + repoName, '--source', projDir, args.public ? '--public' : '--private']);
                     } else {
+                        u.log($chalk.green('Configuring a remote repo origin.'));
                         const origin = 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git';
                         await u.spawn('git', ['remote', 'add', 'origin', origin]);
                     }
