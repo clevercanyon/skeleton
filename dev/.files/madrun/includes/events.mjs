@@ -51,19 +51,20 @@ export default {
                 /**
                  * Initializes a few variables.
                  */
-                const _ = {}; // Initialize temp vars.
+                const _parentDirBasename = path.basename(path.dirname(projDir));
+                const _dirBasename = path.basename(projDir);
 
-                _.parentDirBasename = path.basename(path.dirname(projDir));
-                _.dirBasename = path.basename(projDir);
+                const _maybeParentDirBrand = $fn.try(() => $brand.get('@' + _parentDirBasename + '/' + _dirBasename))();
+                const _parentDirOwner = $is.brand(_maybeParentDirBrand) ? _maybeParentDirBrand.org.slug : _parentDirBasename;
 
-                _.maybeParentDirBrand = $fn.try(() => $brand.get('@' + _.parentDirBasename + '/' + _.dirBasename))();
-                _.parentDirOwner = $is.brand(_.maybeParentDirBrand) ? _.maybeParentDirBrand.org.slug : _.parentDirBasename;
-
-                const pkgName = args.pkgName || '@' + _.parentDirOwner + '/' + _.dirBasename;
+                const pkgName = args.pkgName || '@' + _parentDirOwner + '/' + _dirBasename;
                 const pkgSlug = $app.pkgSlug(pkgName); // Slug from `@org/[slug]` in a scoped package, or `slug` from an unscoped package.
 
-                const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || _.parentDirOwner;
-                const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || _.dirBasename;
+                const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || _parentDirOwner;
+                const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || _dirBasename;
+
+                const envProdFile = path.resolve(projDir, './dev/.envs/.env.prod');
+                const readmeFile = path.resolve(projDir, './README.md');
 
                 /**
                  * Updates `./package.json` file.
@@ -103,11 +104,11 @@ export default {
                  * Updates `./dev/.envs/.env.prod` file, if exists.
                  */
                 await fsp
-                    .readFile((_.envProdFile = path.resolve(projDir, './dev/.envs/.env.prod')))
+                    .readFile(envProdFile)
                     .then(async (envProd) => {
                         envProd = envProd.toString();
                         envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + pkgSlug + '.' + hop.hostname + "'");
-                        await fsp.writeFile(_.envProdFile, envProd);
+                        await fsp.writeFile(envProdFile, envProd);
                     })
                     .catch((error) => {
                         if ('ENOENT' !== error.code) throw error;
@@ -117,11 +118,11 @@ export default {
                  * Updates `./README.md` file in new project directory.
                  */
                 await fsp
-                    .readFile((_.readmeFile = path.resolve(projDir, './README.md')))
+                    .readFile(readmeFile)
                     .then(async (readme) => {
                         readme = readme.toString();
                         readme = readme.replace(/^(#\s+)(@[^/?#\s]+\/[^/?#\s]+)/gmu, '$1' + pkgName);
-                        await fsp.writeFile(_.readmeFile, readme);
+                        await fsp.writeFile(readmeFile, readme);
                     })
                     .catch((error) => {
                         if ('ENOENT' !== error.code) throw error;
