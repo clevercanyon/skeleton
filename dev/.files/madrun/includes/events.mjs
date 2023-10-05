@@ -134,6 +134,11 @@ export default {
                 await u.spawn('git', ['init']);
 
                 /**
+                 * Updates dotfiles after the above changes.
+                 */
+                await u.updateDotfiles(/* Recompiles statics. */);
+
+                /**
                  * Updates Vite build after the above changes.
                  */
                 if (await u.isViteBuild()) await u.viteBuild();
