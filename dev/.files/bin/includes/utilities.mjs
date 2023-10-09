@@ -1158,8 +1158,8 @@ export default class u {
             u.log($chalk.gray('Skipping NPM update entirely.'));
         } else {
             if ('nimble' === opts.directive) {
-                const pkg = await u.pkg();
-                const dependenciesToUpdate = [];
+                const pkg = await u.pkg(); // Package.
+                let dependenciesToUpdate = []; // Initialize.
 
                 for (const [dependency] of Object.entries(pkg.dependencies || {})) dependenciesToUpdate.push(dependency);
                 for (const [dependency] of Object.entries(pkg.peerDependencies || {})) dependenciesToUpdate.push(dependency);
@@ -1169,8 +1169,9 @@ export default class u {
                         if (/^@clevercanyon\//iu.test(dependency)) dependenciesToUpdate.push(dependency);
                     }
                 if (dependenciesToUpdate.length) {
+                    dependenciesToUpdate = [...new Set(dependenciesToUpdate)];
                     u.log($chalk.gray('Updating these specific NPM dependencies:')), u.log($chalk.gray(dependenciesToUpdate.join(', ')));
-                    await u.spawn('npm', ['update', ...[...new Set(dependenciesToUpdate)], '--save'], { stdio: 'inherit' });
+                    await u.spawn('npm', ['update', ...dependenciesToUpdate, '--save'], { stdio: 'inherit' });
                 }
                 u.log($chalk.gray('Updating other NPM dependencies in `--prefer-offline` mode.'));
                 await u.spawn('npm', ['update', '--prefer-offline', '--save'], { stdio: 'inherit' });
