@@ -39,14 +39,14 @@
         }
     },
     "dependencies": {
-        "@clevercanyon/utilities": "^1.0.329"
+        "@clevercanyon/utilities": "^1.0.330"
     },
     "peerDependencies": {},
     "peerDependenciesMeta": {},
     "optionalDependencies": {},
     "bundleDependencies": [],
     "devDependencies": {
-        "@clevercanyon/dev-deps": "^1.0.247"
+        "@clevercanyon/dev-deps": "^1.0.248"
     },
     "overrides": {},
     "cpu": ["x64", "arm64"],
