@@ -130,6 +130,11 @@ export default class u {
         return u.pkg(path.resolve(projDir, './node_modules', dependency, './package.json'));
     }
 
+    static async isPkgName(name) {
+        return name === pkgName; // Package with this specific name?
+    }
+
+    // @todo Deprecate this in favor of `isPkgName()`.
     static async isPkgRepo(ownerRepo) {
         return new RegExp('[:/]' + $str.escRegExp(ownerRepo) + '(?:\\.git)?$', 'iu').test(pkgRepository);
     }
@@ -183,15 +188,15 @@ export default class u {
         }
         if (Object.hasOwn(updates.$ꓺset?.engines || {}, 'node')) {
             updates.$ꓺset.engines.node = []; // Initialize.
-            if (nodeVersion.previous.length) updates.$ꓺset.engines.node.push(nodeVersion.previous);
-            if (nodeVersion.current.length) updates.$ꓺset.engines.node.push(nodeVersion.current);
+            if (nodeVersion.previous) updates.$ꓺset.engines.node.push(nodeVersion.previous);
+            if (nodeVersion.current) updates.$ꓺset.engines.node.push(nodeVersion.current);
             if (nodeVersion.forwardCompat.length) updates.$ꓺset.engines.node = updates.$ꓺset.engines.node.concat(nodeVersion.forwardCompat);
             updates.$ꓺset.engines.node = (updates.$ꓺset.engines.node.length ? '^' : '') + updates.$ꓺset.engines.node.join(' || ^');
         }
         if (Object.hasOwn(updates.$ꓺset?.engines || {}, 'npm')) {
             updates.$ꓺset.engines.npm = []; // Initialize.
-            if (nodeVersion.npm.previous.length) updates.$ꓺset.engines.npm.push(nodeVersion.npm.previous);
-            if (nodeVersion.npm.current.length) updates.$ꓺset.engines.npm.push(nodeVersion.npm.current);
+            if (nodeVersion.npm.previous) updates.$ꓺset.engines.npm.push(nodeVersion.npm.previous);
+            if (nodeVersion.npm.current) updates.$ꓺset.engines.npm.push(nodeVersion.npm.current);
             if (nodeVersion.npm.forwardCompat.length) updates.$ꓺset.engines.npm = updates.$ꓺset.engines.npm.concat(nodeVersion.npm.forwardCompat);
             updates.$ꓺset.engines.npm = (updates.$ꓺset.engines.npm.length ? '^' : '') + updates.$ꓺset.engines.npm.join(' || ^');
         }
@@ -1158,9 +1163,10 @@ export default class u {
 
                 for (const [dependency] of Object.entries(pkg.dependencies || {})) dependenciesToUpdate.push(dependency);
                 for (const [dependency] of Object.entries(pkg.peerDependencies || {})) dependenciesToUpdate.push(dependency);
-                for (const [dependency] of Object.entries((await u.depPkg('@clevercanyon/dev-deps'))?.dependencies || {})) {
-                    if (/^@clevercanyon\//iu.test(dependency)) dependenciesToUpdate.push(dependency);
-                }
+                if (false === (await u.isPkgRepo('clevercanyon/dev-deps')))
+                    for (const [dependency] of Object.entries((await u.depPkg('@clevercanyon/dev-deps'))?.dependencies || {})) {
+                        if (/^@clevercanyon\//iu.test(dependency)) dependenciesToUpdate.push(dependency);
+                    }
                 if (dependenciesToUpdate.length) {
                     u.log($chalk.gray('Updating these specific NPM dependencies:')), u.log($chalk.gray(dependenciesToUpdate.join(', ')));
                     await u.spawn('npm', ['update', ...[...new Set(dependenciesToUpdate)], '--save'], { stdio: 'inherit' });
