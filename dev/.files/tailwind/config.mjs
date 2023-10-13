@@ -28,10 +28,10 @@ import pluginTypography from '@tailwindcss/typography';
 import fs from 'node:fs';
 import path from 'node:path';
 import pluginThemer from 'tailwindcss-themer';
-import { $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $is, $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
-import baseThemes from './themes.mjs';
+import baseConfigThemes from './themes.mjs';
 
 // `__dirname` already exists when loaded by Tailwind via Jiti / commonjs.
 // eslint-disable-next-line no-undef -- `__dirname` is not actually missing.
@@ -43,11 +43,15 @@ const projDir = path.resolve(__dirname, '../../..');
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
-export default /* not async compatible */ ({ themes = () => {} } = {}) => {
+export default /* not async compatible */ ({ themes } = {}) => {
     /**
      * Composition.
      */
     return {
+        // We favor Tailwind themes, so we don’t typically use dark mode anyway.
+        // By setting this to `class` it can only be enabled using the `dark` class.
+        darkMode: 'class', // {@see https://tailwindcss.com/docs/dark-mode}.
+
         theme: {
             screens: {
                 // Greater than or equal to.
@@ -71,13 +75,10 @@ export default /* not async compatible */ ({ themes = () => {} } = {}) => {
             },
             container: { center: true }, // No need for `mx-auto` on each container.
         },
-        // We favor Tailwind themes, so we don’t use dark mode anyway.
-        darkMode: 'class', // {@see https://tailwindcss.com/docs/dark-mode}.
-
         plugins: [
-            pluginTypography({ className: 'prose' }), //
-            pluginForms({ strategy: 'class' }),
-            pluginThemer($obj.mergeDeep({}, baseThemes(), themes())),
+            pluginTypography({ className: 'prose' }), // Requires `prose` class.
+            pluginForms({ strategy: 'class' }), // Requires form classes; e.g., `form-{class}`.
+            pluginThemer($obj.mergeDeep({}, baseConfigThemes(), $is.function(themes) ? themes() : {})),
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
