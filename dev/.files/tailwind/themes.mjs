@@ -68,8 +68,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             // This is incorporated into an `rgb(x x x / x)` final color.
             'c-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
 
-            'c-prose-pre-bg': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.1),
-            'c-prose-pre-code': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.1),
+            'c-prose-pre-bg': $color[bgIsDark ? 'lighten' : 'darken'](basicColors['c-bg'], 0.05),
+            'c-prose-pre-code': $color[bgIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.25),
 
             'c-prose-th-borders': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.75),
             'c-prose-td-borders': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
