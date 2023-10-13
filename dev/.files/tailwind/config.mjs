@@ -25,6 +25,7 @@ Example `index.scss` starter file contents:
 
 import pluginForms from '@tailwindcss/forms';
 import pluginTypography from '@tailwindcss/typography';
+import pluginTypographyStyles from '@tailwindcss/typography/src/styles.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import pluginThemer from 'tailwindcss-themer';
@@ -43,7 +44,7 @@ const projDir = path.resolve(__dirname, '../../..');
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
-export default /* not async compatible */ ({ themes } = {}) => {
+export default /* not async compatible */ ({ basicColors, themes } = {}) => {
     /**
      * Composition.
      */
@@ -70,15 +71,37 @@ export default /* not async compatible */ ({ themes } = {}) => {
 
                 // `raw` to avoid these being a max-width for containers.
                 // If something should adapt to widescreen, don’t put in a container.
-                'gte-widescreen': { 'raw': '(min-width: 2560px)' },
-                'widescreen': { 'raw': '(min-width: 2560px)' },
+                'gte-widescreen': { raw: '(min-width: 2560px)' },
+                'widescreen': { raw: '(min-width: 2560px)' },
             },
             container: { center: true }, // No need for `mx-auto` on each container.
+
+            extend: {
+                typography: {
+                    sm: { css: { 'code': { ...pluginTypographyStyles.sm.css['kbd'] } } },
+                    base: { css: { 'code': { ...pluginTypographyStyles.base.css['kbd'] } } },
+                    lg: { css: { 'code': { ...pluginTypographyStyles.lg.css['kbd'] } } },
+                    xl: { css: { 'code': { ...pluginTypographyStyles.xl.css['kbd'] } } },
+                    '2xl': { css: { 'code': { ...pluginTypographyStyles['2xl'].css['kbd'] } } },
+
+                    DEFAULT: {
+                        css: {
+                            'code::before': null, // Ditch this key.
+                            'code::after': null, // Ditch this key.
+
+                            'code': {
+                                // Similar to `<kbd>`, but with code-specific coloration.
+                                boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%), 0 1px 0 rgb(var(--tw-prose-code-shadows) / 10%)',
+                            },
+                        },
+                    },
+                },
+            },
         },
         plugins: [
             pluginTypography({ className: 'prose' }), // Requires `prose` class.
             pluginForms({ strategy: 'class' }), // Requires form classes; e.g., `form-{class}`.
-            pluginThemer($obj.mergeDeep({}, baseConfigThemes(), $is.function(themes) ? themes() : {})),
+            pluginThemer($obj.mergeDeep({}, baseConfigThemes(), $is.function(themes) ? themes({ basicColors }) : {})),
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),

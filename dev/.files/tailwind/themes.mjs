@@ -9,7 +9,7 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
-import { $color } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $color, $is, $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 /**
  * Defines Tailwind themes configuration.
@@ -17,9 +17,19 @@ import { $color } from '../../../node_modules/@clevercanyon/utilities/dist/index
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
-export default /* not async compatible */ () => {
+export default /* not async compatible */ ({ basicColors } = {}) => {
     /**
-     * Default theme.
+     * Basic colors.
+     */
+    basicColors = $obj.defaults({}, $is.function(basicColors) ? basicColors() : {}, {
+        'c-bg': $color.tw('zinc', 50),
+        'c-fg': $color.tw('zinc', 950),
+        'c-link': $color.tw('blue', 900),
+        'c-heading': $color.tw('stone', 950),
+    });
+
+    /**
+     * Themes configuration.
      */
     const defaultTheme = {
         extend: {
@@ -42,69 +52,101 @@ export default /* not async compatible */ () => {
                 ],
             },
             colors: {
-                // This is a copy of `prose-zinc`.
-                'c-prose-body': $color.tw('zinc', 700),
-                'c-prose-headings': $color.tw('zinc', 900),
-                'c-prose-lead': $color.tw('zinc', 600),
-                'c-prose-links': $color.tw('zinc', 900),
-                'c-prose-bold': $color.tw('zinc', 900),
-                'c-prose-counters': $color.tw('zinc', 500),
-                'c-prose-bullets': $color.tw('zinc', 300),
-                'c-prose-hr': $color.tw('zinc', 200),
-                'c-prose-quotes': $color.tw('zinc', 900),
-                'c-prose-quote-borders': $color.tw('zinc', 200),
-                'c-prose-captions': $color.tw('zinc', 500),
-                'c-prose-kbd': $color.tw('zinc', 900),
-                'c-prose-kbd-shadows': $color.tw('zinc', 900),
-                'c-prose-code': $color.tw('zinc', 900),
-                'c-prose-pre-code': $color.tw('zinc', 200),
-                'c-prose-pre-bg': $color.tw('zinc', 800),
-                'c-prose-th-borders': $color.tw('zinc', 300),
-                'c-prose-td-borders': $color.tw('zinc', 200),
+                ...basicColors,
+
+                'c-prose-body': basicColors['c-fg'],
+                'c-prose-links': basicColors['c-link'],
+
+                'c-prose-headings': basicColors['c-heading'],
+                'c-prose-lead': $color.darken(basicColors['c-fg'], 0.1),
+                'c-prose-bold': $color.darken(basicColors['c-fg'], 0.1),
+
+                'c-prose-counters': $color.lighten(basicColors['c-fg'], 0.35),
+                'c-prose-bullets': $color.lighten(basicColors['c-fg'], 0.35),
+
+                'c-prose-quotes': $color.lighten(basicColors['c-fg'], 0.05),
+                'c-prose-quote-borders': $color.lighten(basicColors['c-fg'], 0.85),
+
+                'c-prose-kbd': $color.darken(basicColors['c-fg'], 0.05),
+                // This is incorporated into an `rgb(x x x / x)` final color.
+                'c-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
+
+                'c-prose-code': $color.lighten(basicColors['c-fg'], 0.05),
+                // This is incorporated into an `rgb(x x x / x)` final color.
+                'c-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
+
+                'c-prose-pre-bg': $color.lighten(basicColors['c-fg'], 0.1),
+                'c-prose-pre-code': $color.lighten(basicColors['c-bg'], 0.1),
+
+                'c-prose-th-borders': $color.lighten(basicColors['c-fg'], 0.75),
+                'c-prose-td-borders': $color.lighten(basicColors['c-fg'], 0.85),
+
+                'c-prose-hr': $color.lighten(basicColors['c-fg'], 0.85),
+                'c-prose-captions': $color.lighten(basicColors['c-fg'], 0.25),
             },
             typography: {
                 DEFAULT: {
                     css: {
-                        // Point prose colors at theme colors.
+                        // Points prose at theme colors.
+
                         '--tw-prose-body': 'rgb(var(--colors-c-prose-body))',
+                        '--tw-prose-links': 'rgb(var(--colors-c-prose-links))',
+
                         '--tw-prose-headings': 'rgb(var(--colors-c-prose-headings))',
                         '--tw-prose-lead': 'rgb(var(--colors-c-prose-lead))',
-                        '--tw-prose-links': 'rgb(var(--colors-c-prose-links))',
                         '--tw-prose-bold': 'rgb(var(--colors-c-prose-bold))',
+
                         '--tw-prose-counters': 'rgb(var(--colors-c-prose-counters))',
                         '--tw-prose-bullets': 'rgb(var(--colors-c-prose-bullets))',
-                        '--tw-prose-hr': 'rgb(var(--colors-c-prose-hr))',
+
                         '--tw-prose-quotes': 'rgb(var(--colors-c-prose-quotes))',
                         '--tw-prose-quote-borders': 'rgb(var(--colors-c-prose-quote-borders))',
-                        '--tw-prose-captions': 'rgb(var(--colors-c-prose-captions))',
+
                         '--tw-prose-kbd': 'rgb(var(--colors-c-prose-kbd))',
                         '--tw-prose-kbd-shadows': 'var(--colors-c-prose-kbd-shadows)',
+
                         '--tw-prose-code': 'rgb(var(--colors-c-prose-code))',
-                        '--tw-prose-pre-code': 'rgb(var(--colors-c-prose-pre-code))',
+                        '--tw-prose-code-shadows': 'var(--colors-c-prose-code-shadows)',
+
                         '--tw-prose-pre-bg': 'rgb(var(--colors-c-prose-pre-bg))',
+                        '--tw-prose-pre-code': 'rgb(var(--colors-c-prose-pre-code))',
+
                         '--tw-prose-th-borders': 'rgb(var(--colors-c-prose-th-borders))',
                         '--tw-prose-td-borders': 'rgb(var(--colors-c-prose-td-borders))',
 
-                        // Not using inverted colors; we prefer themes.
-                        // The use of `null` effectively deletes these keys.
+                        '--tw-prose-hr': 'rgb(var(--colors-c-prose-hr))',
+                        '--tw-prose-captions': 'rgb(var(--colors-c-prose-captions))',
+
+                        // Not using inverted colors; i.e., we prefer themes.
+                        // The use of `null` effectively deletes these unused keys.
+
                         '--tw-prose-invert-body': null,
+                        '--tw-prose-invert-links': null,
+
                         '--tw-prose-invert-headings': null,
                         '--tw-prose-invert-lead': null,
-                        '--tw-prose-invert-links': null,
                         '--tw-prose-invert-bold': null,
+
                         '--tw-prose-invert-counters': null,
                         '--tw-prose-invert-bullets': null,
-                        '--tw-prose-invert-hr': null,
+
                         '--tw-prose-invert-quotes': null,
                         '--tw-prose-invert-quote-borders': null,
-                        '--tw-prose-invert-captions': null,
+
                         '--tw-prose-invert-kbd': null,
                         '--tw-prose-invert-kbd-shadows': null,
+
                         '--tw-prose-invert-code': null,
-                        '--tw-prose-invert-pre-code': null,
+                        '--tw-prose-invert-code-shadows': null,
+
                         '--tw-prose-invert-pre-bg': null,
+                        '--tw-prose-invert-pre-code': null,
+
                         '--tw-prose-invert-th-borders': null,
                         '--tw-prose-invert-td-borders': null,
+
+                        '--tw-prose-invert-hr': null,
+                        '--tw-prose-invert-captions': null,
                     },
                 },
             },
