@@ -29,10 +29,9 @@ import pluginTypographyStyles from '@tailwindcss/typography/src/styles.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import pluginThemer from 'tailwindcss-themer';
-import { $is, $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
-import baseConfigThemes from './themes.mjs';
+import mergeThemesConfig from './themes.mjs';
 
 // `__dirname` already exists when loaded by Tailwind via Jiti / commonjs.
 // eslint-disable-next-line no-undef -- `__dirname` is not actually missing.
@@ -86,8 +85,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
                     DEFAULT: {
                         css: {
-                            'code::before': null, // Ditch this key.
-                            'code::after': null, // Ditch this key.
+                            'a': {
+                                textDecoration: 'none',
+                            },
+                            'a:hover': {
+                                textDecoration: 'underline',
+                            },
+                            'code::before': null, // Gets rid of '`' backtick.
+                            'code::after': null, // Gets rid of '`' backtick.
 
                             'code': {
                                 ...pluginTypographyStyles.base.css[0]['kbd'],
@@ -102,12 +107,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         plugins: [
             pluginTypography({ className: 'prose' }), // Requires `prose` class.
             pluginForms({ strategy: 'class' }), // Requires form classes; e.g., `form-{class}`.
-            pluginThemer(
-                $obj.mergeDeep(
-                    baseConfigThemes({ themesConfig }), //
-                    $is.function(themesConfig) ? themesConfig() : {},
-                ),
-            ),
+            pluginThemer(mergeThemesConfig({ themesConfig })), // Merges themes configuration.
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),

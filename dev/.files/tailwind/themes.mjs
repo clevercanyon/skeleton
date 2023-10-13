@@ -12,28 +12,84 @@
 import { $color, $is, $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 /**
- * Defines Tailwind themes configuration.
+ * Merges Tailwind themes configuration.
  *
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
 export default /* not async compatible */ ({ themesConfig } = {}) => {
     /**
-     * Basic colors.
+     * Gets themes.
      */
-    let basicColors; // Initialize.
+    let themes; // Initialize.
 
     if ($is.function(themesConfig)) {
-        basicColors = themesConfig().defaultTheme?.extend?.colors;
-        basicColors = $obj.pick(basicColors || {}, ['c-bg', 'c-fg', 'c-link', 'c-heading']);
+        themes = themesConfig();
     }
-    basicColors = $obj.defaults({}, basicColors || {}, {
-        'c-bg': $color.tw('zinc', 50),
-        'c-fg': $color.tw('zinc', 950),
-        'c-link': $color.tw('blue', 900),
-        'c-heading': $color.tw('stone', 950),
-    });
+    themes = Object(themes || {}); // Ensures object type.
 
+    /**
+     * Prose defaults, for each theme, using basic colors.
+     */
+    [...(themes.defaultTheme ? [themes.defaultTheme] : []), ...(themes.themes || [])].forEach((theme) => {
+        let basicColors = theme.extend?.colors; // Initialize.
+        basicColors = $obj.pick(basicColors || {}, ['c-bg', 'c-fg', 'c-link', 'c-heading']);
+
+        basicColors = $obj.defaults({}, basicColors || {}, {
+            'c-bg': $color.tw('zinc', 50),
+            'c-fg': $color.tw('zinc', 950),
+            'c-link': $color.tw('blue', 900),
+            'c-heading': $color.tw('stone', 950),
+        });
+        const bgIsDark = '#ffffff' === $color.getReadable(basicColors['c-bg']);
+
+        theme.extend = Object(theme.extend || {});
+        theme.extend.colors = {
+            ...basicColors,
+
+            'c-prose-body': basicColors['c-fg'],
+            'c-prose-links': basicColors['c-link'],
+
+            'c-prose-headings': basicColors['c-heading'],
+            'c-prose-lead': $color[bgIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+            'c-prose-bold': $color[bgIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+
+            'c-prose-counters': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.35),
+            'c-prose-bullets': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.35),
+
+            'c-prose-quotes': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.25),
+            'c-prose-quote-borders': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
+
+            'c-prose-kbd': $color[bgIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+            // This is incorporated into an `rgb(x x x / x)` final color.
+            'c-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
+
+            'c-prose-code': $color[bgIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+            // This is incorporated into an `rgb(x x x / x)` final color.
+            'c-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
+
+            'c-prose-pre-bg': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.1),
+            'c-prose-pre-code': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.1),
+
+            'c-prose-th-borders': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.75),
+            'c-prose-td-borders': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
+
+            'c-prose-hr': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
+            'c-prose-captions': $color[bgIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.25),
+
+            ...theme.extend.colors,
+        };
+    });
+    return $obj.mergeDeep({}, baseConfigThemes(), themes);
+};
+
+/**
+ * Defines Tailwind themes configuration.
+ *
+ * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
+ * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
+ */
+const baseConfigThemes = /* not async compatible */ () => {
     /**
      * Themes configuration.
      */
@@ -57,39 +113,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     'monospace',
                 ],
             },
-            colors: {
-                ...basicColors,
+            colors: {}, // Populated during merge.
 
-                'c-prose-body': basicColors['c-fg'],
-                'c-prose-links': basicColors['c-link'],
-
-                'c-prose-headings': basicColors['c-heading'],
-                'c-prose-lead': $color.darken(basicColors['c-fg'], 0.1),
-                'c-prose-bold': $color.darken(basicColors['c-fg'], 0.1),
-
-                'c-prose-counters': $color.lighten(basicColors['c-fg'], 0.35),
-                'c-prose-bullets': $color.lighten(basicColors['c-fg'], 0.35),
-
-                'c-prose-quotes': $color.lighten(basicColors['c-fg'], 0.05),
-                'c-prose-quote-borders': $color.lighten(basicColors['c-fg'], 0.85),
-
-                'c-prose-kbd': $color.darken(basicColors['c-fg'], 0.05),
-                // This is incorporated into an `rgb(x x x / x)` final color.
-                'c-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
-
-                'c-prose-code': $color.lighten(basicColors['c-fg'], 0.05),
-                // This is incorporated into an `rgb(x x x / x)` final color.
-                'c-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
-
-                'c-prose-pre-bg': $color.lighten(basicColors['c-fg'], 0.1),
-                'c-prose-pre-code': $color.lighten(basicColors['c-bg'], 0.1),
-
-                'c-prose-th-borders': $color.lighten(basicColors['c-fg'], 0.75),
-                'c-prose-td-borders': $color.lighten(basicColors['c-fg'], 0.85),
-
-                'c-prose-hr': $color.lighten(basicColors['c-fg'], 0.85),
-                'c-prose-captions': $color.lighten(basicColors['c-fg'], 0.25),
-            },
             typography: {
                 DEFAULT: {
                     css: {
