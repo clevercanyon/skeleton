@@ -27,8 +27,11 @@ import pluginForms from '@tailwindcss/forms';
 import pluginTypography from '@tailwindcss/typography';
 import fs from 'node:fs';
 import path from 'node:path';
+import pluginThemer from 'tailwindcss-themer';
+import { $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import exclusions from '../bin/includes/exclusions.mjs';
 import extensions from '../bin/includes/extensions.mjs';
+import baseThemes from './themes.mjs';
 
 // `__dirname` already exists when loaded by Tailwind via Jiti / commonjs.
 // eslint-disable-next-line no-undef -- `__dirname` is not actually missing.
@@ -40,30 +43,12 @@ const projDir = path.resolve(__dirname, '../../..');
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
-export default /* not async compatible */ () => {
+export default /* not async compatible */ ({ themes = () => {} }) => {
     /**
      * Composition.
      */
     return {
         theme: {
-            fontFamily: {
-                sans: [
-                    'Georama', //
-                    'ui-sans-serif',
-                    'sans-serif',
-                ],
-                serif: [
-                    'Palatino', //
-                    '"Palatino Linotype"',
-                    'ui-serif',
-                    'serif',
-                ],
-                mono: [
-                    '"Operator Mono"', //
-                    'ui-monospace',
-                    'monospace',
-                ],
-            },
             screens: {
                 // Greater than or equal to.
                 'gte-phone': { min: '1px' },
@@ -86,12 +71,13 @@ export default /* not async compatible */ () => {
             },
             container: { center: true }, // No need for `mx-auto` on each container.
         },
-        // We want to apply a `dark` class to enable dark mode.
+        // We favor Tailwind themes, so we don’t use dark mode anyway.
         darkMode: 'class', // {@see https://tailwindcss.com/docs/dark-mode}.
 
         plugins: [
-            pluginTypography({ className: 'prose' }),
-            pluginForms({ strategy: 'class' }), // e.g., `form-{x}`.
+            pluginTypography({ className: 'prose' }), //
+            pluginForms({ strategy: 'class' }),
+            pluginThemer($obj.mergeDeep({}, baseThemes(), themes())),
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),

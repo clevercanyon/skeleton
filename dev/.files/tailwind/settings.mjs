@@ -16,7 +16,7 @@ import { $preact } from '../../../node_modules/@clevercanyon/utilities/dist/inde
  */
 export default {
     classFunctions: ['$preact.classes'],
-    classAttributes: $preact.classPropVariants,
-    classAttributesRegExpStr: '^class(?:es|Names?)?$',
-    classAttributesRegExp: new RegExp('^class(?:es|Names?)?$', 'u'),
+    classAttributes: $preact.classPropVariants(),
+    classAttributesRegExpStr: $preact.classPropVariantsRegExpStr(),
+    classAttributesRegExp: $preact.classPropVariantsRegExp(),
 };
