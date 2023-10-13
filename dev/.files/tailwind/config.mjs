@@ -101,7 +101,7 @@ export default /* not async compatible */ ({ basicColors, themes } = {}) => {
         plugins: [
             pluginTypography({ className: 'prose' }), // Requires `prose` class.
             pluginForms({ strategy: 'class' }), // Requires form classes; e.g., `form-{class}`.
-            pluginThemer($obj.mergeDeep({}, baseConfigThemes(), $is.function(themes) ? themes({ basicColors }) : {})),
+            pluginThemer($obj.mergeDeep({}, baseConfigThemes({ basicColors }), $is.function(themes) ? themes({ basicColors }) : {})),
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
