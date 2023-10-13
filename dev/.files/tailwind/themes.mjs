@@ -17,11 +17,17 @@ import { $color, $is, $obj } from '../../../node_modules/@clevercanyon/utilities
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
-export default /* not async compatible */ ({ basicColors } = {}) => {
+export default /* not async compatible */ ({ themesConfig } = {}) => {
     /**
      * Basic colors.
      */
-    basicColors = $obj.defaults({}, $is.function(basicColors) ? basicColors() : {}, {
+    let basicColors; // Initialize.
+
+    if ($is.function(themesConfig)) {
+        basicColors = themesConfig().defaultTheme?.extend?.colors;
+        basicColors = $obj.pick(basicColors || {}, ['c-bg', 'c-fg', 'c-link', 'c-heading']);
+    }
+    basicColors = $obj.defaults({}, basicColors || {}, {
         'c-bg': $color.tw('zinc', 50),
         'c-fg': $color.tw('zinc', 950),
         'c-link': $color.tw('blue', 900),

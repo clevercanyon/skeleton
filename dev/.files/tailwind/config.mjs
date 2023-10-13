@@ -44,7 +44,7 @@ const projDir = path.resolve(__dirname, '../../..');
  * Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await. Thus, we cannot use async
  * functionality here. Consider `make-synchronous` (already in dev-deps) if necessary. {@see https://o5p.me/1odhxy}.
  */
-export default /* not async compatible */ ({ basicColors, themes } = {}) => {
+export default /* not async compatible */ ({ themesConfig } = {}) => {
     /**
      * Composition.
      */
@@ -78,11 +78,11 @@ export default /* not async compatible */ ({ basicColors, themes } = {}) => {
 
             extend: {
                 typography: {
-                    sm: { css: { 'code': { ...pluginTypographyStyles.sm.css['kbd'] } } },
-                    base: { css: { 'code': { ...pluginTypographyStyles.base.css['kbd'] } } },
-                    lg: { css: { 'code': { ...pluginTypographyStyles.lg.css['kbd'] } } },
-                    xl: { css: { 'code': { ...pluginTypographyStyles.xl.css['kbd'] } } },
-                    '2xl': { css: { 'code': { ...pluginTypographyStyles['2xl'].css['kbd'] } } },
+                    sm: { css: { 'code': { ...pluginTypographyStyles.sm.css[0]['kbd'] } } },
+                    base: { css: { 'code': { ...pluginTypographyStyles.base.css[0]['kbd'] } } },
+                    lg: { css: { 'code': { ...pluginTypographyStyles.lg.css[0]['kbd'] } } },
+                    xl: { css: { 'code': { ...pluginTypographyStyles.xl.css[0]['kbd'] } } },
+                    '2xl': { css: { 'code': { ...pluginTypographyStyles['2xl'].css[0]['kbd'] } } },
 
                     DEFAULT: {
                         css: {
@@ -90,7 +90,8 @@ export default /* not async compatible */ ({ basicColors, themes } = {}) => {
                             'code::after': null, // Ditch this key.
 
                             'code': {
-                                // Similar to `<kbd>`, but with code-specific coloration.
+                                ...pluginTypographyStyles.base.css[0]['kbd'],
+                                borderRadius: '0.188rem', // Equivalent to 3px.
                                 boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%), 0 1px 0 rgb(var(--tw-prose-code-shadows) / 10%)',
                             },
                         },
@@ -101,7 +102,12 @@ export default /* not async compatible */ ({ basicColors, themes } = {}) => {
         plugins: [
             pluginTypography({ className: 'prose' }), // Requires `prose` class.
             pluginForms({ strategy: 'class' }), // Requires form classes; e.g., `form-{class}`.
-            pluginThemer($obj.mergeDeep({}, baseConfigThemes({ basicColors }), $is.function(themes) ? themes({ basicColors }) : {})),
+            pluginThemer(
+                $obj.mergeDeep(
+                    baseConfigThemes({ themesConfig }), //
+                    $is.function(themesConfig) ? themesConfig() : {},
+                ),
+            ),
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
