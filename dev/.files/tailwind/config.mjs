@@ -55,14 +55,14 @@ export default /* not async compatible */ ({ themes } = {}) => {
         theme: {
             screens: {
                 // Greater than or equal to.
-                'gte-phone': { min: '1px' },
+                'gte-phone': { min: '320px' },
                 'gte-tablet': { min: '480px' },
                 'gte-notebook': { min: '960px' },
                 'gte-laptop': { min: '1280px' },
                 'gte-desktop': { min: '1440px' },
 
                 // Device-only specific breakpoints.
-                'phone': { min: '1px', max: '479px' },
+                'phone': { min: '320px', max: '479px' },
                 'tablet': { min: '480px', max: '959px' },
                 'notebook': { min: '960px', max: '1279px' },
                 'laptop': { min: '1280px', max: '1439px' },
