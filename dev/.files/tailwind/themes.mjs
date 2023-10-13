@@ -47,6 +47,7 @@ export default /* not async compatible */ () => {
      *
      * @note These will always extend the default theme above.
      * @note Don’t name a theme `dark`; {@see https://o5p.me/jLROv0}.
+     *       Best practice is to end theme names with a `-theme` suffix.
      */
     const themes = []; // None at this time.
 
