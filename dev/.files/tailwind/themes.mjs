@@ -36,10 +36,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         basicColors = $obj.pick(basicColors || {}, ['c-bg', 'c-fg', 'c-link', 'c-heading']);
 
         basicColors = $obj.defaults({}, basicColors || {}, {
-            'c-bg': $color.tw('zinc', 50),
-            'c-fg': $color.tw('zinc', 950),
-            'c-link': $color.tw('blue', 900),
-            'c-heading': $color.tw('stone', 950),
+            'c-bg': $color.tw('zinc', 950),
+            'c-fg': $color.tw('zinc', 50),
+            'c-link': $color.tw('blue', 300),
+            'c-heading': $color.tw('stone', 50),
         });
         const bgIsDark = '#ffffff' === $color.getReadable(basicColors['c-bg']);
 
