@@ -97,7 +97,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             'code': {
                                 ...pluginTypographyStyles.base.css[0]['kbd'],
                                 borderRadius: '0.188rem', // Equivalent to 3px.
-                                boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%), 0 1px 0 rgb(var(--tw-prose-code-shadows) / 10%)',
+                                boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%)',
                             },
                         },
                     },

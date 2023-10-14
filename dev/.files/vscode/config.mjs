@@ -177,25 +177,37 @@ export default async () => {
 
         /**
          * Comment anchor options.
+         *
+         * @note Palette {@see https://coolors.co/fff0b5-8a826d-6d718a-6d8a78}.
          */
         'commentAnchors.tags.anchors': {
             '@todo': {
                 'scope': 'workspace',
                 'iconColor': '#fff0b5',
                 'highlightColor': '#fff0b5',
+                'behavior': 'anchor',
                 'styleMode': 'tag',
             },
             '@review': {
                 'scope': 'workspace',
                 'iconColor': '#8a826d',
                 'highlightColor': '#8a826d',
+                'behavior': 'anchor',
                 'styleMode': 'tag',
             },
             '@someday': {
                 'scope': 'workspace',
                 'iconColor': '#6d718a',
                 'highlightColor': '#6d718a',
+                'behavior': 'anchor',
                 'styleMode': 'tag',
+            },
+            '@seeFile': {
+                'scope': 'workspace',
+                'iconColor': '#6d8a78',
+                'highlightColor': '#6d8a78',
+                'behavior': 'link',
+                'styleMode': 'comment',
             },
         },
         'commentAnchors.tags.matchCase': true,
