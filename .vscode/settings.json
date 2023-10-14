@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Sat, Oct 14, 2023, 7:44:08 AM EDT.
+ * Last generated using `./settings.mjs` Sat, Oct 14, 2023, 7:49:29 AM EDT.
  */
 {
     "editor.formatOnType": false,
@@ -161,16 +161,16 @@
             "styleMode": "tag"
         },
         "@anchor": {
-            "scope": "workspace",
-            "iconColor": "#8c8c8c",
-            "highlightColor": "#8c8c8c",
+            "scope": "hidden",
+            "iconColor": "#696969",
+            "highlightColor": "#696969",
             "behavior": "anchor",
             "styleMode": "tag"
         },
         "@see-anchor": {
-            "scope": "workspace",
-            "iconColor": "#6d8a78",
-            "highlightColor": "#6d8a78",
+            "scope": "hidden",
+            "iconColor": "#696969",
+            "highlightColor": "#696969",
             "behavior": "link",
             "styleMode": "tag"
         }
