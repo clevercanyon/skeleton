@@ -178,7 +178,7 @@ export default async () => {
         /**
          * Comment anchor options.
          *
-         * @note Palette {@see https://coolors.co/fff0b5-8a826d-6d718a-6d8a78}.
+         * @see https://coolors.co/fff0b5-8a826d-6d718a-8c8c8c-6d8a78
          */
         'commentAnchors.tags.anchors': {
             '@todo': {
@@ -202,12 +202,19 @@ export default async () => {
                 'behavior': 'anchor',
                 'styleMode': 'tag',
             },
-            '@seeFile': {
+            '@anchor': {
+                'scope': 'workspace',
+                'iconColor': '#8c8c8c',
+                'highlightColor': '#8c8c8c',
+                'behavior': 'anchor',
+                'styleMode': 'tag',
+            },
+            '@see-anchor': {
                 'scope': 'workspace',
                 'iconColor': '#6d8a78',
                 'highlightColor': '#6d8a78',
                 'behavior': 'link',
-                'styleMode': 'comment',
+                'styleMode': 'tag',
             },
         },
         'commentAnchors.tags.matchCase': true,
