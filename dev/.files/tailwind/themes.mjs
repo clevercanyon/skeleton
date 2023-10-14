@@ -300,7 +300,7 @@ const baseConfigThemes = /* not async compatible */ () => {
      * Don’t add named themes unnecessarily. A default theme will typically do fine. The more themes you add, the larger
      * your bundle size becomes. Also, don’t name a theme `dark`; {@see https://o5p.me/jLROv0}.
      *
-     * @note Powered by {@see https://www.npmjs.com/package/tailwindcss-themer}.
+     * Powered by {@see https://www.npmjs.com/package/tailwindcss-themer}.
      */
     const themes = []; // None required at this time.
 
