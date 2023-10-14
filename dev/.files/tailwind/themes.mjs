@@ -164,7 +164,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'c-hilite-bg': '#fef9c3',
         };
         for (const [name, value] of Object.entries(defaultBrandColors)) {
-            defaultBrandColors[name.replace(/-bg$/, '-fg')] = $color.getReadable(value);
+            defaultBrandColors[name.replace(/-bg$/u, '-fg')] = $color.getReadable(value);
         }
 
         /**

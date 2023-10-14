@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Fri, Oct 13, 2023, 9:29:53 AM EDT.
+ * Last generated using `./settings.mjs` Sat, Oct 14, 2023, 7:16:12 AM EDT.
  */
 {
     "editor.formatOnType": false,
@@ -143,19 +143,29 @@
             "scope": "workspace",
             "iconColor": "#fff0b5",
             "highlightColor": "#fff0b5",
+            "behavior": "anchor",
             "styleMode": "tag"
         },
         "@review": {
             "scope": "workspace",
             "iconColor": "#8a826d",
             "highlightColor": "#8a826d",
+            "behavior": "anchor",
             "styleMode": "tag"
         },
         "@someday": {
             "scope": "workspace",
             "iconColor": "#6d718a",
             "highlightColor": "#6d718a",
+            "behavior": "anchor",
             "styleMode": "tag"
+        },
+        "@seeFile": {
+            "scope": "workspace",
+            "iconColor": "#6d8a78",
+            "highlightColor": "#6d8a78",
+            "behavior": "link",
+            "styleMode": "comment"
         }
     },
     "commentAnchors.tags.matchCase": true,
