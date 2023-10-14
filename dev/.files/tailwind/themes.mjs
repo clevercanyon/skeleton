@@ -53,7 +53,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          */
         const defaultBasicColors = {
             'c-bg': '#09090b',
-            'c-fg': '#fafafa',
+            'c-text': '#fafafa',
             'c-link': '#ed5f3b',
             'c-heading': '#ffffff',
         };
@@ -68,35 +68,35 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * Tailwind’s built-in prose color vars at these prose-specific color classes; {@see baseConfigThemes()}.
          */
         const defaultBasicProseColors = {
-            'c-prose-body': basicColors['c-fg'],
+            'c-prose-body': basicColors['c-text'],
             'c-prose-links': basicColors['c-link'],
 
             'c-prose-headings': basicColors['c-heading'],
-            'c-prose-lead': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
-            'c-prose-bold': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+            'c-prose-lead': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-text'], 0.1),
+            'c-prose-bold': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-text'], 0.1),
 
-            'c-prose-counters': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.35),
-            'c-prose-bullets': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.35),
+            'c-prose-counters': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.35),
+            'c-prose-bullets': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.35),
 
-            'c-prose-quotes': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.25),
-            'c-prose-quote-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
+            'c-prose-quotes': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.25),
+            'c-prose-quote-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.85),
 
-            'c-prose-kbd': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+            'c-prose-kbd': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-text'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
-            'c-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
+            'c-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['c-text']),
 
-            'c-prose-code': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.1),
+            'c-prose-code': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-text'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
-            'c-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['c-fg']),
+            'c-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['c-text']),
 
             'c-prose-pre-bg': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-bg'], 0.05),
-            'c-prose-pre-code': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-fg'], 0.25),
+            'c-prose-pre-code': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['c-text'], 0.25),
 
-            'c-prose-th-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.75),
-            'c-prose-td-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
+            'c-prose-th-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.75),
+            'c-prose-td-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.85),
 
-            'c-prose-hr': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.85),
-            'c-prose-captions': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.25),
+            'c-prose-hr': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.85),
+            'c-prose-captions': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.25),
         };
 
         /**
@@ -112,18 +112,18 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * then the appearance of prose should be ok. That’s the case in our default configuration of section colors.
          */
         const defaultBasicSectionColors = {
-            'c-header-bg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.015),
-            'c-header-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.015),
+            'c-header': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.015),
+            'c-header-text': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.015),
             'c-header-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-link'], 0.015),
             'c-header-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-heading'], 0.015),
 
-            'c-sidebar-bg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.015),
-            'c-sidebar-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.015),
+            'c-sidebar': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.015),
+            'c-sidebar-text': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.015),
             'c-sidebar-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-link'], 0.015),
             'c-sidebar-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-heading'], 0.015),
 
-            'c-footer-bg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.015),
-            'c-footer-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-fg'], 0.015),
+            'c-footer': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-bg'], 0.015),
+            'c-footer-text': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-text'], 0.015),
             'c-footer-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-link'], 0.015),
             'c-footer-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['c-heading'], 0.015),
         };
@@ -136,34 +136,34 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          *
          * These colors should all consider `c-bg`, because all of these colors should work well for objects that lay on
          * top of the basic background color. In some cases, you may need to stray from exact colors used in a brand’s
-         * logo, as these colors are not for the brand’s logo, they are for the brand’s site. Having said that,
-         * `c-true-bg` is an exception, as it should always be a true (i.e., exact) primary logo color.
+         * logo, as these colors are not for the brand’s logo, they are for the brand’s site. Having said that, `c-true`
+         * is an exception, as it should always be a true (i.e., exact) primary logo color.
          *
-         * Simply define a brand’s background colors. From those, we automatically work out an appropriate readable
-         * foreground color (i.e., black or white, based on the background color’s luminance); just like coolors.co
-         * does. Or, if you prefer, you can choose to define any of the `*-fg` variants explicitly.
+         * Simply define a brand’s colors. From these, we automatically work out an appropriate readable foreground text
+         * color (i.e., black or white, based on the color’s luminance) just like coolors.co does. Or, if you prefer,
+         * you can choose to define any of the `*-text` suffixed variants explicitly.
          */
         const defaultBrandColors = {
             // Abstract colors.
-            'c-true-bg': '#ed5f3b',
-            'c-primary-bg': '#95290e',
-            'c-secondary-bg': '#763828',
-            'c-accent-bg': '#facdc1',
-            'c-dazzle-bg': '#fca94f',
-            'c-flare-bg': '#eab308',
+            'c-true': '#ed5f3b',
+            'c-primary': '#95290e',
+            'c-secondary': '#763828',
+            'c-accent': '#facdc1',
+            'c-dazzle': '#fca94f',
+            'c-flare': '#eab308',
 
             // Semantic colors.
-            'c-success-bg': '#166534',
-            'c-danger-bg': '#991b1b',
-            'c-warning-bg': '#9b4e12',
-            'c-info-bg': '#1e40af',
-            'c-light-bg': '#e4e4e7',
-            'c-neutral-bg': '#3f3f46',
-            'c-dark-bg': '#18181b',
-            'c-hilite-bg': '#fef9c3',
+            'c-success': '#166534',
+            'c-danger': '#991b1b',
+            'c-warning': '#9b4e12',
+            'c-info': '#1e40af',
+            'c-light': '#e4e4e7',
+            'c-neutral': '#3f3f46',
+            'c-dark': '#18181b',
+            'c-hilite': '#fef9c3',
         };
         for (const [name, value] of Object.entries(defaultBrandColors)) {
-            defaultBrandColors[name.replace(/-bg$/u, '-fg')] = $color.getReadable(value);
+            defaultBrandColors[name + '-text'] = $color.getReadable(value);
         }
 
         /**
