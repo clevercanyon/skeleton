@@ -178,7 +178,7 @@ export default async () => {
         /**
          * Comment anchor options.
          *
-         * @see https://coolors.co/fff0b5-8a826d-6d718a-8c8c8c-6d8a78
+         * @see https://coolors.co/fff0b5-8a826d-6d718a-696969
          */
         'commentAnchors.tags.anchors': {
             '@todo': {
@@ -203,16 +203,16 @@ export default async () => {
                 styleMode: 'tag',
             },
             '@anchor': {
-                scope: 'workspace',
-                iconColor: '#8c8c8c',
-                highlightColor: '#8c8c8c',
+                scope: 'hidden',
+                iconColor: '#696969',
+                highlightColor: '#696969',
                 behavior: 'anchor',
                 styleMode: 'tag',
             },
             '@see-anchor': {
-                scope: 'workspace',
-                iconColor: '#6d8a78',
-                highlightColor: '#6d8a78',
+                scope: 'hidden',
+                iconColor: '#696969',
+                highlightColor: '#696969',
                 behavior: 'link',
                 styleMode: 'tag',
             },
