@@ -53,7 +53,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          */
         const defaultBasicColors = {
             'color-bg': '#09090b',
-            'color-text': '#fafafa',
+            'color-tx': '#fafafa',
             'color-link': '#ed5f3b',
             'color-heading': '#ffffff',
         };
@@ -68,35 +68,35 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * Tailwind’s built-in prose color vars at these prose-specific color classes; {@see baseConfigThemes()}.
          */
         const defaultBasicProseColors = {
-            'color-prose-body': basicColors['color-text'],
+            'color-prose-body': basicColors['color-tx'],
             'color-prose-links': basicColors['color-link'],
 
             'color-prose-headings': basicColors['color-heading'],
-            'color-prose-lead': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-text'], 0.1),
-            'color-prose-bold': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-text'], 0.1),
+            'color-prose-lead': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
+            'color-prose-bold': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
 
-            'color-prose-counters': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.35),
-            'color-prose-bullets': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.35),
+            'color-prose-counters': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.35),
+            'color-prose-bullets': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.35),
 
-            'color-prose-quotes': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.25),
-            'color-prose-quote-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.85),
+            'color-prose-quotes': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.25),
+            'color-prose-quote-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.85),
 
-            'color-prose-kbd': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-text'], 0.1),
+            'color-prose-kbd': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
-            'color-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['color-text']),
+            'color-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['color-tx']),
 
-            'color-prose-code': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-text'], 0.1),
+            'color-prose-code': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
-            'color-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['color-text']),
+            'color-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['color-tx']),
 
             'color-prose-pre-bg': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-bg'], 0.05),
-            'color-prose-pre-code': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-text'], 0.25),
+            'color-prose-pre-code': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.25),
 
-            'color-prose-th-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.75),
-            'color-prose-td-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.85),
+            'color-prose-th-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.75),
+            'color-prose-td-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.85),
 
-            'color-prose-hr': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.85),
-            'color-prose-captions': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.25),
+            'color-prose-hr': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.85),
+            'color-prose-captions': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.25),
         };
 
         /**
@@ -113,17 +113,17 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          */
         const defaultBasicSectionColors = {
             'color-header': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-bg'], 0.015),
-            'color-header-text': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.015),
+            'color-header-tx': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.015),
             'color-header-link': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
             'color-header-heading': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
             'color-sidebar': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-bg'], 0.015),
-            'color-sidebar-text': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.015),
+            'color-sidebar-tx': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.015),
             'color-sidebar-link': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
             'color-sidebar-heading': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
             'color-footer': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-bg'], 0.015),
-            'color-footer-text': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-text'], 0.015),
+            'color-footer-tx': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.015),
             'color-footer-link': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
             'color-footer-heading': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
         };
@@ -141,7 +141,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          *
          * Simply define a brand’s colors. From these, we automatically work out an appropriate readable foreground text
          * color (i.e., black or white, based on the color’s luminance) just like coolors.co does. Or, if you prefer,
-         * you can choose to define any of the `*-text` suffixed variants explicitly.
+         * you can choose to define any of the `*-tx` suffixed text variants explicitly.
          */
         const defaultBrandColors = {
             // Abstract colors.
@@ -163,7 +163,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-hilite': '#fef9c3',
         };
         for (const [name, value] of Object.entries(defaultBrandColors)) {
-            defaultBrandColors[name + '-text'] = $color.getReadable(value);
+            defaultBrandColors[name + '-tx'] = $color.getReadable(value);
         }
 
         /**
