@@ -45,15 +45,17 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         /**
          * Defines basic colors.
          *
+         * - Basic palette: {@see https://coolors.co/09090b-fafafa-ed5f3b-ffffff}.
+         *
          * From these basic colors, we automatically derive additional colors for commonly-used sections, such as those
          * prefixed as `c-prose-*`, `c-header-*`, `c-sidebar-*`, `c-footer-*`. If you'd like to override any basic color
          * derivations, explicitly define the colors you wish to override, and add them to your composition.
          */
         const defaultBasicColors = {
-            'c-bg': $color.tw('zinc', 950),
-            'c-fg': $color.tw('zinc', 50),
-            'c-link': $color.tw('blue', 300),
-            'c-heading': $color.tw('stone', 50),
+            'c-bg': '#09090b',
+            'c-fg': '#fafafa',
+            'c-link': '#ed5f3b',
+            'c-heading': '#ffffff',
         };
         const basicColors = $obj.defaults({}, $obj.pick(theme.extend.colors, Object.keys(defaultBasicColors)), defaultBasicColors);
         const basicBGIsDark = '#ffffff' === $color.getReadable(basicColors['c-bg']); // Detects basic background color being dark.
@@ -131,9 +133,6 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          *
          * - Abstract palette: {@see https://coolors.co/ed5f3b-95290e-763828-facdc1-fca94f-eab308}.
          * - Semantic palette: {@see https://coolors.co/166534-991b1b-9b4e12-1e40af-e4e4e7-3f3f46-18181b-fef9c3}.
-         *
-         * Use https://coolors.co/ to build a brand’s color palettes, check contrast, and visualize. Then save, and
-         * please replace the links above so the palettes are available for future reference.
          *
          * These colors should all consider `c-bg`, because all of these colors should work well for objects that lay on
          * top of the basic background color. In some cases, you may need to stray from exact colors used in a brand’s
