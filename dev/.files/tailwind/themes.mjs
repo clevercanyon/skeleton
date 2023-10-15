@@ -58,7 +58,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-heading': '#ffffff', // Heading color.
         };
         const basicColors = $obj.defaults({}, $obj.pick(theme.extend.colors, Object.keys(defaultBasicColors)), defaultBasicColors);
-        const dark = '#ffffff' === $color.getReadable(basicColors['color']); // Detects basic background color being dark.
+        const basicBGIsDark = $color.isDark(basicColors['color']); // Detects basic background color being dark.
 
         /**
          * Defines basic prose colors.
@@ -72,31 +72,31 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-prose-links': basicColors['color-link'],
 
             'color-prose-headings': basicColors['color-heading'],
-            'color-prose-lead': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
-            'color-prose-bold': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
+            'color-prose-lead': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
+            'color-prose-bold': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
 
-            'color-prose-counters': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.35),
-            'color-prose-bullets': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.35),
+            'color-prose-counters': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.35),
+            'color-prose-bullets': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.35),
 
-            'color-prose-quotes': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.25),
-            'color-prose-quote-borders': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
+            'color-prose-quotes': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.25),
+            'color-prose-quote-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
 
-            'color-prose-kbd': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
+            'color-prose-kbd': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
             'color-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['color-fg']),
 
-            'color-prose-code': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
+            'color-prose-code': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
             'color-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['color-fg']),
 
-            'color-prose-pre': $color[dark ? 'lighten' : 'darken'](basicColors['color'], 0.05),
-            'color-prose-pre-code': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.25),
+            'color-prose-pre': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color'], 0.05),
+            'color-prose-pre-code': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.25),
 
-            'color-prose-th-borders': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.75),
-            'color-prose-td-borders': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
+            'color-prose-th-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.75),
+            'color-prose-td-borders': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
 
-            'color-prose-hr': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
-            'color-prose-captions': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.25),
+            'color-prose-hr': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
+            'color-prose-captions': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.25),
         };
 
         /**
@@ -115,20 +115,20 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * section-specific. We want the ability to change the basic appearance of these sections later.
          */
         const defaultBasicSectionColors = {
-            'color-header': $color[dark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
-            'color-header-fg': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
-            'color-header-link': $color[dark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-header-heading': $color[dark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-header': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
+            'color-header-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
+            'color-header-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
+            'color-header-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
-            'color-sidebar': $color[dark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
-            'color-sidebar-fg': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
-            'color-sidebar-link': $color[dark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-sidebar-heading': $color[dark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-sidebar': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
+            'color-sidebar-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
+            'color-sidebar-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
+            'color-sidebar-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
-            'color-footer': $color[dark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
-            'color-footer-fg': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
-            'color-footer-link': $color[dark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-footer-heading': $color[dark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-footer': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
+            'color-footer-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
+            'color-footer-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
+            'color-footer-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
         };
 
         /**
