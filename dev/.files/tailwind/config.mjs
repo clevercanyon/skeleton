@@ -54,6 +54,13 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
         theme: {
             screens: {
+                // Less than or equal to.
+                'lte-phone': { max: '479px' },
+                'lte-tablet': { max: '959px' },
+                'lte-notebook': { max: '1279px' },
+                'lte-laptop': { max: '1439px' },
+                'lte-desktop': { max: '2559px' },
+
                 // Greater than or equal to.
                 'gte-phone': { min: '320px' },
                 'gte-tablet': { min: '480px' },
@@ -68,8 +75,9 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 'laptop': { min: '1280px', max: '1439px' },
                 'desktop': { min: '1440px', max: '2559px' },
 
-                // `raw` to avoid these being a max-width for containers.
-                // If something should adapt to widescreen, don’t put in a container.
+                // `raw` to avoid these inadvertently becoming a max-width for containers.
+                // Best practice: if something should adapt to widescreen, don’t use a container.
+                'lte-widescreen': { raw: '(max-width: none)' },
                 'gte-widescreen': { raw: '(min-width: 2560px)' },
                 'widescreen': { raw: '(min-width: 2560px)' },
             },
