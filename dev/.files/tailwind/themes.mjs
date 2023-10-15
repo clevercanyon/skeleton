@@ -134,8 +134,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         /**
          * Defines brand colors.
          *
-         * - Abstract palette: {@see https://coolors.co/595959-334780-3e4660-615c49-775c32-845f24-80aff9-fffeb6}.
-         * - Semantic palette: {@see https://coolors.co/166534-991b1b-9b4e12-1e40af-e4e4e7-3f3f46-18181b-fef9c3}.
+         * - Abstract palette: {@see https://coolors.co/595959-2e489e-3e4660-615c49-745a2f-0f58b8-80aff9-ffe0b8}.
+         * - Semantic palette: {@see https://coolors.co/1c5f35-8a2828-865027-2e489e-e4e4e7-3f3f46-18181b-fef9c3}.
          *
          * These colors should all consider the basic background `color`, because all of these colors should work well
          * for objects that lay on top of the background color. In some cases, you may need to stray from exact colors
@@ -146,25 +146,25 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * or white, based on the color’s luminance. Or, if you prefer, you can choose to define any of the `*-fg`
          * suffixed variants explicitly, effectively overriding luminance-based defaults.
          *
-         * The easiest way to define brand colors is to imagine them being used to create a prominent component, such as
-         * a button; e.g., `<Button color="primary|secondary|accent|dazzle|flare|success|info|...">`.
+         * The easiest way to define brand colors is to test them being used to create a prominent component, such as a
+         * button; e.g., `<Button color="primary|secondary|accent|dazzle|flare|success|info|...">`.
          */
         const defaultBrandColors = {
             // Abstract colors.
             'color-true': '#595959', // True exact-match to a brand’s primary logo color.
-            'color-primary': '#334780', // Primary component color. Typically a shade of `color-true`.
+            'color-primary': '#2e489e', // Primary component color. Typically a shade of `color-true`.
             'color-secondary': '#3e4660', // Secondary component color. Typically less saturated than primary.
             'color-tertiary': '#615c49', // Tertiary component color. Typically less saturated than primary.
-            'color-accent': '#775c32', // An accented component color. Typically accentuated conservatively.
-            'color-flare': '#845f24', // An accented component color. Typically more accentuated; i.e., less subtle.
+            'color-accent': '#745a2f', // An accented component color. Typically accentuated conservatively.
+            'color-feature': '#0f58b8', // An accented component color. Typically more accentuated; i.e., less subtle.
             'color-dazzle': '#80aff9', // An accented component color. Typically much more accentuated; i.e., not subtle.
-            'color-amaze': '#fffeb6', // An accented component color. Typically much more accentuated; i.e., not subtle.
+            'color-amaze': '#ffe0b8', // An accented component color. Typically much more accentuated; i.e., not subtle.
 
             // Semantic colors.
-            'color-success': '#166534', // Typically a shade of green for various components.
-            'color-danger': '#991b1b', // Typically a shade of red for various components.
-            'color-warning': '#9b4e12', // Typically a shade of orange for various components.
-            'color-info': '#1e40af', // Typically a shade of blue for various components.
+            'color-success': '#1c5f35', // Typically a shade of green for various components.
+            'color-danger': '#8a2828', // Typically a shade of red for various components.
+            'color-warning': '#865027', // Typically a shade of orange for various components.
+            'color-info': '#2e489e', // Typically a shade of blue for various components.
             'color-light': '#e4e4e7', // Typically a light shade of gray for various components.
             'color-neutral': '#3f3f46', // Typically between light & dark for various components.
             'color-dark': '#18181b', // Typically a dark shade of gray for various components.
