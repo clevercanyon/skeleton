@@ -45,7 +45,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         /**
          * Defines basic colors.
          *
-         * - Basic palette: {@see https://coolors.co/09090b-fafafa-ed5f3b-ffffff}.
+         * - Basic palette: {@see https://coolors.co/09090b-f0f0f0-80aff9-ffffff}.
          *
          * From these basic colors we derive additional colors for commonly-used sections automatically, such as those
          * prefixed as `color-prose-*`, `color-header-*`, `color-sidebar-*`, `color-footer-*`. If you'd like to override
@@ -53,8 +53,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          */
         const defaultBasicColors = {
             'color': '#09090b', // Background color.
-            'color-fg': '#fafafa', // Foreground color.
-            'color-link': '#ed5f3b', // Link/anchor color.
+            'color-fg': '#f0f0f0', // Foreground color.
+            'color-link': '#80aff9', // Link/anchor color.
             'color-heading': '#ffffff', // Heading color.
         };
         const basicColors = $obj.defaults({}, $obj.pick(theme.extend.colors, Object.keys(defaultBasicColors)), defaultBasicColors);
@@ -134,7 +134,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         /**
          * Defines brand colors.
          *
-         * - Abstract palette: {@see https://coolors.co/ed5f3b-95290e-763828-facdc1-fca94f-eab308}.
+         * - Abstract palette: {@see https://coolors.co/595959-334780-3e4660-615c49-775c32-845f24-80aff9-fffeb6}.
          * - Semantic palette: {@see https://coolors.co/166534-991b1b-9b4e12-1e40af-e4e4e7-3f3f46-18181b-fef9c3}.
          *
          * These colors should all consider the basic background `color`, because all of these colors should work well
@@ -151,12 +151,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          */
         const defaultBrandColors = {
             // Abstract colors.
-            'color-true': '#ed5f3b', // True exact-match to a brand’s primary logo color.
-            'color-primary': '#95290e', // Primary component color. Typically a shade of `color-true`.
-            'color-secondary': '#763828', // Secondary component color. Typically less saturated than primary.
-            'color-accent': '#facdc1', // An accented component color. Typically attenuated conservatively.
-            'color-dazzle': '#fca94f', // A dazzling component color. Typically more attenuated; i.e., less subtle.
-            'color-flare': '#eab308', // A component color with flare. Typically more attenuated; i.e., not subtle.
+            'color-true': '#595959', // True exact-match to a brand’s primary logo color.
+            'color-primary': '#334780', // Primary component color. Typically a shade of `color-true`.
+            'color-secondary': '#3e4660', // Secondary component color. Typically less saturated than primary.
+            'color-tertiary': '#615c49', // Tertiary component color. Typically less saturated than primary.
+            'color-accent': '#775c32', // An accented component color. Typically accentuated conservatively.
+            'color-flare': '#845f24', // An accented component color. Typically more accentuated; i.e., less subtle.
+            'color-dazzle': '#80aff9', // An accented component color. Typically more accentuated; i.e., less subtle.
+            'color-amaze': '#fffeb6', // An accented component color. Typically more accentuated; i.e., less subtle.
 
             // Semantic colors.
             'color-success': '#166534', // Typically a shade of green for various components.
