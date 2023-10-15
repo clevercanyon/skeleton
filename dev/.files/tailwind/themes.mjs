@@ -50,6 +50,9 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * From these basic colors we derive additional colors for commonly-used sections automatically, such as those
          * prefixed as `color-prose-*`, `color-header-*`, `color-sidebar-*`, `color-footer-*`. If you'd like to override
          * any basic color derivations, explicitly define the colors you wish to override.
+         *
+         * 💡 Tip: Fast track. Just change `color-link` to match your brand colors. The other colors use common defaults
+         * that typically work well for most brands. Tune the rest in later.
          */
         const defaultBasicColors = {
             'color': '#09090b', // Background color.
@@ -148,6 +151,9 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          *
          * The easiest way to define brand colors is to test them being used to create a prominent component, such as a
          * button; e.g., `<Button color="primary|secondary|accent|dazzle|flare|success|info|...">`.
+         *
+         * 💡 Tip: Fast track. Just change `color-true` & `color-primary` to match your brand colors. The other colors
+         * use common defaults that typically work well for most brands. Tune the rest in later.
          */
         const defaultBrandColors = {
             // Abstract colors.
