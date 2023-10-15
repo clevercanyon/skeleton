@@ -55,11 +55,12 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         theme: {
             screens: {
                 // Less than or equal to.
-                'lte-phone': { max: '479px' },
-                'lte-tablet': { max: '959px' },
-                'lte-notebook': { max: '1279px' },
-                'lte-laptop': { max: '1439px' },
+                'lte-widescreen': { raw: '(max-width: none)' },
                 'lte-desktop': { max: '2559px' },
+                'lte-laptop': { max: '1439px' },
+                'lte-notebook': { max: '1279px' },
+                'lte-tablet': { max: '959px' },
+                'lte-phone': { max: '479px' },
 
                 // Greater than or equal to.
                 'gte-phone': { min: '320px' },
@@ -67,6 +68,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 'gte-notebook': { min: '960px' },
                 'gte-laptop': { min: '1280px' },
                 'gte-desktop': { min: '1440px' },
+                'gte-widescreen': { raw: '(min-width: 2560px)' },
 
                 // Device-only specific breakpoints.
                 'phone': { min: '320px', max: '479px' },
@@ -74,12 +76,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 'notebook': { min: '960px', max: '1279px' },
                 'laptop': { min: '1280px', max: '1439px' },
                 'desktop': { min: '1440px', max: '2559px' },
-
-                // `raw` to avoid these inadvertently becoming a max-width for containers.
-                // Best practice: if something should adapt to widescreen, don’t use a container.
-                'lte-widescreen': { raw: '(max-width: none)' },
-                'gte-widescreen': { raw: '(min-width: 2560px)' },
                 'widescreen': { raw: '(min-width: 2560px)' },
+
+                // We use `raw` to avoid widescreen inadvertently becoming a max-width for containers.
+                // Best practice: if something should adapt to widescreen, don’t use a container.
             },
             container: { center: true }, // No need for `mx-auto` on each container.
 
