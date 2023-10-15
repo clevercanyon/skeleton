@@ -47,85 +47,88 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          *
          * - Basic palette: {@see https://coolors.co/09090b-fafafa-ed5f3b-ffffff}.
          *
-         * From these basic colors, we automatically derive additional colors for commonly-used sections, such as those
+         * From these basic colors we derive additional colors for commonly-used sections automatically, such as those
          * prefixed as `color-prose-*`, `color-header-*`, `color-sidebar-*`, `color-footer-*`. If you'd like to override
          * any basic color derivations, explicitly define the colors you wish to override.
          */
         const defaultBasicColors = {
-            'color-bg': '#09090b',
-            'color-tx': '#fafafa',
-            'color-link': '#ed5f3b',
-            'color-heading': '#ffffff',
+            'color': '#09090b', // Background color.
+            'color-fg': '#fafafa', // Foreground color.
+            'color-link': '#ed5f3b', // Link/anchor color.
+            'color-heading': '#ffffff', // Heading color.
         };
         const basicColors = $obj.defaults({}, $obj.pick(theme.extend.colors, Object.keys(defaultBasicColors)), defaultBasicColors);
-        const basicBGDark = '#ffffff' === $color.getReadable(basicColors['color-bg']); // Detects basic background color being dark.
+        const dark = '#ffffff' === $color.getReadable(basicColors['color']); // Detects basic background color being dark.
 
         /**
          * Defines basic prose colors.
          *
-         * These color derivations are based on the configured basic colors. The goal is to make prose slightly
-         * different in some cases, and customizable, either during or after an initial implementation. We also point
-         * Tailwind’s built-in prose color vars at these prose-specific color classes; {@see baseConfigThemes()}.
+         * These color derivations are based on the configured basic colors. The goal is to make prose customizable,
+         * either during or after an initial implementation. To make this work, we point Tailwind’s built-in prose color
+         * variables at these prose-specific color classes; {@see baseConfigThemes()}.
          */
         const defaultBasicProseColors = {
-            'color-prose-body': basicColors['color-tx'],
+            'color-prose-body': basicColors['color-fg'],
             'color-prose-links': basicColors['color-link'],
 
             'color-prose-headings': basicColors['color-heading'],
-            'color-prose-lead': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
-            'color-prose-bold': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
+            'color-prose-lead': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
+            'color-prose-bold': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
 
-            'color-prose-counters': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.35),
-            'color-prose-bullets': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.35),
+            'color-prose-counters': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.35),
+            'color-prose-bullets': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.35),
 
-            'color-prose-quotes': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.25),
-            'color-prose-quote-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.85),
+            'color-prose-quotes': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.25),
+            'color-prose-quote-borders': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
 
-            'color-prose-kbd': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
+            'color-prose-kbd': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
-            'color-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['color-tx']),
+            'color-prose-kbd-shadows': $color.toRGBListNoAlpha(basicColors['color-fg']),
 
-            'color-prose-code': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.1),
+            'color-prose-code': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.1),
             // This is incorporated into an `rgb(x x x / x)` final color.
-            'color-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['color-tx']),
+            'color-prose-code-shadows': $color.toRGBListNoAlpha(basicColors['color-fg']),
 
-            'color-prose-pre-bg': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-bg'], 0.05),
-            'color-prose-pre-code': $color[basicBGDark ? 'lighten' : 'darken'](basicColors['color-tx'], 0.25),
+            'color-prose-pre': $color[dark ? 'lighten' : 'darken'](basicColors['color'], 0.05),
+            'color-prose-pre-code': $color[dark ? 'lighten' : 'darken'](basicColors['color-fg'], 0.25),
 
-            'color-prose-th-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.75),
-            'color-prose-td-borders': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.85),
+            'color-prose-th-borders': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.75),
+            'color-prose-td-borders': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
 
-            'color-prose-hr': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.85),
-            'color-prose-captions': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.25),
+            'color-prose-hr': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.85),
+            'color-prose-captions': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.25),
         };
 
         /**
          * Defines basic section colors.
          *
-         * These color derivations are based on the configured basic colors. The goal is to make these sections slightly
-         * different in some cases, and customizable, either during or after an initial implementation. Therefore,
-         * section-specific color classes should always be favored over general basic color classes.
+         * These color derivations are based on the configured basic colors. The goal is to make these sections
+         * customizable, either during or after an initial implementation. Therefore, section-specific color classes
+         * should always be used when building these out. If additional basic colors are needed, please add new colors
+         * to accomodate vs. using any other basic color classes that are not section-specific.
          *
-         * Using prose in these sections is not supported at this time. The best practice is to apply color classes
-         * instead of relying on prose in these sections. That said, if you really must, then as long as you’ve not
-         * drastically altered colors for these sections (i.e., they are still very close to configured basic colors),
-         * then the appearance of prose should be ok. That’s the case in our default configuration of section colors.
+         * Also, we do not recommend using prose in these sections. The best practice is to apply color classes instead
+         * of relying on prose in any of these sections. Why? Prose is configured using basic colors that are not
+         * section-specific. Therefore, using prose would be the same as using other basic color classes.
+         *
+         * It’s perfectly ok to use brand colors in these sections. Just don’t use 'basic' color classes that are not
+         * section-specific. We want the ability to change the basic appearance of these sections later.
          */
         const defaultBasicSectionColors = {
-            'color-header': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-bg'], 0.015),
-            'color-header-tx': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.015),
-            'color-header-link': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-header-heading': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-header': $color[dark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
+            'color-header-fg': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
+            'color-header-link': $color[dark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
+            'color-header-heading': $color[dark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
-            'color-sidebar': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-bg'], 0.015),
-            'color-sidebar-tx': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.015),
-            'color-sidebar-link': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-sidebar-heading': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-sidebar': $color[dark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
+            'color-sidebar-fg': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
+            'color-sidebar-link': $color[dark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
+            'color-sidebar-heading': $color[dark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
-            'color-footer': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-bg'], 0.015),
-            'color-footer-tx': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-tx'], 0.015),
-            'color-footer-link': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-footer-heading': $color[basicBGDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-footer': $color[dark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
+            'color-footer-fg': $color[dark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
+            'color-footer-link': $color[dark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
+            'color-footer-heading': $color[dark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
         };
 
         /**
@@ -134,36 +137,39 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * - Abstract palette: {@see https://coolors.co/ed5f3b-95290e-763828-facdc1-fca94f-eab308}.
          * - Semantic palette: {@see https://coolors.co/166534-991b1b-9b4e12-1e40af-e4e4e7-3f3f46-18181b-fef9c3}.
          *
-         * These colors should all consider `color-bg`, because all of these colors should work well for objects that
-         * lay on top of the basic background color. In some cases, you may need to stray from exact colors used in a
-         * brand’s logo, as these are not for the brand’s logo, they are for the site. Having said that, `color-true` is
-         * an exception, as it should always be a true (i.e., exact) primary logo color.
+         * These colors should all consider the basic background `color`, because all of these colors should work well
+         * for objects that lay on top of the background color. In some cases, you may need to stray from exact colors
+         * used in a brand’s logo, as these are not for the brand’s logo, they are for the site. That said, `color-true`
+         * is an exception. It should always be a true exact-match to a brand’s primary logo color.
          *
-         * Simply define a brand’s colors. From these, we automatically work out an appropriate readable foreground text
-         * color (i.e., black or white, based on the color’s luminance) just like coolors.co does. Or, if you prefer,
-         * you can choose to define any of the `*-tx` suffixed text variants explicitly.
+         * From these brand colors we automatically work out an appropriate readable foreground text color; i.e., black
+         * or white, based on the color’s luminance. Or, if you prefer, you can choose to define any of the `*-fg`
+         * suffixed variants explicitly, effectively overriding luminance-based defaults.
+         *
+         * The easiest way to define brand colors is to imagine them being used to create a prominent component, such as
+         * a button; e.g., `<Button color="primary|secondary|accent|dazzle|flare|success|info|...">`.
          */
         const defaultBrandColors = {
             // Abstract colors.
-            'color-true': '#ed5f3b',
-            'color-primary': '#95290e',
-            'color-secondary': '#763828',
-            'color-accent': '#facdc1',
-            'color-dazzle': '#fca94f',
-            'color-flare': '#eab308',
+            'color-true': '#ed5f3b', // True exact-match to a brand’s primary logo color.
+            'color-primary': '#95290e', // Primary component color. Typically a shade of `color-true`.
+            'color-secondary': '#763828', // Secondary component color. Typically less saturated than primary.
+            'color-accent': '#facdc1', // An accented component color. Typically attenuated conservatively.
+            'color-dazzle': '#fca94f', // A dazzling component color. Typically more attenuated; i.e., less subtle.
+            'color-flare': '#eab308', // A component color with flare. Typically more attenuated; i.e., not subtle.
 
             // Semantic colors.
-            'color-success': '#166534',
-            'color-danger': '#991b1b',
-            'color-warning': '#9b4e12',
-            'color-info': '#1e40af',
-            'color-light': '#e4e4e7',
-            'color-neutral': '#3f3f46',
-            'color-dark': '#18181b',
-            'color-hilite': '#fef9c3',
+            'color-success': '#166534', // Typically a shade of green for various components.
+            'color-danger': '#991b1b', // Typically a shade of red for various components.
+            'color-warning': '#9b4e12', // Typically a shade of orange for various components.
+            'color-info': '#1e40af', // Typically a shade of blue for various components.
+            'color-light': '#e4e4e7', // Typically a light shade of gray for various components.
+            'color-neutral': '#3f3f46', // Typically between light & dark for various components.
+            'color-dark': '#18181b', // Typically a dark shade of gray for various components.
+            'color-hilite': '#fef9c3', // Typically a shade of yellow for various components.
         };
         for (const [name, value] of Object.entries(defaultBrandColors)) {
-            defaultBrandColors[name + '-tx'] = $color.getReadable(value);
+            defaultBrandColors[name + '-fg'] = $color.getReadable(value);
         }
 
         /**
@@ -242,7 +248,7 @@ const baseConfigThemes = /* not async compatible */ () => {
                         '--tw-prose-code': 'rgb(var(--colors-color-prose-code))',
                         '--tw-prose-code-shadows': 'var(--colors-color-prose-code-shadows)',
 
-                        '--tw-prose-pre-bg': 'rgb(var(--colors-color-prose-pre-bg))',
+                        '--tw-prose-pre-bg': 'rgb(var(--colors-color-prose-pre))',
                         '--tw-prose-pre-code': 'rgb(var(--colors-color-prose-pre-code))',
 
                         '--tw-prose-th-borders': 'rgb(var(--colors-color-prose-th-borders))',
