@@ -157,8 +157,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-tertiary': '#615c49', // Tertiary component color. Typically less saturated than primary.
             'color-accent': '#775c32', // An accented component color. Typically accentuated conservatively.
             'color-flare': '#845f24', // An accented component color. Typically more accentuated; i.e., less subtle.
-            'color-dazzle': '#80aff9', // An accented component color. Typically more accentuated; i.e., less subtle.
-            'color-amaze': '#fffeb6', // An accented component color. Typically more accentuated; i.e., less subtle.
+            'color-dazzle': '#80aff9', // An accented component color. Typically much more accentuated; i.e., not subtle.
+            'color-amaze': '#fffeb6', // An accented component color. Typically much more accentuated; i.e., not subtle.
 
             // Semantic colors.
             'color-success': '#166534', // Typically a shade of green for various components.
