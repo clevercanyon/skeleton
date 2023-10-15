@@ -8,6 +8,12 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
+/*
+-----------------------------------------------------------------------------------------------------------------------
+Example `index.scss` starter file contents:
+-----------------------------------------------------------------------------------------------------------------------
+@use '../dev/.files/tailwind/layers';
+-------------------------------------------------------------------------------------------------------------------- */
 
 import { $color, $is, $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
@@ -212,6 +218,13 @@ const baseConfigThemes = /* not async compatible */ () => {
      */
     const defaultTheme = {
         extend: {
+            /**
+             * If font families are customized in ways that introduce new Google fonts, then those new Google fonts must
+             * be declared as an SCSS map in order to configure our Tailwind layers. The variable is `$google-fonts`.
+             * Add the variale to your `./index.scss` file before `@use '../dev/.files/tailwind/layers';`.
+             *
+             *     $google-fonts: ( 'Georama': 'ital,wght@0,100..900;1,100..900' );
+             */
             fontFamily: {
                 sans: [
                     'Georama', //

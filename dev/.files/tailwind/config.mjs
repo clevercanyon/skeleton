@@ -15,12 +15,7 @@
 -----------------------------------------------------------------------------------------------------------------------
 Example `index.scss` starter file contents:
 -----------------------------------------------------------------------------------------------------------------------
-@import 'https://fonts.googleapis.com/css2?family=Georama:ital,wght@0,100..900;1,100..900&display=swap';
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind variants;
+@use '../dev/.files/tailwind/layers';
 -------------------------------------------------------------------------------------------------------------------- */
 
 import pluginForms from '@tailwindcss/forms';
@@ -48,13 +43,16 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
      * Composition.
      */
     return {
-        // We favor Tailwind themes, so we don’t typically use dark mode anyway.
+        // We favor Tailwind themes, so we don’t typically use dark mode.
         // By setting this to `class` it can only be enabled using the `dark` class.
         darkMode: 'class', // {@see https://tailwindcss.com/docs/dark-mode}.
+        // Use of Tailwind’s baked-in `dark` mode is not supported by our implementation.
+        // Instead, configure a `defaultTheme` as dark, or add a `dark-theme` to `themes: []`.
 
         theme: {
             screens: {
-                // Less than or equal to.
+                // Less than or equal to, in descending specificity order.
+                // The order matters, because it affects specificity.
                 'lte-widescreen': { raw: '(max-width: none)' },
                 'lte-desktop': { max: '2559px' },
                 'lte-laptop': { max: '1439px' },
@@ -62,7 +60,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 'lte-tablet': { max: '959px' },
                 'lte-phone': { max: '479px' },
 
-                // Greater than or equal to.
+                // Greater than or equal to, in ascending specificity order.
+                // The order matters, because it affects specificity.
                 'gte-phone': { min: '320px' },
                 'gte-tablet': { min: '480px' },
                 'gte-notebook': { min: '960px' },
@@ -70,7 +69,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 'gte-desktop': { min: '1440px' },
                 'gte-widescreen': { raw: '(min-width: 2560px)' },
 
-                // Device-only specific breakpoints.
+                // Device-specific min/max breakpoints, in any order.
+                // Order doesn’t really matter due to min/max specificity.
                 'phone': { min: '320px', max: '479px' },
                 'tablet': { min: '480px', max: '959px' },
                 'notebook': { min: '960px', max: '1279px' },
@@ -78,13 +78,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 'desktop': { min: '1440px', max: '2559px' },
                 'widescreen': { raw: '(min-width: 2560px)' },
 
-                // We use `raw` to avoid widescreen inadvertently becoming a max-width for containers.
-                // Best practice: if something should adapt to widescreen, don’t use a container.
+                // Note: We use `raw` to avoid widescreen inadvertently becoming a max-width for containers.
+                // If something should adapt to widescreen, the best practice is to simply not use a container.
             },
             container: { center: true }, // No need for `mx-auto` on each container.
 
             extend: {
                 typography: {
+                    // This makes `<code>` appear almost the same as `<kbd>`.
                     sm: { css: { 'code': { ...pluginTypographyStyles.sm.css[0]['kbd'] } } },
                     base: { css: { 'code': { ...pluginTypographyStyles.base.css[0]['kbd'] } } },
                     lg: { css: { 'code': { ...pluginTypographyStyles.lg.css[0]['kbd'] } } },
@@ -93,15 +94,16 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
                     DEFAULT: {
                         css: {
+                            // Prose link underline; on hover only.
                             'a': {
                                 textDecoration: 'none',
                             },
                             'a:hover': {
                                 textDecoration: 'underline',
                             },
+                            // This makes `<code>` appear almost the same as `<kbd>`.
                             'code::before': null, // Gets rid of '`' backtick.
                             'code::after': null, // Gets rid of '`' backtick.
-
                             'code': {
                                 ...pluginTypographyStyles.base.css[0]['kbd'],
                                 borderRadius: '0.188rem', // Equivalent to 3px.
@@ -113,9 +115,9 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             },
         },
         plugins: [
-            pluginTypography({ className: 'prose' }), // Requires `prose` class.
-            pluginForms({ strategy: 'class' }), // Requires form classes; e.g., `form-{class}`.
-            pluginThemer(mergeThemesConfig({ themesConfig })), // Merges themes configuration.
+            pluginTypography({ className: 'prose' }), // Implements `prose` class.
+            pluginForms({ strategy: 'class' }), // Implements form classes; e.g., `form-{class}`.
+            pluginThemer(mergeThemesConfig({ themesConfig })), // Implements themes configuration.
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
