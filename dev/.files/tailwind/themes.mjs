@@ -219,6 +219,8 @@ const baseConfigThemes = /* not async compatible */ () => {
     const defaultTheme = {
         extend: {
             /**
+             * Defines font families.
+             *
              * If font families are customized in ways that introduce new Google fonts, then those new Google fonts must
              * be declared as an SCSS map in order to configure our Tailwind layers. The variable is `$google-fonts`.
              * Add the variale to your `./index.scss` file before `@use '../dev/.files/tailwind/layers';`.
@@ -243,13 +245,17 @@ const baseConfigThemes = /* not async compatible */ () => {
                     'monospace',
                 ],
             },
-            colors: {}, // Populated during merge; see above.
 
+            /**
+             * Points prose at themed color variables.
+             *
+             * These colors are based on the configured basic colors. The goal is to make prose customizable, either
+             * during or after an initial implementation. To make this work, we point Tailwind’s built-in prose color
+             * variables at each of our prose-specific color class variables. See default export in this file.
+             */
             typography: {
                 DEFAULT: {
                     css: {
-                        // Points prose at themed color variables.
-
                         '--tw-prose-body': 'rgb(var(--colors-color-prose-body))',
                         '--tw-prose-links': 'rgb(var(--colors-color-prose-links))',
 
