@@ -129,10 +129,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-header-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
             'color-header-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
 
-            'color-sidebar': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
-            'color-sidebar-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
-            'color-sidebar-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.015),
-            'color-sidebar-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.015),
+            'color-sidebar': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color'], 0.05),
+            'color-sidebar-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.225),
+            'color-sidebar-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-link'], 0.05),
+            'color-sidebar-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-heading'], 0.225),
 
             'color-footer': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color'], 0.015),
             'color-footer-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-fg'], 0.015),
@@ -156,7 +156,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * suffixed variants explicitly, effectively overriding luminance-based defaults.
          *
          * The easiest way to define brand colors is to test them being used to create a prominent component, such as a
-         * button; e.g., `<Button color="primary|secondary|accent|dazzle|flare|success|info|...">`.
+         * button; e.g., `<Button color="primary|secondary|accent|feature|dazzle|success|info|...">`.
          *
          * 💡 Tip: Fast track. Just change `color-true` & `color-primary` to match your brand colors. The other colors
          * use common defaults that typically work well for most brands. Tune the rest in later.

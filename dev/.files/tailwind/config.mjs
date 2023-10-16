@@ -94,7 +94,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
                     DEFAULT: {
                         css: {
-                            // Prose link underline; on hover only.
+                            // Prose link underline on hover only.
                             'a': {
                                 textDecoration: 'none',
                             },
