@@ -27,6 +27,7 @@ import viteIconsConfig from './includes/icons/config.mjs';
 import viteMDXConfig from './includes/mdx/config.mjs';
 import viteMinifyConfig from './includes/minify/config.mjs';
 import vitePkgUpdates from './includes/package/updates.mjs';
+import vitePrefreshConfig from './includes/prefresh/config.mjs';
 import viteRollupConfig from './includes/rollup/config.mjs';
 import viteVitestConfig from './includes/vitest/config.mjs';
 
@@ -36,8 +37,6 @@ import viteVitestConfig from './includes/vitest/config.mjs';
  * @param   vite Data passed in by Vite.
  *
  * @returns      Vite configuration object properties.
- *
- * @todo Implement Vite prefresh.
  */
 export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     /**
@@ -159,6 +158,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
      * Configures plugins for Vite.
      */
     const plugins = [
+        await vitePrefreshConfig({}),
         await viteIconsConfig({}),
         await viteMDXConfig({ projDir }),
         await viteEJSConfig({ mode, projDir, srcDir, pkg, env }),
@@ -214,6 +214,14 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
                   ssr: {
                       target: ['cfw'].includes(targetEnv) ? 'webworker' : 'node',
                       ...(['cfw'].includes(targetEnv) ? { noExternal: true } : {}),
+                  },
+              }
+            : {}),
+        ...('dev' === mode && ['spa', 'mpa'].includes(appType)
+            ? {
+                  optimizeDeps: {
+                      // Required by prefresh; {@see https://o5p.me/WmuefH}.
+                      include: ['preact', 'preact/hooks', 'preact/compat'],
                   },
               }
             : {}),
