@@ -45,8 +45,8 @@ export default async () => {
         include: [
             '**/*.' +
                 extensions.asBracedGlob([
-                    ...extensions.byDevGroup.allJavaScript, //
-                    ...extensions.byDevGroup.allTypeScript,
+                    ...extensions.byDevGroup.allJavaScriptReact, //
+                    ...extensions.byDevGroup.allTypeScriptReact,
                 ]),
         ],
     });

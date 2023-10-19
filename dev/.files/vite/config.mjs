@@ -127,8 +127,9 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
     const peerDepKeys = Object.keys(pkg.peerDependencies || {});
     const targetEnvIsServer = ['cfw', 'node'].includes(targetEnv);
     const minifyEnable = 'dev' !== mode && !['lib'].includes(appType);
-    const vitestSandboxEnable = $str.parseValue(String(process.env.VITEST_SANDBOX_ENABLE || ''));
-    const vitestExamplesEnable = $str.parseValue(String(process.env.VITEST_EXAMPLES_ENABLE || ''));
+    const vitestSandboxEnable = process.env.VITEST && $str.parseValue(String(process.env.VITEST_SANDBOX_ENABLE || ''));
+    const vitestExamplesEnable = process.env.VITEST && $str.parseValue(String(process.env.VITEST_EXAMPLES_ENABLE || ''));
+    const prefreshEnable = 'serve' === command && 'dev' === mode && ['spa', 'mpa'].includes(appType) && !process.env.VITEST;
 
     /**
      * Validates all of the above.
@@ -167,7 +168,6 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
      * Configures plugins for Vite.
      */
     const plugins = [
-        await vitePrefreshConfig({}),
         await viteIconsConfig({}),
         await viteMDXConfig({ projDir }),
         await viteEJSConfig({ mode, projDir, srcDir, pkg, env }),
@@ -176,6 +176,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
             mode, command, isSSRBuild, projDir, distDir,
             pkg, env, appType, targetEnv, staticDefs, pkgUpdates
         }), // prettier-ignore
+        ...(prefreshEnable ? [await vitePrefreshConfig({})] : []),
     ];
 
     /**
@@ -246,7 +247,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
         optimizeDeps: {
             force: true, // Don’t use cache for optimized deps; recreate.
             // Preact is required by prefresh plugin; {@see https://o5p.me/WmuefH}.
-            ...(['spa', 'mpa'].includes(appType) ? { include: ['preact', 'preact/hooks', 'preact/compat'] } : {}),
+            ...(prefreshEnable ? { include: ['preact', 'preact/hooks', 'preact/compat'] } : {}),
         },
         esbuild: esbuildConfig, // esBuild config options.
 
