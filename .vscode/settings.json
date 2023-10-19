@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Thu, Oct 19, 2023, 10:44:45 AM EDT.
+ * Last generated using `./settings.mjs` Thu, Oct 19, 2023, 2:06:10 PM EDT.
  */
 {
     "editor.formatOnType": false,
@@ -77,12 +77,6 @@
         "**/src/cargo/_routes.{json,×××××××}": "jsonc"
     },
     "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/Thumbs.db": true,
         "**/._*": true,
         "**/.~*": true,
         "**/.idea": true,
@@ -103,16 +97,21 @@
         "**/.docker": true,
         "**/.vagrant": true,
         "**/.elasticbeanstalk": true,
+        "**/.git": true,
+        "**/.svn": true,
         "**/_svn": true,
         "**/.svnignore": true,
         "**/.bzr": true,
         "**/.bzrignore": true,
+        "**/.hg": true,
         "**/.hgignore": true,
+        "**/Thumbs.db": true,
         "**/ehthumbs.db": true,
         "**/Desktop.ini": true,
         "**/$RECYCLE.BIN": true,
         "**/Icon": true,
         "**/*.icloud": true,
+        "**/.DS_Store": true,
         "**/.disk_label": true,
         "**/.LSOverride": true,
         "**/.VolumeIcon.icns": true,
