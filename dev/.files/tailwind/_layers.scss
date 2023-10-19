@@ -48,7 +48,7 @@ $google-fonts: (
         }
     }
 
-    #header {
+    .basic-header {
         @apply bg-color-header text-color-header-fg;
 
         :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
@@ -60,7 +60,7 @@ $google-fonts: (
         }
     }
 
-    #sidebar {
+    .basic-sidebar {
         @apply bg-color-sidebar text-color-sidebar-fg;
 
         :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
@@ -72,7 +72,7 @@ $google-fonts: (
         }
     }
 
-    #footer {
+    .basic-footer {
         @apply bg-color-footer text-color-footer-fg;
 
         :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
