@@ -247,7 +247,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
         optimizeDeps: {
             force: true, // Don’t use cache for optimized deps; recreate.
             // Preact is required by prefresh plugin; {@see https://o5p.me/WmuefH}.
-            ...(prefreshEnable ? { include: ['preact', 'preact/hooks', 'preact/compat'] } : {}),
+            ...(prefreshEnable ? { include: ['preact', 'preact/hooks', 'preact/compat', '@preact/signals'] } : {}),
         },
         esbuild: esbuildConfig, // esBuild config options.
 
