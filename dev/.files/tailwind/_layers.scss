@@ -33,10 +33,10 @@ $google-fonts: (
 @layer base {
     html {
         @apply text-base;
-        @apply bg-color text-color-fg;
+        @apply bg-color-basic text-color-basic-fg;
 
         :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
-            @apply text-color-link/80 no-underline hover:text-color-link;
+            @apply text-color-basic-link/80 hover:text-color-basic-link no-underline;
 
             &:hover {
                 @apply underline;
@@ -44,7 +44,7 @@ $google-fonts: (
         }
 
         :where(h1, h2, h3, h4, h5, h6):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
-            @apply text-color-heading;
+            @apply text-color-basic-heading;
         }
     }
 
