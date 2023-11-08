@@ -17,7 +17,7 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Tue, Nov 7, 2023, 8:31:30 PM EST.
+# Last generated Wed, Nov 8, 2023, 3:06:34 AM EST.
 
 [production]
 last 1 chrome versions
@@ -25,7 +25,7 @@ node >= 20.9.0
 and_chr >= 92
 chrome >= 92
 and_ff >= 90
-android >= 118
+android >= 119
 edge >= 92
 samsung >= 16.0
 safari >= 15.4
@@ -50,7 +50,7 @@ node >= 20.9.0
 and_chr >= 92
 chrome >= 92
 and_ff >= 90
-android >= 118
+android >= 119
 edge >= 92
 samsung >= 16.0
 safari >= 15.4
@@ -85,7 +85,7 @@ not dead
 and_chr >= 92
 chrome >= 92
 and_ff >= 90
-android >= 118
+android >= 119
 edge >= 92
 samsung >= 16.0
 safari >= 15.4
@@ -108,7 +108,7 @@ not dead
 and_chr >= 92
 chrome >= 92
 and_ff >= 90
-android >= 118
+android >= 119
 edge >= 92
 samsung >= 16.0
 safari >= 15.4
