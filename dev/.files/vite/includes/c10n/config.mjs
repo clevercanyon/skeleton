@@ -13,7 +13,7 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { $http as $cfpꓺhttp } from '../../../../../node_modules/@clevercanyon/utilities.cfp/dist/index.js';
 import { $chalk, $fs, $glob } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $obp, $preact, $str } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $mm, $obp, $preact, $str } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import { StandAlone as StandAlone404 } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/components/404.js';
 import exclusions from '../../../bin/includes/exclusions.mjs';
 import extensions from '../../../bin/includes/extensions.mjs';
@@ -86,7 +86,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                         if (
                             // These things we expect to prune regularly.
                             // Anything else warrants more attention (see below).
-                            $str.matches(
+                            $mm.test(
                                 projRelPath,
                                 [
                                     ...exclusions.devIgnores, //
