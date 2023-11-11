@@ -24,7 +24,7 @@ export default async (/* {} */) => {
              * If `moduleSideEffects` is set to `false` and no other module imports anything from the module, then the
              * module will not be included even if the module would have side effects; {@see https://o5p.me/EcB2d6}.
              */
-            if (/\b@preact\/signals(?:-core)?\b/iu.test(id)) {
+            if (/@preact\/signals(?:-core)?\b/iu.test(id)) {
                 return { moduleSideEffects: false };
             }
             return null; // No transform.
