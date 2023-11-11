@@ -8,13 +8,13 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
-import { $http as $cfpꓺhttp } from '@clevercanyon/utilities.cfp/dist/index.js';
-import { $chalk, $fs, $glob } from '@clevercanyon/utilities.node/dist/index.js';
-import { $mm, $obp, $preact, $str } from '@clevercanyon/utilities/dist/index.js';
-import { StandAlone as StandAlone404 } from '@clevercanyon/utilities/dist/preact/components/404.js';
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import { $http as $cfpꓺhttp } from '../../../../../node_modules/@clevercanyon/utilities.cfp/dist/index.js';
+import { $chalk, $fs, $glob } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
+import { $mm, $obp, $preact, $str } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { StandAlone as StandAlone404 } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/components/404.js';
 import exclusions from '../../../bin/includes/exclusions.mjs';
 import extensions from '../../../bin/includes/extensions.mjs';
 import u from '../../../bin/includes/utilities.mjs';

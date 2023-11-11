@@ -18,12 +18,13 @@
 export default async (/* {} */) => {
     return {
         name: 'vite-plugin-c10n-transforms',
-        async transform(unusedꓺ, id) {
+
+        async transform(/* Rollup hook. */ unusedꓺ, id) {
             /**
              * If `moduleSideEffects` is set to `false` and no other module imports anything from the module, then the
              * module will not be included even if the module would have side effects; {@see https://o5p.me/EcB2d6}.
              */
-            if (/\b@preact\/signals\b/iu.test(id)) {
+            if (/\b@preact\/signals(?:-core)?\b/iu.test(id)) {
                 return { moduleSideEffects: false };
             }
             return null; // No transform.
