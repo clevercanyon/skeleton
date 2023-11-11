@@ -85,7 +85,7 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
         ['$$__' + appEnvPrefixes[0] + 'PKG_REPOSITORY__$$']: pkg.repository || '',
         ['$$__' + appEnvPrefixes[0] + 'PKG_HOMEPAGE__$$']: pkg.homepage || '',
         ['$$__' + appEnvPrefixes[0] + 'PKG_BUGS__$$']: pkg.bugs || '',
-        ['$$__' + appEnvPrefixes[0] + 'BUILD_TIME_YMD__$$']: $time.parse('now').toSQLDate() || '',
+        ['$$__' + appEnvPrefixes[0] + 'BUILD_TIME_YMD__$$']: $time.now().toYMD() || '',
     };
     Object.keys(env) // Add string env vars to static defines.
         .filter((key) => new RegExp('^(?:' + appEnvPrefixes.map((v) => $str.escRegExp(v)).join('|') + ')', 'u').test(key))
