@@ -53,7 +53,7 @@
     "peerDependenciesMeta": {},
     "bundleDependencies": [],
     "devDependencies": {
-        "@clevercanyon/dev-deps": "^1.0.256"
+        "@clevercanyon/dev-deps": "^1.0.257"
     },
     "overrides": {},
     "cpu": [
