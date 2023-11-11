@@ -268,7 +268,8 @@ export default async ({ mode, command, ssrBuild: isSSRBuild }) => {
             sourcemap: 'dev' === mode, // Enables creation of sourcemaps (for debugging).
 
             minify: minifyEnable ? 'esbuild' : false, // {@see https://o5p.me/pkJ5Xz}.
-            cssMinify: minifyEnable ? 'esbuild' : false, // {@see https://o5p.me/pkJ5Xz}.
+            cssMinify: false, // We use Tailwind + cssnano, which does better than `esbuild` can.
+            // CSSnano is the minifier recommended by Tailwind, so we prefer it for that reason also.
 
             modulePreload: false, // Disable. DOM injections conflict with our SPAs.
 
