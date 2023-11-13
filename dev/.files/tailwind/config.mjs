@@ -85,6 +85,13 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             container: { center: true }, // No need for `mx-auto` on each container.
 
             extend: {
+                maxWidth: {
+                    '1/4': '25%',
+                    '1/2': '50%',
+                    '3/4': '75%',
+                    '1/3': '33.333%',
+                    '2/3': '66.667%',
+                },
                 typography: {
                     // This makes `<code>` appear almost the same as `<kbd>`.
                     sm: { css: { 'code': { ...pluginTypographyStyles.sm.css[0]['kbd'] } } },
