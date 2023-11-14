@@ -102,6 +102,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
                     DEFAULT: {
                         css: {
+                            maxWidth: null, // No max width.
+
                             // Prose link underline on hover only.
                             'a': {
                                 textDecoration: 'none',
@@ -109,7 +111,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             'a:hover': {
                                 textDecoration: 'underline',
                             },
-                            // This makes `<code>` appear almost the same as `<kbd>`.
+                            // `<code>` to appear almost the same as `<kbd>`.
                             'code::before': null, // Gets rid of '`' backtick.
                             'code::after': null, // Gets rid of '`' backtick.
                             'code': {
