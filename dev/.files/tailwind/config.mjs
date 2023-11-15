@@ -120,8 +120,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%)',
                             },
                             'mark': {
-                                color: 'rgb(var(--colors-color-hilite-fg) / 1)',
-                                backgroundColor: 'rgb(var(--colors-color-hilite) / 1)',
+                                color: 'rgb(var(--colors-color-hilite-fg))',
+                                backgroundColor: 'rgb(var(--colors-color-hilite))',
                             },
                         },
                     },
