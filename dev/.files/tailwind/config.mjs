@@ -119,6 +119,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 borderRadius: '0.188rem', // Equivalent to 3px.
                                 boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%)',
                             },
+                            'mark': {
+                                color: '--colors-color-hilite-fg',
+                                backgroundColor: '--colors-color-hilite',
+                            },
                         },
                     },
                 },
