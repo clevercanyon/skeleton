@@ -93,27 +93,63 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '2/3': '66.667%',
                 },
                 typography: {
-                    // This makes `<code>` appear almost the same as `<kbd>`.
-                    sm: { css: { 'code': { ...pluginTypographyStyles.sm.css[0]['kbd'] } } },
-                    base: { css: { 'code': { ...pluginTypographyStyles.base.css[0]['kbd'] } } },
-                    lg: { css: { 'code': { ...pluginTypographyStyles.lg.css[0]['kbd'] } } },
-                    xl: { css: { 'code': { ...pluginTypographyStyles.xl.css[0]['kbd'] } } },
-                    '2xl': { css: { 'code': { ...pluginTypographyStyles['2xl'].css[0]['kbd'] } } },
-
+                    sm: {
+                        css: {
+                            'hr': {
+                                marginTop: '1.5em',
+                                marginBottom: '1.5em',
+                            },
+                            'code': { ...pluginTypographyStyles.sm.css[0]['kbd'] },
+                        },
+                    },
+                    base: {
+                        css: {
+                            'hr': {
+                                marginTop: '1.5em',
+                                marginBottom: '1.5em',
+                            },
+                            'code': { ...pluginTypographyStyles.base.css[0]['kbd'] },
+                        },
+                    },
+                    lg: {
+                        css: {
+                            'hr': {
+                                marginTop: '1.5em',
+                                marginBottom: '1.5em',
+                            },
+                            'code': { ...pluginTypographyStyles.lg.css[0]['kbd'] },
+                        },
+                    },
+                    xl: {
+                        css: {
+                            'hr': {
+                                marginTop: '1.5em',
+                                marginBottom: '1.5em',
+                            },
+                            'code': { ...pluginTypographyStyles.xl.css[0]['kbd'] },
+                        },
+                    },
+                    '2xl': {
+                        css: {
+                            'hr': {
+                                marginTop: '1.5em',
+                                marginBottom: '1.5em',
+                            },
+                            'code': { ...pluginTypographyStyles['2xl'].css[0]['kbd'] },
+                        },
+                    },
                     DEFAULT: {
                         css: {
                             maxWidth: null, // No max width.
 
-                            // Prose link underline on hover only.
                             'a': {
                                 textDecoration: 'none',
                             },
                             'a:hover': {
                                 textDecoration: 'underline',
                             },
-                            // `<code>` to appear almost the same as `<kbd>`.
-                            'code::before': null, // Gets rid of '`' backtick.
-                            'code::after': null, // Gets rid of '`' backtick.
+                            'code::before': null, // No '`' backtick.
+                            'code::after': null, // No '`' backtick.
                             'code': {
                                 ...pluginTypographyStyles.base.css[0]['kbd'],
                                 borderRadius: '0.188rem', // Equivalent to 3px.
