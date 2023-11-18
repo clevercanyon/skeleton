@@ -93,51 +93,6 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '2/3': '66.667%',
                 },
                 typography: {
-                    sm: {
-                        css: {
-                            'hr': {
-                                marginTop: '1.5em',
-                                marginBottom: '1.5em',
-                            },
-                            'code': { ...pluginTypographyStyles.sm.css[0]['kbd'] },
-                        },
-                    },
-                    base: {
-                        css: {
-                            'hr': {
-                                marginTop: '1.5em',
-                                marginBottom: '1.5em',
-                            },
-                            'code': { ...pluginTypographyStyles.base.css[0]['kbd'] },
-                        },
-                    },
-                    lg: {
-                        css: {
-                            'hr': {
-                                marginTop: '1.5em',
-                                marginBottom: '1.5em',
-                            },
-                            'code': { ...pluginTypographyStyles.lg.css[0]['kbd'] },
-                        },
-                    },
-                    xl: {
-                        css: {
-                            'hr': {
-                                marginTop: '1.5em',
-                                marginBottom: '1.5em',
-                            },
-                            'code': { ...pluginTypographyStyles.xl.css[0]['kbd'] },
-                        },
-                    },
-                    '2xl': {
-                        css: {
-                            'hr': {
-                                marginTop: '1.5em',
-                                marginBottom: '1.5em',
-                            },
-                            'code': { ...pluginTypographyStyles['2xl'].css[0]['kbd'] },
-                        },
-                    },
                     DEFAULT: {
                         css: {
                             maxWidth: null, // No max width.
@@ -147,6 +102,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             },
                             'a:hover': {
                                 textDecoration: 'underline',
+                            },
+                            'hr': {
+                                marginTop: '1.5em',
+                                marginBottom: '1.5em',
                             },
                             'code::before': null, // No '`' backtick.
                             'code::after': null, // No '`' backtick.
