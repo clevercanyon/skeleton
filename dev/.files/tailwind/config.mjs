@@ -109,7 +109,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             },
                             'code::before': null, // No '`' backtick.
                             'code::after': null, // No '`' backtick.
-                            'code': {
+                            'code:not(:where(pre code))': {
                                 ...pluginTypographyStyles.base.css[0]['kbd'],
                                 borderRadius: '0.188rem', // Equivalent to 3px.
                                 boxShadow: '0 0 0 1px rgb(var(--tw-prose-code-shadows) / 10%)',
