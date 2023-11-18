@@ -133,10 +133,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-header-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-link'], 0.015),
             'color-header-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-heading'], 0.015),
 
-            'color-sidebar': $color[basicBGIsDark ? 'lighten' : 'darken'](basicColors['color-basic'], 0.05),
-            'color-sidebar-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-fg'], 0.225),
-            'color-sidebar-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-link'], 0.05),
-            'color-sidebar-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-heading'], 0.225),
+            'color-sidebar': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic'], 0.015),
+            'color-sidebar-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-fg'], 0.015),
+            'color-sidebar-link': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-link'], 0.015),
+            'color-sidebar-heading': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-heading'], 0.015),
 
             'color-footer': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic'], 0.015),
             'color-footer-fg': $color[basicBGIsDark ? 'darken' : 'lighten'](basicColors['color-basic-fg'], 0.015),
