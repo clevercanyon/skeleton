@@ -238,14 +238,11 @@ const baseConfigThemes = /* not async compatible */ () => {
                     'sans-serif',
                 ],
                 serif: [
-                    'Palatino', //
-                    '"Palatino Linotype"',
-                    'ui-serif',
+                    'ui-serif', //
                     'serif',
                 ],
                 mono: [
-                    '"Operator Mono"', //
-                    'ui-monospace',
+                    'ui-monospace', //
                     'monospace',
                 ],
             },
