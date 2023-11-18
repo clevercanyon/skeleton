@@ -91,7 +91,6 @@ export default async () => {
                 'vite/client', //
                 '@types/mdx',
                 'unplugin-icons/types/preact',
-                '@types/cloudflare-turnstile',
             ],
             jsx: 'react-jsx',
             jsxImportSource: 'preact',
