@@ -18,7 +18,6 @@ Example `index.scss` starter file contents:
 @use '../dev/.files/tailwind/layers';
 -------------------------------------------------------------------------------------------------------------------- */
 
-import pluginForms from '@tailwindcss/forms';
 import pluginTypography from '@tailwindcss/typography';
 import pluginTypographyStyles from '@tailwindcss/typography/src/styles.js';
 import fs from 'node:fs';
@@ -139,7 +138,6 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         },
         plugins: [
             pluginTypography({ className: 'prose' }), // Implements `prose` class.
-            pluginForms({ strategy: 'class' }), // Implements form classes; e.g., `form-{class}`.
             pluginThemer(mergeThemesConfig({ themesConfig })), // Implements themes configuration.
         ],
         content: [
