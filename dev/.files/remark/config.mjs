@@ -52,7 +52,7 @@ export default async () => {
             presetLintRecommended, // Linting basics.
             presetPrettier, // Removes conflicting lint rules.
 
-            pluginFrontmatter, // YAML properties.
+            pluginFrontmatter, // Frontmatter.
             pluginGFM, // GitHub-flavored markdown features.
             pluginSmartyPants, // (em dash) `--` to `—`, quotes, etc.
             [pluginOembed, { syncWidget: true }], // oEmbeds for markdown.
@@ -63,9 +63,9 @@ export default async () => {
             // Also, because the oEmbed plugin explicitly allows this.
             ['remark-lint-no-literal-urls', false],
         ],
-        tsconfigMDX: {
+        vsCodeTSConfigMDX: {
             plugins: [
-                'remark-frontmatter', // YAML properties.
+                'remark-frontmatter', // Frontmatter.
                 'remark-gfm', // GitHub-flavored markdown features.
                 'remark-smartypants', // (em dash) `--` to `—`, quotes, etc.
                 ['remark-oembed', { syncWidget: true }], // oEmbeds for markdown.

@@ -26,7 +26,8 @@ export default async () => {
         mdxExtensions: [...extensions.byVSCodeLang.mdx],
 
         remarkPlugins: [
-            (await import('remark-frontmatter')).default, // YAML properties.
+            (await import('remark-frontmatter')).default, // Frontmatter.
+            [(await import('remark-mdx-frontmatter')).default, { name: 'matter' }],
             (await import('remark-gfm')).default, // GitHub-flavored markdown syntax.
             (await import('remark-smartypants')).default, // (em dash) `--` to `—`, quotes, etc.
             [(await import('remark-oembed')).default, { syncWidget: true, jsx: true }], // oEmbeds for markdown.
