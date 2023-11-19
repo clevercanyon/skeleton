@@ -108,7 +108,7 @@ export default async () => {
             paths: relativeImportAliases, // Relative to `baseUrl`.
         },
         // This is needed by the VSCode extension for MDX.
-        mdx: (await import(path.resolve(projDir, './mdx.config.mjs'))).default.vsCodeTSConfig,
+        mdx: (await (await import(path.resolve(projDir, './mdx.config.mjs'))).default()).vsCodeTSConfig,
     };
 
     /**
