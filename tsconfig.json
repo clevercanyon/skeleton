@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Nov 19, 2023 5:33 PM UTC.
+ * Last generated using `./tsconfig.mjs` Nov 19, 2023 5:38 PM UTC.
  */
 {
     "include": ["./src/**/*", "./dev-types.d.ts"],
@@ -130,7 +130,7 @@
             [
                 "remark-mdx-frontmatter",
                 {
-                    "name": "meta"
+                    "name": "frontMatter"
                 }
             ],
             "remark-gfm",
