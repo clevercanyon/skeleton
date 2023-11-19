@@ -11,9 +11,7 @@
     "homepage": "https://github.com/clevercanyon/skeleton#readme",
     "bugs": "https://github.com/clevercanyon/skeleton/issues",
     "funding": "https://github.com/sponsors/clevercanyon",
-    "keywords": [
-        "clevercanyon"
-    ],
+    "keywords": ["clevercanyon"],
     "author": {
         "name": "Clever Canyon",
         "url": "https://clevercanyon.com"
@@ -29,10 +27,7 @@
             "default": "./dist/index.js"
         }
     },
-    "sideEffects": [
-        "**/*.{css,scss,less}",
-        "./src/resources/init.ts"
-    ],
+    "sideEffects": ["**/*.{css,scss,less}", "./src/resources/init.ts"],
     "module": "./dist/index.js",
     "main": "./dist/index.js",
     "browser": "",
@@ -40,9 +35,7 @@
     "types": "./dist/types/index.d.ts",
     "typesVersions": {
         ">=3.1": {
-            "./*": [
-                "./dist/types/*"
-            ]
+            "./*": ["./dist/types/*"]
         }
     },
     "dependencies": {
@@ -50,20 +43,16 @@
         "react": "npm:@preact/compat@^17.1.2",
         "react-dom": "npm:@preact/compat@^17.1.2"
     },
+    "peerDependencies": {},
     "peerDependenciesMeta": {},
+    "optionalDependencies": {},
     "bundleDependencies": [],
     "devDependencies": {
         "@clevercanyon/dev-deps": "^1.0.268"
     },
     "overrides": {},
-    "cpu": [
-        "x64",
-        "arm64"
-    ],
-    "os": [
-        "darwin",
-        "linux"
-    ],
+    "cpu": ["x64", "arm64"],
+    "os": ["darwin", "linux"],
     "engines": {
         "node": "^20.5.0 || ^20.9.0",
         "npm": "^9.8.0 || ^10.1.0"
