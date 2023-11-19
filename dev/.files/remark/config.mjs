@@ -63,15 +63,5 @@ export default async () => {
             // Also, because the oEmbed plugin explicitly allows this.
             ['remark-lint-no-literal-urls', false],
         ],
-        vsCodeTSConfigMDX: {
-            plugins: [
-                'remark-frontmatter', // Frontmatter.
-                'remark-gfm', // GitHub-flavored markdown features.
-                'remark-smartypants', // (em dash) `--` to `—`, quotes, etc.
-                ['remark-oembed', { syncWidget: true }], // oEmbeds for markdown.
-                'remark-mermaidjs', // Charting and diagramming; {@see https://o5p.me/5z7Yrt}.
-                'remark-directive', // Custom directives; {@see https://o5p.me/0fakce}.
-            ],
-        },
     };
 };
