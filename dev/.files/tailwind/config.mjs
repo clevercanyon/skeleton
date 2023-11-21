@@ -117,6 +117,42 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 color: 'rgb(var(--colors-color-hilite-fg))',
                                 backgroundColor: 'rgb(var(--colors-color-hilite))',
                             },
+                            '.contains-task-list, .task-list-item': {
+                                paddingLeft: '0',
+                                listStyleType: 'none',
+                            },
+                            '.contains-task-list .contains-task-list': {
+                                margin: '0',
+                                paddingLeft: '1.5em',
+                            },
+                            '.task-list-item::marker': {
+                                content: "''",
+                            },
+                            '.task-list-item > input[type=checkbox]': {
+                                appearance: 'none',
+                                position: 'relative',
+                                display: 'inline-block',
+
+                                width: '1em',
+                                height: '1em',
+                                margin: '0 .5em 0 0',
+                                verticalAlign: 'middle',
+
+                                background: 'rgb(var(--colors-color-neutral))',
+                                border: '1px solid rgb(var(--colors-color-neutral-fg), .25)',
+                                borderRadius: '.15em',
+                            },
+                            '.task-list-item > input[type=checkbox]:checked::before': {
+                                content: "'\\2713'",
+
+                                fontSize: '1em',
+                                lineHeight: '1em',
+                                color: 'rgb(var(--colors-color-neutral-fg))',
+
+                                top: '-.05em',
+                                left: '.1em',
+                                position: 'absolute',
+                            },
                         },
                     },
                 },
