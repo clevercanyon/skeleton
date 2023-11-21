@@ -10,7 +10,7 @@
  * @see https://www.npmjs.com/package/@mdx-js/rollup
  */
 
-import config from './config.mjs';
+import { config } from './config.mjs';
 
 /**
  * Configures MDX for esBuild dependency optimization.
