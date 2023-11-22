@@ -178,6 +178,13 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 left: '.1em',
                                 position: 'absolute',
                             },
+                            // Footnotes produced by remark GFM plugin.
+                            '.footnotes': {
+                                borderTop: '1px solid rgb(var(--colors-color-prose-hr))',
+                                marginTop: '1.5em',
+                                fontSize: '0.875rem',
+                                lineHeight: '1.25rem',
+                            },
                         },
                     },
                 },

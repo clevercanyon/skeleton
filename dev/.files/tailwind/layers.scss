@@ -4,11 +4,16 @@
 @charset "UTF-8"; // Must use double quotes.
 
 /**
- * Default settings.
+ * Defaults.
  */
 $google-fonts: (
     'Georama': 'ital,wght@0,100..900;1,100..900',
 ) !default;
+
+/**
+ * Various mixins.
+ */
+@use './mixins/starry-night';
 
 /**
  * Google fonts.
@@ -24,6 +29,7 @@ $google-fonts: (
  */
 @tailwind base;
 @tailwind components;
+@include starry-night.mdx-styles;
 @tailwind utilities;
 @tailwind variants;
 
@@ -83,11 +89,4 @@ $google-fonts: (
             @apply text-color-footer-heading;
         }
     }
-}
-
-/**
- * Our components layer.
- */
-@layer components {
-    @use './partials/starry-night.scss';
 }
