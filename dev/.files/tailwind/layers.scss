@@ -84,3 +84,10 @@ $google-fonts: (
         }
     }
 }
+
+/**
+ * Our components layer.
+ */
+@layer components {
+    @use './partials/starry-night.scss';
+}
