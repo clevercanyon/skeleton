@@ -17,10 +17,9 @@
 # Generated data.
 # <generated:start>
 
-# Last generated Nov 22, 2023 11:11 PM UTC.
+# Last generated Nov 22, 2023 11:13 PM UTC.
 
 [production]
-last 1 chrome versions
 node >= 20.9.0
 and_chr >= 92
 chrome >= 92
@@ -45,7 +44,6 @@ unreleased firefox versions
 not dead
 
 [development]
-last 1 chrome versions
 node >= 20.9.0
 and_chr >= 92
 chrome >= 92
@@ -70,7 +68,6 @@ unreleased firefox versions
 not dead
 
 [any]
-last 1 chrome versions
 node >= 20.9.0
 and_chr >= 92
 chrome >= 92
