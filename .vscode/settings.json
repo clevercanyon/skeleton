@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Nov 22, 2023 5:20 AM UTC.
+ * Last generated using `./settings.mjs` Nov 22, 2023 8:30 AM UTC.
  */
 {
     "editor.formatOnType": false,
@@ -283,11 +283,14 @@
     "markdown.preview.lineHeight": 1.5,
     "markdown.preview.typographer": true,
     "markdown.preview.fontFamily": "Georama, ui-sans-serif, sans-serif",
+    "markdown.validate.enabled": false,
+    "mdx.server.enable": false,
     "prettier.ignorePath": ".prettierignore",
     "evenBetterToml.formatter.indentString": "    ",
     "[mdx]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": false,
         "editor.wordWrap": "on",
         "editor.codeActionsOnSave": {
             "source.fixAll": true
@@ -297,6 +300,7 @@
     "[markdown]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
+        "files.trimTrailingWhitespace": false,
         "editor.wordWrap": "on",
         "editor.codeActionsOnSave": {
             "source.fixAll": true
