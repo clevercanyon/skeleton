@@ -53,7 +53,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
      *
      * @note The `APP_` prefix ensures Vite picks this up and adds it to app builds.
      *       This can be useful, as it allows us to detect, within our app,
-     *       whether the Vite dev server is running our app.
+     *       whether the Vite dev server is currently running.
      */
     process.env.APP_IS_VITE = command + '=' + mode;
 
