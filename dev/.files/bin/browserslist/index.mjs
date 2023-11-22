@@ -44,16 +44,6 @@ export default async ({ projDir }) => {
             case 'production':
             case 'development':
             case 'any':
-            case 'cfw':
-            case 'cfp': {
-                browserslistrcFileContentsEnvs += '\n' + 'last 1 chrome versions';
-                break;
-            }
-        }
-        switch (targetEnv) {
-            case 'production':
-            case 'development':
-            case 'any':
             case 'node': {
                 browserslistrcFileContentsEnvs += '\n' + 'node >= ' + nodeVersion.current;
                 break;
@@ -66,6 +56,13 @@ export default async ({ projDir }) => {
             case 'web':
             case 'webw': {
                 browserslistrcFileContentsEnvs += '\n' + browsersWithSupportForEcmaVersion(esVersion.lcnYear).join('\n');
+                break;
+            }
+        }
+        switch (targetEnv) {
+            case 'cfw':
+            case 'cfp': {
+                browserslistrcFileContentsEnvs += '\n' + 'last 1 chrome versions';
                 break;
             }
         }
