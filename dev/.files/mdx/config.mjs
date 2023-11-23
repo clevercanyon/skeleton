@@ -10,6 +10,7 @@
  * @see https://mdxjs.com/packages/mdx/#api
  */
 
+import { visit as unistVisit } from 'unist-util-visit';
 import extensions from '../bin/includes/extensions.mjs';
 
 /**
@@ -33,7 +34,19 @@ export default async () => {
             (await import('remark-mermaidjs')).default, // Charting and diagramming; {@see https://o5p.me/5z7Yrt}.
             (await import('remark-directive')).default, // Custom directives; {@see https://o5p.me/0fakce}.
         ],
-        rehypePlugins: [(await import('@microflash/rehype-starry-night')).default], // Syntax highlighting.
+        rehypePlugins: [
+            (await import('@microflash/rehype-starry-night')).default,
+            (/* Modifies hash-only anchors in support of `<base href>`. */) => {
+                return (tree) => {
+                    unistVisit(tree, 'element', (node) => {
+                        if ('a' === node.tagName && node.properties.href.startsWith('#')) {
+                            node.properties.href = './' + node.properties.href;
+                        }
+                        return node;
+                    });
+                };
+            },
+        ], // Syntax highlighting.
 
         vsCodeTSConfig: {
             plugins: [
