@@ -34,7 +34,7 @@ export default async () => {
             closeAtx: false,
             emphasis: '_',
             fence: '`',
-            fences: true,
+            fences: false,
             incrementListMarker: true,
             listItemIndent: 'mixed',
             quote: '"',

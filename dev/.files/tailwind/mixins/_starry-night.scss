@@ -1,161 +1,78 @@
 /**
- * Starry night MDX styles.
+ * Starry night styles.
  */
-@mixin mdx-styles {
+@mixin styles {
     /*
-     * Syntax theme; {@see https://o5p.me/i6E6m1}.
+     * Colors.
      */
     :root {
-        --color-prettylights-syntax-comment: #8b949e;
-        --color-prettylights-syntax-constant: #79c0ff;
-        --color-prettylights-syntax-entity: #d2a8ff;
-        --color-prettylights-syntax-storage-modifier-import: #c9d1d9;
-        --color-prettylights-syntax-entity-tag: #7ee787;
-        --color-prettylights-syntax-keyword: #ff7b72;
-        --color-prettylights-syntax-string: #a5d6ff;
-        --color-prettylights-syntax-variable: #ffa657;
-        --color-prettylights-syntax-brackethighlighter-unmatched: #f85149;
-        --color-prettylights-syntax-invalid-illegal-text: #f0f6fc;
-        --color-prettylights-syntax-invalid-illegal-bg: #8e1519;
-        --color-prettylights-syntax-carriage-return-text: #f0f6fc;
-        --color-prettylights-syntax-carriage-return-bg: #b62324;
-        --color-prettylights-syntax-string-regexp: #7ee787;
-        --color-prettylights-syntax-markup-list: #f2cc60;
-        --color-prettylights-syntax-markup-heading: #1f6feb;
-        --color-prettylights-syntax-markup-italic: #c9d1d9;
-        --color-prettylights-syntax-markup-bold: #c9d1d9;
-        --color-prettylights-syntax-markup-deleted-text: #ffdcd7;
-        --color-prettylights-syntax-markup-deleted-bg: #67060c;
-        --color-prettylights-syntax-markup-inserted-text: #aff5b4;
-        --color-prettylights-syntax-markup-inserted-bg: #033a16;
-        --color-prettylights-syntax-markup-changed-text: #ffdfb6;
-        --color-prettylights-syntax-markup-changed-bg: #5a1e02;
-        --color-prettylights-syntax-markup-ignored-text: #c9d1d9;
-        --color-prettylights-syntax-markup-ignored-bg: #1158c7;
-        --color-prettylights-syntax-meta-diff-range: #d2a8ff;
-        --color-prettylights-syntax-brackethighlighter-angle: #8b949e;
-        --color-prettylights-syntax-sublimelinter-gutter-mark: #484f58;
-        --color-prettylights-syntax-constant-other-reference-link: #a5d6ff;
-    }
+        // Highlighted bg/fg colors.
+        --color-rehype-starry-night: #080808;
+        --color-rehype-starry-night-fg: #c9c9c9;
 
-    .pl-c {
-        color: var(--color-prettylights-syntax-comment);
-    }
+        // Highlighted presentation colors.
+        --color-rehype-starry-night-border: #171f26;
+        --color-rehype-starry-night-box-shadow: #000;
+        --color-rehype-starry-night-hilited-lines: #121212;
 
-    .pl-c1,
-    .pl-s .pl-v {
-        color: var(--color-prettylights-syntax-constant);
-    }
+        // Highlighted header colors.
+        --color-rehype-starry-night-header: #000;
+        --color-rehype-starry-night-header-fg: #c9c9c9;
 
-    .pl-e,
-    .pl-en {
-        color: var(--color-prettylights-syntax-entity);
-    }
+        // Highlighted header language colors.
+        --color-rehype-starry-night-header-language: #222;
+        --color-rehype-starry-night-header-language-fg: #c9c9c9;
 
-    .pl-smi,
-    .pl-s .pl-s1 {
-        color: var(--color-prettylights-syntax-storage-modifier-import);
-    }
+        // Script comments, gutter marks, punctuation.
+        --color-pretty-lights-comment-fg: #696969; // Done.
+        --color-pretty-lights-gutter-mark-fg: #3c3c3c; // Done.
+        --color-pretty-lights-punctuation-fg: #6a6e76; // Done.
 
-    .pl-ent {
-        color: var(--color-prettylights-syntax-entity-tag);
-    }
+        // Script keywords, constants, variables, strings, etc.
+        --color-pretty-lights-keyword-fg: #6382a9; // Done.
+        --color-pretty-lights-constant-fg: #ca9d6b; // Done.
+        --color-pretty-lights-variable-fg: #be7175; // Done.
+        --color-pretty-lights-storage-fg: #be7175; // Done.
+        --color-pretty-lights-entity-fg: #ca9d6b; // Done.
+        --color-pretty-lights-entity-tag-fg: #e5c07b; // Done.
+        --color-pretty-lights-other-link-fg: #80aff9; // Done.
+        --color-pretty-lights-string-fg: #84a267; // Done.
+        --color-pretty-lights-regexp-fg: #759d6d; // Done.
 
-    .pl-k {
-        color: var(--color-prettylights-syntax-keyword);
-    }
+        // Markdown headings and operators.
+        --color-pretty-lights-md-heading-fg: rgb(var(--color-pretty-lights-entity-tag-fg));
+        --color-pretty-lights-markup-operator-fg: rgb(var(--color-pretty-lights-punctuation-fg));
 
-    .pl-s,
-    .pl-pds,
-    .pl-s .pl-pse .pl-s1,
-    .pl-sr,
-    .pl-sr .pl-cce,
-    .pl-sr .pl-sre,
-    .pl-sr .pl-sra {
-        color: var(--color-prettylights-syntax-string);
-    }
+        // Range notation in a diff/patch.
+        --color-pretty-lights-meta-diff-range-fg: rgb(var(--colors-color-dazzle));
 
-    .pl-v,
-    .pl-smw {
-        color: var(--color-prettylights-syntax-variable);
-    }
+        // Old removed lines in a diff/patch.
+        --color-pretty-lights-markup-deleted: rgb(var(--colors-color-danger));
+        --color-pretty-lights-markup-deleted-fg: rgb(var(--colors-color-danger-fg));
 
-    .pl-bu {
-        color: var(--color-prettylights-syntax-brackethighlighter-unmatched);
-    }
+        // New added lines in a diff/patch.
+        --color-pretty-lights-markup-inserted: rgb(var(--colors-color-success));
+        --color-pretty-lights-markup-inserted-fg: rgb(var(--colors-color-success-fg));
 
-    .pl-ii {
-        color: var(--color-prettylights-syntax-invalid-illegal-text);
-        background-color: var(--color-prettylights-syntax-invalid-illegal-bg);
-    }
+        // Changed lines in a diff/patch.
+        --color-pretty-lights-markup-changed: rgb(var(--colors-color-warning));
+        --color-pretty-lights-markup-changed-fg: rgb(var(--colors-color-warning-fg));
 
-    .pl-c2 {
-        color: var(--color-prettylights-syntax-carriage-return-text);
-        background-color: var(--color-prettylights-syntax-carriage-return-bg);
-    }
+        // Ignored lines in a diff/patch.
+        --color-pretty-lights-markup-ignored: rgb(var(--colors-color-neutral));
+        --color-pretty-lights-markup-ignored-fg: rgb(var(--colors-color-neutral-fg));
 
-    .pl-sr .pl-cce {
-        font-weight: bold;
-        color: var(--color-prettylights-syntax-string-regexp);
-    }
+        // Illegal, broken, or unrecognized syntax.
+        --color-pretty-lights-invalid-illegal: rgb(var(--colors-color-danger));
+        --color-pretty-lights-invalid-illegal-fg: rgb(var(--colors-color-danger-fg));
 
-    .pl-ml {
-        color: var(--color-prettylights-syntax-markup-list);
-    }
+        // Untested. Seems related to whitespace.
+        --color-pretty-lights-carriage-return: rgb(var(--colors-color-dark));
+        --color-pretty-lights-carriage-return-fg: rgb(var(--colors-color-dark-fg));
 
-    .pl-mh,
-    .pl-mh .pl-en,
-    .pl-ms {
-        font-weight: bold;
-        color: var(--color-prettylights-syntax-markup-heading);
-    }
-
-    .pl-mi {
-        font-style: italic;
-        color: var(--color-prettylights-syntax-markup-italic);
-    }
-
-    .pl-mb {
-        font-weight: bold;
-        color: var(--color-prettylights-syntax-markup-bold);
-    }
-
-    .pl-md {
-        color: var(--color-prettylights-syntax-markup-deleted-text);
-        background-color: var(--color-prettylights-syntax-markup-deleted-bg);
-    }
-
-    .pl-mi1 {
-        color: var(--color-prettylights-syntax-markup-inserted-text);
-        background-color: var(--color-prettylights-syntax-markup-inserted-bg);
-    }
-
-    .pl-mc {
-        color: var(--color-prettylights-syntax-markup-changed-text);
-        background-color: var(--color-prettylights-syntax-markup-changed-bg);
-    }
-
-    .pl-mi2 {
-        color: var(--color-prettylights-syntax-markup-ignored-text);
-        background-color: var(--color-prettylights-syntax-markup-ignored-bg);
-    }
-
-    .pl-mdr {
-        font-weight: bold;
-        color: var(--color-prettylights-syntax-meta-diff-range);
-    }
-
-    .pl-ba {
-        color: var(--color-prettylights-syntax-brackethighlighter-angle);
-    }
-
-    .pl-sg {
-        color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
-    }
-
-    .pl-corl {
-        color: var(--color-prettylights-syntax-constant-other-reference-link);
-        text-decoration: underline;
+        // Untested, seems related to HTML.
+        --color-pretty-lights-bracket-angle-fg: rgb(var(--colors-color-dazzle));
+        --color-pretty-lights-bracket-unmatched-fg: rgb(var(--colors-color-dazzle));
     }
 
     /*
@@ -163,71 +80,68 @@
      */
 
     .highlight {
-        --highlight-background-color: #050505;
-        --highlight-header-background-color: #320000;
-        --highlight-border-color: #171f26;
-        --highlight-border-radius: 0.25rem;
-        --highlight-font-mono: ui-monospace, monospace;
-        --highlight-code-highlight: #1c2226;
-
-        background: var(--highlight-background-color);
-        border: 1px solid var(--highlight-border-color);
-        border-radius: var(--highlight-border-radius);
+        overflow: hidden;
+        line-height: 1em;
+        background: var(--color-rehype-starry-night);
+        border: 1px solid var(--color-rehype-starry-night-border);
+        border-radius: 0.375rem;
     }
 
     .highlight-header {
         display: flex;
-        gap: 1ch;
+        gap: 0.5em;
         align-items: center;
-        padding: 1ch;
-        font-size: 0.8em;
-        background: var(--highlight-header-background-color);
-        border-block-end: 1px solid var(--highlight-border-color);
+        padding: 0.5em;
+        color: var(--color-rehype-starry-night-header-fg);
+        background: var(--color-rehype-starry-night-header);
+        border-block-end: 1px solid var(--color-rehype-starry-night-border);
+        border-radius: 0.375rem 0.375rem 0 0;
     }
 
     .highlight-language {
-        padding-inline: 0.75ch;
-        font-family: var(--highlight-font-mono);
-        background-color: var(--highlight-code-highlight);
-        border-radius: calc(var(--highlight-border-radius) / 1.5);
+        padding: 0.25em 0.5em 0.15em;
+        font-family: ui-monospace, monospace;
+        font-size: 0.75em;
+        color: var(--color-rehype-starry-night-header-language-fg);
+        text-transform: uppercase;
+        background: var(--color-rehype-starry-night-header-language);
+        border-radius: 0.1875rem;
     }
 
     .highlight pre {
-        padding: 1ch 0;
+        padding: 0.8571em 0;
         margin: 0;
-        overflow-x: auto;
-        background-color: transparent;
-        border: 0;
+        background: none;
         border-radius: 0;
+        box-shadow: inset 0 0 2px 2px var(--color-rehype-starry-night-box-shadow);
     }
 
     .highlight pre > code {
         display: grid;
-        padding-inline: 0;
+        color: var(--color-rehype-starry-night-fg);
     }
 
     .highlight pre .line {
-        padding-inline: 1ch;
-        border-inline-start: 2px solid transparent;
+        padding-inline: 1.1428em;
     }
 
     .highlight pre .line:focus:not(:focus-visible),
     .highlight pre .line:hover {
-        background-color: var(--highlight-code-highlight);
+        background: var(--color-rehype-starry-night-hilited-lines);
     }
 
     .highlight pre .line[data-highlighted] {
-        background-color: var(--highlight-code-highlight);
-        border-inline-start: 2px solid var(--color-prettylights-syntax-comment);
+        background: var(--color-rehype-starry-night-hilited-lines);
+        border-inline-start: 2px solid var(--color-pretty-lights-comment-fg);
     }
 
     .highlight pre .line[data-highlighted] .line-number {
-        color: var(--color-prettylights-syntax-comment);
+        color: var(--color-pretty-lights-comment-fg);
     }
 
     .highlight pre .line .line-number {
         margin-inline-end: 1em;
-        color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+        color: var(--color-pretty-lights-gutter-mark-fg);
         user-select: none;
     }
 
@@ -235,14 +149,138 @@
         display: inline-block;
         width: 1em;
         height: 1em;
-        margin-inline-end: 1ch;
-        text-decoration: none;
+        margin-inline: -0.175em 0.35em;
         vertical-align: middle;
         content: '';
-        background-color: var(--color-prettylights-syntax-sublimelinter-gutter-mark);
+        background: var(--color-pretty-lights-comment-fg);
         mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' fill-rule='evenodd' clip-rule='evenodd' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.179 5.597C13.491 3.081 5.957 3.057 6.344 8.186c.399 5.287 11.204 1.813 11.566 7.102.369 5.375-8 5.71-11.832 2.666M12.017 2v20'/%3E%3C/svg%3E");
         mask-repeat: no-repeat;
         mask-position: top center;
         mask-size: contain;
+    }
+
+    /*
+     * Pretty lights syntax; {@see https://o5p.me/i6E6m1}.
+     */
+
+    .pl-c {
+        color: var(--color-pretty-lights-comment-fg);
+    }
+
+    .pl-c1,
+    .pl-s .pl-v {
+        color: var(--color-pretty-lights-constant-fg);
+    }
+
+    .pl-e,
+    .pl-en {
+        color: var(--color-pretty-lights-entity-fg);
+    }
+
+    .pl-smi,
+    .pl-s .pl-s1 {
+        color: var(--color-pretty-lights-storage-fg);
+    }
+
+    .pl-ent {
+        color: var(--color-pretty-lights-entity-tag-fg);
+    }
+
+    .pl-k {
+        color: var(--color-pretty-lights-keyword-fg);
+    }
+
+    .pl-pds,
+    .pl-ms {
+        color: var(--color-pretty-lights-punctuation-fg);
+    }
+
+    .pl-s,
+    .pl-s .pl-pse .pl-s1,
+    .pl-sr,
+    .pl-sr .pl-cce,
+    .pl-sr .pl-sre,
+    .pl-sr .pl-sra {
+        color: var(--color-pretty-lights-string-fg);
+    }
+
+    .pl-v,
+    .pl-smw {
+        color: var(--color-pretty-lights-variable-fg);
+    }
+
+    .pl-bu {
+        color: var(--color-pretty-lights-bracket-unmatched-fg);
+    }
+
+    .pl-ii {
+        color: var(--color-pretty-lights-invalid-illegal-fg);
+        background: var(--color-pretty-lights-invalid-illegal);
+    }
+
+    .pl-c2 {
+        color: var(--color-pretty-lights-carriage-return-fg);
+        background: var(--color-pretty-lights-carriage-return);
+    }
+
+    .pl-sr .pl-cce {
+        font-weight: bold;
+        color: var(--color-pretty-lights-regexp-fg);
+    }
+
+    .pl-ml {
+        color: var(--color-pretty-lights-markup-operator-fg);
+    }
+
+    .pl-mh,
+    .pl-mh .pl-en {
+        font-weight: bold;
+        color: var(--color-pretty-lights-md-heading-fg);
+    }
+
+    .pl-mi {
+        font-style: italic;
+    }
+
+    .pl-mb {
+        font-weight: bold;
+    }
+
+    .pl-md {
+        color: var(--color-pretty-lights-markup-deleted-fg);
+        background: var(--color-pretty-lights-markup-deleted);
+    }
+
+    .pl-mi1 {
+        color: var(--color-pretty-lights-markup-inserted-fg);
+        background: var(--color-pretty-lights-markup-inserted);
+    }
+
+    .pl-mc {
+        color: var(--color-pretty-lights-markup-changed-fg);
+        background: var(--color-pretty-lights-markup-changed);
+    }
+
+    .pl-mi2 {
+        color: var(--color-pretty-lights-markup-ignored-fg);
+        background: var(--color-pretty-lights-markup-ignored);
+    }
+
+    .pl-mdr {
+        font-weight: bold;
+        color: var(--color-pretty-lights-meta-diff-range-fg);
+    }
+
+    .pl-ba {
+        color: var(--color-pretty-lights-bracket-angle-fg);
+    }
+
+    .pl-sg {
+        color: var(--color-pretty-lights-gutter-mark-fg);
+    }
+
+    .pl-corl {
+        color: var(--color-pretty-lights-other-link-fg);
+        text-decoration: underline;
     }
 }
