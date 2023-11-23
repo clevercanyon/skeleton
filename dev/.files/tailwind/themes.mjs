@@ -191,13 +191,53 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         }
 
         /**
+         * Defines starry night colors.
+         */
+        const defaultStarryNightColors = {
+            // Highlighted bg/fg colors.
+            'color-starry-night': '#080808',
+            'color-starry-night-fg': '#c9c9c9',
+
+            // Highlighted presentation colors.
+            'color-starry-night-border': '#171f26',
+            'color-starry-night-box-shadow': '#000000',
+            'color-starry-night-hilited-lines': '#121212',
+
+            // Highlighted header colors.
+            'color-starry-night-header': '#000000',
+            'color-starry-night-header-fg': '#c9c9c9',
+
+            // Highlighted header language colors.
+            'color-starry-night-header-language': '#222222',
+            'color-starry-night-header-language-fg': '#c9c9c9',
+
+            // Script comments, gutter marks, punctuation.
+            'color-starry-night-syntax-comment-fg': '#696969',
+            'color-starry-night-syntax-gutter-mark-fg': '#3c3c3c',
+            'color-starry-night-syntax-punctuation-fg': '#6a6e76',
+
+            // Script keywords, variables, constants, strings, etc.
+            'color-starry-night-syntax-keyword-fg': '#6382a9',
+            'color-starry-night-syntax-variable-fg': '#be7175',
+            'color-starry-night-syntax-constant-fg': '#ca9d6b',
+            'color-starry-night-syntax-modifier-fg': '#be7175',
+            'color-starry-night-syntax-entity-fg': '#ca9d6b',
+            'color-starry-night-syntax-entity-tag-fg': '#e5c07b',
+            'color-starry-night-syntax-other-link-fg': '#80aff9',
+            'color-starry-night-syntax-string-fg': '#84a267',
+            'color-starry-night-syntax-regexp-fg': '#759d6d',
+        };
+
+        /**
          * Composition.
          */
         theme.extend.colors = {
             ...defaultBasicColors,
             ...defaultBasicProseColors,
             ...defaultBasicSectionColors,
+
             ...defaultBrandColors,
+            ...defaultStarryNightColors,
 
             ...themes.defaultTheme.extend.colors,
             ...theme.extend.colors,
