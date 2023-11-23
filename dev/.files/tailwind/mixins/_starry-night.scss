@@ -44,8 +44,9 @@
         padding: 0.8571em 0;
         margin: 0;
         background: none;
+        border: 0;
         border-radius: 0;
-        box-shadow: inset 0 0 2px 2px rgb(var(--colors-color-starry-night-box-shadow));
+        box-shadow: inset 0 0 2px 2px rgb(var(--colors-color-starry-night-box-shadows));
 
         // `<code>` tag inside code block container.
         & > code {

@@ -32,7 +32,7 @@ export default async () => {
             bulletOrdered: '.',
             bulletOther: '*',
             closeAtx: false,
-            emphasis: '_',
+            emphasis: '*',
             fence: '`',
             fences: false,
             incrementListMarker: true,
