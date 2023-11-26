@@ -41,6 +41,8 @@ export default async () => {
                     unistVisit(tree, 'element', (node) => {
                         if ('a' === node.tagName && node.properties.href.startsWith('#')) {
                             node.tagName = 'x-hash'; // Uses our `CustomHTMLHashElement`.
+                            (node.properties.role = 'link'), (node.properties.tabIndex = 0); // A11y.
+                            node.properties.className = (node.properties.className || []).concat(['link']); // Styles.
                         }
                         return node;
                     });

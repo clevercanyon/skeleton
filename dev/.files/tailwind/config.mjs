@@ -120,10 +120,20 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                         css: {
                             maxWidth: null,
 
-                            'a': {
+                            '.link': {
+                                ...pluginTypographyStyles.DEFAULT.css[0]['a'],
+                            },
+                            '.link code': {
+                                ...pluginTypographyStyles.DEFAULT.css[0]['a code'],
+                            },
+                            '.link strong': {
+                                ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
+                            },
+                            'a, .link': {
+                                cursor: 'pointer',
                                 textDecoration: 'none',
                             },
-                            'a:hover': {
+                            'a:hover, .link:hover': {
                                 textDecoration: 'underline',
                             },
                             'hr': {
@@ -169,8 +179,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 backgroundColor: 'rgb(var(--colors-color-hilite))',
                             }, // Supports nested `<a>`, `<code>`, `<kdb>`, `*`.
                             'mark *': { border: '0', padding: '0', boxShadow: 'none' },
-                            'mark a': { opacity: '.75', textDecoration: 'underline' },
-                            'mark a:hover': { opacity: '1' }, // Opaque on hover.
+                            'mark a, mark .link': { opacity: '.75', textDecoration: 'underline' },
+                            'mark a:hover, mark .link:hover': { opacity: '1' }, // Opaque on hover.
 
                             // Task lists produced by remark GFM plugin.
                             '.contains-task-list, .task-list-item': {
