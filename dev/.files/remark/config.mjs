@@ -28,23 +28,35 @@ export default async () => {
      */
     return {
         settings: {
-            bullet: '-',
-            bulletOrdered: '.',
-            bulletOther: '*',
+            // Headings.
+            setext: false,
             closeAtx: false,
-            emphasis: '*',
-            fence: '`',
-            fences: false,
+
+            // Strong, emphasis.
+            // Mostly irrelevant since we are using the GFM plugin.
+            strong: '*', // GFM enables support for `**bold**` or `__italic__`.
+            emphasis: '_', // GFM enables support for `*italic*` or `_italic_`.
+
+            // List items.
+            bullet: '-',
+            bulletOther: '*',
+            bulletOrdered: '.',
             incrementListMarker: true,
             listItemIndent: 'mixed',
-            quote: '"',
-            resourceLink: false,
+
+            // Fenced code blocks.
+            fence: '`',
+            fences: false,
+
+            // Horizontal rules.
             rule: '-',
-            ruleRepetition: 3,
             ruleSpaces: true,
-            setext: false,
-            strong: '*',
-            tightDefinitions: false,
+            ruleRepetition: 3,
+
+            // Misc settings.
+            quote: '"', // Quote to use around titles.
+            resourceLink: false, // Always use resource links?
+            tightDefinitions: false, // Join definitions w/o a blank line?
         },
         plugins: [
             remarkLint, // Remark core linter.

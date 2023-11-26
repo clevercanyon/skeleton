@@ -45,11 +45,11 @@ export default async () => {
 
                         // Iterates all rule selectors.
                         for (let selector of rule.selectors) {
-                            // Shortens length of `lead` prose class name.
+                            // Shortens length of `lead` prose class selector.
                             selector = selector.replaceAll('[class~="lead"]', '.lead');
 
-                            // Shortens length of `not-p` prose class name.
-                            // In our Tailwind implementation, class `p` = `prose`.
+                            // Shortens length of `not-p` prose class selector.
+                            // In our Tailwind implementation, a much shorter class `p` = `prose`.
                             // In our implementation, a much shorter `_` = `not-p` = `not-prose` = `not-basic`.
                             selector = selector.replaceAll('[class~="not-p"],[class~="not-p"] *', '._, ._ *');
 
