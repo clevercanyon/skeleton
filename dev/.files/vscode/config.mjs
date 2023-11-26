@@ -286,6 +286,7 @@ export default async () => {
 
         'eslint.run': 'onType',
         'eslint.runtime': 'node',
+        'eslint.useESLintClass': true,
 
         'eslint.codeActionsOnSave.mode': 'all',
         'eslint.experimental.useFlatConfig': true,
