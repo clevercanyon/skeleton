@@ -33,6 +33,8 @@ export default async () => {
 
             'tailwindcss': { config: path.resolve(projDir, './tailwind.config.mjs') },
             'postcss-preset-env': { stage: 3, minimumVendorImplementations: 2, env: 'web' },
+
+            // Note: I have a request in for variable consolidate; {@see https://github.com/navanshu/postcss-variable-compress/issues/45}.
             'postcss-variable-compress': {}, // Compresses variables.
         },
     };

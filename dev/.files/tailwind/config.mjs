@@ -115,35 +115,45 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '1/3': '33.333%',
                     '2/3': '66.667%',
                 },
+                // Prose styles.
                 typography: {
                     DEFAULT: {
                         css: {
-                            maxWidth: null,
+                            maxWidth: null, // Ditching.
 
-                            '.link': {
-                                ...pluginTypographyStyles.DEFAULT.css[0]['a'],
-                            },
-                            '.link code': {
-                                ...pluginTypographyStyles.DEFAULT.css[0]['a code'],
-                            },
-                            '.link strong': {
-                                ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
-                            },
+                            // Link styles.
+                            'a': null, // Redefined as `a, .link`.
+                            'a code': null, // Redefined as `a code, .link code`.
+                            'a strong': null, // Redefined as `a strong, .link strong`.
+
                             'a, .link': {
-                                cursor: 'pointer',
+                                ...pluginTypographyStyles.DEFAULT.css[0]['a'],
                                 textDecoration: 'none',
+                                cursor: 'pointer',
                             },
                             'a:hover, .link:hover': {
                                 textDecoration: 'underline',
                             },
+                            'a code, .link code': {
+                                ...pluginTypographyStyles.DEFAULT.css[0]['a code'],
+                            },
+                            'a strong, .link strong': {
+                                ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
+                            },
+
+                            // Horizontal line styles.
                             'hr': {
                                 marginTop: '1.5em',
                                 marginBottom: '1.5em',
                             },
+
+                            // Pre styles.
                             'pre': {
                                 border: '1px solid rgb(var(--colors-color-prose-pre-borders))',
                                 boxShadow: 'inset 0 0 2px 2px rgb(var(--colors-color-prose-pre-shadows))',
                             },
+
+                            // Code styles.
                             'code::before': null,
                             'code::after': null,
                             'code:not(:where(pre code))': {
@@ -158,11 +168,15 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 borderRadius: '0.188rem', // Equivalent to 3px.
                                 boxShadow: '0 0 0 2px rgb(var(--tw-prose-code-shadows) / 12%)',
                             },
+
+                            // Key styles.
                             'kbd': {
                                 boxShadow:
                                     '0 1px 0 2px rgb(var(--tw-prose-kbd-shadows) / 20%),' + //
                                     ' 0 1px 10px 0 rgb(var(--tw-prose-kbd-shadows) / 20%)',
                             },
+
+                            // Mark styles.
                             'mark': {
                                 // fontSize: em(14, 16),
                                 // borderRadius: rem(5),
@@ -219,6 +233,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 left: '.1em',
                                 position: 'absolute',
                             },
+
                             // Footnotes produced by remark GFM plugin.
                             '.footnotes': {
                                 borderTop: '1px solid rgb(var(--colors-color-prose-hr))',
