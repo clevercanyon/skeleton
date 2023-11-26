@@ -35,13 +35,20 @@ $google-fonts: (
 
 /**
  * Our base layer.
+ *
+ * We borrow the `_` = `not-prose` selector here and reuse it as `not-basic`.
+ * It works fine, because all basic styles already exclude `p` = `prose` altogether.
+ *
+ * - In our Tailwind implementation, class `p` = `prose`.
+ * - In our Tailwind implementation, a much shorter `_` = `not-p` = `not-prose`.
+ * - In our basic styles, a much shorter `_` = `not-p` = `not-prose`= `not-basic`.
  */
 @layer base {
     html {
         @apply text-base;
         @apply bg-color-basic text-color-basic-fg;
 
-        :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-basic-link/80 no-underline hover:text-color-basic-link;
 
             &:hover {
@@ -49,7 +56,7 @@ $google-fonts: (
             }
         }
 
-        :where(h1, h2, h3, h4, h5, h6):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(h1, h2, h3, h4, h5, h6):not(:where(.p, .p *, ._, ._ *)) {
             @apply text-color-basic-heading;
         }
     }
@@ -57,11 +64,11 @@ $google-fonts: (
     .basic-header {
         @apply bg-color-header text-color-header-fg;
 
-        :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-header-link/80 hover:text-color-header-link;
         }
 
-        :where(h1, h2, h3, h4, h5, h6):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(h1, h2, h3, h4, h5, h6):not(:where(.p, .p *, ._, ._ *)) {
             @apply text-color-header-heading;
         }
     }
@@ -69,11 +76,11 @@ $google-fonts: (
     .basic-sidebar {
         @apply bg-color-sidebar text-color-sidebar-fg;
 
-        :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-sidebar-link/80 hover:text-color-sidebar-link;
         }
 
-        :where(h1, h2, h3, h4, h5, h6):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(h1, h2, h3, h4, h5, h6):not(:where(.p, .p *, ._, ._ *)) {
             @apply text-color-sidebar-heading;
         }
     }
@@ -81,11 +88,11 @@ $google-fonts: (
     .basic-footer {
         @apply bg-color-footer text-color-footer-fg;
 
-        :where(a, .link):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-footer-link/80 hover:text-color-footer-link;
         }
 
-        :where(h1, h2, h3, h4, h5, h6):not(:where(.prose, .not-basic, .prose *, .not-basic *)) {
+        :where(h1, h2, h3, h4, h5, h6):not(:where(.p, .p *, ._, ._ *)) {
             @apply text-color-footer-heading;
         }
     }

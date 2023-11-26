@@ -264,8 +264,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             },
         },
         plugins: [
-            pluginTypography({ className: 'prose' }), // Implements `prose` class.
-            pluginThemer(mergeThemesConfig({ themesConfig })), // Implements themes configuration.
+            pluginTypography({ className: 'p' }), // In our implementation, `p` = `prose`, `_` = `not-prose` = `not-basic`.
+            // The `_` = `not-prose` logic is handled by our PostCSS configuration, which includes a custom plugin.
+
+            // This plugin is what powers all of our theme configurations; {@see https://www.npmjs.com/package/tailwindcss-themer}.
+            pluginThemer(mergeThemesConfig({ themesConfig })), // Our own theme system is also called upon here to configure Tailwind themes.
         ],
         content: [
             path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
