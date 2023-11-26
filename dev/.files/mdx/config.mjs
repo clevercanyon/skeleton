@@ -35,19 +35,18 @@ export default async () => {
             (await import('remark-directive')).default, // Custom directives; {@see https://o5p.me/0fakce}.
         ],
         rehypePlugins: [
-            (await import('@microflash/rehype-starry-night')).default,
-            (/* Modifies hash-only anchors in support of `<base href>`. */) => {
+            (await import('@microflash/rehype-starry-night')).default, // Syntax highlighting.
+            (/* Modifies hash-only anchors so they work well with `<base href>` in our preact apps. */) => {
                 return (tree) => {
                     unistVisit(tree, 'element', (node) => {
                         if ('a' === node.tagName && node.properties.href.startsWith('#')) {
-                            node.properties.href = './' + node.properties.href;
+                            node.tagName = 'x-hash'; // Uses our `CustomHTMLHashElement`.
                         }
                         return node;
                     });
                 };
             },
-        ], // Syntax highlighting.
-
+        ],
         vsCodeTSConfig: {
             plugins: [
                 'remark-frontmatter', // Frontmatter.
