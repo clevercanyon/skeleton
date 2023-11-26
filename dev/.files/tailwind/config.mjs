@@ -222,9 +222,12 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             // Footnotes produced by remark GFM plugin.
                             '.footnotes': {
                                 borderTop: '1px solid rgb(var(--colors-color-prose-hr))',
-                                marginTop: '1.5em',
+                                marginTop: '4em',
                                 fontSize: '0.875rem',
                                 lineHeight: '1.25rem',
+                            },
+                            '.footnotes > h2': {
+                                marginTop: '1em',
                             },
                         },
                     },
