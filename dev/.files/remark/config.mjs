@@ -18,7 +18,7 @@ import remarkLint from 'remark-lint';
 import presetLintRecommended from 'remark-preset-lint-recommended';
 import presetPrettier from 'remark-preset-prettier';
 import pluginSmartyPants from 'remark-smartypants';
-import pluginTOC from 'remark-toc';
+import pluginTableOfContents from 'remark-toc';
 
 /**
  * Defines Remark configuration.
@@ -64,16 +64,16 @@ export default async () => {
             tightDefinitions: false, // Join definitions w/o a blank line?
         },
         plugins: [
-            remarkLint, // Remark core linter.
-            presetLintRecommended, // Linting basics.
-            presetPrettier, // Removes conflicting lint rules.
+            [remarkLint], // Remark core linter.
+            [presetLintRecommended], // Linting basics.
+            [presetPrettier], // Removes conflicting lint rules.
 
-            pluginFrontmatter, // Frontmatter.
+            [pluginFrontmatter], // Frontmatter.
             [pluginGFM, { singleTilde: false }], // GFM features.
-            pluginGemoji, // GFM-style emojis using `:shortcodes:`.
-            pluginSmartyPants, // (em dash) `--` to `—`, quotes, etc.
-            pluginDirective, // Custom directives; {@see https://o5p.me/0fakce}.
-            [pluginTOC, { heading: 'Table of Contents', prefix: '~' }], // TOC; {@see https://o5p.me/Y8DLuN}.
+            [pluginGemoji], // GFM-style emojis using `:shortcodes:`.
+            [pluginSmartyPants], // (em dash) `--` to `—`, quotes, etc.
+            [pluginDirective], // Custom directives; {@see https://o5p.me/0fakce}.
+            [pluginTableOfContents, { heading: 'Table of Contents', prefix: '~' }],
 
             // Disable this rule, as GFM explicitly allows this.
             ['remark-lint-no-literal-urls', false],
