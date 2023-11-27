@@ -15,8 +15,17 @@ export default () => {
     return (tree) => {
         unistVisit(tree, 'element', (node) => {
             if ('a' === node.tagName && /^(?:https?:)?\/\//iu.test(node.properties.href || '')) {
-                node.properties.rel = ((node.properties.rel || '') + ' external nofollow').trim();
-                node.properties.rel = [...new Set(node.properties.rel.split(/\s+/u))].join(' ');
+                // Breaks any existing `rel=''` attribute apart into a set of values.
+                let relSet = new Set((node.properties.rel || '').toLowerCase().split(/\s+/u));
+
+                if (!relSet.has('bookmark')) {
+                    relSet.add('external');
+
+                    if (!relSet.has('follow')) {
+                        relSet.add('nofollow');
+                    }
+                }
+                node.properties.rel = [...relSet].join(' ');
             }
             return node;
         });
