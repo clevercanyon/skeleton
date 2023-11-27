@@ -29,29 +29,29 @@ export default async () => {
     return {
         settings: {
             // Headings.
-            setext: false,
-            closeAtx: false,
+            setext: false, // Use underlined headings? We prefer ATX headings.
+            closeAtx: false, // ATX headings use `#`. We prefer not to close them.
 
-            // Strong, emphasis.
-            // Mostly irrelevant since we are using the GFM plugin.
-            strong: '*', // GFM enables support for `**bold**` or `__italic__`.
-            emphasis: '_', // GFM enables support for `*italic*` or `_italic_`.
+            // Strong, emphasis. This simply configures our preferred strong/emphasis markers.
+            strong: '*', // Preferred option, but doubles always work; e.g., `**bold**` or `__bold__`.
+            emphasis: '*', // Preferred option, but singles always work; e.g., `*italic*` or `_italic_`.
 
             // List items.
-            bullet: '-',
-            bulletOther: '*',
-            bulletOrdered: '.',
-            incrementListMarker: true,
-            listItemIndent: 'mixed',
+            bullet: '-', // Marker to use for unordered list items.
+            bulletOther: '*', // Alternate marker for unordered list items.
+            bulletOrdered: '.', // Marker to use for ordered/numbered list items.
+            incrementListMarker: true, // Auto-increment ordered/numbered list items?
+            listItemIndent: 'tab', // i.e., 4 spaces. This matches what prettier does also.
 
             // Fenced code blocks.
-            fence: '`',
-            fences: false,
+            fence: '`', // Marker for fenced code blocks.
+            fences: false, // When `false`, only use `<pre><code>` if there is a language.
+            // If there is no language defined, simply output a `<pre>` tag, not `<pre><code>`.
 
             // Horizontal rules.
-            rule: '-',
-            ruleSpaces: true,
-            ruleRepetition: 3,
+            rule: '-', // Marker to use for horizontal lines.
+            ruleRepetition: 3, // The number of markers needed to produce an hr.
+            ruleSpaces: true, // Add vertical line break padding before/after horizontal lines?
 
             // Misc settings.
             quote: '"', // Quote to use around titles.
