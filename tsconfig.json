@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Nov 27, 2023 10:41 AM UTC.
+ * Last generated using `./tsconfig.mjs` Nov 27, 2023 3:06 PM UTC.
  */
 {
     "include": ["./src/**/*", "./dev-types.d.ts"],
@@ -126,7 +126,7 @@
     },
     "mdx": {
         "plugins": [
-            "remark-frontmatter",
+            ["remark-frontmatter"],
             [
                 "remark-mdx-frontmatter",
                 {
@@ -139,9 +139,9 @@
                     "singleTilde": false
                 }
             ],
-            "remark-gemoji",
-            "remark-smartypants",
-            "remark-directive",
+            ["remark-gemoji"],
+            ["remark-smartypants"],
+            ["remark-directive"],
             [
                 "remark-toc",
                 {
