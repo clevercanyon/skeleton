@@ -11,12 +11,14 @@ import { visit as unistVisit } from 'unist-util-visit';
 /**
  * Modifies external anchors by adding `rel` attribute for improved SEO.
  */
-export default (tree) => {
-    unistVisit(tree, 'element', (node) => {
-        if ('a' === node.tagName && /^(?:https?:)?\/\//iu.test(node.properties.href || '')) {
-            node.properties.rel = ((node.properties.rel || '') + ' external nofollow').trim();
-            node.properties.rel = [...new Set(node.properties.rel.split(/\s+/u))].join(' ');
-        }
-        return node;
-    });
+export default () => {
+    return (tree) => {
+        unistVisit(tree, 'element', (node) => {
+            if ('a' === node.tagName && /^(?:https?:)?\/\//iu.test(node.properties.href || '')) {
+                node.properties.rel = ((node.properties.rel || '') + ' external nofollow').trim();
+                node.properties.rel = [...new Set(node.properties.rel.split(/\s+/u))].join(' ');
+            }
+            return node;
+        });
+    };
 };

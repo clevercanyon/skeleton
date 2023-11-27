@@ -11,27 +11,29 @@ import { visit as unistVisit } from 'unist-util-visit';
 /**
  * Modifies `remark-gfm` footnote anchors to enforce a `~` prefix.
  */
-export default (tree) => {
-    unistVisit(tree, 'element', (node) => {
-        // GFM footnote hashes are not configurable via `remark-gfm`, so we manipulate here.
-        // These are aligned with the rest of our configuration, which always uses a `~` prefix.
-        if ('li' === node.tagName && node.properties.id) {
-            if (node.properties.id.startsWith('user-content-fn-')) {
-                node.properties.id = node.properties.id.replace('user-content-fn-', '~fn-');
+export default () => {
+    return (tree) => {
+        unistVisit(tree, 'element', (node) => {
+            // GFM footnote hashes are not configurable via `remark-gfm`, so we manipulate here.
+            // These are aligned with the rest of our configuration, which always uses a `~` prefix.
+            if ('li' === node.tagName && node.properties.id) {
+                if (node.properties.id.startsWith('user-content-fn-')) {
+                    node.properties.id = node.properties.id.replace('user-content-fn-', '~fn-');
+                }
+            } else if ('a' === node.tagName && node.properties.href) {
+                if (node.properties.href.startsWith('#user-content-fn-')) {
+                    node.properties.href = node.properties.href.replace('#user-content-fn-', '#~fn-');
+                    node.properties.id = (node.properties.id || '').replace('user-content-fnref-', '~fnr-');
+                    node.properties['aria-describedby'] = '~footnotes'; // Update this.
+                    node.properties.dataFootnoteRef = null; // Ditch this.
+                    //
+                } else if (node.properties.href.startsWith('#user-content-fnref-')) {
+                    node.properties.href = node.properties.href.replace('#user-content-fnref-', '#~fnr-');
+                    node.properties.className = (node.properties.className || []).filter((c) => 'data-footnote-backref' !== c);
+                    node.properties.dataFootnoteBackref = null; // Ditch this.
+                }
             }
-        } else if ('a' === node.tagName && node.properties.href) {
-            if (node.properties.href.startsWith('#user-content-fn-')) {
-                node.properties.href = node.properties.href.replace('#user-content-fn-', '#~fn-');
-                node.properties.id = (node.properties.id || '').replace('user-content-fnref-', '~fnr-');
-                node.properties['aria-describedby'] = '~footnotes'; // Update this.
-                node.properties.dataFootnoteRef = null; // Ditch this.
-                //
-            } else if (node.properties.href.startsWith('#user-content-fnref-')) {
-                node.properties.href = node.properties.href.replace('#user-content-fnref-', '#~fnr-');
-                node.properties.className = (node.properties.className || []).filter((c) => 'data-footnote-backref' !== c);
-                node.properties.dataFootnoteBackref = null; // Ditch this.
-            }
-        }
-        return node;
-    });
+            return node;
+        });
+    };
 };
