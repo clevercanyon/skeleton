@@ -17,8 +17,21 @@ export default () => {
             if ('a' === node.tagName && /^(?:https?:)?\/\//iu.test(node.properties.href || '')) {
                 // Breaks any existing `rel=''` attribute apart into a set of values.
                 let relSet = new Set((node.properties.rel || '').toLowerCase().split(/\s+/u));
-
-                if (!relSet.has('bookmark')) {
+                if (
+                    !relSet.has('me') &&
+                    !relSet.has('author') &&
+                    !relSet.has('bookmark') &&
+                    !relSet.has('alternate') &&
+                    !relSet.has('search') &&
+                    !relSet.has('next') &&
+                    !relSet.has('prev') &&
+                    !relSet.has('tag') &&
+                    !relSet.has('help') &&
+                    !relSet.has('license') &&
+                    !relSet.has('privacy-policy') &&
+                    !relSet.has('terms-of-service') &&
+                    !relSet.has('internal')
+                ) {
                     relSet.add('external');
 
                     if (!relSet.has('follow')) {
