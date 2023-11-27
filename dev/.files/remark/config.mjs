@@ -12,12 +12,13 @@
 
 import pluginDirective from 'remark-directive';
 import pluginFrontmatter from 'remark-frontmatter';
+import pluginGemoji from 'remark-gemoji';
 import pluginGFM from 'remark-gfm';
 import remarkLint from 'remark-lint';
-import pluginMermaid from 'remark-mermaidjs';
 import presetLintRecommended from 'remark-preset-lint-recommended';
 import presetPrettier from 'remark-preset-prettier';
 import pluginSmartyPants from 'remark-smartypants';
+import pluginTOC from 'remark-toc';
 
 /**
  * Defines Remark configuration.
@@ -27,6 +28,10 @@ export default async () => {
      * Composition.
      */
     return {
+        /**
+         * Prettier enforces a few things; e.g., `*` for strong, `_` for emphasis. Therefore, our remark configuration
+         * must align itself with prettier; e.g., we would prefer to use `*` for emphasis, but prettier disagrees.
+         */
         settings: {
             // Headings.
             setext: false, // Use underlined headings? We prefer ATX headings.
@@ -34,7 +39,7 @@ export default async () => {
 
             // Strong, emphasis. This simply configures our preferred strong/emphasis markers.
             strong: '*', // Preferred option, but doubles always work; e.g., `**bold**` or `__bold__`.
-            emphasis: '*', // Preferred option, but singles always work; e.g., `*italic*` or `_italic_`.
+            emphasis: '_', // Preferred option, but singles always work; e.g., `_italic_` or `*italic*`.
 
             // List items.
             bullet: '-', // Marker to use for unordered list items.
@@ -65,9 +70,10 @@ export default async () => {
 
             pluginFrontmatter, // Frontmatter.
             [pluginGFM, { singleTilde: false }], // GFM features.
+            pluginGemoji, // GFM-style emojis using `:shortcodes:`.
             pluginSmartyPants, // (em dash) `--` to `—`, quotes, etc.
-            pluginMermaid, // Charting and diagramming; {@see https://o5p.me/5z7Yrt}.
             pluginDirective, // Custom directives; {@see https://o5p.me/0fakce}.
+            [pluginTOC, { heading: 'Table of Contents', prefix: '~' }], // TOC; {@see https://o5p.me/Y8DLuN}.
 
             // Disable this rule, as GFM explicitly allows this.
             ['remark-lint-no-literal-urls', false],

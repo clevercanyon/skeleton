@@ -141,6 +141,21 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
                             },
 
+                            // Auto-linked headings with `~`-prefixed IDs.
+                            '[id^=\\~]': {
+                                position: 'relative',
+                            },
+                            '[id^=\\~] > x-hash:first-child': {
+                                opacity: '0',
+                                left: '-1em',
+                                width: '1em',
+                                textAlign: 'left',
+                                position: 'absolute',
+                            },
+                            '[id^=\\~]:hover > x-hash:first-child': {
+                                opacity: '1',
+                            },
+
                             // Horizontal line styles.
                             'hr': {
                                 marginTop: '1.5em',
