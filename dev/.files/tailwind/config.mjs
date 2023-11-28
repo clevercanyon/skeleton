@@ -286,7 +286,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             pluginThemer(mergeThemesConfig({ themesConfig })), // Our own theme system is also called upon here to configure Tailwind themes.
         ],
         content: [
-            path.resolve(projDir, './src') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
+            path.resolve(projDir, './{src,dist}') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
 
             // If this package is using `@clevercanyon/utilities` we can also scan preact files.
             ...(fs.existsSync(path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact'))
