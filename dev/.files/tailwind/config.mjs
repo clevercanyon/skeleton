@@ -131,10 +131,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '3xl': ['clamp(1.25rem, 2.083vw, 1.875rem)', { lineHeight: 'clamp(1.75rem, 2.500vw, 2.25rem)' }], // Equivalent to 30px/36px.
                     '4xl': ['clamp(1.5rem, 2.500vw, 2.25rem)', { lineHeight: 'clamp(2rem, 2.778vw, 2.5rem)' }], // Equivalent to 36px/40px.
                     '5xl': ['clamp(1.875rem, 3.333vw, 3rem)', { lineHeight: 'clamp(2.25rem, 4.028vw, 3.625rem)' }], // Equivalent to 48px/58px.
-                    '6xl': ['clamp(2.25rem, 4.167vw, 3.75rem)', { lineHeight: 'clamp(2.5rem, 4.861vw, 4.375rem)' }], // Equivalent to 60px/70px.
-                    '7xl': ['clamp(3rem, 5vw, 4.5rem)', { lineHeight: 'clamp(3.625rem, 5.972vw, 5.375rem)' }], // Equivalent to 72px/86px.
-                    '8xl': ['clamp(3.75rem, 6.667vw, 6rem)', { lineHeight: 'clamp(4.375rem, 7.986vw, 7.188rem)' }], // Equivalent to 96px/115px.
-                    '9xl': ['clamp(4.5rem, 8.889vw, 8rem)', { lineHeight: 'clamp(5.375rem, 10.625vw, 9.563rem)' }], // Equivalent to 128px/153px.
+
+                    // All of these are allowed to autoscale down to three sizes smaller than ideal target size.
+                    '6xl': ['clamp(1.875rem, 4.167vw, 3.75rem)', { lineHeight: 'clamp(2.25rem, 4.861vw, 4.375rem)' }], // Equivalent to 60px/70px.
+                    '7xl': ['clamp(2.25rem, 5vw, 4.5rem)', { lineHeight: 'clamp(2.5rem, 5.972vw, 5.375rem)' }], // Equivalent to 72px/86px.
+
+                    // All of these are allowed to autoscale down to four sizes smaller than ideal target size.
+                    '8xl': ['clamp(2.25rem, 6.667vw, 6rem)', { lineHeight: 'clamp(2.5rem, 7.986vw, 7.188rem)' }], // Equivalent to 96px/115px.
+                    '9xl': ['clamp(3rem, 8.889vw, 8rem)', { lineHeight: 'clamp(3.625rem, 10.625vw, 9.563rem)' }], // Equivalent to 128px/153px.
                 },
                 // Prose styles.
                 typography: {
