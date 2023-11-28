@@ -45,7 +45,8 @@ $google-fonts: (
  */
 @layer base {
     html {
-        @apply text-base;
+        font-size: 16px; // Not auto-scaling at root node.
+
         @apply bg-color-basic text-color-basic-fg;
 
         :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
