@@ -16,6 +16,7 @@ import pluginSlug from 'rehype-slug';
 import pluginAnchorsRelExternalNoFollow from './plugins/anchors/rel-external-nofollow.mjs';
 import pluginFootnotesFixAnchors from './plugins/footnotes/fix-anchors.mjs';
 import pluginFootnotesFixLabelSection from './plugins/footnotes/fix-label-section.mjs';
+import pluginStarryNightHeaderExts from './plugins/starry-night/header-exts.mjs';
 
 /**
  * Defines Rehype configuration.
@@ -32,7 +33,8 @@ export default async () => {
             [pluginSlug, { prefix: '~' }], // Auto-generates heading IDs using heading text and counters.
             [pluginAutolinkHeadings, { content: { type: 'text', value: '#' } }], // Auto-links all headings.
             [pluginAnchorsRelExternalNoFollow], // Modifies external anchors by adding `rel` attributes.
-            [pluginStarryNight], // Applies syntax highlighting to fenced code blocks.
+            // Applies syntax highlighting. We also mix in our own custom header extensions.
+            [pluginStarryNight, { headerExtensions: pluginStarryNightHeaderExts }],
         ],
     };
 };

@@ -39,6 +39,25 @@
         border-radius: 0.1875rem;
     }
 
+    // Copy button inside code block header.
+    .highlight-copy {
+        &::before {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            margin: 0 0.5em 0 0;
+            line-height: 1em;
+            vertical-align: middle;
+            content: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='-21 0 512 512'%3E%3Cpath fill='%23eceff1' d='M411 0H165c-32 0-58 26-58 59v288c0 32 26 58 58 58h246c32 0 58-26 58-58V59c0-33-26-59-58-59zm0 0'/%3E%3Cpath fill='%2390a4ae' d='M368 288H208a16 16 0 0 1 0-32h160a16 16 0 0 1 0 32zm0-64H208a16 16 0 0 1 0-32h160a16 16 0 0 1 0 32zm0-64H208a16 16 0 0 1 0-32h160a16 16 0 0 1 0 32zm0 0'/%3E%3Cpath fill='%232196f3' d='M165 437c-50 0-90-40-90-90V53H59C26 53 0 80 0 112v341c0 33 26 59 59 59h256c32 0 58-26 58-59v-16zm0 0'/%3E%3C/svg%3E");
+        }
+
+        &[data-copied] {
+            &::before {
+                content: '✔';
+            }
+        }
+    }
+
     // Nested highlight styles.
     .highlight {
         // `<pre>` tag.
@@ -98,7 +117,7 @@
                 background: rgb(var(--colors-color-starry-night-syntax-comment-fg));
 
                 // Define as a variable so that when autoprefixer runs it won’t end up duplicating this lengthy value.
-                --mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' width='24' height='24' fill='none' fill-rule='evenodd' clip-rule='evenodd' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17.179 5.597C13.491 3.081 5.957 3.057 6.344 8.186c.399 5.287 11.204 1.813 11.566 7.102.369 5.375-8 5.71-11.832 2.666M12.017 2v20'/%3E%3C/svg%3E");
+                --mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M17.7247 20.25c-.1286 1.3979-1.2938 2.5-2.7247 2.5H5c-1.5166 0-2.75-1.2334-2.75-2.75V8c0-1.431 1.1021-2.5961 2.5-2.7247V16c0 2.3433 1.9062 4.25 4.25 4.25zM21.75 6.75V16c0 1.5166-1.2334 2.75-2.75 2.75H9c-1.5166 0-2.75-1.2334-2.75-2.75V4c0-1.5166 1.2334-2.75 2.75-2.75h7.25V6c0 .4141.3359.75.75.75zm-4 7.25c0-.4141-.3359-.75-.75-.75h-6c-.4141 0-.75.3359-.75.75s.3359.75.75.75h6c.4141 0 .75-.3359.75-.75zm0-4c0-.4141-.3359-.75-.75-.75h-6c-.4141 0-.75.3359-.75.75s.3359.75.75.75h6c.4141 0 .75-.3359.75-.75zm0-8.3105V5.25h3.5605z'/%3E%3C/svg%3E");
 
                 mask-image: var(--mask-image);
                 mask-repeat: no-repeat;

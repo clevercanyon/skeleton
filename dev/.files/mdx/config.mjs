@@ -15,6 +15,7 @@ import pluginAnchorsPreactXHash from '../rehype/plugins/anchors/preact-x-hash.mj
 import pluginAnchorsRelExternalNoFollow from '../rehype/plugins/anchors/rel-external-nofollow.mjs';
 import pluginFootnotesFixAnchors from '../rehype/plugins/footnotes/fix-anchors.mjs';
 import pluginFootnotesFixLabelSection from '../rehype/plugins/footnotes/fix-label-section.mjs';
+import pluginStarryNightHeaderExts from '../rehype/plugins/starry-night/header-exts.mjs';
 import pluginAlerts from '../remark/plugins/alerts/index.mjs';
 import pluginDirectives from '../remark/plugins/directives/index.mjs';
 import pluginTableOfContents from '../remark/plugins/toc/index.mjs';
@@ -50,7 +51,8 @@ export default async () => {
             [(await import('rehype-autolink-headings')).default, { content: { type: 'text', value: '#' } }], // Auto-links all headings.
             [pluginAnchorsPreactXHash], // Modifies hash-only anchors so they work well with `<base href>` in our preact apps.
             [pluginAnchorsRelExternalNoFollow], // Modifies external anchors by adding `rel` attribute for improved SEO.
-            (await import('@microflash/rehype-starry-night')).default, // Applies syntax highlighting to fenced code blocks.
+            // Applies syntax highlighting to fenced code blocks. We also mix in our own custom header extensions.
+            [(await import('@microflash/rehype-starry-night')).default, { headerExtensions: pluginStarryNightHeaderExts }],
         ],
         vsCodeTSConfig: {
             // All of this goes into `./tsconfig.json`, so it must be JSON-serializable.

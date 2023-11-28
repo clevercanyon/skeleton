@@ -84,6 +84,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             container: { center: true }, // No need for `mx-auto` on each container.
 
             extend: {
+                spacing: {
+                    '1em': '1em',
+                    '1.5em': '1.5em',
+                    '2em': '2em',
+                },
                 // We have to declare screen sizes explicitly for `min/max` widths.
                 // The reason is because our `screens` configuration uses complex values.
                 // For further details, {@see https://o5p.me/oLXcju}.
