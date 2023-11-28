@@ -19,6 +19,7 @@ import presetLintRecommended from 'remark-preset-lint-recommended';
 import presetPrettier from 'remark-preset-prettier';
 import pluginSmartyPants from 'remark-smartypants';
 import pluginTableOfContents from 'remark-toc';
+import pluginAlerts from './plugins/alerts/index.mjs';
 
 /**
  * Defines Remark configuration.
@@ -73,6 +74,7 @@ export default async () => {
             [pluginGemoji], // GFM-style emojis using `:shortcodes:`.
             [pluginSmartyPants], // (em dash) `--` to `—`, quotes, etc.
             [pluginDirective], // Custom directives; {@see https://o5p.me/0fakce}.
+            [pluginAlerts], // Generates alerts using `remark-directive` as a dependency.
             [pluginTableOfContents, { heading: 'Table of Contents', prefix: '~' }],
 
             // Disable this rule, as GFM explicitly allows this.

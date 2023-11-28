@@ -15,6 +15,7 @@ import pluginAnchorsPreactXHash from '../rehype/plugins/anchors/preact-x-hash.mj
 import pluginAnchorsRelExternalNoFollow from '../rehype/plugins/anchors/rel-external-nofollow.mjs';
 import pluginFootnotesFixAnchors from '../rehype/plugins/footnotes/fix-anchors.mjs';
 import pluginFootnotesFixLabelSection from '../rehype/plugins/footnotes/fix-label-section.mjs';
+import pluginAlerts from '../remark/plugins/alerts/index.mjs';
 import pluginTableOfContents from '../remark/plugins/toc/index.mjs';
 
 /**
@@ -37,6 +38,7 @@ export default async () => {
             [(await import('remark-gemoji')).default], // GFM-style emojis using `:shortcodes:`.
             [(await import('remark-smartypants')).default], // (em dash) `--` to `—`, quotes, etc.
             [(await import('remark-directive')).default], // Custom directives; {@see https://o5p.me/0fakce}.
+            [pluginAlerts], // Generates alerts using `remark-directive`, and leverages configured brand colors.
             [pluginTableOfContents], // Runs `remark-toc`, but instead of outputting, we export `TableOfContents`.
         ],
         rehypePlugins: [

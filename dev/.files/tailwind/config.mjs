@@ -335,5 +335,6 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 { dropExistingNegations: true },
             ),
         ],
+        blocklist: ['!p'], // This `!important` `p` = `prose` gets picked up from `./dist` somewhere.
     };
 };
