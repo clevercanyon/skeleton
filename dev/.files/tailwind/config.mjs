@@ -119,7 +119,31 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                 typography: {
                     DEFAULT: {
                         css: {
-                            maxWidth: null, // Ditching.
+                            maxWidth: null, // No max-width.
+                            // Instead, we wrap all prose in a container.
+
+                            // We explicitly don’t set a `<strong>` color.
+                            // Doing so makes it necessary to add more and more rules
+                            // that must revert colorization in various nested contexts.
+                            strong: { color: null },
+                            'blockquote strong': { color: null },
+                            'thead th strong': { color: null },
+                            'h1 strong': { color: null },
+                            'h2 strong': { color: null },
+                            'h3 strong': { color: null },
+                            'h4 strong': { color: null },
+
+                            // We explicitly don’t set a `<kbd>` or `<code>` color.
+                            // Doing so makes it necessary to add more and more rules
+                            // that must revert colorization in various nested contexts.
+                            code: { color: null },
+                            'h1 code': { color: null },
+                            'h2 code': { color: null },
+                            'h3 code': { color: null },
+                            'h4 code': { color: null },
+                            'blockquote code': { color: null },
+                            'thead th code': { color: null },
+                            'pre code': { color: null },
 
                             // Link styles.
                             'a': null, // Redefined as `a, .link`.
@@ -136,9 +160,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             },
                             'a code, .link code': {
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a code'],
+                                color: null, // Explicitly remove; see notes above.
                             },
                             'a strong, .link strong': {
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
+                                color: null, // Explicitly remove; see notes above.
                             },
 
                             // Auto-linked headings with `~`-prefixed IDs.
@@ -189,6 +215,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 boxShadow:
                                     '0 1px 0 2px rgb(var(--tw-prose-kbd-shadows) / 20%),' + //
                                     ' 0 1px 10px 0 rgb(var(--tw-prose-kbd-shadows) / 20%)',
+                                color: null, // Explicitly remove; see notes above.
                             },
 
                             // Mark styles.

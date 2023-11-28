@@ -41,7 +41,7 @@ $google-fonts: (
  *
  * - In our Tailwind implementation, class `p` = `prose`.
  * - In our Tailwind implementation, a much shorter `_` = `not-p` = `not-prose`.
- * - In our basic styles, a much shorter `_` = `not-p` = `not-prose`= `not-basic`.
+ * - In our basic styles, a much shorter `_` = `not-p` = `not-prose` = `not-basic`.
  */
 @layer base {
     html {
@@ -62,7 +62,7 @@ $google-fonts: (
     }
 
     .basic-header {
-        @apply bg-color-header text-color-header-fg;
+        @apply border-color-heading-bdr bg-color-header text-color-header-fg;
 
         :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-header-link/80 hover:text-color-header-link;
@@ -74,7 +74,7 @@ $google-fonts: (
     }
 
     .basic-sidebar {
-        @apply bg-color-sidebar text-color-sidebar-fg;
+        @apply border-color-sidebar-bdr bg-color-sidebar text-color-sidebar-fg;
 
         :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-sidebar-link/80 hover:text-color-sidebar-link;
@@ -86,7 +86,7 @@ $google-fonts: (
     }
 
     .basic-footer {
-        @apply bg-color-footer text-color-footer-fg;
+        @apply border-color-footer-bdr bg-color-footer text-color-footer-fg;
 
         :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-footer-link/80 hover:text-color-footer-link;
