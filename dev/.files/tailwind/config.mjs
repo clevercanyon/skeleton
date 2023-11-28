@@ -116,23 +116,25 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '2/3': '66.667%',
                 },
                 fontSize: {
-                    // `text-[size]` classes all target an 'ideal' size, but will now autoscale to viewport width.
-                    // Each text size is clamped such that it cannot exceed the `text-[size]`, but it can shrink to `xs`.
+                    // Neither of these are allowed to autoscale.
+                    // We don’t autoscale text that is small already.
+                    xs: ['.75rem', { lineHeight: '1rem' }], // Equivalent to 12px/16px.
+                    sm: ['.875rem', { lineHeight: '1.25rem' }], // Equivalent to 14px/20px.
 
-                    xs: ['clamp(.75rem, .469vw, .75rem)', { lineHeight: 'clamp(.75rem, .625vw, 1rem)' }], // Equivalent to 12px/16px.
-                    sm: ['clamp(.75rem, .547vw, .875rem)', { lineHeight: 'clamp(.75rem, .781vw, 1.25rem)' }], // Equivalent to 14px/20px.
-                    base: ['clamp(.75rem, .625vw, 1rem)', { lineHeight: 'clamp(.75rem, .938vw, 1.5rem)' }], // Equivalent to 16px/24px.
-                    lg: ['clamp(.75rem, .703vw, 1.125rem)', { lineHeight: 'clamp(.75rem, 1.094vw, 1.75rem)' }], // Equivalent to 18px/28px.
-                    xl: ['clamp(.75rem, .781vw, 1.25rem)', { lineHeight: 'clamp(.75rem, 1.094vw, 1.75rem)' }], // Equivalent to 20px/28px.
+                    // All of these are allowed to autoscale down to one size smaller than ideal target size.
+                    base: ['clamp(.875rem, 1.111vw, 1rem)', { lineHeight: 'clamp(1.25rem, 1.667vw, 1.5rem)' }], // Equivalent to 16px/24px.
+                    lg: ['clamp(1rem, 1.250vw, 1.125rem)', { lineHeight: 'clamp(1.5rem, 1.944vw, 1.75rem)' }], // Equivalent to 18px/28px.
+                    xl: ['clamp(1.125rem, 1.389vw, 1.25rem)', { lineHeight: 'clamp(1.75rem, 1.944vw, 1.75rem)' }], // Equivalent to 20px/28px.
+                    '2xl': ['clamp(1.25rem, 1.667vw, 1.5rem)', { lineHeight: 'clamp(1.75rem, 2.222vw, 2rem)' }], // Equivalent to 24px/32px.
 
-                    '2xl': ['clamp(.75rem, .938vw, 1.5rem)', { lineHeight: 'clamp(.75rem, 1.250vw, 2rem)' }], // Equivalent to 24px/32px.
-                    '3xl': ['clamp(.75rem, 1.172vw, 1.875rem)', { lineHeight: 'clamp(.75rem, 1.406vw, 2.25rem)' }], // Equivalent to 30px/36px.
-                    '4xl': ['clamp(.75rem, 1.406vw, 2.25rem)', { lineHeight: 'clamp(.75rem, 1.563vw, 2.5rem)' }], // Equivalent to 36px/40px.
-                    '5xl': ['clamp(.75rem, 1.875vw, 3rem)', { lineHeight: 'clamp(.75rem, 2.266vw, 3.625rem)' }], // Equivalent to 48px/58px.
-                    '6xl': ['clamp(.75rem, 2.344vw, 3.75rem)', { lineHeight: 'clamp(.75rem, 2.734vw, 4.375rem)' }], // Equivalent to 60px/70px.
-                    '7xl': ['clamp(.75rem, 2.813vw, 4.5rem)', { lineHeight: 'clamp(.75rem, 3.359vw, 5.375rem)' }], // Equivalent to 72px/86px.
-                    '8xl': ['clamp(.75rem, 3.750vw, 6rem)', { lineHeight: 'clamp(.75rem, 4.492vw, 7.188rem)' }], // Equivalent to 96px/115px.
-                    '9xl': ['clamp(.75rem, 5vw, 8rem)', { lineHeight: 'clamp(.75rem, 5.977vw, 9.563rem)' }], // Equivalent to 128px/153px.
+                    // All of these are allowed to autoscale down to two sizes smaller than ideal target size.
+                    '3xl': ['clamp(1.25rem, 2.083vw, 1.875rem)', { lineHeight: 'clamp(1.75rem, 2.500vw, 2.25rem)' }], // Equivalent to 30px/36px.
+                    '4xl': ['clamp(1.5rem, 2.500vw, 2.25rem)', { lineHeight: 'clamp(2rem, 2.778vw, 2.5rem)' }], // Equivalent to 36px/40px.
+                    '5xl': ['clamp(1.875rem, 3.333vw, 3rem)', { lineHeight: 'clamp(2.25rem, 4.028vw, 3.625rem)' }], // Equivalent to 48px/58px.
+                    '6xl': ['clamp(2.25rem, 4.167vw, 3.75rem)', { lineHeight: 'clamp(2.5rem, 4.861vw, 4.375rem)' }], // Equivalent to 60px/70px.
+                    '7xl': ['clamp(3rem, 5vw, 4.5rem)', { lineHeight: 'clamp(3.625rem, 5.972vw, 5.375rem)' }], // Equivalent to 72px/86px.
+                    '8xl': ['clamp(3.75rem, 6.667vw, 6rem)', { lineHeight: 'clamp(4.375rem, 7.986vw, 7.188rem)' }], // Equivalent to 96px/115px.
+                    '9xl': ['clamp(4.5rem, 8.889vw, 8rem)', { lineHeight: 'clamp(5.375rem, 10.625vw, 9.563rem)' }], // Equivalent to 128px/153px.
                 },
                 // Prose styles.
                 typography: {
