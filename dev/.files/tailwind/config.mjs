@@ -182,10 +182,12 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
                             'a, .link': {
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a'],
+                                opacity: '.9',
                                 textDecoration: 'none',
                                 cursor: 'pointer',
                             },
                             'a:hover, .link:hover': {
+                                opacity: '1',
                                 textDecoration: 'underline',
                             },
                             'a code, .link code': {
@@ -288,15 +290,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             '.task-list-item > input[type=checkbox]': {
                                 appearance: 'none',
                                 position: 'relative',
-                                display: 'inline-block',
 
                                 width: '1em',
                                 height: '1em',
                                 margin: '0 .5em 0 0',
                                 verticalAlign: 'middle',
 
-                                background: 'rgb(var(--colors-color-neutral))',
-                                border: '1px solid rgb(var(--colors-color-neutral-fg), .25)',
+                                background: 'rgb(var(--colors-color-neutral), .25)',
+                                border: '1px solid rgb(var(--colors-color-neutral-bdr))',
                                 borderRadius: '.15em',
                             },
                             '.task-list-item > input[type=checkbox]:checked::before': {
