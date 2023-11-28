@@ -115,13 +115,24 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '1/3': '33.333%',
                     '2/3': '66.667%',
                 },
-                margin: {
-                    // Enables use of `.my-p` to mirror prose `p` tags.
-                    'p': pluginTypographyStyles.DEFAULT.css[0]['p'].marginTop,
-                },
                 fontSize: {
-                    smaller: 'smaller',
-                    larger: 'larger',
+                    // `text-[size]` classes all target an 'ideal' size, but will now autoscale to viewport width.
+                    // Each text size is clamped such that it cannot exceed the `text-[size]`, but it can shrink to `xs`.
+
+                    xs: ['clamp(.75rem, .469vw, .75rem)', { lineHeight: 'clamp(.75rem, .625vw, 1rem)' }], // Equivalent to 12px/16px.
+                    sm: ['clamp(.75rem, .547vw, .875rem)', { lineHeight: 'clamp(.75rem, .781vw, 1.25rem)' }], // Equivalent to 14px/20px.
+                    base: ['clamp(.75rem, .625vw, 1rem)', { lineHeight: 'clamp(.75rem, .938vw, 1.5rem)' }], // Equivalent to 16px/24px.
+                    lg: ['clamp(.75rem, .703vw, 1.125rem)', { lineHeight: 'clamp(.75rem, 1.094vw, 1.75rem)' }], // Equivalent to 18px/28px.
+                    xl: ['clamp(.75rem, .781vw, 1.25rem)', { lineHeight: 'clamp(.75rem, 1.094vw, 1.75rem)' }], // Equivalent to 20px/28px.
+
+                    '2xl': ['clamp(.75rem, .938vw, 1.5rem)', { lineHeight: 'clamp(.75rem, 1.250vw, 2rem)' }], // Equivalent to 24px/32px.
+                    '3xl': ['clamp(.75rem, 1.172vw, 1.875rem)', { lineHeight: 'clamp(.75rem, 1.406vw, 2.25rem)' }], // Equivalent to 30px/36px.
+                    '4xl': ['clamp(.75rem, 1.406vw, 2.25rem)', { lineHeight: 'clamp(.75rem, 1.563vw, 2.5rem)' }], // Equivalent to 36px/40px.
+                    '5xl': ['clamp(.75rem, 1.875vw, 3rem)', { lineHeight: 'clamp(.75rem, 2.266vw, 3.625rem)' }], // Equivalent to 48px/58px.
+                    '6xl': ['clamp(.75rem, 2.344vw, 3.75rem)', { lineHeight: 'clamp(.75rem, 2.734vw, 4.375rem)' }], // Equivalent to 60px/70px.
+                    '7xl': ['clamp(.75rem, 2.813vw, 4.5rem)', { lineHeight: 'clamp(.75rem, 3.359vw, 5.375rem)' }], // Equivalent to 72px/86px.
+                    '8xl': ['clamp(.75rem, 3.750vw, 6rem)', { lineHeight: 'clamp(.75rem, 4.492vw, 7.188rem)' }], // Equivalent to 96px/115px.
+                    '9xl': ['clamp(.75rem, 5vw, 8rem)', { lineHeight: 'clamp(.75rem, 5.977vw, 9.563rem)' }], // Equivalent to 128px/153px.
                 },
                 // Prose styles.
                 typography: {
@@ -245,6 +256,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             'mark *': { border: '0', padding: '0', boxShadow: 'none' },
                             'mark a, mark .link': { opacity: '.75', textDecoration: 'underline' },
                             'mark a:hover, mark .link:hover': { opacity: '1' }, // Opaque on hover.
+
+                            // Abbreviation styles.
+                            'abbr': {
+                                cursor: 'help',
+                            },
 
                             // Task lists produced by remark GFM plugin.
                             '.contains-task-list, .task-list-item': {

@@ -26,11 +26,9 @@ export default () => {
                 props.className += ' text-color-' + (atts.color || 'neutral') + '-fg';
                 props.className += ' border-color-' + (atts.color || 'neutral') + '-bdr';
                 if (atts.size) {
-                    props.className += ' text-' + atts.size; // w/ auto-relative downsizing.
-                    if ('xs' !== atts.size) props.className += ' lte-laptop:[&_>*]:text-smaller';
+                    props.className += ' text-' + atts.size;
                 }
-                props.className += ' rounded border my-p p-4';
-                props.className += ' [&_>*]:my-0'; // No margin on immediate children.
+                props.className += ' rounded border p-4 _my-lp _fc-mt-0 _lc-mb-0';
                 props.className = props.className.trim();
 
                 data.hName = 'div'; // Block-level container.

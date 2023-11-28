@@ -12,22 +12,20 @@ import { visit as unistVisit } from 'unist-util-visit';
 /**
  * Generates HTML from remark directives.
  *
- *     :::main{#readme}
- *
+ *     :::main{#~remark-directive}
  *     Lorem:br
  *     ipsum.
  *
- *     ::hr{.red}
+ *     ::hr{.border-color-danger}
  *
  *     A :i[lovely] language known as :abbr[HTML]{title="HyperText Markup Language"}.
- *
  *     :::
  *
  * Produces:
  *
- *     <main id="readme">
+ *     <main id="~remark-directive">
  *      <p>Lorem<br>ipsum.</p>
- *      <hr class="red">
+ *      <hr class="border-color-danger">
  *      <p>A <i>lovely</i> language known as <abbr title="HyperText Markup Language">HTML</abbr>.</p>
  *     </main>
  *

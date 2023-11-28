@@ -97,3 +97,31 @@ $google-fonts: (
         }
     }
 }
+
+/**
+ * Our utilities layer.
+ *
+ * All of our utilities get prefixed with a leading `_` to help indicate what is being used.
+ * In the same way that all of our JS utilities are prefixed with a `$` sign, we use `_` in CSS.
+ */
+@layer utilities {
+    // Y margins like prose `p` tag.
+    ._my-lp {
+        @apply mt-[1.25em];
+        @apply mb-[1.25em];
+    }
+
+    // First child margin-top 0.
+    ._fc-mt-0 {
+        > :first-child {
+            @apply mt-0;
+        }
+    }
+
+    // Last child margin-bottom 0.
+    ._lc-mb-0 {
+        > :last-child {
+            @apply mb-0;
+        }
+    }
+}
