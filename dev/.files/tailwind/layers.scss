@@ -62,7 +62,7 @@ $google-fonts: (
     }
 
     .basic-header {
-        @apply border-color-heading-bdr bg-color-header text-color-header-fg;
+        @apply border-color-header-bdr bg-color-header text-color-header-fg;
 
         :where(a, .link):not(:where(.p, .p *, ._, ._ *)) {
             @apply cursor-pointer text-color-header-link/80 hover:text-color-header-link;
