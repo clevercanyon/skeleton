@@ -115,6 +115,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '1/3': '33.333%',
                     '2/3': '66.667%',
                 },
+                margin: {
+                    // Enables use of `.my-p` to mirror prose `p` tags.
+                    'p': pluginTypographyStyles.DEFAULT.css[0]['p'].marginTop,
+                },
+                fontSize: {
+                    smaller: 'smaller',
+                    larger: 'larger',
+                },
                 // Prose styles.
                 typography: {
                     DEFAULT: {

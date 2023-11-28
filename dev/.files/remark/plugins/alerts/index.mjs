@@ -10,28 +10,30 @@ import { h } from 'hastscript';
 import { visit as unistVisit } from 'unist-util-visit';
 
 /**
- * Generates a table of contents, when applicable, and exports it.
+ * Generates alerts from a remark directive.
  */
 export default () => {
     return (tree) => {
         unistVisit(tree, (node) => {
             if ('containerDirective' === node.type) {
                 if (node.name !== 'alert') return;
+
                 const data = node.data || (node.data = {});
                 const atts = node.attributes || (node.attributes = {});
+                const props = { className: '', 'aria-label': 'Alert' };
 
-                const props = {}; // Initialize.
-                props['aria-label'] = 'Alert';
-
-                props.className = ''; // Initialize.
                 props.className += ' bg-color-' + (atts.color || 'neutral');
                 props.className += ' text-color-' + (atts.color || 'neutral') + '-fg';
                 props.className += ' border-color-' + (atts.color || 'neutral') + '-bdr';
-                props.className += ' rounded border';
-                props.className += ' p-4';
-                props.className += ' [&_>*]:my-0';
+                if (atts.size) {
+                    props.className += ' text-' + atts.size; // w/ auto-relative downsizing.
+                    if ('xs' !== atts.size) props.className += ' lte-laptop:[&_>*]:text-smaller';
+                }
+                props.className += ' rounded border my-p p-4';
+                props.className += ' [&_>*]:my-0'; // No margin on immediate children.
+                props.className = props.className.trim();
 
-                data.hName = 'p';
+                data.hName = 'div'; // Block-level container.
                 data.hProperties = h(data.hName, props).properties;
             }
         });
