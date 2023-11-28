@@ -14,9 +14,12 @@ export default [
             type: 'element',
             tagName: 'button',
             properties: {
+                tabIndex: -1,
+                'aria-label': 'Copy to Clipboard',
+
                 dataCopied: null,
                 dataCopyId: headerOptions.id,
-                className: ['highlight-copy flex-1 text-sm text-right link no-underline opacity-70 hover:opacity-100'],
+                className: ['highlight-copy flex-1 text-sm text-right link no-underline'],
             },
             children: [
                 {

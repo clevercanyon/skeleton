@@ -336,6 +336,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     },
                 },
                 animation: {
+                    'one-fast-ping': 'ping .5s 1',
                     'fade-in': 'fade-in 150ms linear',
                     'fade-out': 'fade-out 150ms linear',
                 },
