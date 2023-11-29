@@ -20,7 +20,7 @@ export default () => {
 
                 const data = node.data || (node.data = {});
                 const atts = node.attributes || (node.attributes = {});
-                const props = { className: '', 'aria-label': 'Alert' };
+                const props = { className: '~', 'aria-label': 'Alert' };
 
                 props.className += ' bg-color-' + (atts.color || 'neutral');
                 props.className += ' text-color-' + (atts.color || 'neutral') + '-fg';

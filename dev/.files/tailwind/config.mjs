@@ -146,7 +146,19 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '8xl': ['clamp(2.25rem, 6.667vw, 6rem)', { lineHeight: 'clamp(2.5rem, 7.986vw, 7.188rem)' }], // Equivalent to 96px/115px.
                     '9xl': ['clamp(3rem, 8.889vw, 8rem)', { lineHeight: 'clamp(3.625rem, 10.625vw, 9.563rem)' }], // Equivalent to 128px/153px.
                 },
-                // Prose styles.
+                /**
+                 * Prose styles.
+                 *
+                 * - In our Tailwind implementation, class `p` = `prose`.
+                 * - In our Tailwind implementation, a much shorter `_` = `not-p` = `not-prose`.
+                 * - In our basic styles implementation, `_` = `not-p` = `not-prose` = `not-basic`.
+                 *
+                 * Also worth noting that in our Tailwind prose implementation, the `~` class means prose colors should
+                 * be inherited from the parent containing the `~` class; e.g., if a component applies colors that
+                 * differ from prose colors, then it needs to make sure any prose it contains will inherit the colors it
+                 * has assigned, and not use the default prose colors. So `~` is an alternative to `_`, indicating that
+                 * prose is to be allowed, but it must use inherited coloration.
+                 */
                 typography: {
                     DEFAULT: {
                         css: {
@@ -182,6 +194,10 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             'a strong': null, // Redefined as `a strong, .link strong`.
 
                             'a, .link': {
+                                // color: 'var(--tw-prose-links)',
+                                // textDecoration: 'underline',
+                                // fontWeight: '500',
+                                // All included in base `<a>` styles.
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a'],
                                 opacity: '.9',
                                 textDecoration: 'none',
@@ -192,12 +208,20 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 textDecoration: 'underline',
                             },
                             'a code, .link code': {
+                                // color: 'inherit',
+                                // All included in base `<code>` styles.
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a code'],
                                 color: null, // Explicitly remove; see notes above.
                             },
                             'a strong, .link strong': {
+                                // color: 'inherit',
+                                // All included in base `<strong>` styles.
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
                                 color: null, // Explicitly remove; see notes above.
+                            },
+                            '.\\~ a, .\\~.link': {
+                                color: 'inherit',
+                                textDecoration: 'underline',
                             },
 
                             // Auto-linked headings with `~`-prefixed IDs.
