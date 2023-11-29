@@ -19,7 +19,7 @@ export default [
 
                 dataCopied: null,
                 dataCopyId: headerOptions.id,
-                className: ['highlight-copy flex-1 text-sm text-right link no-underline'],
+                className: ['highlight-copy text-sm text-right link no-underline'],
             },
             children: [
                 {

@@ -20,7 +20,7 @@
     .highlight-header {
         display: flex;
         gap: 0.5em;
-        align-items: center;
+        justify-content: space-between;
         padding: 0.5em;
         color: rgb(var(--colors-color-starry-night-header-fg));
         background: rgb(var(--colors-color-starry-night-header));
