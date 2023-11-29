@@ -345,11 +345,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             },
 
                             // The `~` class means prose colors should be inherited from the parent containing the `~` class.
-                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link, dt, blockquote, thead th)': {
+                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link, dt, blockquote)': {
                                 color: 'inherit',
                             },
                             '.\\~ :where(ol > li, ul > li)::marker': { color: 'inherit' },
-                            '.\\~ :where(hr, tbody tr, tfoot)': { borderColor: 'inherit' },
+                            '.\\~ :where(hr, thead th, tbody tr, tfoot)': { borderColor: 'currentColor' },
                             '.\\~ :where(a, .link)': { textDecoration: 'underline' },
                         },
                     },
