@@ -219,7 +219,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
                                 color: null, // Explicitly remove; see notes above.
                             },
-                            '.\\~ a, .\\~.link': {
+                            '.\\~ a, .\\~ .link': {
                                 color: 'inherit',
                                 textDecoration: 'underline',
                             },
