@@ -345,7 +345,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             },
 
                             // The `~` class means prose colors should be inherited from the parent containing the `~` class.
-                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link, dt, blockquote, thead th)': {
+                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link:not(.highlight-copy), dt, blockquote, thead th)': {
                                 color: 'inherit',
                             },
                             '.\\~ :where(ol > li, ul > li)::marker': { color: 'inherit' },
