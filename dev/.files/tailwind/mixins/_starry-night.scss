@@ -97,16 +97,20 @@
             user-select: none;
         }
 
-        // Highlighted lines of code.
+        // Copy-in-progress and highlighted lines of code.
         > pre.-copy-in-progress .line,
         .line[data-highlighted] {
             background: rgb(var(--colors-color-starry-night-hilited-lines));
-            border-inline-start: 2px solid rgb(var(--colors-color-starry-night-syntax-comment-fg));
 
             // Highlighted line numbers.
             .line-number {
                 color: rgb(var(--colors-color-starry-night-syntax-comment-fg));
             }
+        }
+
+        // Highlighted lines of code.
+        .line[data-highlighted] {
+            border-inline-start: 2px solid rgb(var(--colors-color-starry-night-syntax-comment-fg));
         }
 
         // Lines with shell prompt icons.
