@@ -219,10 +219,6 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
                                 color: null, // Explicitly remove; see notes above.
                             },
-                            '.\\~ a, .\\~ .link': {
-                                color: 'inherit',
-                                textDecoration: 'underline',
-                            },
 
                             // Auto-linked headings with `~`-prefixed IDs.
                             '[id^=\\~]': {
@@ -347,6 +343,15 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             '.footnotes > h2': {
                                 marginTop: '1em',
                             },
+
+                            // The `~` class means prose colors should be inherited from the parent containing the `~` class.
+                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link, ol > li::marker, ul > li::marker, dt, blockquote, thead th)': {
+                                color: 'inherit',
+                            },
+                            '.\\~ :where(hr)': { borderColor: 'inherit' },
+                            '.\\~ :where(tbody tr)': { borderBottomColor: 'inherit' },
+                            '.\\~ :where(tfoot)': { borderTopColor: 'inherit' },
+                            '.\\~ :where(a, .link)': { textDecoration: 'underline' },
                         },
                     },
                 },
