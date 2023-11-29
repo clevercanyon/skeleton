@@ -41,6 +41,8 @@
 
     // Copy button inside code block header.
     .highlight-copy {
+        position: relative;
+
         &::after {
             display: inline-block;
             width: 1em;
@@ -50,7 +52,9 @@
             vertical-align: middle;
             content: '';
             background: rgb(var(--colors-color-basic-fg));
+        }
 
+        &::after {
             // Define as a variable so that when autoprefixer runs it won’t end up duplicating this lengthy value.
             --highlight-copy-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 448 512'%3E%3Cpath d='M384 336H192c-9 0-16-7-16-16V64c0-9 7-16 16-16h140l68 68v204c0 9-7 16-16 16zm-192 48h192c35 0 64-29 64-64V116c0-13-5-25-14-34l-68-68c-9-9-21-14-34-14H192c-35 0-64 29-64 64v256c0 35 29 64 64 64zM64 128c-35 0-64 29-64 64v256c0 35 29 64 64 64h192c35 0 64-29 64-64v-32h-48v32c0 9-7 16-16 16H64c-9 0-16-7-16-16V192c0-9 7-16 16-16h32v-48H64z'/%3E%3C/svg%3E");
 
@@ -58,6 +62,27 @@
             mask-repeat: no-repeat;
             mask-position: top center;
             mask-size: contain;
+        }
+
+        &::before {
+            position: absolute;
+            top: -25px;
+            left: -18px;
+            color: rgb(var(--colors-color-success));
+            content: '✔';
+            opacity: 0;
+        }
+
+        &:not(.-copy-success)::before {
+            top: 0;
+            visibility: hidden;
+            opacity: 1;
+        }
+
+        &.-copy-success::before {
+            transition:
+                opacity 1s,
+                top 1s;
         }
     }
 
@@ -123,7 +148,9 @@
                 vertical-align: middle;
                 content: '';
                 background: rgb(var(--colors-color-starry-night-syntax-comment-fg));
+            }
 
+            &::before {
                 // Define as a variable so that when autoprefixer runs it won’t end up duplicating this lengthy value.
                 --highlight-line-prompt-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' fill-rule='evenodd' stroke='currentColor' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' clip-rule='evenodd' viewBox='0 0 24 24'%3E%3Cpath d='M17 6C13 3 6 3 6 8c1 5 12 2 12 7 0 6-8 6-12 3m6-16v20'/%3E%3C/svg%3E");
 
