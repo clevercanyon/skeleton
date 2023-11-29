@@ -98,7 +98,7 @@
         }
 
         // Highlighted lines of code.
-        &.-copy-in-progress .line,
+        > pre.-copy-in-progress .line,
         .line[data-highlighted] {
             background: rgb(var(--colors-color-starry-night-hilited-lines));
             border-inline-start: 2px solid rgb(var(--colors-color-starry-night-syntax-comment-fg));
