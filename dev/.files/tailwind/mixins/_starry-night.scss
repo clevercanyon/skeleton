@@ -43,6 +43,10 @@
     .highlight-copy {
         position: relative;
 
+        &[disabled] {
+            pointer-events: none;
+        }
+
         &::after {
             margin: 0 0 0 0.5em;
             line-height: 1em;
@@ -55,7 +59,7 @@
             top: -25px;
             left: -18px;
             color: rgb(var(--colors-color-success));
-            content: '✔';
+            content: '✓';
             opacity: 0;
         }
 
