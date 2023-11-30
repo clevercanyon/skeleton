@@ -311,6 +311,7 @@ const baseConfigThemes = /* not async compatible */ () => {
             fontFamily: {
                 sans: [
                     'Georama', //
+                    'Noto Color Emoji',
                     'ui-sans-serif',
                     'sans-serif',
                 ],
