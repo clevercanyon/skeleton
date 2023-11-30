@@ -42,9 +42,11 @@
     // Copy button inside code block header.
     .highlight-copy {
         position: relative;
+        user-select: none;
 
         &[disabled] {
             pointer-events: none;
+            opacity: 0.7;
         }
 
         &::after {
