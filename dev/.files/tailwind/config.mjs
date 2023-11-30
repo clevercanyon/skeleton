@@ -308,7 +308,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             '.task-list-item::marker': {
                                 content: "''",
                             },
-                            '.task-list-item > input[type=checkbox]': {
+                            '.task-list-item > input': {
                                 appearance: 'none',
                                 position: 'relative',
 
@@ -321,7 +321,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 border: '1px solid rgb(var(--colors-color-neutral-bdr))',
                                 borderRadius: '.15em',
                             },
-                            '.task-list-item > input[type=checkbox]:checked::before': {
+                            '.task-list-item > input:checked::before': {
                                 content: "'\\2713'",
 
                                 fontSize: '1em',
@@ -345,7 +345,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             },
 
                             // The `~` class means prose colors should be inherited from the parent containing the `~` class.
-                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link:not(.highlight-copy), dt, blockquote, thead th)': {
+                            '.\\~ :where(h1, h2, h3, h4, h5, h6, [class~="lead"], a, .link, dt, blockquote, thead th)': {
                                 color: 'inherit',
                             },
                             '.\\~ :where(ol > li, ul > li)::marker': { color: 'inherit' },
