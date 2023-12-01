@@ -18,6 +18,7 @@ export default () => {
                 node.properties.id = '~footnotes'; // Aligned with the rest of our configuration, which always uses a `~` prefix.
                 node.properties.class = (node.properties.class || []).concat(node.properties.className || []).filter((c) => !['sr-only'].includes(c));
                 delete node.properties.className; // Removes `className` in favor of `class`.
+                if (!node.properties.class.length) delete node.properties.class;
             }
             return node;
         });

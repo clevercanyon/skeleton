@@ -31,6 +31,7 @@ export default () => {
                     node.properties.href = node.properties.href.replace('#user-content-fnref-', '#~fnr-');
                     node.properties.class = (node.properties.class || []).concat(node.properties.className || []).filter((c) => 'data-footnote-backref' !== c);
                     delete node.properties.className; // Removes `className` in favor of `class`.
+                    if (!node.properties.class.length) delete node.properties.class;
                     node.properties.dataFootnoteBackref = null; // Ditch this.
                 }
             }
