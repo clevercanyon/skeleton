@@ -29,7 +29,8 @@ export default () => {
                     //
                 } else if (node.properties.href.startsWith('#user-content-fnref-')) {
                     node.properties.href = node.properties.href.replace('#user-content-fnref-', '#~fnr-');
-                    node.properties.className = (node.properties.className || []).filter((c) => 'data-footnote-backref' !== c);
+                    node.properties.class = (node.properties.class || []).concat(node.properties.className || []).filter((c) => 'data-footnote-backref' !== c);
+                    delete node.properties.className; // Removes `className` in favor of `class`.
                     node.properties.dataFootnoteBackref = null; // Ditch this.
                 }
             }

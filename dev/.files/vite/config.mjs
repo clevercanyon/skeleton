@@ -289,6 +289,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
             // We ran several tests between `esbuild`, `cssnano`, and `lightningcss` wins.
 
             modulePreload: false, // Disable. DOM injections conflict with our SPAs.
+            // This option is sort-of respected, but not fully; {@see https://github.com/vitejs/vite/issues/13952}.
 
             ...(['cma', 'lib'].includes(appType) ? { lib: { entry: appEntries, formats: ['es'] } } : {}),
             rollupOptions: rollupConfig, // See: <https://o5p.me/5Vupql>.
