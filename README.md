@@ -1,7 +1,7 @@
 # @clevercanyon/skeleton
 
 <img src="https://cdn.clevercanyon.com/assets/uploads/code.gif" style="width:24px;" align="right" />
-<img src="https://cdn.clevercanyon.com/assets/brands/clevercanyon/logo-on-light-bgs.svg" style="height:24px;" align="right" />
+<img src="https://cdn.clevercanyon.com/assets/brands/clevercanyon/logo-on-light-bg.svg" style="height:24px;" align="right" />
 
 **Coming soon** ... another great project by Clever Canyon™
 
