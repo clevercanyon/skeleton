@@ -41,10 +41,18 @@ for (const [glob, relPath] of Object.entries(pkg.imports || {})) {
  *
  * Userland aliases; i.e., node subpath imports, begin with `#` and are defined in `./package.json`, such that we can
  * easily customize on a per-project basis and attain native support for aliases in; e.g., dev-only scripts.
+ *
+ * Regarding precedence of userland aliases. Node’s algorithm gives longer pattern matching keys higher precedence.
+ * However, key length is actually determined by where the `*` appears in each pattern. Please consult Node’s resolution
+ * algorithm. What is very important is that while pattern declaration order doesn’t actually matter to Node; i.e.,
+ * given what was just stated about the way Node determines precedence — it **does** matter to our build tools.
+ *
+ * - IMPORTANT: Always declare subpath imports in the descending order of their precedence in Node. This way Vite, Rollup,
+ *   esBuild, and possibly other build tools or plugins can iterate these patterns using a first-to-match strategy.
  */
 export default {
     asGlobs: {
-        ...userlandAliasesAsGlobs,
+        ...userlandAliasesAsGlobs, // In descending order of their precedence in Node.
 
         'react': path.resolve(projDir, './node_modules/preact/compat'),
         'react/jsx-runtime': path.resolve(projDir, './node_modules/preact/jsx-runtime'),
@@ -53,7 +61,7 @@ export default {
         'react-dom/test-utils': path.resolve(projDir, './node_modules/preact/test-utils'),
     },
     asRegExpStrings: {
-        ...userlandAliasesAsRegExpStrings,
+        ...userlandAliasesAsRegExpStrings, // In descending order of their precedence in Node.
 
         '^react$': path.resolve(projDir, './node_modules/preact/compat'),
         '^react/jsx-runtime$': path.resolve(projDir, './node_modules/preact/jsx-runtime'),
@@ -62,7 +70,7 @@ export default {
         '^react-dom/test-utils$': path.resolve(projDir, './node_modules/preact/test-utils'),
     },
     asFindReplaceRegExps: [
-        ...userlandAliasesAsFindReplaceRegExps,
+        ...userlandAliasesAsFindReplaceRegExps, // In descending order of their precedence in Node.
 
         { find: /^react$/u, replacement: path.resolve(projDir, './node_modules/preact/compat') },
         { find: /^react\/jsx-runtime$/u, replacement: path.resolve(projDir, './node_modules/preact/jsx-runtime') },
