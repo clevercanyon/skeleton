@@ -43,7 +43,7 @@
         }
     },
     "dependencies": {
-        "@clevercanyon/utilities": "^1.0.496"
+        "@clevercanyon/utilities": "^1.0.497"
     },
     "peerDependencies": {},
     "peerDependenciesMeta": {},
