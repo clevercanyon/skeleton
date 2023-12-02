@@ -11,7 +11,7 @@ import { $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../../..');
-const srcDir = path.resolve(__dirname, './src');
+const srcDir = path.resolve(projDir, './src');
 
 /**
  * Defines import aliases.
