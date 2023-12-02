@@ -176,6 +176,13 @@ export default async () => {
                           build: { command: 'npx @clevercanyon/madrun build --mode=dev' },
                       },
                   },
+                  // `$ wrangler dev` settings.
+
+                  dev: {
+                      ip: wranglerSettings.defaultLocalIP,
+                      local_protocol: wranglerSettings.defaultLocalProtocol,
+                      port: wranglerSettings.defaultLocalPort,
+                  },
               }),
     };
 
