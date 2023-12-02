@@ -21,7 +21,11 @@
 
         "type": "module",
         "bin": {},
-        "imports": {},
+        "imports": {
+            "#*": "./src/*",
+            "#@*": "./src/resources/*",
+            "#..*": "./*"
+        },
         "exports": null,
         "sideEffects": [],
         "module": "",
