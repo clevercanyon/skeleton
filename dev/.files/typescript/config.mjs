@@ -38,7 +38,7 @@ const projDir = path.resolve(__dirname, '../../..');
 const relativeImportAliases = {}; // Relative to `tsBaseDir`.
 for (const [aliasPath, realPath] of Object.entries(importAliases.asGlobs)) {
     relativeImportAliases[aliasPath] = [path.relative(path.resolve(projDir, './src'), realPath)];
-    if (!relativeImportAliases[aliasPath].startsWith('.')) relativeImportAliases[aliasPath] = './' + relativeImportAliases[aliasPath];
+    if (!relativeImportAliases[aliasPath][0].startsWith('.')) relativeImportAliases[aliasPath][0] = './' + relativeImportAliases[aliasPath][0];
 }
 
 /**
