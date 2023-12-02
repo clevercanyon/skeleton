@@ -113,6 +113,10 @@ export default async () => {
                                           ...extensions.byDevGroup.cJavaScriptReact,
 
                                           ...extensions.byCanonical.wasm,
+                                          ...extensions.byDevGroup.allTypeScript,
+                                          // Omit TypeScript also, because it causes Wrangler to choke. Apparently, Wrangler’s build system incorporates TypeScript middleware files.
+                                          // Therefore, we omit all TypeScript such that Wrangler’s build system can add TS files without them inadvertently being classified as text by our rules.
+                                          // We don’t expect TypeScript to be present in our `./dist` anyway, so this is harmless, and probably a good idea in general to omit TypeScript here.
                                       ].includes(ext),
                               ),
                           ),
@@ -134,6 +138,7 @@ export default async () => {
                                           ...extensions.byDevGroup.cJavaScriptReact,
 
                                           ...extensions.byCanonical.wasm,
+                                          ...extensions.byDevGroup.allTypeScript,
                                       ].includes(ext),
                               ),
                           ),

@@ -44,8 +44,8 @@ export default {
     defaultEnvironment: 'production',
     defaultProductionBranch: 'production',
 
-    defaultProjectName: pkgSlug.replace(new RegExp('-' + $str.escRegExp(hopGDNSlug) + '$', 'ui'), ''),
-    defaultWorkerName: pkgSlug.replace(new RegExp('^' + $str.escRegExp('workers-' + hopGDNSlug) + '-', 'ui'), ''),
+    defaultProjectName: pkgSlug.replace(new RegExp('-' + $str.escRegExp(hopGDNSlug) + '$', 'ui'), ''), // Pages project name.
+    defaultWorkerName: pkgSlug.replace(new RegExp('^' + $str.escRegExp('workers-' + hopGDNSlug) + '-', 'ui'), ''), // Worker name.
 
     osDir: path.resolve(os.homedir(), './.wrangler'),
     projDir: path.resolve(projDir, './.wrangler'),
