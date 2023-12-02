@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Dec 2, 2023 8:59 PM UTC.
+ * Last generated using `./tsconfig.mjs` Dec 2, 2023 11:10 PM UTC.
  */
 {
     "include": ["./src/**/*", "./dev-types.d.ts"],
@@ -98,6 +98,7 @@
     "compilerOptions": {
         "baseUrl": "./src",
         "rootDir": "./src",
+        "outDir": "./dist",
         "declarationDir": "./dist/types",
         "declaration": true,
         "declarationMap": false,
