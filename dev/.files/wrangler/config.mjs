@@ -181,7 +181,8 @@ export default async () => {
                   dev: {
                       ip: wranglerSettings.defaultLocalIP,
                       local_protocol: wranglerSettings.defaultLocalProtocol,
-                      port: wranglerSettings.defaultLocalPort,
+                      // Wrangler requires this to be a number, not a string.
+                      port: Number(wranglerSettings.defaultLocalPort),
                   },
               }),
     };
