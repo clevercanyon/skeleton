@@ -22,7 +22,7 @@
 
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $obp, $path, $url } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $obp, $path } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import extensions from '../bin/includes/extensions.mjs';
 import u from '../bin/includes/utilities.mjs';
 import wranglerSettings from './settings.mjs';
@@ -166,7 +166,7 @@ export default async () => {
 
                   route: {
                       zone_name: wranglerSettings.defaultZoneName,
-                      pattern: wranglerSettings.defaultZoneDomain + '/' + $url.encode(wranglerSettings.defaultWorkerName) + '/*',
+                      pattern: wranglerSettings.defaultZoneDomain + '/' + wranglerSettings.defaultWorkerName + '/*',
                   },
                   // Other environments used by this worker.
 
