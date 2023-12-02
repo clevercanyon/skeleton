@@ -19,7 +19,11 @@
     "contributors": [],
     "type": "module",
     "bin": {},
-    "imports": {},
+    "imports": {
+        "#..*": "./*",
+        "#@*": "./src/resources/*",
+        "#*": "./src/*"
+    },
     "exports": {
         ".": {
             "types": "./dist/types/index.d.ts",

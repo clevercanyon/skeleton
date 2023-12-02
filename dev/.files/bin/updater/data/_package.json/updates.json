@@ -22,9 +22,9 @@
         "type": "module",
         "bin": {},
         "imports": {
-            "#*": "./src/*",
+            "#..*": "./*",
             "#@*": "./src/resources/*",
-            "#..*": "./*"
+            "#*": "./src/*"
         },
         "exports": null,
         "sideEffects": [],

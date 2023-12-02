@@ -6,21 +6,46 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
+import fs from 'node:fs';
 import path from 'node:path';
 import { $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
+import { $is, $json, $str } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../../..');
 
+const pkgFile = path.resolve(projDir, './package.json');
+const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
+
+/**
+ * Parses userland aliases.
+ */
+const userlandAliasesAsGlobs = {};
+const userlandAliasesAsRegExpStrings = {};
+const userlandAliasesAsFindReplaceRegExps = [];
+
+for (const [glob, relPath] of Object.entries(pkg.imports || {})) {
+    // We do not allow nesting and/or any subpath conditionals.
+    if (!$is.string(relPath)) throw new Error('Invalid subpath imports.');
+
+    let regExpRepCounter = 0; // e.g., `$1`, `$2`, `$3`, etc.
+    const regExpString = '^' + $str.escRegExp(glob).replace(/\\\*/gu, '(.+?)') + '$';
+
+    userlandAliasesAsGlobs[glob] = path.resolve(projDir, relPath);
+    userlandAliasesAsRegExpStrings[regExpString] = path.resolve(projDir, relPath).replace(/\*/gu, () => '$' + String(++regExpRepCounter));
+    userlandAliasesAsFindReplaceRegExps.push({ find: new RegExp(regExpString, 'u'), replacement: userlandAliasesAsRegExpStrings[regExpString] });
+}
+
 /**
  * Defines import aliases.
  *
- * In our implementation, this kind of aliasing is actually less about aliasing, and more about remapping specific
- * packages at build time; e.g., react to preact. We don’t use these for userland project code, because modifying them
- * is a more tedious excercise. For userland aliases, please see `"imports": {}` in `./package.json`.
+ * Userland aliases; i.e., node subpath imports, begin with `#` and are defined in `./package.json`, such that we can
+ * easily customize on a per-project basis and attain native support for aliases in; e.g., dev-only scripts.
  */
 export default {
     asGlobs: {
+        ...userlandAliasesAsGlobs,
+
         'react': path.resolve(projDir, './node_modules/preact/compat'),
         'react/jsx-runtime': path.resolve(projDir, './node_modules/preact/jsx-runtime'),
 
@@ -28,6 +53,8 @@ export default {
         'react-dom/test-utils': path.resolve(projDir, './node_modules/preact/test-utils'),
     },
     asRegExpStrings: {
+        ...userlandAliasesAsRegExpStrings,
+
         '^react$': path.resolve(projDir, './node_modules/preact/compat'),
         '^react/jsx-runtime$': path.resolve(projDir, './node_modules/preact/jsx-runtime'),
 
@@ -35,6 +62,8 @@ export default {
         '^react-dom/test-utils$': path.resolve(projDir, './node_modules/preact/test-utils'),
     },
     asFindReplaceRegExps: [
+        ...userlandAliasesAsFindReplaceRegExps,
+
         { find: /^react$/u, replacement: path.resolve(projDir, './node_modules/preact/compat') },
         { find: /^react\/jsx-runtime$/u, replacement: path.resolve(projDir, './node_modules/preact/jsx-runtime') },
 
