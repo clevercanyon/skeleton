@@ -7,7 +7,7 @@
 # @note This entire file will be updated automatically.
 # @note Instead of editing here, please review `./wrangler.mjs`.
 #
-# Last generated using `./wrangler.mjs` Dec 2, 2023 8:59 PM UTC.
+# Last generated using `./wrangler.mjs` Dec 2, 2023 11:10 PM UTC.
 ##
 
 send_metrics = false
@@ -425,4 +425,4 @@ workers_dev = false
 [dev]
 ip = "0.0.0.0"
 local_protocol = "https"
-port = "443"
+port = 443
