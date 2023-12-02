@@ -11,12 +11,16 @@ import { $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/
 
 const __dirname = $fs.imuDirname(import.meta.url);
 const projDir = path.resolve(__dirname, '../../../..');
+const srcDir = path.resolve(__dirname, './src');
 
 /**
  * Defines import aliases.
  */
 export default {
     asGlobs: {
+        '~@*': path.resolve(srcDir, './*'),
+        '~r@*': path.resolve(srcDir, './resources/*'),
+
         'react': path.resolve(projDir, './node_modules/preact/compat'),
         'react/jsx-runtime': path.resolve(projDir, './node_modules/preact/jsx-runtime'),
 
@@ -24,6 +28,9 @@ export default {
         'react-dom/test-utils': path.resolve(projDir, './node_modules/preact/test-utils'),
     },
     asRegExpStrings: {
+        '^~@.\\+$': path.resolve(srcDir, './$1'),
+        '^~r@.\\+$': path.resolve(srcDir, './resources/$1'),
+
         '^react$': path.resolve(projDir, './node_modules/preact/compat'),
         '^react/jsx-runtime$': path.resolve(projDir, './node_modules/preact/jsx-runtime'),
 
@@ -31,6 +38,9 @@ export default {
         '^react-dom/test-utils$': path.resolve(projDir, './node_modules/preact/test-utils'),
     },
     asFindReplaceRegExps: [
+        { find: /^~@.+$/u, replacement: path.resolve(srcDir, './$1') },
+        { find: /^~r@.+$/u, replacement: path.resolve(srcDir, './resources/$1') },
+
         { find: /^react$/u, replacement: path.resolve(projDir, './node_modules/preact/compat') },
         { find: /^react\/jsx-runtime$/u, replacement: path.resolve(projDir, './node_modules/preact/jsx-runtime') },
 
