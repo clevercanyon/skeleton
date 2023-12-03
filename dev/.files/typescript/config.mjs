@@ -76,15 +76,15 @@ export default async () => {
             ),
         ]),
         compilerOptions: {
+            noEmit: true,
+            declaration: true,
+            declarationMap: false,
+
             baseUrl: './' + path.relative(projDir, srcDir),
             rootDir: './' + path.relative(projDir, srcDir),
 
             outDir: './' + path.relative(projDir, path.resolve(projDir, './dist')),
             declarationDir: './' + path.relative(projDir, path.resolve(projDir, './dist/types')),
-
-            declaration: true,
-            declarationMap: false,
-            emitDeclarationOnly: true,
 
             strict: true,
             skipLibCheck: true,

@@ -54,7 +54,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
              */
             if ('build' === command /* Does important type checking at build time. */) {
                 u.log($chalk.gray('Running TypeScript type checks.'));
-                await u.spawn('npx', ['tsc', '--noEmit']);
+                await u.spawn('npx', ['tsc']);
             }
 
             /**
