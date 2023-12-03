@@ -180,7 +180,6 @@ export default async () => {
                   // `$ wrangler dev` settings.
 
                   dev: {
-                      env: 'dev', // Dev in dev mode.
                       local_protocol: wranglerSettings.defaultLocalProtocol,
                       ip: wranglerSettings.defaultLocalIP, // i.e., `0.0.0.0`.
                       port: Number(wranglerSettings.defaultLocalPort),
