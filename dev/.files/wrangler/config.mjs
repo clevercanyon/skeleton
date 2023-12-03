@@ -173,15 +173,16 @@ export default async () => {
                   env: {
                       dev: {
                           workers_dev: false,
+                          vars: { WRANGLER: 'env=dev' }, // Makes Wrangler detectable.
                           build: { command: 'npx @clevercanyon/madrun build --mode=dev' },
                       },
                   },
                   // `$ wrangler dev` settings.
 
                   dev: {
-                      ip: wranglerSettings.defaultLocalIP,
+                      env: 'dev', // Dev in dev mode.
                       local_protocol: wranglerSettings.defaultLocalProtocol,
-                      // Wrangler requires this to be a number, not a string.
+                      ip: wranglerSettings.defaultLocalIP, // i.e., `0.0.0.0`.
                       port: Number(wranglerSettings.defaultLocalPort),
                   },
               }),
