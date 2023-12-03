@@ -152,7 +152,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     if (!['spa', 'mpa', 'cma', 'lib'].includes(appType)) {
         throw new Error('Must have a valid `config.c10n.&.build.appType` in `package.json`.');
     }
-    if ((['spa', 'mpa'].includes(appType) || ['cfw', 'cfp'].includes(targetEnv)) && !appBaseURL) {
+    if ((['spa', 'mpa'].includes(appType) || (['cfw'].includes(targetEnv) && !['lib'].includes(appType))) && !appBaseURL) {
         throw new Error('Must have a valid `APP_BASE_URL` environment variable.');
     }
     if (!['any', 'node', 'cfw', 'cfp', 'web', 'webw'].includes(targetEnv)) {
