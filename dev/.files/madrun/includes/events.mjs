@@ -128,14 +128,14 @@ export default {
                         .then((envProd) => envProd.toString())
                         .then(async (envProd) => {
                             if ('cfw' === pkg.config.c10n.build.targetEnv) {
-                                envProd = envProd.replace(
-                                    /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
-                                    "$1='https://" + wranglerSettings.defaultZoneDomain + '/' + wranglerSettings.defaultWorkerName + "/'",
-                                );
+                                envProd = envProd.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='/" + wranglerSettings.defaultWorkerName + "'");
+                                envProd = envProd.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultZoneDomain + "${BASE_PATH}/'");
+                                //
                             } else if ('cfp' === pkg.config.c10n.build.targetEnv) {
+                                envProd = envProd.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='' # No base path.");
                                 envProd = envProd.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
-                                    "$1='https://" + wranglerSettings.defaultProjectName + '.' + wranglerSettings.defaultZoneName + "/'",
+                                    "$1='https://" + wranglerSettings.defaultProjectName + '.' + wranglerSettings.defaultZoneName + "${BASE_PATH}/'",
                                 );
                             }
                             await fsp.writeFile(envProdFile, envProd);
