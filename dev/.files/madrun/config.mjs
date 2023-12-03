@@ -154,54 +154,60 @@ export default async () => {
                         : []),
                     ...('dev' === args._?.[0]
                         ? // `$ madrun wrangler dev`.
-                          ['npx', 'wrangler', '{{@}}', ...(args.env ? [] : ['--env', 'dev'])]
+                          [['npx', 'wrangler', '{{@}}', ...(args.env ? [] : ['--env', 'dev'])]]
                         : //
                           // `$ madrun wrangler pages`.
                           'pages' === args._?.[0]
                           ? [
-                                'npx',
-                                'wrangler',
-                                '{{@}}',
+                                [
+                                    'npx',
+                                    'wrangler',
+                                    '{{@}}',
 
-                                // Default `project` command args.
-                                ...('project' === args._?.[1] && 'create' === args._?.[2] ? (args._?.[3] ? [] : [wranglerSettings.defaultProjectName]) : []),
-                                ...('project' === args._?.[1] && 'create' === args._?.[2]
-                                    ? args.productionBranch
-                                        ? [] // This is the production branch on the Cloudflare side.
-                                        : ['--production-branch', wranglerSettings.defaultProductionBranch]
-                                    : []),
+                                    // Default `project` command args.
+                                    ...('project' === args._?.[1] && 'create' === args._?.[2] ? (args._?.[3] ? [] : [wranglerSettings.defaultProjectName]) : []),
+                                    ...('project' === args._?.[1] && 'create' === args._?.[2]
+                                        ? args.productionBranch
+                                            ? [] // This is the production branch on the Cloudflare side.
+                                            : ['--production-branch', wranglerSettings.defaultProductionBranch]
+                                        : []),
 
-                                // Default `dev` command args.
-                                ...('dev' === args._?.[1] ? (args._?.[2] ? [] : [distDir]) : []),
-                                ...('dev' === args._?.[1] ? (args.ip ? [] : ['--ip', wranglerSettings.defaultLocalIP]) : []),
-                                ...('dev' === args._?.[1] ? (args.port ? [] : ['--port', wranglerSettings.defaultLocalPort]) : []),
-                                ...('dev' === args._?.[1] ? (args.localProtocol ? [] : ['--local-protocol', wranglerSettings.defaultLocalProtocol]) : []),
-                                ...('dev' === args._?.[1] ? (args.compatibilityDate ? [] : ['--compatibility-date', wranglerSettings.compatibilityDate]) : []),
-                                ...('dev' === args._?.[1]
-                                    ? args.compatibilityFlag || args.compatibilityFlags
-                                        ? [] // `--compatibility-flag` is an alias of `--compatibility-flags`.
-                                        : wranglerSettings.compatibilityFlags.map((f) => ['--compatibility-flag', f]).flat()
-                                    : []),
+                                    // Default `dev` command args.
+                                    ...('dev' === args._?.[1] ? (args._?.[2] ? [] : [distDir]) : []),
+                                    ...('dev' === args._?.[1] ? (args.ip ? [] : ['--ip', wranglerSettings.defaultLocalIP]) : []),
+                                    ...('dev' === args._?.[1] ? (args.port ? [] : ['--port', wranglerSettings.defaultLocalPort]) : []),
+                                    ...('dev' === args._?.[1] ? (args.localProtocol ? [] : ['--local-protocol', wranglerSettings.defaultLocalProtocol]) : []),
+                                    ...('dev' === args._?.[1] ? (args.compatibilityDate ? [] : ['--compatibility-date', wranglerSettings.compatibilityDate]) : []),
+                                    ...('dev' === args._?.[1]
+                                        ? args.compatibilityFlag || args.compatibilityFlags
+                                            ? [] // `--compatibility-flag` is an alias of `--compatibility-flags`.
+                                            : wranglerSettings.compatibilityFlags.map((f) => ['--compatibility-flag', f]).flat()
+                                        : []),
 
-                                // Default `deploy` command args.
-                                ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
-                                ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.branch ? [] : ['--branch', wranglerSettings.defaultProductionBranch]) : []),
+                                    // Default `deploy` command args.
+                                    ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
+                                    ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.branch ? [] : ['--branch', wranglerSettings.defaultProductionBranch]) : []),
 
-                                // Default `deployment` command args.
-                                ...('deployment' === args._?.[1] && 'list' === args._?.[2]
-                                    ? args.projectName
-                                        ? []
-                                        : ['--project-name', wranglerSettings.defaultProjectName]
-                                    : []),
-                                ...('deployment' === args._?.[1] && 'tail' === args._?.[2]
-                                    ? args.projectName
-                                        ? []
-                                        : ['--project-name', wranglerSettings.defaultProjectName]
-                                    : []),
-                                ...('deployment' === args._?.[1] && 'tail' === args._?.[2] ? (args.environment ? [] : ['--environment', wranglerSettings.defaultEnvironment]) : []),
+                                    // Default `deployment` command args.
+                                    ...('deployment' === args._?.[1] && 'list' === args._?.[2]
+                                        ? args.projectName
+                                            ? []
+                                            : ['--project-name', wranglerSettings.defaultProjectName]
+                                        : []),
+                                    ...('deployment' === args._?.[1] && 'tail' === args._?.[2]
+                                        ? args.projectName
+                                            ? []
+                                            : ['--project-name', wranglerSettings.defaultProjectName]
+                                        : []),
+                                    ...('deployment' === args._?.[1] && 'tail' === args._?.[2]
+                                        ? args.environment
+                                            ? []
+                                            : ['--environment', wranglerSettings.defaultEnvironment]
+                                        : []),
+                                ],
                             ]
                           : // `$ madrun wrangler *`.
-                            ['npx', 'wrangler', '{{@}}']),
+                            [['npx', 'wrangler', '{{@}}']]),
                 ],
             };
         },
