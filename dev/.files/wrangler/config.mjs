@@ -44,7 +44,10 @@ export default async () => {
         // Platform settings.
 
         send_metrics: false, // Don't share usage.
-        usage_model: 'bundled', // 10M/mo free + $0.50/M.
+
+        // Cannot be added once we opt into standard pricing.
+        // This field should be configured from CF dashboard.
+        // usage_model: 'bundled', // 10M/mo free + $0.50/M.
 
         // Compatibility settings.
 
