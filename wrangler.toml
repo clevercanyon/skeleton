@@ -7,7 +7,7 @@
 # @note This entire file will be updated automatically.
 # @note Instead of editing here, please review `./wrangler.mjs`.
 #
-# Last generated using `./wrangler.mjs` Dec 3, 2023 10:49 AM UTC.
+# Last generated using `./wrangler.mjs` Dec 3, 2023 12:23 PM UTC.
 ##
 
 send_metrics = false
@@ -419,10 +419,14 @@ pattern = "workers.hop.gdn/skeleton/*"
 [env.dev]
 workers_dev = false
 
+  [env.dev.vars]
+  WRANGLER = "env=dev"
+
   [env.dev.build]
   command = "npx @clevercanyon/madrun build --mode=dev"
 
 [dev]
-ip = "0.0.0.0"
+env = "dev"
 local_protocol = "https"
+ip = "0.0.0.0"
 port = 443
