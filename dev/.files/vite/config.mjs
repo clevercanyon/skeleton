@@ -241,12 +241,14 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
         server: {
             host: '0.0.0.0', // All.
             port: 443, // Default https.
+            strictPort: true, // Only use 443.
             open: false, // Not automatically.
             https: { key: sslKey, cert: sslCrt },
         },
         preview: {
             host: '0.0.0.0', // All.
             port: 443, // Default https.
+            strictPort: true, // Only use 443.
             open: false, // Not automatically.
             https: { key: sslKey, cert: sslCrt },
         },
