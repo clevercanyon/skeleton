@@ -177,7 +177,7 @@ export default async () => {
                       dev: {
                           workers_dev: false,
                           vars: { WRANGLER: 'env=dev' }, // Makes Wrangler detectable.
-                          build: { command: 'npx @clevercanyon/madrun build --mode=dev' },
+                          build: { command: 'npx @clevercanyon/madrun build --mode=stage' },
                       },
                   },
                   // `$ wrangler dev` settings.

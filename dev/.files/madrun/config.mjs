@@ -134,6 +134,7 @@ export default async () => {
                 opts: { ...('pages' === args._?.[0] ? { cwd: distDir } : {}) },
                 // Setting `cwd` is a bug workaround; see: <https://o5p.me/k9Fqml>.
                 cmds: [
+                    // `$ madrun wrangler dev|pages`.
                     ...('dev' === args._?.[0] || 'pages' === args._?.[0]
                         ? [
                               async () => {
