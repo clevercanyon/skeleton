@@ -21,9 +21,10 @@ import wranglerSettings from '../wrangler/settings.mjs';
 import events from './includes/events.mjs';
 
 const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+const projDir = path.resolve(__dirname, '../../..');
 const distDir = path.resolve(__dirname, '../../../dist');
-const nodeIncludeFile = path.resolve(__dirname, './includes/node.cjs');
 
+const nodeIncludeFile = path.resolve(__dirname, './includes/node.cjs');
 const nodeEnvVars = { NODE_OPTIONS: $cmd.quote([`--require ${$cmd.esc(nodeIncludeFile)}`].join(' ')) };
 const cloudflareEnvVars = { CLOUDFLARE_API_TOKEN: process.env.USER_CLOUDFLARE_TOKEN || '' };
 
@@ -164,7 +165,7 @@ export default async () => {
                           'pages' === args._?.[0]
                           ? [
                                 // `$ madrun wrangler pages dev`.
-                                ...('dev' === args._?.[1] ? [['npx', 'vite', 'build', '--mode', 'stage']] : []),
+                                ...('dev' === args._?.[1] ? [{ opts: { cwd: projDir }, cmd: ['npx', 'vite', 'build', '--mode', 'stage'] }] : []),
 
                                 // `$ madrun wrangler pages *`.
                                 [
