@@ -155,9 +155,12 @@ export default async () => {
                         : []),
                     ...('dev' === args._?.[0]
                         ? // `$ madrun wrangler dev`.
+                          // Config pulled from `./wrangler.toml` in this case.
                           [['npx', 'wrangler', '{{@}}', ...(args.env ? [] : ['--env', 'dev'])]]
                         : //
                           // `$ madrun wrangler pages`.
+                          // Config is not pulled from `./wrangler.toml` in this case.
+                          // Therefore, we must configure everything at command line.
                           'pages' === args._?.[0]
                           ? [
                                 // `$ madrun wrangler pages dev`.
