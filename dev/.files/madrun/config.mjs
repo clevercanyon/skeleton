@@ -160,6 +160,10 @@ export default async () => {
                           // `$ madrun wrangler pages`.
                           'pages' === args._?.[0]
                           ? [
+                                // `$ madrun wrangler pages dev`.
+                                ...('dev' === args._?.[1] ? [['npx', 'vite', 'build', '--mode', 'stage']] : []),
+
+                                // `$ madrun wrangler pages *`.
                                 [
                                     'npx',
                                     'wrangler',
