@@ -363,7 +363,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                         to: { opacity: 1 },
                     },
                     'subtle-fade-in': {
-                        from: { opacity: 0.8 },
+                        from: { opacity: 0.9 },
                         to: { opacity: 1 },
                     },
                     'fade-out': {
