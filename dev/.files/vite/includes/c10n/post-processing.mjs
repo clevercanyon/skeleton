@@ -180,22 +180,20 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             }
 
             /**
-             * Generates SHA-1 manifest for JS import compatibility.
+             * Generates SHA-1 manifests for JS import compatibility.
              */
             if ('build' === command && fs.existsSync(path.resolve(distDir, './vite/' + (isSSRBuild ? 'ssr-' : '') + 'manifest.json'))) {
                 u.log($chalk.gray('Generating MD5-keyed ' + (isSSRBuild ? 'SSR ' : '') + 'manifest.'));
 
                 const file = path.resolve(distDir, './vite/' + (isSSRBuild ? 'ssr-' : '') + 'manifest.json');
-                const sha1File = path.resolve(distDir, './vite/' + (isSSRBuild ? 'ssr-' : '') + 'manifest-sha1.json');
-
                 const data = $json.parse((await fsp.readFile(file)).toString());
                 const sha1Data = {}; // Initialize.
 
                 for (const [key, value] of Object.entries(data)) {
                     sha1Data['x' + (await $crypto.sha1(key))] = { [key]: value };
                 }
-                const prettierConfig = { ...(await $prettier.resolveConfig(sha1File)), parser: 'json' };
-                await fsp.writeFile(sha1File, await $prettier.format($json.stringify(sha1Data, { pretty: true }), prettierConfig));
+                const prettierConfig = { ...(await $prettier.resolveConfig(file)), parser: 'json' };
+                await fsp.writeFile(file, await $prettier.format($json.stringify(sha1Data, { pretty: true }), prettierConfig));
             }
 
             /**
