@@ -188,7 +188,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                 const file = path.resolve(distDir, './vite/' + (isSSRBuild ? 'ssr-' : '') + 'manifest.json');
                 const sha1File = path.resolve(distDir, './vite/' + (isSSRBuild ? 'ssr-' : '') + 'manifest-sha1.json');
 
-                const data = $json.parse(await fsp.readFile(file).toString());
+                const data = $json.parse((await fsp.readFile(file)).toString());
                 const sha1Data = {}; // Initialize.
 
                 for (const [key, value] of Object.entries(data)) {
