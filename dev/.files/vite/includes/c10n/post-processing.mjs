@@ -192,7 +192,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                 const sha1Data = {}; // Initialize.
 
                 for (const [key, value] of Object.entries(data)) {
-                    sha1Data[await $crypto.sha1(key)] = { [key]: value };
+                    sha1Data['x' + (await $crypto.sha1(key))] = { [key]: value };
                 }
                 const prettierConfig = { ...(await $prettier.resolveConfig(sha1File)), parser: 'json' };
                 await fsp.writeFile(sha1File, await $prettier.format($json.stringify(sha1Data, { pretty: true }), prettierConfig));
