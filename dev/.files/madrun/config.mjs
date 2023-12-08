@@ -226,7 +226,7 @@ export default async () => {
                 env: { ...nodeEnvVars, ...cloudflareEnvVars },
                 cmds: [
                     async () => {
-                        u.log($chalk.green('Flushing Wrangler state for local dev testing.'));
+                        u.log($chalk.green('Flushing Wrangler state.'));
                         await fsp.rm(wranglerSettings.projStateDir, { recursive: true, force: true });
                     },
                 ],
