@@ -38,6 +38,10 @@ export default {
     defaultLocalProtocol: 'https',
     defaultLocalPort: '443',
 
+    defaultDevLogLevel: 'error',
+    miniflareDevBinding: 'MINIFLARE=true',
+    miniflareDevEnvVar: { MINIFLARE: 'true' },
+
     defaultZoneName: hop.hostname,
     defaultZoneDomain: 'workers.' + hop.hostname,
 

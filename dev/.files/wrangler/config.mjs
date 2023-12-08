@@ -176,7 +176,7 @@ export default async () => {
                   env: {
                       dev: {
                           workers_dev: false,
-                          vars: { MINIFLARE: 'true' }, // Makes miniflare detectable.
+                          vars: wranglerSettings.miniflareDevEnvVar,
                           build: { command: 'npx @clevercanyon/madrun build --mode=stage' },
                       },
                   },
