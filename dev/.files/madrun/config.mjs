@@ -192,6 +192,7 @@ export default async () => {
                                             ? [] // `--compatibility-flag` is an alias of `--compatibility-flags`.
                                             : wranglerSettings.compatibilityFlags.map((f) => ['--compatibility-flag', f]).flat()
                                         : []),
+                                    ...('dev' === args._?.[1] ? ['--binding', 'MINIFLARE=true'] : []),
 
                                     // Default `deploy` command args.
                                     ...(['deploy', 'publish'].includes(args._?.[1]) ? (args.projectName ? [] : ['--project-name', wranglerSettings.defaultProjectName]) : []),
