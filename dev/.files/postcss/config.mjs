@@ -28,7 +28,7 @@ export default async () => {
             (await import('postcss-import')).default(),
             (await import('postcss-mixins')).default(),
             (await import('postcss-simple-vars')).default(),
-            (await import('tailwindcss/nesting')).default(),
+            (await import('tailwindcss/nesting/index.js')).default(),
 
             // Tailwind CSS plugin.
             (await import('tailwindcss')).default({ config: path.resolve(projDir, './tailwind.config.mjs') }),
