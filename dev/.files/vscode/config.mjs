@@ -62,8 +62,13 @@ export default async () => {
         ['**/tsconfig.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
         ['**/.vscode/*.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
 
+        ['**/dist/_headers']: 'plaintext', // File has no extension.
         ['**/src/cargo/_headers']: 'plaintext', // File has no extension.
+
+        ['**/dist/_redirects']: 'plaintext', // File has no extension.
         ['**/src/cargo/_redirects']: 'plaintext', // File has no extension.
+
+        ['**/dist/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
         ['**/src/cargo/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
     };
 
