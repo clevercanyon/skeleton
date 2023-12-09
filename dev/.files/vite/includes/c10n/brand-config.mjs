@@ -8,7 +8,7 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
-import { $json } from '@clevercanyon/utilities/dist/index.js';
+import { $json } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import u from '../../../bin/includes/utilities.mjs';
 
 /**
