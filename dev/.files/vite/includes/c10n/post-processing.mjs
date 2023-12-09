@@ -202,81 +202,82 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
              * @see https://web.dev/articles/add-manifest
              */
             if (!isSSRBuild && 'build' === command && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
-                u.log($chalk.gray('Generating PWA manifest.'));
+                u.log($chalk.gray('Generating PWA `./manifest.json`.'));
 
-                const brandConfigFile = path.resolve(projDir, './brand.config.mjs'),
-                    brand = $brand.addApp({
+                const file = path.resolve(distDir, './manifest.json'),
+                    brandConfigFile = path.resolve(projDir, './brand.config.mjs');
+
+                const brand = $brand.addApp({
                         pkgName: pkg.name,
                         baseURL: appBaseURL,
                         props: await (await import(brandConfigFile)).default(),
-                    });
-                const file = path.resolve(distDir, './manifest.json');
-                const data = {
-                    id: $url.toPathQueryHash($url.addQueryVar('utx_ref', 'pwa', brand.url)),
-                    start_url: $url.toPathQueryHash($url.addQueryVar('utx_ref', 'pwa', brand.url)),
-                    scope: $str.rTrim($url.parse(brand.url).pathname, '/') + '/',
+                    }),
+                    data = {
+                        id: $url.toPathQueryHash($url.addQueryVar('utm_source', 'pwa', brand.url)),
+                        start_url: $url.toPathQueryHash($url.addQueryVar('utm_source', 'pwa', brand.url)),
+                        scope: $str.rTrim($url.parse(brand.url).pathname, '/') + '/',
 
-                    display_override: ['browser', 'standalone', 'minimal-ui'],
-                    display: 'browser', // Default and preferred presentation.
+                        display_override: ['browser', 'standalone', 'minimal-ui'],
+                        display: 'browser', // Default and preferred presentation.
 
-                    theme_color: brand.theme.color,
-                    background_color: brand.theme.color,
+                        theme_color: brand.theme.color,
+                        background_color: brand.theme.color,
 
-                    name: brand.name,
-                    short_name: brand.name,
-                    description: brand.description,
+                        name: brand.name,
+                        short_name: brand.name,
+                        description: brand.description,
 
-                    icons: [
-                        // SVGs.
-                        {
-                            type: 'image/svg+xml',
-                            src: $url.toPathQueryHash(brand.icon.svg),
-                            sizes: brand.icon.width + 'x' + brand.icon.height,
-                        },
-                        {
-                            type: 'image/svg+xml',
-                            src: $url.toPathQueryHash(brand.icon.svg),
-                            sizes: '512x512', // Required size in Chrome.
-                        },
-                        {
-                            type: 'image/svg+xml',
-                            src: $url.toPathQueryHash(brand.icon.svg),
-                            sizes: '192x192', // Required size in Chrome.
-                        },
-                        // PNGs.
-                        {
-                            type: 'image/png',
-                            src: $url.toPathQueryHash(brand.icon.png),
-                            sizes: brand.icon.width + 'x' + brand.icon.height,
-                        },
-                        {
-                            type: 'image/png',
-                            src: $url.toPathQueryHash(brand.icon.png),
-                            sizes: '512x512', // Required size in Chrome.
-                        },
-                        {
-                            type: 'image/png',
-                            src: $url.toPathQueryHash(brand.icon.png),
-                            sizes: '192x192', // Required size in Chrome.
-                        },
-                    ],
-                    screenshots: [
-                        // Wide.
-                        {
-                            type: 'image/png',
-                            form_factor: 'wide',
-                            src: $url.toPathQueryHash(brand.ogImage.png),
-                            sizes: brand.ogImage.width + 'x' + brand.ogImage.height,
-                        },
-                        // Narrow.
-                        {
-                            type: 'image/png',
-                            form_factor: 'narrow',
-                            src: $url.toPathQueryHash(brand.ogImage.png),
-                            sizes: brand.ogImage.width + 'x' + brand.ogImage.height,
-                        },
-                    ],
-                };
+                        icons: [
+                            // SVGs.
+                            {
+                                type: 'image/svg+xml',
+                                src: $url.toPathQueryHash(brand.icon.svg),
+                                sizes: brand.icon.width + 'x' + brand.icon.height,
+                            },
+                            {
+                                type: 'image/svg+xml',
+                                src: $url.toPathQueryHash(brand.icon.svg),
+                                sizes: '512x512', // Required size in Chrome.
+                            },
+                            {
+                                type: 'image/svg+xml',
+                                src: $url.toPathQueryHash(brand.icon.svg),
+                                sizes: '192x192', // Required size in Chrome.
+                            },
+                            // PNGs.
+                            {
+                                type: 'image/png',
+                                src: $url.toPathQueryHash(brand.icon.png),
+                                sizes: brand.icon.width + 'x' + brand.icon.height,
+                            },
+                            {
+                                type: 'image/png',
+                                src: $url.toPathQueryHash(brand.icon.png),
+                                sizes: '512x512', // Required size in Chrome.
+                            },
+                            {
+                                type: 'image/png',
+                                src: $url.toPathQueryHash(brand.icon.png),
+                                sizes: '192x192', // Required size in Chrome.
+                            },
+                        ],
+                        screenshots: [
+                            // Wide.
+                            {
+                                type: 'image/png',
+                                form_factor: 'wide',
+                                src: $url.toPathQueryHash(brand.ogImage.png),
+                                sizes: brand.ogImage.width + 'x' + brand.ogImage.height,
+                            },
+                            // Narrow.
+                            {
+                                type: 'image/png',
+                                form_factor: 'narrow',
+                                src: $url.toPathQueryHash(brand.ogImage.png),
+                                sizes: brand.ogImage.width + 'x' + brand.ogImage.height,
+                            },
+                        ],
+                    };
                 const prettierConfig = { ...(await $prettier.resolveConfig(file)), parser: 'json' };
                 await fsp.writeFile(file, await $prettier.format($json.stringify(data, { pretty: true }), prettierConfig));
             }
