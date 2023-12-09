@@ -292,6 +292,23 @@ export default async () => {
         'eslint.experimental.useFlatConfig': true,
         'eslint.workingDirectories': [{ 'mode': 'auto' }],
 
+        'eslint.probe': [
+            // For now, disabling eslint for markdown.
+
+            // MDX eslint plugin not compatible with MDX v3 yet.
+            // Outdated package: `eslint-plugin-mdx`.
+
+            // Additionally, the formatter for MDX/markdown has been changed
+            // from eslint to prettier, for now. See langauge settings below.
+
+            // 'mdx',
+            // 'markdown',
+
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+        ],
         'eslint.validate': [
             // For now, disabling eslint for markdown.
 
