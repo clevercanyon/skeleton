@@ -13,7 +13,7 @@ import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { $http as $cfpꓺhttp } from '../../../../../node_modules/@clevercanyon/utilities.cfp/dist/index.js';
 import { $chalk, $fs, $glob, $prettier } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $brand, $crypto, $json, $mm, $obp, $preact, $str, $url } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $crypto, $json, $mm, $obp, $preact, $str, $url } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import { StandAlone as StandAlone404 } from '../../../../../node_modules/@clevercanyon/utilities/dist/preact/components/404.js';
 import exclusions from '../../../bin/includes/exclusions.mjs';
 import extensions from '../../../bin/includes/extensions.mjs';
@@ -205,14 +205,8 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && appBaseURL && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
                 u.log($chalk.gray('Generating PWA `./manifest.json`.'));
 
-                const file = path.resolve(distDir, './manifest.json'),
-                    brandConfigFile = path.resolve(projDir, './brand.config.mjs');
-
-                const brand = $brand.addApp({
-                        pkgName: pkg.name,
-                        baseURL: appBaseURL,
-                        props: await (await import(brandConfigFile)).default(),
-                    }),
+                const file = path.resolve(distDir, './manifest.json');
+                const brand = await u.brand({ baseURL: appBaseURL }),
                     data = {
                         id: $url.toPathQueryHash($url.addQueryVar('utm_source', 'pwa', brand.url)),
                         start_url: $url.toPathQueryHash($url.addQueryVar('utm_source', 'pwa', brand.url)),

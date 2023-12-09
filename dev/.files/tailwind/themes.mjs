@@ -16,6 +16,7 @@ Example `index.scss` starter file contents:
 -------------------------------------------------------------------------------------------------------------------- */
 
 import { $color, $is, $obj } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import getBrand from './brand.mjs'; // Uses `make-synchronous` to acquire brand in a Tailwind/Jiti context.
 
 /**
  * Merges Tailwind themes configuration.
@@ -25,7 +26,7 @@ import { $color, $is, $obj } from '../../../node_modules/@clevercanyon/utilities
  */
 export default /* not async compatible */ ({ themesConfig } = {}) => {
     /**
-     * Gets themes.
+     * Acquires themes.
      */
     let themes; // Initialize.
 
@@ -37,6 +38,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
 
     themes.themes = $is.array(themes.themes) ? themes.themes : [];
     themes.themes.map((theme) => Object(theme || {}));
+
+    /**
+     * Acquires app’s brand theme.
+     */
+    const brandTheme = getBrand()?.theme || {};
 
     /**
      * Sets color defaults, for each theme, using basic colors.
@@ -65,14 +71,14 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
          * `<LayoutContext>` are aware. Simply map themes by name in your `<LayoutContext>` implementation.
          */
         const defaultBasicColors = {
-            'color-basic': '#09090b', // Background color.
-            'color-basic-fg': '#f0f0f0', // Foreground color.
-            'color-basic-bdr': '#17171c', // Border color.
-            'color-basic-link': '#80aff9', // Link/anchor color.
-            'color-basic-heading': '#ffffff', // Heading color.
+            'color-basic': brandTheme.color || '#09090b', // Background color.
+            'color-basic-fg': brandTheme.fgColor || '#f0f0f0', // Foreground color.
+            'color-basic-bdr': brandTheme.bdrColor || '#17171c', // Border color.
+            'color-basic-link': brandTheme.linkColor || '#80aff9', // Link/anchor color.
+            'color-basic-heading': brandTheme.headingColor || '#ffffff', // Heading color.
         };
         const basicColors = $obj.defaults({}, $obj.pick(theme.extend.colors, Object.keys(defaultBasicColors)), defaultBasicColors);
-        const basicBGIsDark = $color.isDark(basicColors['color-basic']); // Detects basic background color being dark.
+        const basicBGIsDark = basicColors['color-basic'] === brandTheme.color ? brandTheme.isDark : $color.isDark(basicColors['color-basic']);
 
         /**
          * Defines basic prose colors.
