@@ -129,7 +129,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             /**
              * Updates a few files that configure apps running on Cloudflare Pages.
              *
-             * None of these file must exist, and none of these must contain replacement codes. We leave it up to the
+             * None of these files must exist, and none of these must contain replacement codes. We leave it for the
              * implementation to decide. If they do not exist, or do not contain replacement codes, we assume that
              * nothing should occur. For example, it might be desirable in some cases for `./robots.txt`, `sitemap.xml`,
              * or others to be served dynamically. In which case they may not exist in these locations statically.
@@ -198,9 +198,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             }
 
             /**
-             * Generates PWA manifest file for SPA/MPA apps, if they don’t have one already.
-             *
-             * @see https://web.dev/articles/add-manifest
+             * Generates PWA manifest if it doesn’t exist already; {@see https://web.dev/articles/add-manifest}.
              */
             if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && appBaseURL && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
                 u.log($chalk.gray('Generating PWA `./manifest.json`.'));
