@@ -197,6 +197,64 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             }
 
             /**
+             * Generates PWA manifest file for SPA/MPA apps, if they don’t have one already.
+             */
+            if (!isSSRBuild && 'build' === command && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
+                u.log($chalk.gray('Generating PWA manifest.'));
+
+                // const brand = (await import('')).default;
+                const file = path.resolve(distDir, './manifest.json');
+                const data = {
+                    'id': '/?utx_ref=pwa',
+                    'start_url': '/?utx_ref=pwa',
+                    'scope': '/',
+
+                    'display_override': ['browser'],
+                    'display': 'browser',
+
+                    'theme_color': '#3367D6',
+                    'background_color': '#3367D6',
+
+                    'short_name': 'Weather',
+                    'name': 'Weather: Do I need an umbrella?',
+                    'description': 'Weather forecast information',
+                    'icons': [
+                        {
+                            'src': '/images/icons-vector.svg',
+                            'type': 'image/svg+xml',
+                            'sizes': '512x512',
+                        },
+                        {
+                            'src': '/images/icons-192.png',
+                            'type': 'image/png',
+                            'sizes': '192x192',
+                        },
+                        {
+                            'src': '/images/icons-512.png',
+                            'type': 'image/png',
+                            'sizes': '512x512',
+                        },
+                    ],
+                    'screenshots': [
+                        {
+                            'src': '/images/screenshot1.png',
+                            'type': 'image/png',
+                            'sizes': '540x720',
+                            'form_factor': 'narrow',
+                        },
+                        {
+                            'src': '/images/screenshot2.jpg',
+                            'type': 'image/jpg',
+                            'sizes': '720x540',
+                            'form_factor': 'wide',
+                        },
+                    ],
+                };
+                const prettierConfig = { ...(await $prettier.resolveConfig(file)), parser: 'json' };
+                await fsp.writeFile(file, await $prettier.format($json.stringify(data, { pretty: true }), prettierConfig));
+            }
+
+            /**
              * Generates SSR build on-the-fly internally.
              */
             if (!isSSRBuild && 'build' === command && $obp.get(pkg, 'config.c10n.&.ssrBuild.appType')) {
