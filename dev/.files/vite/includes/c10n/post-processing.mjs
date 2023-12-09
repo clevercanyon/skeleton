@@ -26,7 +26,7 @@ import u from '../../../bin/includes/utilities.mjs';
  *
  * @returns       Plugin configuration.
  */
-export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates }) => {
+export default async ({ mode, inProdLikeMode, command, isSSRBuild, projDir, distDir, pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates }) => {
     let buildEndError = undefined, // Initialize.
         postProcessed = false; // Initialize.
 
@@ -58,9 +58,9 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             /**
              * Prunes `./.npmignore`s, which we don’t include in any distribution.
              *
-             * We only prune `./.npmignore`s when building for production, as it’s possible there are files being
-             * compiled by TypeScript that are needed for development; i.e., they need to exist in dev mode in order to
-             * be capable of serving their intended purpose; e.g., dev-only utilities, runners, sandbox files, etc.
+             * We only prune `./.npmignore`s when building in a prod-like mode, as it’s possible there are files being
+             * compiled by TypeScript that are needed for development; i.e., they need to exist in to be capable of
+             * serving their intended purpose; e.g., dev-only utilities, runners, sandbox files, etc.
              *
              * Regarding `node_modules`. There is an exception for the case of `node_modules/assets/a16s`, used for
              * Cloudflare SSR-specific assets. See `../a16s/dir.mjs` for details. The `node_modules` folder is pruned by
@@ -72,7 +72,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
              * potentially customized `./.npmignore` file in the current project directory. The reason is because we
              * intend to enforce our standards. For further details {@see https://o5p.me/MuskgW}.
              */
-            if (!isSSRBuild && 'build' === command && 'prod' === mode) {
+            if (!isSSRBuild && 'build' === command && inProdLikeMode) {
                 for (let globOpts = [{ onlyDirectories: true }, { onlyFiles: false }], i = 0; i < globOpts.length; i++) {
                     for (const fileOrDir of await $glob.promise(exclusions.defaultNPMIgnores, { cwd: distDir, ignoreCase: true, ...globOpts[i] })) {
                         const projRelPath = path.relative(projDir, fileOrDir);
@@ -112,11 +112,11 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
             /**
              * Deletes a few things that are not needed by apps running on Cloudflare Pages.
              *
-             * We only prune when building for production, as it’s possible there are files being compiled by TypeScript
-             * that are needed for development; i.e., they need to exist in dev mode in order to be capable of serving
-             * their intended purpose; e.g., dev-only utilities, runners, sandbox files, etc.
+             * We only prune when building in a prod-like mode, as it’s possible there are files being compiled by
+             * TypeScript that are needed for development; i.e., they need to exist in dev mode in order to be capable
+             * of serving their intended purpose; e.g., dev-only utilities, runners, sandbox files, etc.
              */
-            if (!isSSRBuild && 'build' === command && 'prod' === mode && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
+            if (!isSSRBuild && 'build' === command && inProdLikeMode && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
                 for (const fileOrDir of await $glob.promise(
                     [
                         'types', // Prunes TypeScript type declarations.

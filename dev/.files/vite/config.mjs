@@ -145,8 +145,10 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
      */
     const peerDepKeys = Object.keys(pkg.peerDependencies || {});
     const targetEnvIsServer = ['cfw', 'node'].includes(targetEnv);
-    const minifyEnable = !['lib'].includes(appType) && !['dev'].includes(mode);
-    const sourcemapsEnable = ['dev', 'stage'].includes(mode); // Sourcemaps only in these modes.
+    const wranglerMode = process.env.VITE_WRANGLER_MODE || ''; // Wrangler mode.
+    const inProdLikeMode = ['prod', 'stage'].includes(mode) || ('dev' === mode && 'dev' === wranglerMode);
+    const sourcemapsEnable = ['dev'].includes(mode); // Only generate sourcemaps when explicitly in dev mode.
+    const minifyEnable = !['lib'].includes(appType) && inProdLikeMode; // We don’t ever minify code in a library.
     const vitestSandboxEnable = process.env.VITEST && $str.parseValue(String(process.env.VITEST_SANDBOX_ENABLE || ''));
     const vitestExamplesEnable = process.env.VITEST && $str.parseValue(String(process.env.VITEST_EXAMPLES_ENABLE || ''));
     const prefreshEnable = process.env.VITE_PREFRESH_ENABLE && !process.env.VITEST && 'serve' === command && 'dev' === mode && ['spa', 'mpa'].includes(appType);
@@ -201,7 +203,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
         await viteMinifyConfig({ minifyEnable }),
         await viteDTSConfig({ distDir }),
         await viteC10nPostProcessingConfig({
-            mode, command, isSSRBuild, projDir, distDir,
+            mode, inProdLikeMode, command, isSSRBuild, projDir, distDir,
             pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates
         }), // prettier-ignore
         ...(prefreshEnable ? [await vitePrefreshConfig({})] : []),
