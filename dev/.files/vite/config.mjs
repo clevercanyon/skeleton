@@ -92,8 +92,8 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     // We leave it up to the implementation to decide which it prefers to use.
     // A base URL is only required for some app types; e.g., `spa|mpa`. Validation below.
 
-    // This is a resolved variant of the base URL with no trailing slash.
-    const resolvedBaseURLNTS = appBaseURL ? $str.rTrim(new URL('./', appBaseURL).toString(), '/') : '';
+    // This is a variant of the base URL that’s resolved and has no trailing slash.
+    const appBaseURLResolvedNTS = appBaseURL ? $str.rTrim(new URL('./', appBaseURL).toString(), '/') : '';
 
     // No other choice at this time, we have to store this in an environment variable for Tailwind configuration.
     // This uses a leading underscore to avoid contaminating current environment variables in @clevercanyon/utilities.
@@ -106,7 +106,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
         ['$$__' + appEnvPrefixes[0] + 'PKG_HOMEPAGE__$$']: pkg.homepage || '',
         ['$$__' + appEnvPrefixes[0] + 'PKG_BUGS__$$']: pkg.bugs || '',
         ['$$__' + appEnvPrefixes[0] + 'BASE_URL__$$']: appBaseURL || '',
-        ['$$__' + appEnvPrefixes[0] + 'RESOLVED_BASE_URL_NTS__$$']: resolvedBaseURLNTS || '',
+        ['$$__' + appEnvPrefixes[0] + 'BASE_URL_RESOLVED_NTS__$$']: appBaseURLResolvedNTS || '',
         ['$$__' + appEnvPrefixes[0] + 'BUILD_TIME_YMD__$$']: $time.now().toYMD() || '',
     };
     Object.keys(env) // Add string env vars to static defines.
@@ -253,7 +253,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
 
         root: srcDir, // Absolute path where entry indexes live.
         publicDir: isSSRBuild ? false : path.relative(srcDir, cargoDir),
-        base: resolvedBaseURLNTS ? $url.toPath(resolvedBaseURLNTS) : '/',
+        base: appBaseURLResolvedNTS ? $url.toPath(appBaseURLResolvedNTS) : '/',
 
         envDir: path.relative(srcDir, envsDir), // Relative to `root` directory.
         envPrefix: appEnvPrefixes, // Env vars w/ these prefixes become part of the app.

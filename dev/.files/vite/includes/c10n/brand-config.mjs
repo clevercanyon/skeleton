@@ -19,7 +19,7 @@ import u from '../../../bin/includes/utilities.mjs';
  * @returns       Plugin configuration.
  */
 export default async (/* {} */) => {
-    const virtualId = 'virtual:brand.config.json';
+    const virtualId = 'virtual:brand-config';
     const resolvedVirtualId = '\0' + virtualId;
 
     return {
