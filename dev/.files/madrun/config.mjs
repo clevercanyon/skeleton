@@ -165,8 +165,14 @@ export default async () => {
                           'pages' === args._?.[0]
                           ? [
                                 // `$ madrun wrangler pages dev`.
-                                ...('dev' === args._?.[1] ? [{ opts: { cwd: projDir }, cmd: ['npx', 'vite', 'build', '--mode', 'stage'] }] : []),
-
+                                ...('dev' === args._?.[1] && !args.help
+                                    ? [
+                                          {
+                                              opts: { cwd: projDir },
+                                              cmd: ['npx', 'vite', 'build', '--mode', 'stage'],
+                                          },
+                                      ]
+                                    : []),
                                 // `$ madrun wrangler pages *`.
                                 [
                                     'npx',
