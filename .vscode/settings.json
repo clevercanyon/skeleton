@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Dec 9, 2023 6:25 PM UTC.
+ * Last generated using `./settings.mjs` Dec 9, 2023 6:51 PM UTC.
  */
 {
     "editor.formatOnType": false,
@@ -72,8 +72,11 @@
         "**/CODEOWNERS": "ignore",
         "**/tsconfig.{json,×××××××}": "jsonc",
         "**/.vscode/*.{json,×××××××}": "jsonc",
+        "**/dist/_headers": "plaintext",
         "**/src/cargo/_headers": "plaintext",
+        "**/dist/_redirects": "plaintext",
         "**/src/cargo/_redirects": "plaintext",
+        "**/dist/_routes.{json,×××××××}": "jsonc",
         "**/src/cargo/_routes.{json,×××××××}": "jsonc"
     },
     "files.exclude": {
