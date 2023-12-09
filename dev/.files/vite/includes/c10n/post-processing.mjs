@@ -27,14 +27,17 @@ import u from '../../../bin/includes/utilities.mjs';
  * @returns       Plugin configuration.
  */
 export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates }) => {
-    let postProcessed = false; // Initialize.
+    let buildEndError = undefined, // Initialize.
+        postProcessed = false; // Initialize.
+
     return {
         name: 'vite-plugin-c10n-post-processing',
         enforce: 'post', // After others on this hook.
+        buildEnd: (error) => void (buildEndError = error),
 
         async closeBundle(/* Rollup hook. */) {
-            if (postProcessed) return;
-            postProcessed = true;
+            if (postProcessed || buildEndError) return;
+            postProcessed = true; // Processing now.
 
             /**
              * Recompiles `./package.json`.

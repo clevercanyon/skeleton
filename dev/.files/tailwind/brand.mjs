@@ -9,7 +9,6 @@
 import sync from 'make-synchronous';
 import fs from 'node:fs';
 import path from 'node:path';
-import { $dotenv } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import { $brand, $fn, $json } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 // `__dirname` already exists when loaded by Tailwind via Jiti / commonjs.
@@ -22,9 +21,6 @@ const pkg = $json.parse(fs.readFileSync(pkgFile).toString());
 const brandConfigFile = path.resolve(projDir, './brand.config.mjs');
 const brandConfigSync = sync(async (brandConfigFile) => await (await import(brandConfigFile)).default());
 
-const envVaultFile = path.resolve(projDir, './.env.vault');
-const prodEnvFiles = [path.resolve(projDir, './dev/.envs/.env'), path.resolve(projDir, './dev/.envs/.env.prod')];
-
 /**
  * Acquires app’s brand for configuration of Tailwind themes.
  *
@@ -35,15 +31,10 @@ export default /* not async compatible */ () => {
     let brand = $fn.try(() => $brand.get(pkg.name), undefined)();
     if (brand) return brand; // That was’t such a chore, now was it?
 
-    let baseURL = process.env._APP_BASE_URL; // From Vite.
-    if (!baseURL && fs.existsSync(envVaultFile)) {
-        const env = $dotenv.parseExpand(prodEnvFiles);
-        baseURL = env.APP_BASE_URL || '';
-    }
-    return baseURL
+    return process.env._APP_BASE_URL
         ? $brand.addApp({
-              baseURL,
               pkgName: pkg.name,
+              baseURL: process.env._APP_BASE_URL,
               props: brandConfigSync(brandConfigFile),
           })
         : undefined;
