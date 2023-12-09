@@ -475,5 +475,10 @@
             "source.fixAll": true
         },
         "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[css][dockerfile][html][ini][javascript][javascriptreact][json][jsonc][less][markdown][mdx][php][properties][python][ruby][scss][shellscript][sql][toml][typescript][typescriptreact][xml][yaml]": {
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit"
+        }
     }
 }
