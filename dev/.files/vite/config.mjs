@@ -84,7 +84,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
 
     const appBaseURL = env.APP_BASE_URL || ''; // e.g., `https://example.com/`, `https://example.com/base`.
     // A base URL is only required for some app types; e.g., `spa|mpa`. See validation below for details.
-    process.env.APP_BASE_URL = appBaseURL; // Informs; e.g., brand acquisition via Tailwind configuration.
+    process.env._APP_BASE_URL = appBaseURL; // Informs; e.g., brand acquisition via Tailwind configuration.
 
     const staticDefs = {
         ['$$__' + appEnvPrefixes[0] + 'PKG_NAME__$$']: pkg.name || '',

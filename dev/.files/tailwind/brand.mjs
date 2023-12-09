@@ -35,7 +35,7 @@ export default /* not async compatible */ () => {
     let brand = $fn.try(() => $brand.get(pkg.name), undefined)();
     if (brand) return brand; // That was’t such a chore, now was it?
 
-    let baseURL = process.env.APP_BASE_URL; // From Vite, if available.
+    let baseURL = process.env._APP_BASE_URL; // From Vite.
     if (!baseURL && fs.existsSync(envVaultFile)) {
         const env = $dotenv.parseExpand(prodEnvFiles);
         baseURL = env.APP_BASE_URL || '';
