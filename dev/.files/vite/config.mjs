@@ -20,8 +20,9 @@ import extensions from '../bin/includes/extensions.mjs';
 import importAliases from '../bin/includes/import-aliases.mjs';
 import u from '../bin/includes/utilities.mjs';
 import viteA16sDir from './includes/a16s/dir.mjs';
+import viteC10nBrandConfig from './includes/c10n/brand-config.mjs';
 import viteC10nPostProcessingConfig from './includes/c10n/post-processing.mjs';
-import viteC10nTransformsConfig from './includes/c10n/transforms.mjs';
+import viteC10nSideEffectsConfig from './includes/c10n/side-effects.mjs';
 import viteDTSConfig from './includes/dts/config.mjs';
 import viteEJSConfig from './includes/ejs/config.mjs';
 import viteESBuildConfig from './includes/esbuild/config.mjs';
@@ -83,9 +84,10 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     const env = loadEnv(mode, envsDir, appEnvPrefixes); // Includes `APP_IS_VITE`.
 
     const appBaseURL = env.APP_BASE_URL || '';
-    // A trailing slash or no trailing slash; it matters!
+    // A trailing slash or no trailing slash; it definitely matters!
     // e.g., `new URL('./', 'https://example.com/')` = `https://example.com/`.
     // e.g., `new URL('./', 'https://example.com/base')` = `https://example.com/`.
+    // e.g., `new URL('./', 'https://example.com/base/')` = `https://example.com/base/`.
 
     // We leave it up to the implementation to decide which it prefers to use.
     // A base URL is only required for some app types; e.g., `spa|mpa`. Validation below.
@@ -93,8 +95,9 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     // This is a resolved variant of the base URL with no trailing slash.
     const resolvedBaseURLNTS = appBaseURL ? $str.rTrim(new URL('./', appBaseURL).toString(), '/') : '';
 
-    // With no other choice at this time, we have to store this in an environment variable for Tailwind config.
-    process.env._APP_BASE_URL = appBaseURL; // Informs; e.g., brand acquisition via Tailwind configuration.
+    // No other choice at this time, we have to store this in an environment variable for Tailwind configuration.
+    // This uses a leading underscore to avoid contaminating current environment variables in @clevercanyon/utilities.
+    process.env._MODE_AWARE_APP_BASE_URL = appBaseURL; // Informs brand acquisition in our Tailwind configuration file.
 
     const staticDefs = {
         ['$$__' + appEnvPrefixes[0] + 'PKG_NAME__$$']: pkg.name || '',
@@ -190,8 +193,9 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
      * Configures plugins for Vite.
      */
     const plugins = [
-        await viteC10nTransformsConfig({}),
         await viteIconsConfig({}),
+        await viteC10nBrandConfig({}),
+        await viteC10nSideEffectsConfig({}),
         await viteMDXConfig({ projDir }),
         await viteEJSConfig({ mode, projDir, srcDir, pkg, env }),
         await viteMinifyConfig({ minifyEnable }),

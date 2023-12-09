@@ -26,11 +26,11 @@ declare const $$__APP_BUILD_TIME_YMD__$$: string;
 declare var __PREFRESH__: object;
 
 /**
- * Declares brand config file.
+ * Declares virtual brand config file.
  */
-declare module '#^brand.config.mjs' {
+declare module 'virtual:brand.config.json' {
     import { $type } from '@clevercanyon/utilities';
-    export default function (): Promise<Partial<$type.BrandRawProps>>;
+    export default Partial<$type.BrandRawProps>;
 }
 
 /*

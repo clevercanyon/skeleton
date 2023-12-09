@@ -20,7 +20,7 @@ import extensions from '../../../bin/includes/extensions.mjs';
 import u from '../../../bin/includes/utilities.mjs';
 
 /**
- * Configures Vite/Rollup post-processing.
+ * Configures Vite post-processing plugin.
  *
  * @param   props Props from vite config file driver.
  *
