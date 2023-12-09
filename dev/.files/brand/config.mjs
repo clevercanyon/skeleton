@@ -16,6 +16,9 @@
  * @returns         Raw brand properties.
  */
 export default async (/* {} */) => {
+    /**
+     * Composition.
+     */
     return {
         name: 'Skeleton',
         slogan: 'Masters of the digital divide.',

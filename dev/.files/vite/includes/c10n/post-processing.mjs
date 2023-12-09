@@ -142,6 +142,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
                         '_routes.json',
                         '404.html',
                         'robots.txt',
+                        'manifest.json',
                         'sitemap.xml',
                         'sitemaps/**/*.xml',
                     ],
@@ -201,7 +202,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
              *
              * @see https://web.dev/articles/add-manifest
              */
-            if (!isSSRBuild && 'build' === command && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
+            if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
                 u.log($chalk.gray('Generating PWA `./manifest.json`.'));
 
                 const file = path.resolve(distDir, './manifest.json'),
