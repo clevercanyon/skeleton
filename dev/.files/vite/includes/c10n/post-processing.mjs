@@ -202,7 +202,7 @@ export default async ({ mode, command, isSSRBuild, projDir, distDir, pkg, env, a
              *
              * @see https://web.dev/articles/add-manifest
              */
-            if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
+            if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && appBaseURL && !fs.existsSync(path.resolve(distDir, './manifest.json'))) {
                 u.log($chalk.gray('Generating PWA `./manifest.json`.'));
 
                 const file = path.resolve(distDir, './manifest.json'),
