@@ -25,9 +25,9 @@ declare const $$__APP_BASE_URL__$$: string;
 declare var __PREFRESH__: object;
 
 /**
- * Declares raw brand props module.
+ * Declares brand config file.
  */
-declare module '#@brand.mjs' {
+declare module '#^brand.config.mjs' {
     import { $type } from '@clevercanyon/utilities';
     export default function (): Promise<Partial<$type.BrandRawProps>>;
 }
