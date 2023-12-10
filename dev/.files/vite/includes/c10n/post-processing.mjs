@@ -167,14 +167,24 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                     for (const key of Object.keys(staticDefs) /* Replaces all static definition tokens. */) {
                         fileContents = fileContents.replace(new RegExp($str.escRegExp(key), 'gu'), staticDefs[key]);
                     }
+
                     if (['_headers'].includes(fileRelPath)) {
                         const cfpDefaultHeaders = $cfpꓺhttp.prepareDefaultHeaders({ appType, isC10n: env.APP_IS_C10N || false });
                         fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_HEADERS__$$', cfpDefaultHeaders);
-                    }
-                    if (['404.html'].includes(fileRelPath)) {
+                        //
+                    } else if (['_redirects'].includes(fileRelPath)) {
+                        const cfpDefaultRedirects = $cfpꓺhttp.prepareDefaultRedirects({ appType, isC10n: env.APP_IS_C10N || false });
+                        fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_REDIRECTS__$$', cfpDefaultRedirects);
+                        //
+                    } else if (['_routes.json'].includes(fileRelPath)) {
+                        const cfpDefaultRoutes = $cfpꓺhttp.prepareDefaultRoutes({ appType, isC10n: env.APP_IS_C10N || false });
+                        fileContents = fileContents.replace('"$$__APP_CFP_DEFAULT_ROUTES__$$"', cfpDefaultRoutes);
+                        //
+                    } else if (['404.html'].includes(fileRelPath)) {
                         const cfpDefault404 = '<!doctype html>' + $preact.ssr.renderToString($preact.create(StandAlone404));
                         fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_404_HTML__$$', cfpDefault404);
                     }
+
                     if (['_headers', '_redirects'].includes(fileRelPath) || ['txt'].includes(fileExt)) {
                         fileContents = fileContents.replace(/^#[^\n]*\n/gmu, '');
                         //
@@ -184,8 +194,8 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                     } else if (['xml', 'html'].includes(fileExt)) {
                         fileContents = fileContents.replace(/<!--[\s\S]*?-->\n?/gu, '');
                     }
-                    fileContents = $str.trim(fileContents.replace(/\n{3,}/gu, '\n\n'));
 
+                    fileContents = $str.trim(fileContents.replace(/\n{3,}/gu, '\n\n'));
                     u.log($chalk.gray('Updating `./' + path.relative(projDir, file) + '`.'));
                     await fsp.writeFile(file, fileContents);
                 }
