@@ -33,6 +33,9 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
     return {
         name: 'vite-plugin-c10n-post-processing',
         enforce: 'post', // After others on this hook.
+
+        // Listens for build-related errors.
+        // No post-processing if there were errors.
         buildEnd: (error) => void (buildEndError = error),
 
         async closeBundle(/* Rollup hook. */) {
