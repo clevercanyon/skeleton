@@ -139,16 +139,15 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
              * implementation to decide. If they do not exist, or do not contain replacement codes, we assume that
              * nothing should occur. For example, it might be desirable in some cases for `./robots.txt`, `sitemap.xml`,
              * or others to be served dynamically. In which case they may not exist in these locations statically.
-             *
-             * @review Consider expanding `.well-known/` to include extension variants instead of the hard-coded `{txt,xml,html,json}`.
              */
             if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
                 for (const file of await $glob.promise(
                     [
-                        '_headers', //
+                        '.well-known/gpc.json',
+                        '.well-known/security.txt',
+                        '_headers',
                         '_redirects',
                         '_routes.json',
-                        '.well-known/**/*.{txt,xml,html,json}',
                         'sitemaps/**/*.xml',
                         'sitemap.xml',
                         'manifest.json',
@@ -167,8 +166,15 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                     for (const key of Object.keys(staticDefs) /* Replaces all static definition tokens. */) {
                         fileContents = fileContents.replace(new RegExp($str.escRegExp(key), 'gu'), staticDefs[key]);
                     }
-
-                    if (['_headers'].includes(fileRelPath)) {
+                    if (['.well-known/gpc.json'].includes(fileRelPath)) {
+                        const cfpDefaultWellKnownGPC = $cfpꓺhttp.prepareDefaultWellKnownGPC({ appType, isC10n: env.APP_IS_C10N || false });
+                        fileContents = fileContents.replace('"$$__APP_CFP_DEFAULT_WELL_KNOWN_GPC__$$"', cfpDefaultWellKnownGPC);
+                        //
+                    } else if (['.well-known/security.txt'].includes(fileRelPath)) {
+                        const cfpDefaultWellKnownSecurity = $cfpꓺhttp.prepareDefaultWellKnownSecurity({ appType, brand: await u.brand({baseURL: appBaseURL}), isC10n: env.APP_IS_C10N || false }); // prettier-ignore
+                        fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_WELL_KNOWN_SECURITY__$$', cfpDefaultWellKnownSecurity);
+                        //
+                    } else if (['_headers'].includes(fileRelPath)) {
                         const cfpDefaultHeaders = $cfpꓺhttp.prepareDefaultHeaders({ appType, isC10n: env.APP_IS_C10N || false });
                         fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_HEADERS__$$', cfpDefaultHeaders);
                         //
@@ -185,7 +191,7 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                         fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_404_HTML__$$', cfpDefault404);
                     }
 
-                    if (['_headers', '_redirects'].includes(fileRelPath) || ['txt'].includes(fileExt)) {
+                    if (['txt'].includes(fileExt) || ['_headers', '_redirects'].includes(fileRelPath)) {
                         fileContents = fileContents.replace(/^#[^\n]*\n/gmu, '');
                         //
                     } else if (['json'].includes(fileExt)) {
