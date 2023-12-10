@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Dec 10, 2023 5:35 PM UTC.
+ * Last generated using `./settings.mjs` Dec 10, 2023 5:57 PM UTC.
  */
 {
     "editor.formatOnType": false,
@@ -76,8 +76,8 @@
         "**/src/cargo/_headers": "plaintext",
         "**/dist/_redirects": "plaintext",
         "**/src/cargo/_redirects": "plaintext",
-        "**/dist/_routes.{json,×××××××}": "jsonc",
-        "**/src/cargo/_routes.{json,×××××××}": "jsonc"
+        "**/src/cargo/_routes.{json,×××××××}": "jsonc",
+        "**/src/cargo/.well-known/*.{json,×××××××}": "jsonc"
     },
     "files.exclude": {
         "**/._*": true,
