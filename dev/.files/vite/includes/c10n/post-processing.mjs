@@ -139,6 +139,8 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
              * implementation to decide. If they do not exist, or do not contain replacement codes, we assume that
              * nothing should occur. For example, it might be desirable in some cases for `./robots.txt`, `sitemap.xml`,
              * or others to be served dynamically. In which case they may not exist in these locations statically.
+             *
+             * @review Consider expanding `.well-known/` to include extension variants instead of the hard-coded `{txt,xml,html,json}`.
              */
             if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
                 for (const file of await $glob.promise(
@@ -146,10 +148,11 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                         '_headers', //
                         '_redirects',
                         '_routes.json',
-                        '.well-known/**/*.txt',
+                        '.well-known/**/*.{txt,xml,html,json}',
                         'sitemaps/**/*.xml',
                         'sitemap.xml',
                         'manifest.json',
+                        'ads.txt',
                         'humans.txt',
                         'robots.txt',
                         '404.html',
