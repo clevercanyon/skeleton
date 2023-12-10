@@ -68,8 +68,8 @@ export default async () => {
         ['**/dist/_redirects']: 'plaintext', // File has no extension.
         ['**/src/cargo/_redirects']: 'plaintext', // File has no extension.
 
-        ['**/dist/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
         ['**/src/cargo/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
+        ['**/src/cargo/.well-known/*.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
     };
 
     /**
