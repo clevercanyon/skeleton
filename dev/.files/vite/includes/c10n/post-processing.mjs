@@ -26,7 +26,7 @@ import u from '../../../bin/includes/utilities.mjs';
  *
  * @returns       Plugin configuration.
  */
-export default async ({ mode, inProdLikeMode, command, isSSRBuild, projDir, distDir, pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates }) => {
+export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild, projDir, distDir, pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates }) => {
     let buildEndError = undefined, // Initialize.
         postProcessed = false; // Initialize.
 
@@ -295,7 +295,7 @@ export default async ({ mode, inProdLikeMode, command, isSSRBuild, projDir, dist
             /**
              * Generates a zip archive containing `./dist` directory.
              */
-            if (!isSSRBuild && 'build' === command) {
+            if (!isSSRBuild && 'build' === command && 'dev' !== wranglerMode) {
                 const zipFile = path.resolve(projDir, './.~dist.zip');
                 u.log($chalk.gray('Generating `' + path.relative(projDir, zipFile) + '`.'));
 
