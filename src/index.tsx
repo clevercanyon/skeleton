@@ -2,7 +2,7 @@
  * Module.
  */
 
-import '#@init.ts';
+import '#@initialize.ts';
 
 /**
  * Exports.
