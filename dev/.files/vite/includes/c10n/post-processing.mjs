@@ -146,11 +146,13 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                         '_headers', //
                         '_redirects',
                         '_routes.json',
-                        '404.html',
-                        'robots.txt',
-                        'manifest.json',
-                        'sitemap.xml',
+                        '.well-known/**/*.txt',
                         'sitemaps/**/*.xml',
+                        'sitemap.xml',
+                        'manifest.json',
+                        'humans.txt',
+                        'robots.txt',
+                        '404.html',
                     ],
                     { cwd: distDir },
                 )) {
@@ -170,7 +172,7 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                         const cfpDefault404 = '<!doctype html>' + $preact.ssr.renderToString($preact.create(StandAlone404));
                         fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_404_HTML__$$', cfpDefault404);
                     }
-                    if (['_headers', '_redirects', 'robots.txt'].includes(fileRelPath)) {
+                    if (['_headers', '_redirects'].includes(fileRelPath) || ['txt'].includes(fileExt)) {
                         fileContents = fileContents.replace(/^#[^\n]*\n/gmu, '');
                         //
                     } else if (['json'].includes(fileExt)) {
