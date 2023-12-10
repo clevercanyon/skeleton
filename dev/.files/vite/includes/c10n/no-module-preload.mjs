@@ -16,12 +16,15 @@
  * @returns       Plugin configuration.
  */
 export default async (/* {} */) => {
+    const virtualId = 'vite/preload-helper.js';
+    const resolvedVirtualId = '\0' + virtualId;
+
     return {
         name: 'vite-plugin-c10n-no-module-preload',
         enforce: 'pre', // Before Vite loads this virtual module.
 
         load(id) {
-            if ('\0vite/preload-helper.js' === id) {
+            if (id === resolvedVirtualId) {
                 return 'export const __vitePreload = (dynamicImport) => dynamicImport();';
             }
         },
