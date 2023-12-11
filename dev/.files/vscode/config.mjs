@@ -59,8 +59,10 @@ export default async () => {
         ['**/.env.*']: 'properties', // Suffix, not extension.
         ['**/CODEOWNERS']: 'ignore', // File has no extension.
 
-        ['**/tsconfig.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
-        ['**/.vscode/*.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
+        ['**/tsconfig.' + fileAssociationsOverrideExt('json')]: 'jsonc',
+        ['**/.vscode/*.' + fileAssociationsOverrideExt('json')]: 'jsonc',
+
+        ['**/src/cargo/.well-known/**/*.' + fileAssociationsOverrideExt('json')]: 'jsonc',
 
         ['**/dist/_headers']: 'plaintext', // File has no extension.
         ['**/src/cargo/_headers']: 'plaintext', // File has no extension.
@@ -68,8 +70,8 @@ export default async () => {
         ['**/dist/_redirects']: 'plaintext', // File has no extension.
         ['**/src/cargo/_redirects']: 'plaintext', // File has no extension.
 
-        ['**/src/cargo/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
-        ['**/src/cargo/.well-known/*.' + fileAssociationsOverrideExt('json')]: 'jsonc', // JSON w/comments.
+        ['**/src/cargo/manifest.' + fileAssociationsOverrideExt('json')]: 'jsonc',
+        ['**/src/cargo/_routes.' + fileAssociationsOverrideExt('json')]: 'jsonc',
     };
 
     /**
