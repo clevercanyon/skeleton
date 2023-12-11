@@ -125,6 +125,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '2/3': '66.667%',
                 },
                 fontSize: {
+                    '1em': ['1em', '1em'],
+
                     // Neither of these are allowed to autoscale.
                     // We don’t autoscale text that is small already.
                     xs: ['.75rem', { lineHeight: '1rem' }], // Equivalent to 12px/16px.
