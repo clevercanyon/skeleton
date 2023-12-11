@@ -125,6 +125,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '2/3': '66.667%',
                 },
                 fontSize: {
+                    '.5em': ['.5em', '.5em'],
                     '1em': ['1em', '1em'],
 
                     // Neither of these are allowed to autoscale.
