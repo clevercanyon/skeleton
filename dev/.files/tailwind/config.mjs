@@ -149,6 +149,9 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '8xl': ['clamp(2.25rem, 6.667vw, 6rem)', { lineHeight: 'clamp(2.5rem, 7.986vw, 7.188rem)' }], // Equivalent to 96px/115px.
                     '9xl': ['clamp(3rem, 8.889vw, 8rem)', { lineHeight: 'clamp(3.625rem, 10.625vw, 9.563rem)' }], // Equivalent to 128px/153px.
                 },
+                boxShadow: {
+                    'inner-sm': 'inset 0 1px 2px 0 rgb(0 0 0 / 0.05)',
+                },
                 /**
                  * Prose styles.
                  *
