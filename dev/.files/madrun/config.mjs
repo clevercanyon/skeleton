@@ -180,7 +180,7 @@ export default async () => {
                                           {
                                               opts: { cwd: projDir },
                                               cmd: ['npx', 'vite', 'build', '--mode', // Mode can only be `prod` or `stage` when deploying remotely.
-                                                args.environment && args.environment !== wranglerSettings.defaultEnvironment ? 'stage' : 'prod'], // prettier-ignore
+                                                args.branch && args.branch !== wranglerSettings.defaultProductionBranch ? 'stage' : 'prod'], // prettier-ignore
                                           },
                                       ]
                                     : []),
