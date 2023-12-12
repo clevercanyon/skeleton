@@ -312,7 +312,6 @@ const baseConfigThemes = /* not async compatible */ () => {
             fontFamily: {
                 sans: [
                     'sans-serif', //
-                    'Noto Color Emoji',
                     'Apple Color Emoji',
                     'Segoe UI Emoji',
                     'Segoe UI Symbol',
