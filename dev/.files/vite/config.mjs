@@ -83,16 +83,17 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
      */
     let appEnvPrefixes = ['APP_']; // Added to all builds.
     if (isSSRBuild) appEnvPrefixes.push('SSR_APP_'); // Added to SSR builds.
+
     const env = loadEnv(mode, envsDir, appEnvPrefixes); // Includes `APP_IS_VITE`.
+    env.APP_PKG_NAME = pkg.name; // Adds package name to app’s environment variables.
 
     const appBaseURL = env.APP_BASE_URL || '';
-    // A trailing slash or no trailing slash; it definitely matters!
+    // A trailing slash or no trailing slash — it does matter!
     // e.g., `new URL('./', 'https://example.com/')` = `https://example.com/`.
     // e.g., `new URL('./', 'https://example.com/base')` = `https://example.com/`.
     // e.g., `new URL('./', 'https://example.com/base/')` = `https://example.com/base/`.
-
-    // We leave it up to the implementation to decide which it prefers to use.
-    // A base URL is only required for some app types; e.g., `spa|mpa`. Validation below.
+    // We leave it up to an implementation to decide what type of base URL it prefers to use.
+    // A base URL is only required for some app types; e.g., `spa|mpa`. See validations below.
 
     // This is a variant of the base URL that’s resolved and has no trailing slash.
     const appBaseURLResolvedNTS = appBaseURL ? $str.rTrim(new URL('./', appBaseURL).toString(), '/') : '';
