@@ -376,7 +376,7 @@ export default async () => {
         'markdown.preview.fontSize': 16,
         'markdown.preview.lineHeight': 1.5,
         'markdown.preview.typographer': true,
-        'markdown.preview.fontFamily': 'Georama, ui-sans-serif, sans-serif',
+        'markdown.preview.fontFamily': "Georama, sans-serif, 'Apple Color Emoji'",
 
         'markdown.validate.enabled': false, // For a different markdown flavor.
         // Disabling because we use remark, a different flavor than VSCode, and several plugins.
