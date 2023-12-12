@@ -204,7 +204,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
         await viteMDXConfig({ projDir }),
         await viteEJSConfig({ mode, projDir, srcDir, pkg, env }),
         await viteMinifyConfig({ minifyEnable }),
-        await viteDTSConfig({ distDir }),
+        await viteDTSConfig({ isSSRBuild, distDir }),
         await viteC10nPostProcessingConfig({
             mode, wranglerMode, inProdLikeMode, command, isSSRBuild, projDir, distDir,
             pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates
