@@ -90,6 +90,11 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                     '1.5em': '1.5em',
                     '2em': '2em',
                 },
+                lineHeight: {
+                    '1em': '1em',
+                    '1.5em': '1.5em',
+                    '2em': '2em',
+                },
                 aspectRatio: {
                     'image': '40 / 21', // e.g., 1200 x 630 for OG image.
                 },
