@@ -174,6 +174,16 @@ export default async () => {
                                           },
                                       ]
                                     : []),
+                                // `$ madrun wrangler pages deploy`.
+                                ...(['deploy', 'publish'].includes(args._?.[1]) && !args.help
+                                    ? [
+                                          {
+                                              opts: { cwd: projDir },
+                                              cmd: ['npx', 'vite', 'build', '--mode', // Mode can only be `prod` or `stage` when deploying remotely.
+                                                args.environment && args.environment !== wranglerSettings.defaultEnvironment ? 'stage' : 'prod'], // prettier-ignore
+                                          },
+                                      ]
+                                    : []),
                                 // `$ madrun wrangler pages *`.
                                 [
                                     'npx',
