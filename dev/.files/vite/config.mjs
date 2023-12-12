@@ -85,7 +85,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     if (isSSRBuild) appEnvPrefixes.push('SSR_APP_'); // Added to SSR builds.
 
     const env = loadEnv(mode, envsDir, appEnvPrefixes); // Includes `APP_IS_VITE`.
-    env.APP_PKG_NAME = pkg.name; // Adds package name to app’s environment variables.
+    env.APP_PKG_NAME = pkg.name; // Adds package name just like app initializers do.
 
     const appBaseURL = env.APP_BASE_URL || '';
     // A trailing slash or no trailing slash — it does matter!
