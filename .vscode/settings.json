@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Dec 11, 2023 12:47 AM UTC.
+ * Last generated using `./settings.mjs` Dec 12, 2023 1:57 AM UTC.
  */
 {
     "editor.formatOnType": false,
@@ -288,7 +288,7 @@
     "markdown.preview.fontSize": 16,
     "markdown.preview.lineHeight": 1.5,
     "markdown.preview.typographer": true,
-    "markdown.preview.fontFamily": "Georama, ui-sans-serif, sans-serif",
+    "markdown.preview.fontFamily": "Georama, sans-serif, 'Apple Color Emoji'",
     "markdown.validate.enabled": false,
     "mdx.server.enable": false,
     "prettier.ignorePath": ".prettierignore",
