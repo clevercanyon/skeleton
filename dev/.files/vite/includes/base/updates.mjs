@@ -10,7 +10,7 @@
 
 import fs from 'node:fs';
 import { $chalk } from '../../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $path, $str } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $path, $str, $url } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import extensions from '../../../bin/includes/extensions.mjs';
 import u from '../../../bin/includes/utilities.mjs';
 
@@ -23,6 +23,9 @@ export default async ({ command, isSSRBuild, appBaseURL, appType, appEntries }) 
     if (isSSRBuild) return; // Not applicable.
     if ('build' !== command) return; // Not applicable.
     if (!['spa', 'mpa'].includes(appType)) return; // Not applicable.
+
+    const appBaseURLRootHost = $url.rootHost(new URL(appBaseURL), { withPort: false });
+    if (!$str.test(appBaseURLRootHost, $url.localHostPatterns())) return; // Not a local hostname.
 
     u.log($chalk.gray('Updating `baseURL` in HTML entries.'));
     const htmlExts = extensions.noDot(extensions.byCanonical.html);
