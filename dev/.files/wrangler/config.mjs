@@ -196,7 +196,7 @@ export default async () => {
                       },
                       // `$ madrun wrangler deploy --env=stage` using `workers.dev`.
                       stage: {
-                          workers_dev: true,
+                          workers_dev: true, // Auto-generates the necessary route.
                           build: {
                               cwd: './' + path.relative(projDir, './'),
                               watch_dir: './' + path.relative(projDir, './src'),
