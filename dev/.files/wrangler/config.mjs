@@ -183,8 +183,10 @@ export default async () => {
                   env: {
                       // `$ madrun wrangler dev` environment, for local testing.
                       dev: {
-                          route: {},
-                          workers_dev: false,
+                          route: {
+                              zone_name: wranglerSettings.defaultLocalHostname,
+                              pattern: wranglerSettings.defaultLocalHostname + '/' + wranglerSettings.defaultWorkerShortName + '/*',
+                          },
                           vars: wranglerSettings.miniflareEnvVarAsObject,
                           build: {
                               cwd: './' + path.relative(projDir, './'),
@@ -194,7 +196,6 @@ export default async () => {
                       },
                       // `$ madrun wrangler deploy --env=stage` using `workers.dev`.
                       stage: {
-                          route: {},
                           workers_dev: true,
                           build: {
                               cwd: './' + path.relative(projDir, './'),

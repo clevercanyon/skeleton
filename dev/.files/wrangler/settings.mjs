@@ -34,6 +34,7 @@ export default {
     compatibilityFlags: [], // None, for now.
 
     defaultLocalIP: '0.0.0.0',
+    defaultLocalHostname: 'localhost',
     defaultLocalProtocol: 'https',
     defaultLocalPort: '443',
 
