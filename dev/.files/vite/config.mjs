@@ -24,6 +24,7 @@ import viteC10nBrandConfig from './includes/c10n/brand-config.mjs';
 import viteC10nHTMLTransformsConfig from './includes/c10n/html-transforms.mjs';
 import viteC10nNoModulePreloadConfig from './includes/c10n/no-module-preload.mjs';
 import viteC10nPostProcessingConfig from './includes/c10n/post-processing.mjs';
+import viteC10nPreProcessingConfig from './includes/c10n/pre-processing.mjs';
 import viteC10nSideEffectsConfig from './includes/c10n/side-effects.mjs';
 import viteDTSConfig from './includes/dts/config.mjs';
 import viteEJSConfig from './includes/ejs/config.mjs';
@@ -199,15 +200,20 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
      * Configures plugins for Vite.
      */
     const plugins = [
-        await viteIconsConfig({}),
         await viteC10nSideEffectsConfig({}),
         await viteC10nNoModulePreloadConfig({}),
+
+        await viteIconsConfig({}),
         await viteC10nBrandConfig({ mode, appBaseURL }),
-        await viteC10nHTMLTransformsConfig({ staticDefs }),
+        //
         await viteMDXConfig({ projDir }),
         await viteEJSConfig({ mode, projDir, srcDir, pkg, env }),
+        await viteC10nHTMLTransformsConfig({ staticDefs }),
+        //
         await viteMinifyConfig({ minifyEnable }),
         await viteDTSConfig({ isSSRBuild, distDir }),
+        //
+        await viteC10nPreProcessingConfig({ command, isSSRBuild, projDir, distDir, appType }),
         await viteC10nPostProcessingConfig({
             mode, wranglerMode, inProdLikeMode, command, isSSRBuild, projDir, distDir,
             pkg, env, appBaseURL, appType, targetEnv, staticDefs, pkgUpdates
@@ -313,7 +319,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
             target: esVersion.lcnYear, // Matches TypeScript config.
             ssr: targetEnvIsServer, // Target environment is server-side?
 
-            emptyOutDir: isSSRBuild ? false : true, // Not during SSR builds.
+            emptyOutDir: false, // Instead, we handle this via our own plugin.
             outDir: path.relative(srcDir, distDir), // Relative to `root` directory.
 
             assetsInlineLimit: 0, // Disable entirely. Use import `?raw`, `?url`, etc.
