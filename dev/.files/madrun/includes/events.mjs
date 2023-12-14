@@ -13,7 +13,7 @@ import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
 import { $chalk, $fs } from '../../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $app, $brand, $fn, $is, $json, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $app, $brand, $fn, $is, $json, $obp, $url } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import u from '../../bin/includes/utilities.mjs';
 
 const __dirname = $fs.imuDirname(import.meta.url);
@@ -128,9 +128,9 @@ export default {
                         .readFile(envFiles.main)
                         .then((buffer) => buffer.toString())
                         .then(async (contents) => {
-                            if ('cfw' === pkg.config.c10n.build.targetEnv) {
+                            if ('cfw' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='/" + wranglerSettings.defaultWorkerShortName + "'");
-                            } else if ('cfp' === pkg.config.c10n.build.targetEnv) {
+                            } else if ('cfp' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='' # No base path.");
                             }
                             await fsp.writeFile(envFiles.main, contents);
@@ -143,10 +143,10 @@ export default {
                         .readFile(envFiles.stage)
                         .then((buffer) => buffer.toString())
                         .then(async (contents) => {
-                            if ('cfw' === pkg.config.c10n.build.targetEnv) {
+                            if ('cfw' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='/" + wranglerSettings.defaultWorkerStageShortName + "'");
                                 contents = contents.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultWorkersDomain + "${BASE_PATH}/'");
-                            } else if ('cfp' === pkg.config.c10n.build.targetEnv) {
+                            } else if ('cfp' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
                                 contents = contents.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
                                     "$1='https://" +
@@ -168,9 +168,9 @@ export default {
                         .readFile(envFiles.prod)
                         .then((buffer) => buffer.toString())
                         .then(async (contents) => {
-                            if ('cfw' === pkg.config.c10n.build.targetEnv) {
+                            if ('cfw' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
                                 contents = contents.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultWorkersDomain + "${BASE_PATH}/'");
-                            } else if ('cfp' === pkg.config.c10n.build.targetEnv) {
+                            } else if ('cfp' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
                                 contents = contents.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
                                     "$1='https://" + wranglerSettings.defaultPagesProjectShortName + '.' + wranglerSettings.defaultPagesZoneName + "${BASE_PATH}/'",
