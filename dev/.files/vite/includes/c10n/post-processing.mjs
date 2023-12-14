@@ -147,8 +147,8 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
              * or others to be served dynamically. In which case they may not exist in these locations statically.
              */
             if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
-                const brand = await u.brand({ baseURL: appBaseURL });
-                const isC10n = env.APP_IS_C10N || false;
+                const isC10n = env.APP_IS_C10N || false,
+                    brand = await u.brand({ mode, baseURL: appBaseURL });
 
                 for (const file of await $glob.promise(
                     [
