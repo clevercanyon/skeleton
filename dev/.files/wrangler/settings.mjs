@@ -46,7 +46,8 @@ export default async () => {
         defaultPagesDevZoneName: 'pages.dev',
 
         defaultPagesProjectName: pkgSlug,
-        defaultPagesProjectShortName: pkgSlug.replace(/-hop-gdn$/iu, ''),
+        defaultPagesProjectShortName: pkgSlug //
+            .replace(/-(?:com|net|org|gdn|hop-gdn)$/iu, ''),
 
         defaultPagesProductionBranch: 'production',
         defaultPagesProjectStageBranchName: 'stage',
@@ -57,8 +58,8 @@ export default async () => {
         defaultWorkersDomain: 'workers.' + hop.hostname,
 
         defaultWorkerName: pkgSlug.replace(/^workers-/iu, ''),
-        defaultWorkerShortName: pkgSlug.replace(/^(?:workers-)?hop-gdn-/iu, ''),
-        defaultWorkerStageShortName: pkgSlug.replace(/^(?:workers-)?hop-gdn-/iu, '') + '-stage',
+        defaultWorkerShortName: pkgSlug.replace(/^workers-hop-gdn-/iu, ''),
+        defaultWorkerStageShortName: pkgSlug.replace(/^workers-hop-gdn-/iu, '') + '-stage',
 
         osDir: path.resolve(os.homedir(), './.wrangler'),
         projDir: path.resolve(projDir, './.wrangler'),
