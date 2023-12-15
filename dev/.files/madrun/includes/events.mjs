@@ -244,20 +244,20 @@ export default {
                 if ('clevercanyon' === repoOwner) {
                     if (process.env.GH_TOKEN && 'owner' === (await u.gistGetC10NUser()).github?.role) {
                         u.log($chalk.green('Creating remote project repo at GitHub [' + (args.public ? 'public' : 'private') + '].'));
-                        await u.spawn('gh', ['repo', 'create', repoOwner + '/' + repoName, '--source', projDir, args.public ? '--public' : '--private', '--gitignore', 'Global/macOS']); // prettier-ignore
+                        await u.spawn('gh', ['repo', 'create', repoOwner + '/' + repoName, args.public ? '--public' : '--private', '--gitignore', 'Yeoman']);
+                        await u.spawn('git', ['remote', 'add', 'origin', 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git']);
                     } else {
                         u.log($chalk.green('Configuring a remote repo origin.'));
-                        const origin = 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git';
-                        await u.spawn('git', ['remote', 'add', 'origin', origin]);
+                        await u.spawn('git', ['remote', 'add', 'origin', 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git']);
                     }
                 } else if (process.env.USER_GITHUB_USERNAME === repoOwner) {
                     if (process.env.GH_TOKEN) {
                         u.log($chalk.green('Creating remote project repo at GitHub [' + (args.public ? 'public' : 'private') + '].'));
-                        await u.spawn('gh', ['repo', 'create', repoOwner + '/' + repoName, '--source', projDir, args.public ? '--public' : '--private', '--gitignore', 'Global/macOS']); // prettier-ignore
+                        await u.spawn('gh', ['repo', 'create', repoOwner + '/' + repoName, args.public ? '--public' : '--private', '--gitignore', 'Yeoman']);
+                        await u.spawn('git', ['remote', 'add', 'origin', 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git']);
                     } else {
                         u.log($chalk.green('Configuring a remote repo origin.'));
-                        const origin = 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git';
-                        await u.spawn('git', ['remote', 'add', 'origin', origin]);
+                        await u.spawn('git', ['remote', 'add', 'origin', 'https://github.com/' + $url.encode(repoOwner) + '/' + $url.encode(repoName) + '.git']);
                     }
                 }
 
