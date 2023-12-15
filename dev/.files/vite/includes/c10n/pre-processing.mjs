@@ -43,9 +43,13 @@ export default async ({ command, isSSRBuild, projDir, distDir, appType }) => {
                             fs.renameSync(wranglerCacheDir, wranglerTmpCacheDir);
 
                             resetDistDir(); // Resets `./dist` directory.
+
+                            u.log($chalk.gray('Restoring `./node_modules/.cache/wrangler`.'));
                             fs.mkdirSync(path.dirname(wranglerCacheDir), { recursive: true });
                             fs.renameSync(wranglerTmpCacheDir, wranglerCacheDir);
-                            return fs.rmSync(tmpDir, { force: true, recursive: true });
+                            fs.rmSync(tmpDir, { force: true, recursive: true });
+
+                            return; // Done; stop here.
                         }
                     }
                     resetDistDir(); // Resets `./dist` directory.

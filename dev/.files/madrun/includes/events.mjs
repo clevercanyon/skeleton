@@ -117,7 +117,7 @@ export default {
                 /**
                  * Gets Wrangler settings now that we have a valid `./package.json` file.
                  */
-                const wranglerSettings = (await import('../../wrangler/settings.mjs')).default;
+                const wranglerSettings = await (await import('../../wrangler/settings.mjs')).default();
 
                 /**
                  * Updates `./dev/.envs`, if applicable.
@@ -134,11 +134,9 @@ export default {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='/" + wranglerSettings.defaultWorkerShortName + "'");
                                 //
                             } else if (['spa', 'mpa'].includes(appType) && 'cfp' === targetEnv) {
-                                console.log({ wranglerSettings });
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='' # No base path.");
                             }
                             u.log($chalk.gray('Updating `./' + path.relative(projDir, envFiles.main) + '`.'));
-                            u.log($chalk.gray(contents));
                             await fsp.writeFile(envFiles.main, contents);
                         })
                         .catch((thrown) => {
@@ -154,7 +152,6 @@ export default {
                                 contents = contents.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultWorkersDomain + "${BASE_PATH}/'");
                                 //
                             } else if (['spa', 'mpa'].includes(appType) && 'cfp' === targetEnv) {
-                                console.log({ wranglerSettings });
                                 contents = contents.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
                                     "$1='https://" +
@@ -167,7 +164,6 @@ export default {
                                 );
                             }
                             u.log($chalk.gray('Updating `./' + path.relative(projDir, envFiles.stage) + '`.'));
-                            u.log($chalk.gray(contents));
                             await fsp.writeFile(envFiles.stage, contents);
                         })
                         .catch((thrown) => {
@@ -182,14 +178,12 @@ export default {
                                 contents = contents.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultWorkersDomain + "${BASE_PATH}/'");
                                 //
                             } else if (['spa', 'mpa'].includes(appType) && 'cfp' === targetEnv) {
-                                console.log({ wranglerSettings });
                                 contents = contents.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
                                     "$1='https://" + wranglerSettings.defaultPagesProjectShortName + '.' + wranglerSettings.defaultPagesZoneName + "${BASE_PATH}/'",
                                 );
                             }
                             u.log($chalk.gray('Updating `./' + path.relative(projDir, envFiles.prod) + '`.'));
-                            u.log($chalk.gray(contents));
                             await fsp.writeFile(envFiles.prod, contents);
                         })
                         .catch((thrown) => {
