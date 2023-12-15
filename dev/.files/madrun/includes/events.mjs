@@ -110,6 +110,8 @@ export default {
                  * Acquires updated `./package.json` file.
                  */
                 const pkg = await u.pkg(); // Log it for review.
+                const appType = $obp.get(pkg, 'config.c10n.&.build.appType'),
+                    targetEnv = $obp.get(pkg, 'config.c10n.&.build.targetEnv');
                 u.log($chalk.gray($json.stringify(pkg, { pretty: true })));
 
                 /**
@@ -128,25 +130,29 @@ export default {
                         .readFile(envFiles.main)
                         .then((buffer) => buffer.toString())
                         .then(async (contents) => {
-                            if ('cfw' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
+                            if (['cma'].includes(appType) && 'cfw' === targetEnv) {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='/" + wranglerSettings.defaultWorkerShortName + "'");
-                            } else if ('cfp' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
+                                //
+                            } else if (['spa', 'mpa'].includes(appType) && 'cfp' === targetEnv) {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='' # No base path.");
                             }
+                            u.log($chalk.gray('Updating `./' + path.relative(projDir, envFiles.main) + '`.'));
+                            u.log($chalk.gray(contents));
                             await fsp.writeFile(envFiles.main, contents);
                         })
-                        .catch((error) => {
-                            if ('ENOENT' !== error.code) throw error;
+                        .catch((thrown) => {
+                            if (!$is.error(thrown) || 'ENOENT' !== thrown.code) throw thrown;
                         });
 
                     await fsp
                         .readFile(envFiles.stage)
                         .then((buffer) => buffer.toString())
                         .then(async (contents) => {
-                            if ('cfw' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
+                            if (['cma'].includes(appType) && 'cfw' === targetEnv) {
                                 contents = contents.replace(/^(BASE_PATH)\s*=\s*[^\r\n]*$/gmu, "$1='/" + wranglerSettings.defaultWorkerStageShortName + "'");
                                 contents = contents.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultWorkersDomain + "${BASE_PATH}/'");
-                            } else if ('cfp' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
+                                //
+                            } else if (['spa', 'mpa'].includes(appType) && 'cfp' === targetEnv) {
                                 contents = contents.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
                                     "$1='https://" +
@@ -158,28 +164,33 @@ export default {
                                         "${BASE_PATH}/'",
                                 );
                             }
+                            u.log($chalk.gray('Updating `./' + path.relative(projDir, envFiles.stage) + '`.'));
+                            u.log($chalk.gray(contents));
                             await fsp.writeFile(envFiles.stage, contents);
                         })
-                        .catch((error) => {
-                            if ('ENOENT' !== error.code) throw error;
+                        .catch((thrown) => {
+                            if (!$is.error(thrown) || 'ENOENT' !== thrown.code) throw thrown;
                         });
 
                     await fsp
                         .readFile(envFiles.prod)
                         .then((buffer) => buffer.toString())
                         .then(async (contents) => {
-                            if ('cfw' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
+                            if (['cma'].includes(appType) && 'cfw' === targetEnv) {
                                 contents = contents.replace(/^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu, "$1='https://" + wranglerSettings.defaultWorkersDomain + "${BASE_PATH}/'");
-                            } else if ('cfp' === $obp.get(pkg, 'config.c10n.&.build.targetEnv')) {
+                                //
+                            } else if (['spa', 'mpa'].includes(appType) && 'cfp' === targetEnv) {
                                 contents = contents.replace(
                                     /^(APP_BASE_URL)\s*=\s*[^\r\n]*$/gmu,
                                     "$1='https://" + wranglerSettings.defaultPagesProjectShortName + '.' + wranglerSettings.defaultPagesZoneName + "${BASE_PATH}/'",
                                 );
                             }
+                            u.log($chalk.gray('Updating `./' + path.relative(projDir, envFiles.prod) + '`.'));
+                            u.log($chalk.gray(contents));
                             await fsp.writeFile(envFiles.prod, contents);
                         })
-                        .catch((error) => {
-                            if ('ENOENT' !== error.code) throw error;
+                        .catch((thrown) => {
+                            if (!$is.error(thrown) || 'ENOENT' !== thrown.code) throw thrown;
                         });
                 }
 
@@ -196,8 +207,8 @@ export default {
                             contents = contents.replace(/^(#\s+)(@[^/?#\s]+\/[^/?#\s]+)/gmu, '$1' + pkgName);
                             await fsp.writeFile(readmeFile, contents);
                         })
-                        .catch((error) => {
-                            if ('ENOENT' !== error.code) throw error;
+                        .catch((thrown) => {
+                            if (!$is.error(thrown) || 'ENOENT' !== thrown.code) throw thrown;
                         });
                 }
 
