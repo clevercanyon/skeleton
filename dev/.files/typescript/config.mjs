@@ -76,7 +76,6 @@ export default async () => {
             ),
         ]),
         compilerOptions: {
-            noEmit: true,
             declaration: true,
             declarationMap: false,
 
