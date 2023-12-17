@@ -76,9 +76,9 @@ export default async () => {
             ),
         ]),
         compilerOptions: {
+            noEmit: true,
             declaration: true,
             declarationMap: false,
-            emitDeclarationOnly: true,
 
             baseUrl: './' + path.relative(projDir, srcDir),
             rootDir: './' + path.relative(projDir, srcDir),
