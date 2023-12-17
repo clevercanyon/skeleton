@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./tsconfig.mjs`.
  *
- * Last generated using `./tsconfig.mjs` Dec 17, 2023 2:28 AM UTC.
+ * Last generated using `./tsconfig.mjs` Dec 17, 2023 6:57 AM UTC.
  */
 {
     "include": ["./src/**/*", "./dev-types.d.ts"],
@@ -97,9 +97,9 @@
         "**/*.readme.*/**"
     ],
     "compilerOptions": {
+        "noEmit": true,
         "declaration": true,
         "declarationMap": false,
-        "emitDeclarationOnly": true,
         "baseUrl": "./src",
         "rootDir": "./src",
         "outDir": "./dist",
