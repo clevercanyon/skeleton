@@ -163,7 +163,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         /**
          * Defines brand colors.
          *
-         * - Abstract palette: {@see https://coolors.co/595959-2e489e-3e4660-615c49-745a2f-0f58b8-80aff9-ffe0b8}.
+         * - Abstract palette: {@see https://coolors.co/595959-2e489e-3e4660-615c49-745a2f-ffab3d-ffc170-ffe0b8}.
          * - Semantic palette: {@see https://coolors.co/1c5f35-8a2828-865027-2e489e-e4e4e7-3f3f46-18181b-fef9c3}.
          *
          * These colors should all consider the `color-basic` background color, because all of these colors should work
@@ -188,8 +188,8 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-secondary': '#3e4660', // Secondary component color. Typically less saturated than primary.
             'color-tertiary': '#615c49', // Tertiary component color. Typically less saturated than primary.
             'color-accent': '#745a2f', // An accented component color. Typically accentuated conservatively.
-            'color-feature': '#0f58b8', // An accented component color. Typically more accentuated; i.e., less subtle.
-            'color-dazzle': '#80aff9', // An accented component color. Typically much more accentuated; i.e., not subtle.
+            'color-feature': '#ffab3d', // An accented component color. Typically more accentuated; i.e., less subtle.
+            'color-dazzle': '#ffc170', // An accented component color. Typically much more accentuated; i.e., not subtle.
             'color-amaze': '#ffe0b8', // An accented component color. Typically much more accentuated; i.e., not subtle.
 
             // Semantic colors.
