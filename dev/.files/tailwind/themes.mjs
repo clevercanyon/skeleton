@@ -57,7 +57,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
         /**
          * Defines basic colors.
          *
-         * - Basic palette: {@see https://coolors.co/09090b-f0f0f0-80aff9-17171c-ffffff}.
+         * - Basic palette: {@see https://coolors.co/09090b-f0f0f0-80aff9-17171c-5596ff}.
          *
          * From these basic colors we derive additional colors for commonly-used sections automatically, such as those
          * prefixed as `color-prose-*`, `color-header-*`, `color-sidebar-*`, `color-footer-*`. If you'd like to override
@@ -76,7 +76,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             'color-basic-fg': brandTheme.fgColor || '#f0f0f0', // Foreground color.
             'color-basic-link': brandTheme.linkColor || '#80aff9', // Link/anchor color.
             'color-basic-line': brandTheme.lineColor || '#17171c', // Line/border color.
-            'color-basic-heading': brandTheme.headingColor || '#ffffff', // Heading color.
+            'color-basic-heading': brandTheme.headingColor || '#5596ff', // Heading color.
         };
         const basicColors = $obj.defaults({}, $obj.pick(theme.extend.colors, Object.keys(defaultBasicColors)), defaultBasicColors);
         const basicBGIsDark = basicColors['color-basic'] === brandTheme.color ? brandTheme.isDark : $color.isDark(basicColors['color-basic']);
