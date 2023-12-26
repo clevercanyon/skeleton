@@ -36,6 +36,13 @@ declare module 'virtual:brand/config' {
 }
 
 /**
+ * Defines missing `cache` RequestInit propery.
+ */
+interface RequestInit {
+    cache?: string;
+}
+
+/**
  * Defines missing `entries()` on FormData.
  */
 interface FormData {
