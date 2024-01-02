@@ -305,6 +305,7 @@ export default class u {
     }
 
     static async gitLocalRepoSHA(repoDir, branch) {
+        console.log({ repoDir });
         return String(await u.spawn('git', ['rev-parse', branch], { cwd: repoDir, quiet: true }))
             .trim()
             .toLowerCase();
