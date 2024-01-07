@@ -170,6 +170,17 @@ export default async () => {
                           '/a16s', // A16s (top-level only).
                       ],
                   },
+                  // Worker service bindings.
+
+                  ...('hop-gdn-utilities' !== settings.defaultWorkerName
+                      ? {
+                            services: {
+                                binding: 'UT',
+                                service: 'hop-gdn-utilities',
+                                environment: 'production',
+                            },
+                        }
+                      : {}),
                   // Worker route configuration.
 
                   route: {
@@ -193,6 +204,16 @@ export default async () => {
                               pattern: settings.defaultLocalHostname + '/' + settings.defaultWorkerShortName + '/*',
                           },
                           vars: settings.miniflareEnvVarAsObject,
+
+                          ...('hop-gdn-utilities' !== settings.defaultWorkerName
+                              ? {
+                                    services: {
+                                        binding: 'UT',
+                                        service: 'hop-gdn-utilities',
+                                        environment: 'dev',
+                                    },
+                                }
+                              : {}),
                           build: {
                               cwd: './' + path.relative(projDir, './'),
                               watch_dir: './' + path.relative(projDir, './src'),
@@ -205,6 +226,15 @@ export default async () => {
                               zone_name: settings.defaultWorkerZoneName,
                               pattern: settings.defaultWorkersDomain + '/' + settings.defaultWorkerStageShortName + '/*',
                           },
+                          ...('hop-gdn-utilities' !== settings.defaultWorkerName
+                              ? {
+                                    services: {
+                                        binding: 'UT',
+                                        service: 'hop-gdn-utilities',
+                                        environment: 'stage',
+                                    },
+                                }
+                              : {}),
                           build: {
                               cwd: './' + path.relative(projDir, './'),
                               watch_dir: './' + path.relative(projDir, './src'),
