@@ -45,35 +45,35 @@ export default async () => {
 
     /**
      * Defines base config.
+     *
+     * A few settings, like `send_metrics`, `compatibility_date`, `compatibility_flags`, are potentially relevant to any
+     * app, because they also configure miniflare through Vitest for testing. So they are always defined, regardless.
      */
-    const baseConfig = // Wrangler is only applicable in these combinations.
-        ['cma', 'spa', 'mpa'].includes(appType) && ['cfw', 'cfp'].includes(targetEnv)
+    const baseConfig = {
+        // Platform settings.
+
+        send_metrics: false, // Don't share usage.
+
+        // Compatibility settings.
+
+        compatibility_date: settings.compatibilityDate,
+        compatibility_flags: settings.compatibilityFlags,
+
+        // The rest of these settings are applied conditionally.
+
+        ...(['cma', 'spa', 'mpa'].includes(appType) && ['cfw', 'cfp'].includes(targetEnv)
             ? {
-                  // Platform settings.
-
-                  send_metrics: false, // Don't share usage.
-
-                  // Cannot be added once we opt into standard pricing.
-                  // This field should be configured from CF dashboard.
-                  // usage_model: 'bundled', // 10M/mo free + $0.50/M.
-
-                  // Compatibility settings.
-
-                  compatibility_date: settings.compatibilityDate,
-                  compatibility_flags: settings.compatibilityFlags,
-
                   // Worker account ID.
 
                   account_id: settings.defaultAccountId,
 
-                  // The rest of these settings are applied conditionally.
-
                   ...(['spa', 'mpa'].includes(appType)
-                      ? {
-                            // N/A to Cloudflare Pages.
-                            // Cloudflare Pages does not use.
+                      ? // Cloudflare pages site.
+                        {
+                            // Nothing more for now.
                         }
-                      : {
+                      : // Cloudflare worker.
+                        {
                             // We don’t use.
 
                             workers_dev: false,
@@ -247,7 +247,8 @@ export default async () => {
                             },
                         }),
               }
-            : {}; // Not applicable.
+            : {}),
+    };
 
     /**
      * Composition.
