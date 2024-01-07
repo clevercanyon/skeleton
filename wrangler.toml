@@ -7,7 +7,7 @@
 # @note This entire file will be updated automatically.
 # @note Instead of editing here, please review `./wrangler.mjs`.
 #
-# Last generated using `./wrangler.mjs` Jan 7, 2024 10:48 AM UTC.
+# Last generated using `./wrangler.mjs` Jan 7, 2024 11:23 AM UTC.
 ##
 
 send_metrics = false
@@ -445,7 +445,7 @@ command = "VITE_WRANGLER_MODE=dev npx @clevercanyon/madrun build --mode=dev"
 
 [env.stage.route]
 zone_name = "hop.gdn"
-pattern = "workers.hop.gdn/skeleton-stage/*"
+pattern = "workers.hop.gdn/stage.skeleton/*"
 
 [env.stage.services]
 binding = "UT"
