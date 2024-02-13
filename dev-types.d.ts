@@ -8,6 +8,8 @@
  * @note Only `<custom:start.../custom:end>` will be preserved below.
  */
 
+import { $type } from './node_modules/@clevercanyon/utilities/dist/types/index.d.ts';
+
 /**
  * Declares Vite global app constants.
  */
@@ -33,6 +35,13 @@ declare var __PREFRESH__: object;
 declare module 'virtual:brand/config' {
     import { $type } from '@clevercanyon/utilities';
     export default {} as Partial<$type.BrandRawProps>;
+}
+
+/**
+ * Declares virtual Cloudflare runtime modules.
+ */
+declare module 'cloudflare:sockets' {
+    export function connect(address: string | $type.cf.SocketAddress, options?: $type.cf.SocketOptions): $type.cf.Socket;
 }
 
 /**
