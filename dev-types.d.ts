@@ -8,8 +8,6 @@
  * @note Only `<custom:start.../custom:end>` will be preserved below.
  */
 
-import { $type } from './node_modules/@clevercanyon/utilities/dist/types/index.d.ts';
-
 /**
  * Declares Vite global app constants.
  */
@@ -41,7 +39,8 @@ declare module 'virtual:brand/config' {
  * Declares virtual Cloudflare runtime modules.
  */
 declare module 'cloudflare:sockets' {
-    export function connect(address: string | $type.cf.SocketAddress, options?: $type.cf.SocketOptions): $type.cf.Socket;
+    import type * as cf from '@cloudflare/workers-types/experimental';
+    export function connect(address: string | cf.SocketAddress, options?: cf.SocketOptions): cf.Socket;
 }
 
 /**
