@@ -43,7 +43,7 @@
         }
     },
     "dependencies": {
-        "@clevercanyon/utilities": "^1.0.860"
+        "@clevercanyon/utilities": "^1.0.861"
     },
     "peerDependencies": {},
     "peerDependenciesMeta": {},
@@ -56,7 +56,7 @@
     "cpu": ["x64", "arm64"],
     "os": ["darwin", "linux"],
     "engines": {
-        "node": "^20.5.0 || ^20.9.0",
+        "node": "^20.5.0 || ^20.9.0 || ^21.0.0",
         "npm": "^9.8.0 || ^10.1.0"
     },
     "config": {
