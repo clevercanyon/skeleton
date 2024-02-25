@@ -28,7 +28,7 @@ const nodeIncludeFile = path.resolve(__dirname, './includes/node.cjs');
 const nodeEnvVars = {
     NODE_OPTIONS: $cmd.quote(
         [
-            `--disable-warning ExperimentalWarning`, // v21.3.0+; {@see https://o5p.me/ZKO1Cq}.
+            // `--disable-warning ExperimentalWarning`, // v21.3.0+; {@see https://o5p.me/ZKO1Cq}.
             `--require ${$cmd.esc(nodeIncludeFile)}`, // Currently empty, but for future use.
         ].join(' '),
     ),
