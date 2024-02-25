@@ -10,13 +10,13 @@
  * Defines Node version.
  */
 export default {
-    previous: '20.9.0',
-    current: '21.6.2',
-    forwardCompat: [],
+    previous: '20.5.0',
+    current: '20.9.0',
+    forwardCompat: ['21.6.2'],
 
     npm: {
-        previous: '10.1.0',
-        current: '10.2.4',
-        forwardCompat: [],
+        previous: '9.8.0',
+        current: '10.1.0',
+        forwardCompat: ['10.2.4'],
     },
 };
