@@ -50,7 +50,7 @@
         }
     },
     "dependencies": {
-        "@clevercanyon/utilities": "^1.0.921"
+        "@clevercanyon/utilities": "^1.0.922"
     },
     "peerDependenciesMeta": {},
     "bundleDependencies": [],
