@@ -29,14 +29,17 @@ export default async () => {
     let brandHostname = hop.hostname;
     let brandDevZoneHostname = hop.org.n7m + '.workers.dev';
     let brandAccountId = 'f1176464a976947aa5665d989814a4b1';
+    let brandSupportsLogpush = true; // Requires paid plan.
 
     if (/^workers-o5p-me(?:$|-)/u.test(pkgSlug)) {
         brandHostname = 'o5p.me'; // O5p defaults.
         brandDevZoneHostname = 'j5s' + '.workers.dev';
         brandAccountId = '4cf0983a5f62681776b3bc8a8e35b104';
+        brandSupportsLogpush = false; // Requires paid plan.
     }
     return {
         defaultAccountId: brandAccountId,
+        defaultLogpush: brandSupportsLogpush,
 
         compatibilityDate: '2024-03-02',
         compatibilityFlags: [],
