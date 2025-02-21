@@ -25,8 +25,8 @@ export default async () => {
     const pkg = await u.pkg();
     const pkgSlug = $app.pkgSlug(pkg.name);
 
-    const o5pMe = $brand.get('@jaswrks/o5p.me');
     const o5pOrg = $brand.get('@jaswrks/o5p.org');
+    const o5pMe = $brand.get('@jaswrks/o5p.me');
     const hop = $brand.get('@clevercanyon/hop.gdn');
 
     let brandHostname = hop.hostname;
