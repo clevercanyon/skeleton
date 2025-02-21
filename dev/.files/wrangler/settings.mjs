@@ -34,7 +34,7 @@ export default async () => {
     let brandAccountId = 'f1176464a976947aa5665d989814a4b1';
     let brandSupportsLogpush = true; // Requires paid plan.
 
-    if (/^workers-o5p-(?:me|org)(?:$|-)/u.test(pkgSlug)) {
+    if (/^workers-o5p-(?:org|me)(?:$|-)/u.test(pkgSlug)) {
         brandHostname = /^workers-o5p-org(?:$|-)/u.test(pkgSlug)
             ? o5pOrg.hostname // O5p.org brand hostname.
             : o5pMe.hostname; // O5p.me brand hostname.
@@ -63,7 +63,7 @@ export default async () => {
 
         defaultPagesProjectName: pkgSlug,
         defaultPagesProjectShortName: pkgSlug //
-            .replace(/-(?:o5p-(?:me|org)|hop-gdn|com|net|org|gdn|me)$/iu, ''),
+            .replace(/-(?:o5p-(?:org|me)|hop-gdn|com|net|org|gdn|me)$/iu, ''),
 
         defaultPagesProductionBranch: 'production',
         defaultPagesProjectStageBranchName: 'stage',
@@ -74,8 +74,8 @@ export default async () => {
         defaultWorkersDomain: 'workers.' + brandHostname,
 
         defaultWorkerName: pkgSlug, // e.g., `workers-hop-gdn-utilities`.
-        defaultWorkerShortName: pkgSlug.replace(/^workers-(?:o5p-(?:me|org)|hop-gdn)-/iu, ''),
-        defaultWorkerStageShortName: 'stage.' + pkgSlug.replace(/^workers-(?:o5p-(?:me|org)|hop-gdn)-/iu, ''),
+        defaultWorkerShortName: pkgSlug.replace(/^workers-(?:o5p-(?:org|me)|hop-gdn)-/iu, ''),
+        defaultWorkerStageShortName: 'stage.' + pkgSlug.replace(/^workers-(?:o5p-(?:org|me)|hop-gdn)-/iu, ''),
 
         osDir: path.resolve(os.homedir(), './.wrangler'),
         projDir: path.resolve(projDir, './.wrangler'),
