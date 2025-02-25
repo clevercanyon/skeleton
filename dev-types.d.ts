@@ -44,6 +44,8 @@ declare namespace globalThis {
     /**
      * Defines `c10n` on Request.
      */
+    // If request changes, please review {$http.requestHash()}.
+    // If request changes, please review {$http.requestTypeIsCacheable()}.
     var Request: {
         prototype: Request;
         new (info: Request | URL | string, init?: RequestInit): Request;
