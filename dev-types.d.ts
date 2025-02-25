@@ -49,6 +49,18 @@ declare namespace globalThis {
     }
 
     /**
+     * Defines `c10n` on Request.
+     */
+    interface Request {
+        c10n?: $type.RequestC10nProps['c10n'];
+    }
+    type RequestInfo = Request | URL | string;
+
+    interface RequestInit {
+        c10n?: $type.RequestC10nProps['c10n'];
+    }
+
+    /**
      * Defines missing `entries()` on Headers.
      */
     interface Headers {
