@@ -108,12 +108,12 @@ declare module 'virtual:brand/config' {
  */
 declare module 'cloudflare:email' {
     /**
-     * Imports CFW types.
+     * Imports Cloudflare types.
      */
     import * as cfw from '@cloudflare/workers-types/experimental';
 
     /**
-     * Exports CFW types.
+     * Exports Cloudflare types.
      */
     export const EmailMessage: {
         prototype: cfw.EmailMessage;
@@ -122,23 +122,23 @@ declare module 'cloudflare:email' {
 }
 declare module 'cloudflare:sockets' {
     /**
-     * Imports CFW types.
+     * Imports Cloudflare types.
      */
     import * as cfw from '@cloudflare/workers-types/experimental';
 
     /**
-     * Exports CFW types.
+     * Exports Cloudflare types.
      */
     export function connect(address: string | cfw.SocketAddress, options?: cfw.SocketOptions): cfw.Socket;
 }
 declare module 'cloudflare:workers' {
     /**
-     * Imports CFW types.
+     * Imports Cloudflare types.
      */
     import * as cfw from '@cloudflare/workers-types/experimental';
 
     /**
-     * Exports CFW types.
+     * Exports Cloudflare types.
      */
     export type RpcStub<T extends cfw.Rpc.Stubable> = cfw.Rpc.Stub<T>;
     export const RpcStub: {
@@ -204,7 +204,7 @@ declare module 'cloudflare:workers' {
 }
 declare module 'cloudflare:workflows' {
     /**
-     * Exports CFW types.
+     * Exports Cloudflare types.
      */
     export class NonRetryableError extends Error {
         public constructor(message: string, name?: string);
