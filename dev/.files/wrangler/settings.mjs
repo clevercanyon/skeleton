@@ -46,8 +46,8 @@ export default async () => {
         defaultAccountId: brandAccountId,
         defaultLogpush: brandSupportsLogpush,
 
-        compatibilityDate: '2024-09-23',
-        compatibilityFlags: [],
+        compatibilityDate: '2025-02-27',
+        compatibilityFlags: ['nodejs_compat'],
 
         defaultLocalIP: '0.0.0.0',
         defaultLocalHostname: 'localhost',
