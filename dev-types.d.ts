@@ -8,13 +8,15 @@
  * @note Only `<custom:start.../custom:end>` will be preserved below.
  */
 
-import { $type } from '@clevercanyon/utilities';
-import * as cfw from '@cloudflare/workers-types/experimental';
-
 /**
  * Declares global scope.
  */
 declare namespace globalThis {
+    /**
+     * Imports utilities.
+     */
+    import { $type } from '@clevercanyon/utilities';
+
     /**
      * Declares Vite global app constants.
      */
@@ -40,7 +42,7 @@ declare namespace globalThis {
     var pwaInstallEvent: Event & { prompt: () => void };
 
     /**
-     * Defines `c10n` on Request.
+     * Defines `c10n` on Request, etc.
      */
     // If request changes, please review {$http.requestHash()}.
     // If request changes, please review {$http.requestTypeIsCacheable()}.
@@ -83,6 +85,14 @@ declare namespace globalThis {
  * Declares virtual brand config module.
  */
 declare module 'virtual:brand/config' {
+    /**
+     * Imports utilities.
+     */
+    import { $type } from '@clevercanyon/utilities';
+
+    /**
+     * Exports brand config.
+     */
     export default {} as Partial<$type.BrandRawProps>;
 }
 
@@ -97,15 +107,39 @@ declare module 'virtual:brand/config' {
  * pulled from `@cloudflare/workers-types/experimental` — see import at top of this file.
  */
 declare module 'cloudflare:email' {
+    /**
+     * Imports CFW types.
+     */
+    import * as cfw from '@cloudflare/workers-types/experimental';
+
+    /**
+     * Exports CFW types.
+     */
     export const EmailMessage: {
         prototype: cfw.EmailMessage;
         new (from: string, to: string, raw: cfw.ReadableStream | string): cfw.EmailMessage;
     };
 }
 declare module 'cloudflare:sockets' {
+    /**
+     * Imports CFW types.
+     */
+    import * as cfw from '@cloudflare/workers-types/experimental';
+
+    /**
+     * Exports CFW types.
+     */
     export function connect(address: string | cfw.SocketAddress, options?: cfw.SocketOptions): cfw.Socket;
 }
 declare module 'cloudflare:workers' {
+    /**
+     * Imports CFW types.
+     */
+    import * as cfw from '@cloudflare/workers-types/experimental';
+
+    /**
+     * Exports CFW types.
+     */
     export type RpcStub<T extends cfw.Rpc.Stubable> = cfw.Rpc.Stub<T>;
     export const RpcStub: {
         new <T extends cfw.Rpc.Stubable>(value: T): cfw.Rpc.Stub<T>;
@@ -169,6 +203,9 @@ declare module 'cloudflare:workers' {
     }
 }
 declare module 'cloudflare:workflows' {
+    /**
+     * Exports CFW types.
+     */
     export class NonRetryableError extends Error {
         public constructor(message: string, name?: string);
     }
