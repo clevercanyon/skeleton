@@ -23,7 +23,7 @@ import extensions from '../../../bin/includes/extensions.mjs';
  *
  * @returns       Vitest configuration.
  */
-export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig }) => {
+export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig, depsConfig }) => {
     const vitestExcludes = [
         ...new Set([
             ...exclusions.localIgnores,
@@ -257,6 +257,12 @@ export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandbox
                 },
                 miniflare: {}, // Nothing at this time.
                 // Miniflare config takes precedence over wrangler config.
+            },
+        },
+        deps: {
+            optimizer: {
+                web: depsConfig, // @{see https://o5p.me/c7L3KS}.
+                ssr: depsConfig, // @{see https://o5p.me/c7L3KS}.
             },
         },
         workspace: [
