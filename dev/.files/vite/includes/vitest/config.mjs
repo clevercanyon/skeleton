@@ -23,7 +23,7 @@ import extensions from '../../../bin/includes/extensions.mjs';
  *
  * @returns       Vitest configuration.
  */
-export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig, depsConfig }) => {
+export default async ({ mode, projDir, srcDir, logsDir, pkg, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig, depsConfig }) => {
     const vitestExcludes = [
         ...new Set([
             ...exclusions.localIgnores,
@@ -270,8 +270,8 @@ export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandbox
                 (jsdomProjectConfig = {
                     extends: true,
                     test: {
+                        mode, // Same mode.
                         environment: 'jsdom',
-                        mode, // Stay in same mode.
                     },
                 }),
                 {
@@ -285,8 +285,19 @@ export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandbox
                 (workerProjectConfig = $obj.patchDeep(defineWorkersProject({}), {
                     extends: true,
                     test: {
+                        mode, // Same mode.
                         environment: 'node', // + workerd; {@see https://o5p.me/QUeRzq}.
-                        mode, // Stay in same mode.
+                        deps: {
+                            optimizer: {
+                                ssr: $obj.mergeDeep(depsConfig, {
+                                    $concat: {
+                                        include: [
+                                            '@clevercanyon/utilities', //
+                                        ].filter((name) => name !== pkg.name),
+                                    },
+                                }),
+                            },
+                        },
                     },
                 })),
                 {
@@ -300,8 +311,8 @@ export default async ({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandbox
                 (nodeProjectConfig = {
                     extends: true,
                     test: {
+                        mode, // Same mode.
                         environment: 'node',
-                        mode, // Stay in same mode.
                     },
                 }),
                 {

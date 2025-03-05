@@ -19,25 +19,19 @@ import viteMDXESBuildConfig from '../mdx/esbuild.mjs';
  *
  * @returns       Dependency optimizer configuration.
  */
-export default async ({ projDir, pkg, wranglerSettings }) => ({
+export default async ({ projDir, pkg, wranglerSettings, prefreshEnable }) => ({
     force: true, // Force recreation; i.e., don’t cache.
 
     include: [
-        'preact', //
-        'preact/hooks',
-        'preact/compat',
-        'preact/jsx-runtime',
-        '@preact/signals',
-
-        '@clevercanyon/dev-deps',
-        '@clevercanyon/utilities',
-        '@clevercanyon/utilities.bash',
-        '@clevercanyon/utilities.cfp',
-        '@clevercanyon/utilities.cfw',
-        '@clevercanyon/utilities.node',
-        '@clevercanyon/utilities.php',
-        '@clevercanyon/utilities.web',
-        '@clevercanyon/utilities.webw',
+        ...(prefreshEnable
+            ? [
+                  'preact', //
+                  'preact/hooks',
+                  'preact/compat',
+                  'preact/jsx-runtime',
+                  '@preact/signals',
+              ]
+            : []),
     ].filter((name) => name !== pkg.name),
 
     exclude: [

@@ -257,7 +257,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     /**
      * Configures dependency optimizer for Vite.
      */
-    const depsConfig = await viteDepsConfig({ projDir, pkg, wranglerSettings });
+    const depsConfig = await viteDepsConfig({ projDir, pkg, wranglerSettings, prefreshEnable });
 
     /**
      * Configures rollup for Vite.
@@ -267,7 +267,7 @@ export default async ({ mode, command, isSsrBuild: isSSRBuild }) => {
     /**
      * Configures tests for Vite.
      */
-    const vitestConfig = await viteVitestConfig({ mode, projDir, srcDir, logsDir, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig, depsConfig });
+    const vitestConfig = await viteVitestConfig({ mode, projDir, srcDir, logsDir, pkg, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig, depsConfig });
 
     /**
      * Configures imported workers.
