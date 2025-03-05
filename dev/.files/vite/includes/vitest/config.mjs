@@ -300,7 +300,7 @@ export default async ({ mode, projDir, srcDir, logsDir, pkg, targetEnv, vitestSa
 
                                             '@clevercanyon/utilities.cfp',
                                             '@clevercanyon/utilities.cfp/build',
-                                        ].filter((name) => name !== pkg.name && !name.startsWith(pkg.name + ' /')),
+                                        ].filter((name) => name !== pkg.name && !name.startsWith(pkg.name + '/')),
                                     },
                                 }),
                             },
