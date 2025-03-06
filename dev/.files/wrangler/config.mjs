@@ -135,6 +135,14 @@ export default async () => {
                                         watch_dir: './' + path.relative(projDir, './src'),
                                         command: 'VITE_WRANGLER_MODE=dev npx @clevercanyon/madrun build --mode=dev',
                                     },
+                                    ...(['cfp'].includes(targetEnv)
+                                        ? {
+                                              assets: {
+                                                  binding: 'ASSETS', // For `cloudflare:test`.
+                                                  directory: './' + path.relative(projDir, './dist'),
+                                              },
+                                          }
+                                        : {}),
                                 },
                                 // `$ madrun wrangler deploy --env=stage`.
                                 stage: {
