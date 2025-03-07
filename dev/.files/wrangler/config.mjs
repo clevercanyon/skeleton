@@ -71,7 +71,7 @@ export default async () => {
         // Dev env, for automated or local testing.
         env: {
             dev: {
-                ...(['cfp'].includes(targetEnv)
+                ...(['cfp'].includes(targetEnv) && !['spa', 'mpa'].includes(appType)
                     ? {
                           assets: {
                               binding: 'ASSETS', // For `@clevercanyon/utilities.cfp/test`.
