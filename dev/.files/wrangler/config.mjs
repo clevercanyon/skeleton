@@ -47,18 +47,22 @@ export default async () => {
      * Defines base config.
      */
     const baseConfig = {
-        // Metric settings.
-
-        send_metrics: settings.defaultSendMetricsEnable,
-
         // Compatibility settings.
 
         compatibility_date: settings.compatibilityDate,
         compatibility_flags: settings.compatibilityFlags,
 
+        // Metric settings.
+
+        send_metrics: settings.defaultSendMetricsEnable,
+
         // Upper limit on CPU time.
 
         limits: { cpu_ms: settings.defaultCPULimitTime },
+
+        // Smart placement settings.
+
+        placement: { mode: settings.defaultPlacementMode },
 
         // Local development settings.
         dev: {
@@ -185,9 +189,15 @@ export default async () => {
                   workers_dev: settings.defaultWorkersDevEnable,
                   preview_urls: settings.defaultWorkersDevPreviewURLsEnable,
 
-                  // Worker logpush for trace events.
+                  // Worker observability for internal logging.
 
-                  logpush: settings.defaultLogpush, // Requires paid plan.
+                  observability: {
+                      enabled: settings.defaultWorkerObservabilityEnabled,
+                      head_sampling_rate: settings.defaultWorkerObservabilityHeadSamplingRate,
+                  },
+                  // Worker logpush for external logging.
+
+                  logpush: settings.defaultWorkerLogpush, // Requires paid plan.
 
                   // Worker default route.
                   route: {

@@ -46,16 +46,15 @@ export default async () => {
     return {
         // Compatibility.
 
-        compatibilityDate: '2025-02-14',
-        // ^ Most recent, as of 2025-03-01.
-        compatibilityFlags: ['nodejs_compat'],
+        compatibilityDate: '2025-02-14', // ^ Most recent, as of 2025-03-01.
+        compatibilityFlags: ['nodejs_compat'], // Adds support for `node:*` modules.
 
         // Workers & pages.
 
         defaultAccountId: brandAccountId,
-        defaultLogpush: brandSupportsLogpush,
-        defaultCPULimitTime: $time.secondInMilliseconds * 5,
         defaultSendMetricsEnable: false,
+        defaultCPULimitTime: $time.secondInMilliseconds * 5,
+        defaultPlacementMode: 'off',
         defaultDevLogLevel: 'error',
 
         defaultLocalIP: '0.0.0.0',
@@ -68,6 +67,10 @@ export default async () => {
 
         defaultWorkersDevEnable: false,
         defaultWorkersDevPreviewURLsEnable: false,
+
+        defaultWorkerObservabilityEnabled: true,
+        defaultWorkerObservabilityHeadSamplingRate: 1,
+        defaultWorkerLogpush: brandSupportsLogpush,
 
         defaultWorkerZoneName: brandHostname,
         defaultWorkersDevZoneName: brandDevZoneHostname,
