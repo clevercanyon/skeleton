@@ -22,7 +22,7 @@
 
 import path from 'node:path';
 import { $fs } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
-import { $obp, $time } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $obj, $obp } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 import extensions from '../bin/includes/extensions.mjs';
 import u from '../bin/includes/utilities.mjs';
 import wranglerSettings from './settings.mjs';
@@ -45,197 +45,202 @@ export default async () => {
 
     /**
      * Defines base config.
-     *
-     * A few settings, like `send_metrics`, `compatibility_date`, `compatibility_flags`, are potentially relevant to any
-     * app, because they also configure miniflare through Vitest for testing. So they are always defined, regardless.
      */
     const baseConfig = {
-        // Platform settings.
+        // Metric settings.
 
-        send_metrics: false,
+        send_metrics: settings.defaultSendMetricsEnable,
 
         // Compatibility settings.
 
         compatibility_date: settings.compatibilityDate,
         compatibility_flags: settings.compatibilityFlags,
 
-        // Dev env, for automated or local testing.
+        // Upper limit on CPU time.
 
+        limits: { cpu_ms: settings.defaultCPULimitTime },
+
+        // Local development settings.
+        dev: {
+            ip: settings.defaultLocalIP,
+            host: settings.defaultLocalHostname,
+            port: Number(settings.defaultLocalPort),
+            local_protocol: settings.defaultLocalProtocol,
+            upstream_protocol: settings.defaultUpstreamProtocol,
+        },
+        // Dev env, for automated or local testing.
         env: {
             dev: {
                 ...(['cfp'].includes(targetEnv)
                     ? {
                           assets: {
-                              binding: 'ASSETS', // For `cloudflare:test`.
-                              directory: './' + path.relative(projDir, './dist'),
+                              binding: 'ASSETS', // For `@clevercanyon/utilities.cfp/test`.
+                              directory: './' + path.relative(projDir, settings.defaultPagesStaticDir),
                           },
                       }
                     : {}),
-            }, // A `dev` key must exist, even if it's an empty object value.
+            }, // A `dev` key must exist for `@clevercanyon/utilities.(cfw|cfp)/test`,
+            // even if it's simply an empty object. The environment just needs to exist.
         },
+        // Bundling rules; {@see <https://o5p.me/JRHxfC>}.
+        rules: [
+            {
+                type: 'ESModule',
+                globs: extensions.asNoBraceGlobstars([
+                    ...extensions.byDevGroup.sJavaScript, //
+                    ...extensions.byDevGroup.sJavaScriptReact,
 
-        // The rest of these settings are applied conditionally.
+                    ...extensions.byDevGroup.mJavaScript,
+                    ...extensions.byDevGroup.mJavaScriptReact,
+                ]),
+                fallthrough: false,
+            },
+            {
+                type: 'CommonJS',
+                globs: extensions.asNoBraceGlobstars([
+                    ...extensions.byDevGroup.cJavaScript, //
+                    ...extensions.byDevGroup.cJavaScriptReact,
+                ]),
+                fallthrough: false,
+            },
+            {
+                type: 'CompiledWasm', //
+                globs: extensions.asNoBraceGlobstars([
+                    ...extensions.byCanonical.wasm, //
+                ]),
+                fallthrough: false,
+            },
+            {
+                type: 'Text',
+                globs: extensions.asNoBraceGlobstars(
+                    [...extensions.byVSCodeLang.codeTextual].filter(
+                        (ext) =>
+                            ![
+                                ...extensions.byDevGroup.sJavaScript, //
+                                ...extensions.byDevGroup.sJavaScriptReact,
 
-        ...(['cma', 'spa', 'mpa'].includes(appType) && ['cfw', 'cfp'].includes(targetEnv)
+                                ...extensions.byDevGroup.mJavaScript,
+                                ...extensions.byDevGroup.mJavaScriptReact,
+
+                                ...extensions.byDevGroup.cJavaScript,
+                                ...extensions.byDevGroup.cJavaScriptReact,
+
+                                ...extensions.byCanonical.wasm,
+
+                                ...extensions.byDevGroup.allTypeScript,
+                                // Omit TypeScript also, because it causes Wrangler to choke. Apparently, Wrangler’s build system incorporates TypeScript middleware files.
+                                // Therefore, we omit all TypeScript such that Wrangler’s build system can add TS files without them inadvertently being classified as text by our rules.
+                                // We don’t expect TypeScript to be present in our `./dist` anyway, so this is harmless, and probably a good idea in general to omit TypeScript here.
+                            ].includes(ext),
+                    ),
+                ),
+                fallthrough: false,
+            },
+            {
+                type: 'Data',
+                globs: extensions.asNoBraceGlobstars(
+                    [...extensions.byVSCodeLang.codeTextBinary].filter(
+                        (ext) =>
+                            ![
+                                ...extensions.byDevGroup.sJavaScript, //
+                                ...extensions.byDevGroup.sJavaScriptReact,
+
+                                ...extensions.byDevGroup.mJavaScript,
+                                ...extensions.byDevGroup.mJavaScriptReact,
+
+                                ...extensions.byDevGroup.cJavaScript,
+                                ...extensions.byDevGroup.cJavaScriptReact,
+
+                                ...extensions.byCanonical.wasm,
+
+                                ...extensions.byDevGroup.allTypeScript,
+                            ].includes(ext),
+                    ),
+                ),
+                fallthrough: false,
+            },
+        ],
+    };
+
+    /**
+     * Defines worker config.
+     */
+    const workerConfig = {
+        ...(['cma'].includes(appType) && ['cfw'].includes(targetEnv)
             ? {
-                  ...(['spa', 'mpa'].includes(appType)
-                      ? // Cloudflare pages site.
-                        {
-                            // CF UI is source of truth.
-                        }
-                      : // Cloudflare worker configuration.
-                        {
-                            // Worker name.
-                            name: settings.defaultWorkerName,
+                  // Worker account ID.
 
-                            // Worker account ID.
-                            account_id: settings.defaultAccountId,
+                  account_id: settings.defaultAccountId,
 
-                            // Worker logpush for trace events.
-                            logpush: settings.defaultLogpush, // Requires paid plan.
+                  // Worker name.
 
-                            // Worker upper limit on CPU time.
-                            limits: { cpu_ms: $time.secondInMilliseconds * 5 },
+                  name: settings.defaultWorkerName,
 
-                            // Worker main entry file path.
-                            main: './' + path.relative(projDir, './dist/index.js'),
+                  // Worker main entry file path.
 
-                            // Worker custom build configuration.
-                            build: {
-                                cwd: './' + path.relative(projDir, './'),
-                                watch_dir: './' + path.relative(projDir, './src'),
-                                command: 'npx @clevercanyon/madrun build --mode=prod',
-                            },
-                            // Worker `$ madrun wrangler dev` settings.
-                            dev: {
-                                local_protocol: settings.defaultLocalProtocol,
-                                ip: settings.defaultLocalIP, // e.g., `0.0.0.0`.
-                                port: Number(settings.defaultLocalPort),
-                            },
-                            // Worker subdomains; i.e., `*.workers.dev`.
+                  main: './' + path.relative(projDir, settings.defaultWorkerMainEntryFile),
 
-                            workers_dev: false, // We don’t typically use this.
-                            preview_urls: false, // We don’t typically use.
+                  // Worker subdomains; i.e., `*.workers.dev`.
 
-                            // Worker default route.
-                            route: {
-                                zone_name: settings.defaultWorkerZoneName,
-                                pattern: settings.defaultWorkersDomain + '/' + settings.defaultWorkerShortName + '/*',
-                            },
-                            // Worker environments.
-                            env: {
-                                // `$ madrun wrangler dev` environment, for local testing.
-                                dev: {
-                                    route: {
-                                        zone_name: settings.defaultLocalHostname,
-                                        pattern: settings.defaultLocalHostname + '/' + settings.defaultWorkerShortName + '/*',
-                                    },
-                                    build: {
-                                        cwd: './' + path.relative(projDir, './'),
-                                        watch_dir: './' + path.relative(projDir, './src'),
-                                        command: 'VITE_WRANGLER_MODE=dev npx @clevercanyon/madrun build --mode=dev',
-                                    },
-                                    ...(['cfp'].includes(targetEnv)
-                                        ? {
-                                              assets: {
-                                                  binding: 'ASSETS', // For `cloudflare:test`.
-                                                  directory: './' + path.relative(projDir, './dist'),
-                                              },
-                                          }
-                                        : {}),
-                                },
-                                // `$ madrun wrangler deploy --env=stage`.
-                                stage: {
-                                    route: {
-                                        zone_name: settings.defaultWorkerZoneName,
-                                        pattern: settings.defaultWorkersDomain + '/' + settings.defaultWorkerStageShortName + '/*',
-                                    },
-                                    build: {
-                                        cwd: './' + path.relative(projDir, './'),
-                                        watch_dir: './' + path.relative(projDir, './src'),
-                                        command: 'npx @clevercanyon/madrun build --mode=stage',
-                                    },
-                                },
-                            },
-                            // Worker bundling rules; {@see <https://o5p.me/JRHxfC>}.
-                            rules: [
-                                {
-                                    type: 'ESModule',
-                                    globs: extensions.asNoBraceGlobstars([
-                                        ...extensions.byDevGroup.sJavaScript, //
-                                        ...extensions.byDevGroup.sJavaScriptReact,
+                  workers_dev: settings.defaultWorkersDevEnable,
+                  preview_urls: settings.defaultWorkersDevPreviewURLsEnable,
 
-                                        ...extensions.byDevGroup.mJavaScript,
-                                        ...extensions.byDevGroup.mJavaScriptReact,
-                                    ]),
-                                    fallthrough: false,
-                                },
-                                {
-                                    type: 'CommonJS',
-                                    globs: extensions.asNoBraceGlobstars([
-                                        ...extensions.byDevGroup.cJavaScript, //
-                                        ...extensions.byDevGroup.cJavaScriptReact,
-                                    ]),
-                                    fallthrough: false,
-                                },
-                                {
-                                    type: 'CompiledWasm', //
-                                    globs: extensions.asNoBraceGlobstars([
-                                        ...extensions.byCanonical.wasm, //
-                                    ]),
-                                    fallthrough: false,
-                                },
-                                {
-                                    type: 'Text',
-                                    globs: extensions.asNoBraceGlobstars(
-                                        [...extensions.byVSCodeLang.codeTextual].filter(
-                                            (ext) =>
-                                                ![
-                                                    ...extensions.byDevGroup.sJavaScript, //
-                                                    ...extensions.byDevGroup.sJavaScriptReact,
+                  // Worker logpush for trace events.
 
-                                                    ...extensions.byDevGroup.mJavaScript,
-                                                    ...extensions.byDevGroup.mJavaScriptReact,
+                  logpush: settings.defaultLogpush, // Requires paid plan.
 
-                                                    ...extensions.byDevGroup.cJavaScript,
-                                                    ...extensions.byDevGroup.cJavaScriptReact,
+                  // Worker default route.
+                  route: {
+                      zone_name: settings.defaultWorkerZoneName,
+                      pattern: settings.defaultWorkersDomain + '/' + settings.defaultWorkerShortName + '/*',
+                  },
+                  // Worker environments.
+                  env: {
+                      // `$ madrun tests`, `$ madrun wrangler dev` environment for local testing.
+                      dev: {
+                          route: {
+                              zone_name: settings.defaultLocalHostname,
+                              pattern: settings.defaultLocalHostname + '/' + settings.defaultWorkerShortName + '/*',
+                          },
+                      },
+                      // `$ madrun wrangler deploy --env=stage` environment.
+                      stage: {
+                          route: {
+                              zone_name: settings.defaultWorkerZoneName,
+                              pattern: settings.defaultWorkersDomain + '/' + settings.defaultWorkerStageShortName + '/*',
+                          },
+                      },
+                  },
+              }
+            : {}),
+    };
 
-                                                    ...extensions.byCanonical.wasm,
+    /**
+     * Defines pages config.
+     */
+    const pagesConfig = {
+        ...(['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)
+            ? {
+                  // Pages account ID.
 
-                                                    ...extensions.byDevGroup.allTypeScript,
-                                                    // Omit TypeScript also, because it causes Wrangler to choke. Apparently, Wrangler’s build system incorporates TypeScript middleware files.
-                                                    // Therefore, we omit all TypeScript such that Wrangler’s build system can add TS files without them inadvertently being classified as text by our rules.
-                                                    // We don’t expect TypeScript to be present in our `./dist` anyway, so this is harmless, and probably a good idea in general to omit TypeScript here.
-                                                ].includes(ext),
-                                        ),
-                                    ),
-                                    fallthrough: false,
-                                },
-                                {
-                                    type: 'Data',
-                                    globs: extensions.asNoBraceGlobstars(
-                                        [...extensions.byVSCodeLang.codeTextBinary].filter(
-                                            (ext) =>
-                                                ![
-                                                    ...extensions.byDevGroup.sJavaScript, //
-                                                    ...extensions.byDevGroup.sJavaScriptReact,
+                  account_id: settings.defaultAccountId,
 
-                                                    ...extensions.byDevGroup.mJavaScript,
-                                                    ...extensions.byDevGroup.mJavaScriptReact,
+                  // Pages project name.
 
-                                                    ...extensions.byDevGroup.cJavaScript,
-                                                    ...extensions.byDevGroup.cJavaScriptReact,
+                  name: settings.defaultPagesProjectName,
 
-                                                    ...extensions.byCanonical.wasm,
+                  // Pages build output directory.
 
-                                                    ...extensions.byDevGroup.allTypeScript,
-                                                ].includes(ext),
-                                        ),
-                                    ),
-                                    fallthrough: false,
-                                },
-                            ],
-                        }),
+                  pages_build_output_dir: './' + path.relative(projDir, settings.defaultPagesBuildOutputDir),
+
+                  // Pages environments.
+                  env: {
+                      // `$ madrun tests`, `$ madrun wrangler pages dev` environment for local testing.
+                      dev: {}, // Nothing to add at this time.
+
+                      // `$ madrun wrangler pages deploy --branch=(stage|!=production)` environment.
+                      preview: {}, // Nothing to add at this time.
+                  },
               }
             : {}),
     };
@@ -243,7 +248,5 @@ export default async () => {
     /**
      * Composition.
      */
-    return {
-        ...baseConfig,
-    };
+    return $obj.mergeDeep(baseConfig, workerConfig, pagesConfig);
 };
