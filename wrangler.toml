@@ -7,7 +7,7 @@
 # @note This entire file will be updated automatically.
 # @note Instead of editing here, please review `./wrangler.mjs`.
 #
-# Last generated using `./wrangler.mjs` Mar 8, 2025 3:56 AM UTC.
+# Last generated using `./wrangler.mjs` Mar 8, 2025 4:46 AM UTC.
 ##
 
 compatibility_date = "2025-02-14"
@@ -27,6 +27,5 @@ port = 443
 local_protocol = "https"
 upstream_protocol = "https"
 
-[env.dev.assets]
-binding = "ASSETS"
-directory = "./dist"
+[env]
+dev = { }
