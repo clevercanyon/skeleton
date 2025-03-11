@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Mar 8, 2025 8:35 PM UTC.
+ * Last generated using `./settings.mjs` Mar 11, 2025 10:57 AM UTC.
  */
 {
     "editor.formatOnType": false,
@@ -197,8 +197,8 @@
     "eslint.run": "onType",
     "eslint.runtime": "node",
     "eslint.useESLintClass": true,
-    "eslint.codeActionsOnSave.mode": "all",
     "eslint.useFlatConfig": true,
+    "eslint.codeActionsOnSave.mode": "all",
     "eslint.workingDirectories": [
         {
             "mode": "auto"
