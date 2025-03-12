@@ -7,7 +7,7 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review `./settings.mjs`.
  *
- * Last generated using `./settings.mjs` Mar 11, 2025 9:46 PM UTC.
+ * Last generated using `./settings.mjs` Mar 12, 2025 5:50 PM UTC.
  */
 {
     "editor.formatOnType": false,
@@ -292,7 +292,6 @@
     "markdown.validate.enabled": false,
     "mdx.server.enable": false,
     "prettier.ignorePath": ".prettierignore",
-    "evenBetterToml.formatter.indentString": "    ",
     "[mdx]": {
         "editor.tabSize": 4,
         "editor.insertSpaces": true,
@@ -447,7 +446,7 @@
         "editor.codeActionsOnSave": {
             "source.fixAll": "explicit"
         },
-        "editor.defaultFormatter": "tamasfe.even-better-toml"
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "[yaml]": {
         "editor.tabSize": 4,
