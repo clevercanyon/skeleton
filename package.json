@@ -55,11 +55,9 @@
     "peerDependenciesMeta": {},
     "bundleDependencies": [],
     "devDependencies": {
-        "@clevercanyon/dev-deps": "^1.0.409"
+        "@clevercanyon/dev-deps": "^1.0.410"
     },
-    "overrides": {
-        "vite": "6.2.1"
-    },
+    "overrides": {},
     "cpu": [
         "x64",
         "arm64"
