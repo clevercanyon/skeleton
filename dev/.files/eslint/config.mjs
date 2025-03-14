@@ -411,6 +411,7 @@ export default async () => {
                 ignores: [...exclusions.sandboxIgnores, ...exclusions.exampleIgnores],
                 rules: {
                     'no-empty': ['warn', { allowEmptyCatch: true }],
+                    'no-unused-expressions': ['off'],
                     'no-unused-vars': [
                         'warn',
                         {
@@ -448,6 +449,8 @@ export default async () => {
                     '@typescript-eslint/no-empty-interface': ['off'],
                     '@typescript-eslint/no-empty-object-type': ['off'],
                     '@typescript-eslint/no-inferrable-types': ['off'],
+                    '@typescript-eslint/no-unused-expressions': ['off'],
+                    '@typescript-eslint/no-base-to-string': ['off'],
                     '@typescript-eslint/ban-ts-comment': [
                         'warn',
                         {
