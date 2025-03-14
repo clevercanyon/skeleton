@@ -79,6 +79,6 @@ export default async () => {
             ...('module' === pkg.type
                 ? [...extensions.byDevGroup.sJavaScript, ...extensions.byDevGroup.sJavaScriptReact, ...extensions.byDevGroup.mJavaScript, ...extensions.byDevGroup.mJavaScriptReact]
                 : [...extensions.byDevGroup.mJavaScript, ...extensions.byDevGroup.mJavaScriptReact]),
-        ],
+        ].filter((e) => e !== '.mjs'), // Jest complains that `.mjs` is always treated as ESM, no matter, so we exclude it here.
     };
 };
