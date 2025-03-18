@@ -229,7 +229,7 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                             fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_SITEMAPS_FOR_ROBOTS_TXT__$$', cfpDefaultSitemapsForRobotsTxt);
                             //
                         } else if (['404.html'].includes(fileRelPath)) {
-                            const cfpDefault404 = '<!doctype html>' + $preact.ssr.renderToString($preact.create(StandAlone404));
+                            const cfpDefault404 = '<!doctype html>' + (await $preact.ssr.renderToString($preact.create(StandAlone404)));
                             fileContents = fileContents.replace('$$__APP_CFP_DEFAULT_404_HTML__$$', cfpDefault404);
                         }
 
