@@ -22,6 +22,8 @@ export default async (/* {} */) => {
     return {
         name: 'vite-plugin-c10n-no-module-preload',
         enforce: 'pre', // Before Vite loads this virtual module.
+        // {@see https://vite.dev/guide/using-plugins.html#enforcing-plugin-ordering}.
+        // {@see https://vite.dev/guide/api-plugin.html#plugin-ordering}.
 
         load(id) {
             if (id === resolvedVirtualId) {
