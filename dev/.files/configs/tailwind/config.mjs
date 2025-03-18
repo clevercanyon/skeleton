@@ -22,8 +22,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import pluginAnimated from 'tailwindcss-animated';
 import pluginThemer from 'tailwindcss-themer';
-import exclusions from '../../resources/exclusions.mjs';
-import extensions from '../../resources/extensions.mjs';
+import exclusions from '../../resources/utilities/exclusions.mjs';
+import extensions from '../../resources/utilities/extensions.mjs';
 import mergeThemesConfig from './resources/themes.mjs';
 
 // `__dirname` already exists when loaded by Tailwind via Jiti / commonjs.

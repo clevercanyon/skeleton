@@ -7,7 +7,7 @@
  */
 
 import path from 'node:path';
-import { $obj, $path, $str } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $obj, $path, $str } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 /**
  * Converts an array of exclusions into regular expression strings.

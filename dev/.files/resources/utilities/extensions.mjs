@@ -6,7 +6,7 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
-import { $obj, $path } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
+import { $obj, $path } from '../../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
 /**
  * Adds leading dot to extensions.

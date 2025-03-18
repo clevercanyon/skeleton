@@ -49,11 +49,19 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
             }
 
             /**
-             * Generates typescript type declaration file(s).
+             * Runs TypeScript type checks.
              */
-            if (!isSSRBuild && 'build' === command /* Does important type checking at build time. */) {
+            if (!isSSRBuild && 'build' === command) {
                 u.log($chalk.gray('Running TypeScript type checks.'));
                 await u.spawn('npx', ['tsc']);
+            }
+
+            /**
+             * Runs ESLint lint checks.
+             */
+            if (!isSSRBuild && 'build' === command) {
+                u.log($chalk.gray('Running ESLint lint checks.'));
+                await u.spawn('npx', ['eslint']);
             }
 
             /**
