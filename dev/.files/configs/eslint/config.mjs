@@ -429,6 +429,7 @@ export default async () => {
 
                     '@typescript-eslint/no-redeclare': ['warn'],
                     '@typescript-eslint/require-await': ['off'],
+                    '@typescript-eslint/only-throw-error': ['off'],
                     '@typescript-eslint/no-empty-interface': ['off'],
                     '@typescript-eslint/no-empty-object-type': ['off'],
                     '@typescript-eslint/no-inferrable-types': ['off'],
