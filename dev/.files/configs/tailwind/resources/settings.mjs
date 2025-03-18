@@ -9,8 +9,8 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  *
  * @internal Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await and does not support
- * `import.meta.url`. Thus, we cannot use async functionality here, and we cannot use our `u` (utilities). Consider
- * using a CLI request to acquire resources, if necessary. {@see https://o5p.me/1odhxy}.
+ * `import.meta.url`. Thus, we cannot use async functionality here, and we cannot use our `u` (utilities). Therefore, we
+ * produce an extremely watered-down version of our utilities specifically for Tailwind config files.
  */
 
 import { $preact } from '../../../../../node_modules/@clevercanyon/utilities/dist/index.js';

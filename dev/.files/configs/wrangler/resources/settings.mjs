@@ -77,48 +77,48 @@ export default async () => {
         defaultWorkerRules: [
             {
                 type: 'ESModule',
-                globs: u.extensions.asNoBraceGlobstars([
-                    ...u.extensions.byDevGroup.sJavaScript, //
-                    ...u.extensions.byDevGroup.sJavaScriptReact,
+                globs: u.exts.asNoBraceGlobstars([
+                    ...u.exts.byDevGroup.sJavaScript, //
+                    ...u.exts.byDevGroup.sJavaScriptReact,
 
-                    ...u.extensions.byDevGroup.mJavaScript,
-                    ...u.extensions.byDevGroup.mJavaScriptReact,
+                    ...u.exts.byDevGroup.mJavaScript,
+                    ...u.exts.byDevGroup.mJavaScriptReact,
                 ]),
                 fallthrough: false,
             },
             {
                 type: 'CommonJS',
-                globs: u.extensions.asNoBraceGlobstars([
-                    ...u.extensions.byDevGroup.cJavaScript, //
-                    ...u.extensions.byDevGroup.cJavaScriptReact,
+                globs: u.exts.asNoBraceGlobstars([
+                    ...u.exts.byDevGroup.cJavaScript, //
+                    ...u.exts.byDevGroup.cJavaScriptReact,
                 ]),
                 fallthrough: false,
             },
             {
                 type: 'CompiledWasm', //
-                globs: u.extensions.asNoBraceGlobstars([
-                    ...u.extensions.byCanonical.wasm, //
+                globs: u.exts.asNoBraceGlobstars([
+                    ...u.exts.byCanonical.wasm, //
                 ]),
                 fallthrough: false,
             },
             {
                 type: 'Text',
-                globs: u.extensions.asNoBraceGlobstars(
-                    [...u.extensions.byVSCodeLang.codeTextual].filter(
+                globs: u.exts.asNoBraceGlobstars(
+                    [...u.exts.byVSCodeLang.codeTextual].filter(
                         (ext) =>
                             ![
-                                ...u.extensions.byDevGroup.sJavaScript, //
-                                ...u.extensions.byDevGroup.sJavaScriptReact,
+                                ...u.exts.byDevGroup.sJavaScript, //
+                                ...u.exts.byDevGroup.sJavaScriptReact,
 
-                                ...u.extensions.byDevGroup.mJavaScript,
-                                ...u.extensions.byDevGroup.mJavaScriptReact,
+                                ...u.exts.byDevGroup.mJavaScript,
+                                ...u.exts.byDevGroup.mJavaScriptReact,
 
-                                ...u.extensions.byDevGroup.cJavaScript,
-                                ...u.extensions.byDevGroup.cJavaScriptReact,
+                                ...u.exts.byDevGroup.cJavaScript,
+                                ...u.exts.byDevGroup.cJavaScriptReact,
 
-                                ...u.extensions.byCanonical.wasm,
+                                ...u.exts.byCanonical.wasm,
 
-                                ...u.extensions.byDevGroup.allTypeScript,
+                                ...u.exts.byDevGroup.allTypeScript,
                                 // Omit TypeScript also, because it causes Wrangler to choke. Apparently, Wrangler’s build system incorporates TypeScript middleware files.
                                 // Therefore, we omit all TypeScript such that Wrangler’s build system can add TS files without them inadvertently being classified as text by our rules.
                                 // We don’t expect TypeScript to be present in our `./dist` anyway, so this is harmless, and probably a good idea in general to omit TypeScript here.
@@ -129,22 +129,22 @@ export default async () => {
             },
             {
                 type: 'Data',
-                globs: u.extensions.asNoBraceGlobstars(
-                    [...u.extensions.byVSCodeLang.codeTextBinary].filter(
+                globs: u.exts.asNoBraceGlobstars(
+                    [...u.exts.byVSCodeLang.codeTextBinary].filter(
                         (ext) =>
                             ![
-                                ...u.extensions.byDevGroup.sJavaScript, //
-                                ...u.extensions.byDevGroup.sJavaScriptReact,
+                                ...u.exts.byDevGroup.sJavaScript, //
+                                ...u.exts.byDevGroup.sJavaScriptReact,
 
-                                ...u.extensions.byDevGroup.mJavaScript,
-                                ...u.extensions.byDevGroup.mJavaScriptReact,
+                                ...u.exts.byDevGroup.mJavaScript,
+                                ...u.exts.byDevGroup.mJavaScriptReact,
 
-                                ...u.extensions.byDevGroup.cJavaScript,
-                                ...u.extensions.byDevGroup.cJavaScriptReact,
+                                ...u.exts.byDevGroup.cJavaScript,
+                                ...u.exts.byDevGroup.cJavaScriptReact,
 
-                                ...u.extensions.byCanonical.wasm,
+                                ...u.exts.byCanonical.wasm,
 
-                                ...u.extensions.byDevGroup.allTypeScript,
+                                ...u.exts.byDevGroup.allTypeScript,
                             ].includes(ext),
                     ),
                 ),

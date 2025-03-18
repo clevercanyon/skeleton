@@ -22,8 +22,8 @@ import u from '../../../../../resources/utilities.mjs';
 export default async (/* {} */) => {
     return {
         resolveConfig: {
-            alias: await u.importAliases.asFindReplaceRegExps(),
-            extensions: [...u.extensions.onImportWithNoExtensionTry],
+            alias: await u.aliases.asFindReplaceRegExps(),
+            extensions: [...u.exts.onImportWithNoExtensionTry],
         },
     };
 };

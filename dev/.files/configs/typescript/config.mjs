@@ -31,13 +31,15 @@ import u from '../../resources/utilities.mjs';
  */
 export default async () => {
     /**
-     * Prepares relative import aliases.
+     * Prepares relative aliases.
      */
-    const relativeImportAliases = {}; // Initialize.
-    for (const [aliasPath, realPath] of Object.entries(await u.importAliases.asGlobs())) {
+    const relativeAliases = {}; // Initialize.
+
+    for (const [aliasPath, realPath] of Object.entries(await u.aliases.asGlobs())) {
         let realRelativePath = path.relative(u.srcDir, realPath); // i.e., Relative to `compilerOptions.baseUrl`.
-        relativeImportAliases[aliasPath] = [realRelativePath.startsWith('.') ? realRelativePath : './' + realRelativePath];
+        relativeAliases[aliasPath] = [realRelativePath.startsWith('.') ? realRelativePath : './' + realRelativePath];
     }
+
     /**
      * Base config.
      */
@@ -46,24 +48,24 @@ export default async () => {
             './' + path.relative(u.projDir, u.srcDir) + '/**/*', //
             './' + path.relative(u.projDir, path.resolve(u.projDir, './dev-types.d.ts')),
         ],
-        exclude: u.exclusions.asRelativeGlobs(u.projDir, [
+        exclude: u.omit.asRelativeGlobs(u.projDir, [
             ...new Set(
                 [
-                    ...u.exclusions.localIgnores,
-                    ...u.exclusions.logIgnores,
-                    ...u.exclusions.backupIgnores,
-                    ...u.exclusions.patchIgnores,
-                    ...u.exclusions.editorIgnores,
-                    ...u.exclusions.toolingIgnores,
-                    ...u.exclusions.pkgIgnores,
-                    ...u.exclusions.vcsIgnores,
-                    ...u.exclusions.osIgnores,
-                    ...u.exclusions.dotIgnores,
-                    ...u.exclusions.configIgnores,
-                    ...u.exclusions.lockIgnores,
-                    ...u.exclusions.devIgnores,
-                    ...u.exclusions.distIgnores,
-                    ...u.exclusions.docIgnores,
+                    ...u.omit.localIgnores,
+                    ...u.omit.logIgnores,
+                    ...u.omit.backupIgnores,
+                    ...u.omit.patchIgnores,
+                    ...u.omit.editorIgnores,
+                    ...u.omit.toolingIgnores,
+                    ...u.omit.pkgIgnores,
+                    ...u.omit.vcsIgnores,
+                    ...u.omit.osIgnores,
+                    ...u.omit.dotIgnores,
+                    ...u.omit.configIgnores,
+                    ...u.omit.lockIgnores,
+                    ...u.omit.devIgnores,
+                    ...u.omit.distIgnores,
+                    ...u.omit.docIgnores,
                 ].filter((excl) => '**/dev-types.d.ts/**' !== excl),
             ),
         ]),
@@ -81,8 +83,8 @@ export default async () => {
             strict: true,
             skipLibCheck: true,
 
-            target: u.esVersion.lcnYear,
-            lib: [u.esVersion.lcnYear],
+            target: u.es.version.lcnYear,
+            lib: [u.es.version.lcnYear],
             types: [
                 'vite/client', // Ambient modules provided by Vite build system.
                 'unplugin-icons/types/preact', // Ambient modules for preact icons.
@@ -109,7 +111,7 @@ export default async () => {
             verbatimModuleSyntax: true,
             allowImportingTsExtensions: true,
 
-            paths: relativeImportAliases, // Relative to `baseUrl`.
+            paths: relativeAliases, // Relative to `baseUrl`.
         },
         // This is needed by the VSCode extension for MDX.
         mdx: (await (await import(path.resolve(u.projDir, './mdx.config.mjs'))).default()).vsCodeTSConfig,

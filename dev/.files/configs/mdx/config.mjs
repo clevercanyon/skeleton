@@ -32,8 +32,8 @@ export default async () => {
         jsxImportSource: 'preact',
         elementAttributeNameCase: 'html',
 
-        mdExtensions: [...u.extensions.byVSCodeLang.markdown],
-        mdxExtensions: [...u.extensions.byVSCodeLang.mdx],
+        mdExtensions: [...u.exts.byVSCodeLang.markdown],
+        mdxExtensions: [...u.exts.byVSCodeLang.mdx],
 
         remarkPlugins: [
             [(await import('remark-frontmatter')).default], // Frontmatter.

@@ -23,7 +23,7 @@ import u from '../../../../../resources/utilities.mjs';
 export default async ({ isSSRBuild, a16sDir, appType, targetEnvIsServer, appEntries, sourcemapsEnable, minifyEnable, terserConfig, rollupConfig }) => {
     return {
         buildConfig: {
-            target: u.esVersion.lcnYear, // Matches TypeScript config.
+            target: u.es.version.lcnYear, // Matches TypeScript config.
             ssr: targetEnvIsServer, // Target environment is server-side?
 
             emptyOutDir: false, // Instead, we handle this via our own plugin.

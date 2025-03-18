@@ -16,12 +16,12 @@ import path from 'node:path';
 import { $chalk, $cmd, $dotenv, $fs, $prettier } from '../../../node_modules/@clevercanyon/utilities.node/dist/index.js';
 import { $app, $brand, $env, $fn, $is, $json, $obj, $obp, $str, $to, $url, $version } from '../../../node_modules/@clevercanyon/utilities/dist/index.js';
 
-import coreProjects from './utilities/core-projects.mjs';
-import esVersion from './utilities/es-version.mjs';
-import exclusions from './utilities/exclusions.mjs';
-import extensions from './utilities/extensions.mjs';
-import importAliases from './utilities/import-aliases.mjs';
-import nodeVersion from './utilities/node-version.mjs';
+import uꓺaliases from './utilities/aliases.mjs';
+import uꓺes from './utilities/es.mjs';
+import uꓺexts from './utilities/exts.mjs';
+import uꓺnode from './utilities/node.mjs';
+import uꓺomit from './utilities/omit.mjs';
+import uꓺprojects from './utilities/projects.mjs';
 
 /**
  * Defines constants.
@@ -189,14 +189,12 @@ export default class u {
     // Sub-module resource imports.
     // Via `./utilities/*` directory.
 
-    static coreProjects = coreProjects;
-    static importAliases = importAliases;
-
-    static extensions = extensions;
-    static exclusions = exclusions;
-
-    static esVersion = esVersion;
-    static nodeVersion = nodeVersion;
+    static aliases = uꓺaliases;
+    static es = uꓺes;
+    static exts = uꓺexts;
+    static node = uꓺnode;
+    static omit = uꓺomit;
+    static projects = uꓺprojects;
 
     /**
      * Synchronous utilities.
@@ -421,7 +419,7 @@ export default class u {
         if (!$is.plainObject(updates)) {
             throw new Error('u.updatePkg: Unable to parse `' + updatesFile + '`.');
         }
-        if (await u.isPkgFork() /* Forks do not get our default import aliases. */) {
+        if (await u.isPkgFork() /* Forks don't get our default import aliases. */) {
             if (updates.$ꓺdefaults?.imports) updates.$ꓺdefaults.imports = {};
         }
         if (await u.isPkgName('@clevercanyon/dev-deps') /* No dev-deps for dev-deps. */) {
@@ -434,16 +432,16 @@ export default class u {
         }
         if (Object.hasOwn(updates.$ꓺset?.engines || {}, 'node')) {
             updates.$ꓺset.engines.node = []; // Initialize.
-            if (nodeVersion.previous) updates.$ꓺset.engines.node.push(nodeVersion.previous);
-            if (nodeVersion.current) updates.$ꓺset.engines.node.push(nodeVersion.current);
-            if (nodeVersion.forwardCompat.length) updates.$ꓺset.engines.node = updates.$ꓺset.engines.node.concat(nodeVersion.forwardCompat);
+            if (u.node.version.previous) updates.$ꓺset.engines.node.push(u.node.version.previous);
+            if (u.node.version.current) updates.$ꓺset.engines.node.push(u.node.version.current);
+            if (u.node.version.forwardCompat.length) updates.$ꓺset.engines.node = updates.$ꓺset.engines.node.concat(u.node.version.forwardCompat);
             updates.$ꓺset.engines.node = (updates.$ꓺset.engines.node.length ? '^' : '') + updates.$ꓺset.engines.node.join(' || ^');
         }
         if (Object.hasOwn(updates.$ꓺset?.engines || {}, 'npm')) {
             updates.$ꓺset.engines.npm = []; // Initialize.
-            if (nodeVersion.npm.previous) updates.$ꓺset.engines.npm.push(nodeVersion.npm.previous);
-            if (nodeVersion.npm.current) updates.$ꓺset.engines.npm.push(nodeVersion.npm.current);
-            if (nodeVersion.npm.forwardCompat.length) updates.$ꓺset.engines.npm = updates.$ꓺset.engines.npm.concat(nodeVersion.npm.forwardCompat);
+            if (u.node.version.npm.previous) updates.$ꓺset.engines.npm.push(u.node.version.npm.previous);
+            if (u.node.version.npm.current) updates.$ꓺset.engines.npm.push(u.node.version.npm.current);
+            if (u.node.version.npm.forwardCompat.length) updates.$ꓺset.engines.npm = updates.$ꓺset.engines.npm.concat(u.node.version.npm.forwardCompat);
             updates.$ꓺset.engines.npm = (updates.$ꓺset.engines.npm.length ? '^' : '') + updates.$ꓺset.engines.npm.join(' || ^');
         }
         $obj.patchDeep(pkg, updates); // Updates potentially contain declarative ops.

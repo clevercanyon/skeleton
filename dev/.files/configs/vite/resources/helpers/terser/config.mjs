@@ -24,7 +24,7 @@ export default async (/* {} */) => {
         terserConfig: {
             module: true,
             toplevel: true,
-            ecma: u.esVersion.year,
+            ecma: u.es.version.year,
             compress: { passes: 1 },
             format: { comments: false },
         },

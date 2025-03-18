@@ -84,7 +84,7 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
              */
             if ('build' === command && inProdLikeMode) {
                 for (let globOpts = [{ onlyDirectories: true }, { onlyFiles: false }], i = 0; i < globOpts.length; i++) {
-                    for (const fileOrDir of await $glob.promise(u.exclusions.defaultNPMIgnores, { cwd: u.distDir, ignoreCase: true, ...globOpts[i] })) {
+                    for (const fileOrDir of await $glob.promise(u.omit.defaultNPMIgnores, { cwd: u.distDir, ignoreCase: true, ...globOpts[i] })) {
                         const projRelPath = path.relative(u.projDir, fileOrDir);
 
                         if (!fs.existsSync(fileOrDir)) {
@@ -103,13 +103,13 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                             $mm.test(
                                 projRelPath,
                                 [
-                                    ...u.exclusions.devIgnores, //
-                                    ...u.exclusions.sandboxIgnores,
-                                    ...u.exclusions.exampleIgnores,
-                                    ...u.exclusions.docIgnores,
-                                    ...u.exclusions.testIgnores,
-                                    ...u.exclusions.specIgnores,
-                                    ...u.exclusions.benchIgnores,
+                                    ...u.omit.devIgnores, //
+                                    ...u.omit.sandboxIgnores,
+                                    ...u.omit.exampleIgnores,
+                                    ...u.omit.docIgnores,
+                                    ...u.omit.testIgnores,
+                                    ...u.omit.specIgnores,
+                                    ...u.omit.benchIgnores,
                                 ],
                                 { ignoreCase: true, dot: true },
                             )
@@ -136,7 +136,7 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                 for (const fileOrDir of await $glob.promise(
                     [
                         'types', // Prunes TypeScript type declarations.
-                        'index.' + u.extensions.asBracedGlob([...u.extensions.byCanonical.html]),
+                        'index.' + u.exts.asBracedGlob([...u.exts.byCanonical.html]),
                     ],
                     { cwd: u.distDir, onlyFiles: false },
                 )) {

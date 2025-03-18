@@ -27,47 +27,42 @@ export default async () => {
             ...(fs.existsSync(u.testsDir) ? [u.testsDir] : []),
             ...(!fs.existsSync(u.srcDir) && !fs.existsSync(u.testsDir) ? [u.projDir] : []),
         ],
-        testPathIgnorePatterns: u.exclusions.asRegExpStrings([
+        testPathIgnorePatterns: u.omit.asRegExpStrings([
             ...new Set([
-                ...u.exclusions.localIgnores,
-                ...u.exclusions.logIgnores,
-                ...u.exclusions.backupIgnores,
-                ...u.exclusions.patchIgnores,
-                ...u.exclusions.editorIgnores,
-                ...u.exclusions.toolingIgnores,
-                ...u.exclusions.pkgIgnores,
-                ...u.exclusions.vcsIgnores,
-                ...u.exclusions.osIgnores,
-                ...u.exclusions.dotIgnores,
-                ...u.exclusions.dtsIgnores,
-                ...u.exclusions.configIgnores,
-                ...u.exclusions.lockIgnores,
-                ...u.exclusions.devIgnores,
-                ...u.exclusions.distIgnores,
-                ...u.exclusions.sandboxIgnores,
-                ...u.exclusions.exampleIgnores,
-                ...u.exclusions.docIgnores,
-                ...u.exclusions.benchIgnores,
-                ...u.exclusions.adhocExIgnores,
+                ...u.omit.localIgnores,
+                ...u.omit.logIgnores,
+                ...u.omit.backupIgnores,
+                ...u.omit.patchIgnores,
+                ...u.omit.editorIgnores,
+                ...u.omit.toolingIgnores,
+                ...u.omit.pkgIgnores,
+                ...u.omit.vcsIgnores,
+                ...u.omit.osIgnores,
+                ...u.omit.dotIgnores,
+                ...u.omit.dtsIgnores,
+                ...u.omit.configIgnores,
+                ...u.omit.lockIgnores,
+                ...u.omit.devIgnores,
+                ...u.omit.distIgnores,
+                ...u.omit.sandboxIgnores,
+                ...u.omit.exampleIgnores,
+                ...u.omit.docIgnores,
+                ...u.omit.benchIgnores,
+                ...u.omit.adhocExIgnores,
             ]),
         ]),
         // Configured to run JS tests only; not TypeScript tests.
         // To create and run TypeScript tests, use Vitest instead of Jest.
         testMatch: [
-            '**/*.{test|tests|spec|specs}.' + u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript]), //
-            '**/{test,tests,spec,specs}/**/*.' + u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript]),
+            '**/*.{test|tests|spec|specs}.' + u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript]), //
+            '**/{test,tests,spec,specs}/**/*.' + u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript]),
         ],
-        moduleNameMapper: await u.importAliases.asRegExpStrings(),
-        moduleFileExtensions: u.extensions.noDot([...u.extensions.byDevGroup.allJavaScript]),
+        moduleNameMapper: await u.aliases.asRegExpStrings(),
+        moduleFileExtensions: u.exts.noDot([...u.exts.byDevGroup.allJavaScript]),
         extensionsToTreatAsEsm: [
             ...('module' === u.pkgType
-                ? [
-                      ...u.extensions.byDevGroup.sJavaScript,
-                      ...u.extensions.byDevGroup.sJavaScriptReact,
-                      ...u.extensions.byDevGroup.mJavaScript,
-                      ...u.extensions.byDevGroup.mJavaScriptReact,
-                  ]
-                : [...u.extensions.byDevGroup.mJavaScript, ...u.extensions.byDevGroup.mJavaScriptReact]),
+                ? [...u.exts.byDevGroup.sJavaScript, ...u.exts.byDevGroup.sJavaScriptReact, ...u.exts.byDevGroup.mJavaScript, ...u.exts.byDevGroup.mJavaScriptReact]
+                : [...u.exts.byDevGroup.mJavaScript, ...u.exts.byDevGroup.mJavaScriptReact]),
         ].filter((ext) => ext !== '.mjs'), // Jest complains that `.mjs` is always treated as ESM, so we exclude it here.
     };
 };

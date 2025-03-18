@@ -24,29 +24,29 @@ export default async () => {
     return pluginConfig({
         exclude: [
             ...new Set([
-                ...u.exclusions.localIgnores, //
-                ...u.exclusions.logIgnores,
-                ...u.exclusions.backupIgnores,
-                ...u.exclusions.patchIgnores,
-                ...u.exclusions.editorIgnores,
-                ...u.exclusions.toolingIgnores,
-                ...u.exclusions.pkgIgnores,
-                ...u.exclusions.vcsIgnores,
-                ...u.exclusions.osIgnores,
-                ...u.exclusions.dotIgnores,
-                ...u.exclusions.dtsIgnores,
-                ...u.exclusions.configIgnores,
-                ...u.exclusions.lockIgnores,
-                ...u.exclusions.devIgnores,
-                ...u.exclusions.distIgnores,
-                ...u.exclusions.docIgnores,
+                ...u.omit.localIgnores, //
+                ...u.omit.logIgnores,
+                ...u.omit.backupIgnores,
+                ...u.omit.patchIgnores,
+                ...u.omit.editorIgnores,
+                ...u.omit.toolingIgnores,
+                ...u.omit.pkgIgnores,
+                ...u.omit.vcsIgnores,
+                ...u.omit.osIgnores,
+                ...u.omit.dotIgnores,
+                ...u.omit.dtsIgnores,
+                ...u.omit.configIgnores,
+                ...u.omit.lockIgnores,
+                ...u.omit.devIgnores,
+                ...u.omit.distIgnores,
+                ...u.omit.docIgnores,
             ]),
         ],
         include: [
             '**/*.' +
-                u.extensions.asBracedGlob([
-                    ...u.extensions.byDevGroup.allJavaScriptReact, //
-                    ...u.extensions.byDevGroup.allTypeScriptReact,
+                u.exts.asBracedGlob([
+                    ...u.exts.byDevGroup.allJavaScriptReact, //
+                    ...u.exts.byDevGroup.allTypeScriptReact,
                 ]),
         ],
     });

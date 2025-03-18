@@ -10,29 +10,28 @@
  * @micromatch Tailwind uses micromatch with default options; i.e., `{ dot: false }`.
  *
  * @internal Jiti, which is used by Tailwind to load ESM config files, doesn’t support top-level await and does not support
- * `import.meta.url`. Thus, we cannot use async functionality here, and we cannot use our `u` (utilities). Consider
- * using a CLI request to acquire resources, if necessary. {@see https://o5p.me/1odhxy}.
+ * `import.meta.url`. Thus, we cannot use async functionality here, and we cannot use our `u` (utilities). Therefore, we
+ * produce an extremely watered-down version of our utilities specifically for Tailwind config files.
  *
  * @see https://tailwindcss.com/docs/configuration
  */
 
-import pluginTypography from '@tailwindcss/typography';
-import pluginTypographyStyles from '@tailwindcss/typography/src/styles.js';
 import fs from 'node:fs';
 import path from 'node:path';
-import pluginAnimated from 'tailwindcss-animated';
-import pluginThemer from 'tailwindcss-themer';
-import exclusions from '../../resources/utilities/exclusions.mjs';
-import extensions from '../../resources/utilities/extensions.mjs';
-import mergeThemesConfig from './resources/themes.mjs';
+import getThemes from './resources/themes.mjs';
+import u from './resources/utilities.mjs';
 
-// `__dirname` already exists when loaded by Tailwind via Jiti / commonjs.
-// eslint-disable-next-line no-undef -- `__dirname` is not actually missing.
-const curDir = __dirname; // Current directory.
-const projDir = path.resolve(curDir, '../../../..');
+import typographyPlugin from '@tailwindcss/typography';
+import typographyPluginStyles from '@tailwindcss/typography/src/styles.js';
+import animatedPlugin from 'tailwindcss-animated';
+import themerPlugin from 'tailwindcss-themer';
 
 /**
  * Defines Tailwind configuration.
+ *
+ * @param   context Optional context data.
+ *
+ * @returns         Tailwind configuration.
  */
 export default /* not async compatible */ ({ themesConfig } = {}) => {
     /**
@@ -208,7 +207,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 // textDecoration: 'underline',
                                 // fontWeight: '500',
                                 // All included in base `<a>` styles.
-                                ...pluginTypographyStyles.DEFAULT.css[0]['a'],
+                                ...typographyPluginStyles.DEFAULT.css[0]['a'],
                                 opacity: '.9',
                                 textDecoration: 'none',
                                 cursor: 'pointer',
@@ -220,13 +219,13 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                             'a code, .link code': {
                                 // color: 'inherit',
                                 // All included in base `<code>` styles.
-                                ...pluginTypographyStyles.DEFAULT.css[0]['a code'],
+                                ...typographyPluginStyles.DEFAULT.css[0]['a code'],
                                 color: null, // Explicitly remove; see notes above.
                             },
                             'a strong, .link strong': {
                                 // color: 'inherit',
                                 // All included in base `<strong>` styles.
-                                ...pluginTypographyStyles.DEFAULT.css[0]['a strong'],
+                                ...typographyPluginStyles.DEFAULT.css[0]['a strong'],
                                 color: null, // Explicitly remove; see notes above.
                             },
                             ':where(a, .link)[target="_blank"]:not(:has(> *))::after': {
@@ -278,7 +277,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 // paddingBottom: em(3, 16),
                                 // paddingLeft: em(6, 16),
                                 // All included in base `<kbd>` styles.
-                                ...pluginTypographyStyles.base.css[0]['kbd'],
+                                ...typographyPluginStyles.base.css[0]['kbd'],
                                 borderRadius: '0.188rem', // Equivalent to 3px.
                                 boxShadow: '0 0 0 2px rgb(var(--tw-prose-code-shadows) / 12%)',
                             },
@@ -300,7 +299,7 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
                                 // paddingBottom: em(3, 16),
                                 // paddingLeft: em(6, 16),
                                 // All included in base `<kbd>` styles.
-                                ...pluginTypographyStyles.base.css[0]['kbd'],
+                                ...typographyPluginStyles.base.css[0]['kbd'],
                             },
                             'mark, mark *': {
                                 fontSize: '.944444em',
@@ -402,21 +401,21 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             },
         },
         plugins: [
-            pluginTypography({ className: 'p' }), // In our implementation, `p` = `prose`, `_` = `not-prose` = `not-basic`.
+            typographyPlugin({ className: 'p' }), // In our implementation, `p` = `prose`, `_` = `not-prose` = `not-basic`.
             // The `_` = `not-prose` logic is handled by our PostCSS configuration, which includes a custom plugin.
 
             // This plugin is what powers all of our theme configurations; {@see https://www.npmjs.com/package/tailwindcss-themer}.
-            pluginThemer(mergeThemesConfig({ themesConfig })), // Our own theme system is also called upon here to configure Tailwind themes.
+            themerPlugin(getThemes({ themesConfig })), // Our own theme system is also called upon here to configure Tailwind themes.
 
             // This plugin adds support for more animation utilities and comes with a beautiful animation configurator.
-            pluginAnimated, // {@see https://www.tailwindcss-animated.com/configurator.html}.
+            animatedPlugin, // {@see https://www.tailwindcss-animated.com/configurator.html}.
         ],
         content: [
-            path.resolve(projDir, './{src,dist}') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent]),
+            path.resolve(u.projDir, './{src,dist}') + '/**/*.' + u.exts.asBracedGlob([...u.exts.tailwindContent]),
 
             // If this package is using `@clevercanyon/utilities` we can also scan preact files.
-            ...(fs.existsSync(path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact'))
-                ? [path.resolve(projDir, './node_modules/@clevercanyon/utilities/dist/preact') + '/**/*.' + extensions.asBracedGlob([...extensions.tailwindContent])]
+            ...(fs.existsSync(path.resolve(u.nmDir, './@clevercanyon/utilities/dist/preact'))
+                ? [path.resolve(u.nmDir, './@clevercanyon/utilities/dist/preact') + '/**/*.' + u.exts.asBracedGlob([...u.exts.tailwindContent])]
                 : []),
 
             // Exclusions using negated glob patterns, which should simply be a reflection of `./.npmignore`.
@@ -424,38 +423,38 @@ export default /* not async compatible */ ({ themesConfig } = {}) => {
             // It’s also tricky because we *do* need to find content inside `node_modules/@clevercanyon/utilities/dist/preact`.
             // Therefore, instead of using `./.npmignore`, we come as close as we can, with just a few exceptions.
 
-            ...exclusions.asNegatedGlobs(
+            ...u.omit.asNegatedGlobs(
                 [
                     ...new Set([
-                        ...exclusions.localIgnores,
-                        ...exclusions.logIgnores,
-                        ...exclusions.backupIgnores,
-                        ...exclusions.patchIgnores,
-                        ...exclusions.editorIgnores,
-                        ...exclusions.toolingIgnores,
+                        ...u.omit.localIgnores,
+                        ...u.omit.logIgnores,
+                        ...u.omit.backupIgnores,
+                        ...u.omit.patchIgnores,
+                        ...u.omit.editorIgnores,
+                        ...u.omit.toolingIgnores,
 
-                        ...exclusions.pkgIgnores //
+                        ...u.omit.pkgIgnores //
                             .filter((ignore) => ignore !== '**/node_modules/**'),
                         '**/src/**/node_modules/**', // More specific.
 
-                        ...exclusions.vcsIgnores,
-                        ...exclusions.osIgnores,
-                        ...exclusions.dotIgnores,
-                        ...exclusions.dtsIgnores,
-                        ...exclusions.configIgnores,
-                        ...exclusions.lockIgnores,
-                        ...exclusions.devIgnores,
+                        ...u.omit.vcsIgnores,
+                        ...u.omit.osIgnores,
+                        ...u.omit.dotIgnores,
+                        ...u.omit.dtsIgnores,
+                        ...u.omit.configIgnores,
+                        ...u.omit.lockIgnores,
+                        ...u.omit.devIgnores,
 
-                        ...exclusions.distIgnores //
+                        ...u.omit.distIgnores //
                             .filter((ignore) => ignore !== '**/dist/**'),
                         '**/src/**/dist/**', // More specific.
 
-                        ...exclusions.sandboxIgnores,
-                        ...exclusions.exampleIgnores,
-                        ...exclusions.docIgnores,
-                        ...exclusions.testIgnores,
-                        ...exclusions.specIgnores,
-                        ...exclusions.benchIgnores,
+                        ...u.omit.sandboxIgnores,
+                        ...u.omit.exampleIgnores,
+                        ...u.omit.docIgnores,
+                        ...u.omit.testIgnores,
+                        ...u.omit.specIgnores,
+                        ...u.omit.benchIgnores,
                     ]),
                 ],
                 { dropExistingNegations: true },

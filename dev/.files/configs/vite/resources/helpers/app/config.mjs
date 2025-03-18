@@ -27,9 +27,9 @@ export default async ({ isSSRBuild }) => {
     const sideEffects = (isSSRBuild ? u.pkgSSRBuildSideEffects : u.pkgBuildSideEffects) || [];
 
     const _appDefaultEntryFiles = // Based on app type.
-            ['spa'].includes(appType) ? ['./src/index.' + u.extensions.asBracedGlob([...u.extensions.byCanonical.html])]
-            : ['mpa'].includes(appType) ? ['./src/**/index.' + u.extensions.asBracedGlob([...u.extensions.byCanonical.html])]
-            : ['./src/*.' + u.extensions.asBracedGlob([...u.extensions.byDevGroup.sTypeScript, ...u.extensions.byDevGroup.sTypeScriptReact])],
+            ['spa'].includes(appType) ? ['./src/index.' + u.exts.asBracedGlob([...u.exts.byCanonical.html])]
+            : ['mpa'].includes(appType) ? ['./src/**/index.' + u.exts.asBracedGlob([...u.exts.byCanonical.html])]
+            : ['./src/*.' + u.exts.asBracedGlob([...u.exts.byDevGroup.sTypeScript, ...u.exts.byDevGroup.sTypeScriptReact])],
          _appPkgEntryFiles = (isSSRBuild ? u.pkgSSRBuildEntryFiles : u.pkgBuildEntryFiles) || [],
          _appEntryFiles = (_appPkgEntryFiles.length ? _appPkgEntryFiles : _appDefaultEntryFiles).map((v) => $str.lTrim(v, './')); // prettier-ignore
 

@@ -26,39 +26,39 @@ import getWranglerSettings from '../../../../wrangler/resources/settings.mjs';
 export default async ({ mode, appType, targetEnv, vitestSandboxEnable, vitestExamplesEnable, rollupConfig, depsConfig }) => {
     const vitestExcludes = [
         ...new Set([
-            ...u.exclusions.localIgnores,
-            ...u.exclusions.logIgnores,
-            ...u.exclusions.backupIgnores,
-            ...u.exclusions.patchIgnores,
-            ...u.exclusions.editorIgnores,
-            ...u.exclusions.pkgIgnores,
-            ...u.exclusions.vcsIgnores,
-            ...u.exclusions.osIgnores,
-            ...u.exclusions.dotIgnores,
-            ...u.exclusions.dtsIgnores,
-            ...u.exclusions.configIgnores,
-            ...u.exclusions.lockIgnores,
-            ...u.exclusions.devIgnores,
-            ...u.exclusions.distIgnores,
-            ...u.exclusions.docIgnores,
-            ...(vitestSandboxEnable ? [] : [...u.exclusions.sandboxIgnores]),
-            ...(vitestExamplesEnable ? [] : [...u.exclusions.exampleIgnores]),
-            ...u.exclusions.adhocExIgnores, // Deliberate ad-hoc exclusions.
+            ...u.omit.localIgnores,
+            ...u.omit.logIgnores,
+            ...u.omit.backupIgnores,
+            ...u.omit.patchIgnores,
+            ...u.omit.editorIgnores,
+            ...u.omit.pkgIgnores,
+            ...u.omit.vcsIgnores,
+            ...u.omit.osIgnores,
+            ...u.omit.dotIgnores,
+            ...u.omit.dtsIgnores,
+            ...u.omit.configIgnores,
+            ...u.omit.lockIgnores,
+            ...u.omit.devIgnores,
+            ...u.omit.distIgnores,
+            ...u.omit.docIgnores,
+            ...(vitestSandboxEnable ? [] : [...u.omit.sandboxIgnores]),
+            ...(vitestExamplesEnable ? [] : [...u.omit.exampleIgnores]),
+            ...u.omit.adhocExIgnores, // Deliberate ad-hoc exclusions.
         ]),
     ];
     const allEnvSuffixes = ['cfp', 'web', 'cfw', 'webw', 'node', 'any'],
         allReservedSlugs = ['test', 'tests', 'test-d', 'tests-d', 'spec', 'specs', 'spec-d', 'specs-d', 'bench', 'benchmark', 'benchmarks'],
         vitestEnvSpecificPaths = [
             '**/' +
-                (allReservedSlugs.length ? u.extensions.asBracedGlob(allReservedSlugs) : '') +
+                (allReservedSlugs.length ? u.exts.asBracedGlob(allReservedSlugs) : '') +
                 '/**/*.' +
-                (allEnvSuffixes.length ? u.extensions.asBracedGlob(allEnvSuffixes) + '.' : '') +
-                u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                (allEnvSuffixes.length ? u.exts.asBracedGlob(allEnvSuffixes) + '.' : '') +
+                u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
             '**/*.' +
-                (allEnvSuffixes.length ? u.extensions.asBracedGlob(allEnvSuffixes) + '.' : '') +
-                (allReservedSlugs.length ? u.extensions.asBracedGlob(allReservedSlugs) + '.' : '') +
-                u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                (allEnvSuffixes.length ? u.exts.asBracedGlob(allEnvSuffixes) + '.' : '') +
+                (allReservedSlugs.length ? u.exts.asBracedGlob(allReservedSlugs) + '.' : '') +
+                u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
         ];
     let jsdomProjectConfig, nodeProjectConfig, workerProjectConfig; // Initialize.
 
@@ -70,37 +70,37 @@ export default async ({ mode, appType, targetEnv, vitestSandboxEnable, vitestExa
                           ...(vitestSandboxEnable
                               ? [
                                     '**/sandbox/**/{test,tests,spec,specs}/**/*.' +
-                                        (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                        u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                        (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                        u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
                                     '**/sandbox/**/*.' +
-                                        (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                        (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                         '{test,tests,spec,specs}.' +
-                                        u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                        u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
                                 ]
                               : []),
                           ...(vitestExamplesEnable
                               ? [
                                     '**/{example,examples}/**/{test,tests,spec,specs}/**/*.' +
-                                        (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                        u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                        (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                        u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
                                     '**/{example,examples}/**/*.' +
-                                        (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                        (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                         '{test,tests,spec,specs}.' +
-                                        u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                        u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
                                 ]
                               : []),
                       ]
                     : [
                           '**/{test,tests,spec,specs}/**/*.' +
-                              (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                              u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                              (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                              u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
                           '**/*.' +
-                              (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                              (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                               '{test,tests,spec,specs}.' +
-                              u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                              u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
                       ],
             exclude: [...new Set([...vitestExcludes, ...(!envSuffixes.length ? vitestEnvSpecificPaths : [])])],
 
@@ -111,37 +111,37 @@ export default async ({ mode, appType, targetEnv, vitestSandboxEnable, vitestExa
                               ...(vitestSandboxEnable
                                   ? [
                                         '**/sandbox/**/{test,tests,spec,specs}-d/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allTypeScript]),
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allTypeScript]),
 
                                         '**/sandbox/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                             '{test,tests,spec,specs}-d.' +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allTypeScript]),
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allTypeScript]),
                                     ]
                                   : []),
                               ...(vitestExamplesEnable
                                   ? [
                                         '**/{example,examples}/**/{test,tests,spec,specs}-d/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allTypeScript]),
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allTypeScript]),
 
                                         '**/{example,examples}/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                             '{test,tests,spec,specs}-d.' +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allTypeScript]),
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allTypeScript]),
                                     ]
                                   : []),
                           ]
                         : [
                               '**/{test,tests,spec,specs}-d/**/*.' +
-                                  (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                  u.extensions.asBracedGlob([...u.extensions.byDevGroup.allTypeScript]),
+                                  (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                  u.exts.asBracedGlob([...u.exts.byDevGroup.allTypeScript]),
 
                               '**/*.' +
-                                  (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                  (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                   '{test,tests,spec,specs}-d.' +
-                                  u.extensions.asBracedGlob([...u.extensions.byDevGroup.allTypeScript]),
+                                  u.exts.asBracedGlob([...u.exts.byDevGroup.allTypeScript]),
                           ],
                 exclude: [...new Set([...vitestExcludes, ...(!envSuffixes.length ? vitestEnvSpecificPaths : [])])],
             },
@@ -152,37 +152,37 @@ export default async ({ mode, appType, targetEnv, vitestSandboxEnable, vitestExa
                               ...(vitestSandboxEnable
                                   ? [
                                         '**/sandbox/**/{bench,benchmark,benchmarks}/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
                                         '**/sandbox/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                             '{bench,benchmark,benchmarks}.' +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
                                     ]
                                   : []),
                               ...(vitestExamplesEnable
                                   ? [
                                         '**/{example,examples}/**/{bench,benchmark,benchmarks}/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
                                         '**/{example,examples}/**/*.' +
-                                            (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                            (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                             '{bench,benchmark,benchmarks}.' +
-                                            u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                            u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
                                     ]
                                   : []),
                           ]
                         : [
                               '**/{bench,benchmark,benchmarks}/**/*.' +
-                                  (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
-                                  u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                  (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
+                                  u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
 
                               '**/*.' +
-                                  (envSuffixes.length ? u.extensions.asBracedGlob(envSuffixes) + '.' : '') +
+                                  (envSuffixes.length ? u.exts.asBracedGlob(envSuffixes) + '.' : '') +
                                   '{bench,benchmark,benchmarks}.' +
-                                  u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript]),
+                                  u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript]),
                           ],
                 exclude: [...new Set([...vitestExcludes, ...(!envSuffixes.length ? vitestEnvSpecificPaths : [])])],
             },
@@ -230,18 +230,11 @@ export default async ({ mode, appType, targetEnv, vitestSandboxEnable, vitestExa
             },
             coverage: {
                 all: true, // All of the below.
-                extension: [...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript],
+                extension: [...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript],
 
-                include: ['**/*.' + u.extensions.asBracedGlob([...u.extensions.byDevGroup.allJavaScript, ...u.extensions.byDevGroup.allTypeScript])],
+                include: ['**/*.' + u.exts.asBracedGlob([...u.exts.byDevGroup.allJavaScript, ...u.exts.byDevGroup.allTypeScript])],
                 exclude: [
-                    ...new Set([
-                        ...vitestExcludes,
-                        ...u.exclusions.sandboxIgnores,
-                        ...u.exclusions.exampleIgnores,
-                        ...u.exclusions.testIgnores,
-                        ...u.exclusions.specIgnores,
-                        ...u.exclusions.benchIgnores,
-                    ]),
+                    ...new Set([...vitestExcludes, ...u.omit.sandboxIgnores, ...u.omit.exampleIgnores, ...u.omit.testIgnores, ...u.omit.specIgnores, ...u.omit.benchIgnores]),
                 ],
                 reporter: ['text', 'html', 'clover', 'json'],
                 reportsDirectory: path.resolve(u.logsDir, './coverage/vitest'),
@@ -249,7 +242,7 @@ export default async ({ mode, appType, targetEnv, vitestSandboxEnable, vitestExa
             server: {
                 deps: {
                     inline: [], // {@see https://o5p.me/DHrjU4} for details.
-                    external: [...new Set([...u.exclusions.pkgIgnores].concat(rollupConfig.external))],
+                    external: [...new Set([...u.omit.pkgIgnores].concat(rollupConfig.external))],
                 },
             },
             poolOptions: {

@@ -57,7 +57,7 @@ export default async ({ projDir }) => {
             case 'development':
             case 'any':
             case 'node': {
-                browserslistrcFileContentsEnvs += '\n' + 'node >= ' + u.nodeVersion.current;
+                browserslistrcFileContentsEnvs += '\n' + 'node >= ' + u.node.version.current;
                 break;
             }
         }
@@ -67,7 +67,7 @@ export default async ({ projDir }) => {
             case 'any':
             case 'web':
             case 'webw': {
-                browserslistrcFileContentsEnvs += '\n' + browsersWithSupportForEcmaVersion(u.esVersion.lcnYear).join('\n');
+                browserslistrcFileContentsEnvs += '\n' + browsersWithSupportForEcmaVersion(u.es.version.lcnYear).join('\n');
                 break;
             }
         }

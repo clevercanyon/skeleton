@@ -476,33 +476,33 @@ class Dotfiles {
 
         let branch = 'main'; // Default branch.
 
-        if (await u.isPkgName(u.coreProjects.skeleton.pkgName)) {
+        if (await u.isPkgName(u.projects.skeleton.pkgName)) {
             if (!(await u.isGitRepo())) {
-                throw new Error('`' + u.coreProjects.skeleton.pkgName + '` is not a git repo.');
+                throw new Error('`' + u.projects.skeleton.pkgName + '` is not a git repo.');
             }
             branch = await u.gitCurrentBranch();
             // In a self-update scenario, always use the current branch.
             // Otherwise, the current branch would be wiped out by files from a different branch.
             // i.e., So we can work on a different branch and still have the ability to run a self-update.
         }
-        const repoURL = u.coreProjects.skeleton.repoURL; // From core projects.
-        const repoDir = path.resolve(u.coreProjects.skeleton.tmpDir, './' + branch);
-        const repoDfBinDir = path.resolve(repoDir, u.coreProjects.paths.relDfBinDir);
+        const repoURL = u.projects.skeleton.repoURL; // From core projects.
+        const repoDir = path.resolve(u.projects.skeleton.tmpDir, './' + branch);
+        const repoDfBinDir = path.resolve(repoDir, u.projects.paths.relDfBinDir);
 
         /**
          * Saves any pending changes; else checks state.
          */
 
-        if ((await u.isPkgName(u.coreProjects.skeleton.pkgName)) && (await u.isGitRepoDirty())) {
-            u.log($chalk.green('Updating `' + u.coreProjects.skeleton.pkgName + '` git repo; `' + branch + '` branch.'));
-            u.log('    ' + $chalk.green('i.e., saving latest ' + u.coreProjects.skeleton.pkgName + ' changes before self-update.'));
+        if ((await u.isPkgName(u.projects.skeleton.pkgName)) && (await u.isGitRepoDirty())) {
+            u.log($chalk.green('Updating `' + u.projects.skeleton.pkgName + '` git repo; `' + branch + '` branch.'));
+            u.log('    ' + $chalk.green('i.e., saving latest ' + u.projects.skeleton.pkgName + ' changes before self-update.'));
 
             if (!this.args.dryRun) {
                 await u.gitAddCommitPush((this.args.message + ' [d]').trim());
             }
-        } else if (await u.isPkgName(u.coreProjects.skeleton.pkgName)) {
+        } else if (await u.isPkgName(u.projects.skeleton.pkgName)) {
             if ((await u.gitLocalRepoSHA(u.projDir, branch)) !== (await u.gitRemoteRepoSHA(repoURL, branch))) {
-                throw new Error('`' + u.coreProjects.skeleton.pkgName + '` is out of sync with git remote origin; `' + branch + '` branch.');
+                throw new Error('`' + u.projects.skeleton.pkgName + '` is out of sync with git remote origin; `' + branch + '` branch.');
             }
         }
 
@@ -511,15 +511,15 @@ class Dotfiles {
          */
 
         if (fs.existsSync(repoDir) && (await u.gitLocalRepoSHA(repoDir, branch)) === (await u.gitRemoteRepoSHA(repoURL, branch))) {
-            u.log($chalk.green('Using latest `' + u.coreProjects.skeleton.pkgName + '` from cache; `' + branch + '` branch.'));
+            u.log($chalk.green('Using latest `' + u.projects.skeleton.pkgName + '` from cache; `' + branch + '` branch.'));
         } else {
-            u.log($chalk.green('Git-cloning, and caching, latest `' + u.coreProjects.skeleton.pkgName + '`; `' + branch + '` branch.'));
+            u.log($chalk.green('Git-cloning, and caching, latest `' + u.projects.skeleton.pkgName + '`; `' + branch + '` branch.'));
             if (!this.args.dryRun) {
                 await fsp.rm(repoDir, { recursive: true, force: true });
                 await fsp.mkdir(repoDir, { recursive: true }); // Starts fresh.
                 await u.spawn('git', ['clone', repoURL, repoDir, '--branch', branch, '--depth=1'], { cwd: repoDir });
             }
-            u.log($chalk.green('Installing `' + u.coreProjects.skeleton.pkgName + '`’s NPM dependencies; `' + branch + '` branch.'));
+            u.log($chalk.green('Installing `' + u.projects.skeleton.pkgName + '`’s NPM dependencies; `' + branch + '` branch.'));
             if (!this.args.dryRun) {
                 await u.spawn('npm', ['ci'], { cwd: repoDir });
             }
@@ -529,7 +529,7 @@ class Dotfiles {
          * Runs updater using files from latest skeleton.
          */
 
-        u.log($chalk.green('Running updater using latest `' + u.coreProjects.skeleton.pkgName + '`; `' + branch + '` branch.'));
+        u.log($chalk.green('Running updater using latest `' + u.projects.skeleton.pkgName + '`; `' + branch + '` branch.'));
         if (!this.args.dryRun) {
             await (await import(path.resolve(repoDfBinDir, './updater/index.mjs'))).default({ projDir: u.projDir });
         }
@@ -729,14 +729,14 @@ class Projects {
 
             gitignore: true,
             ignoreFiles: ['.~gitignore'],
-            ignore: u.coreProjects.updates.ignore.concat(this.args.ignores),
+            ignore: u.projects.updates.ignore.concat(this.args.ignores),
         });
 
         /**
          * Produces an ordered set of glob results.
          */
 
-        for (const projDirSubpathGlob of u.coreProjects.updates.order.concat(this.args.order)) {
+        for (const projDirSubpathGlob of u.projects.updates.order.concat(this.args.order)) {
             for (const projDirSubpath of $mm.match(unorderedResults, projDirSubpathGlob)) {
                 if (-1 === (i = unorderedResults.indexOf(projDirSubpath))) {
                     continue; // Not applicable.
@@ -756,9 +756,9 @@ class Projects {
              */
 
             const projDir = path.resolve(u.projsDir, projDirSubpath);
-            const dfDir = path.resolve(projDir, u.coreProjects.paths.relDfDir);
-            const pkgFile = path.resolve(projDir, u.coreProjects.paths.relPkgFile);
-            const madrunFile = path.resolve(projDir, u.coreProjects.paths.relMadrunFile);
+            const dfDir = path.resolve(projDir, u.projects.paths.relDfDir);
+            const pkgFile = path.resolve(projDir, u.projects.paths.relPkgFile);
+            const madrunFile = path.resolve(projDir, u.projects.paths.relMadrunFile);
 
             const relName = path.basename(u.projsDir) + '/' + projDirSubpath;
             const relDfDir = './' + path.relative(projDir, dfDir);
@@ -1228,7 +1228,7 @@ await (async () => {
                             type: 'array',
                             requiresArg: true,
                             demandOption: false,
-                            default: u.coreProjects.updates.ignore,
+                            default: u.projects.updates.ignore,
                             description: // prettier-ignore
 								'Glob matching is relative to `' + u.projsDir + '`. This effectively excludes directories otherwise found by the `glob` option.' +
 								' Note: The default ignore patterns are always in effect and cannot be overridden, only appended with this option.' +
@@ -1239,7 +1239,7 @@ await (async () => {
                             type: 'array',
                             requiresArg: true,
                             demandOption: false,
-                            default: u.coreProjects.updates.order,
+                            default: u.projects.updates.order,
                             description: // prettier-ignore
 								'Project subpaths to prioritize, in order. Also, globbing is supported in this option, for loose ordering.' +
 								' Note: It’s not necessary to list every single project directory, only those you need to prioritize, in a specific order.' +

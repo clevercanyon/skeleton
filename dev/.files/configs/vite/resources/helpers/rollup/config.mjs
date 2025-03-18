@@ -63,7 +63,7 @@ export default async ({ a16sDir, appType, appEntries, minifyEnable, sideEffects 
                 // By default, in SSR mode, Vite forces all entry files into the `distDir` root.
                 // This prevents that by enforcing a consistently relative location for all entries.
                 entryFileNames: (entry) => {
-                    if (u.extensions.noDot([...u.extensions.byCanonical.html]).includes($path.ext(entry.facadeModuleId))) {
+                    if (u.exts.noDot([...u.exts.byCanonical.html]).includes($path.ext(entry.facadeModuleId))) {
                         if (/\//u.test(entry.name)) return '[name]-[hash].js'; // Already a subpath.
                         return path.join(path.relative(u.distDir, a16sDir), '[name]-[hash].js');
                     }

@@ -24,18 +24,18 @@ export default async () => {
     const baseConfig = {
         ignoreFiles: [
             ...new Set([
-                ...u.exclusions.logIgnores, //
-                ...u.exclusions.backupIgnores,
-                ...u.exclusions.patchIgnores,
-                ...u.exclusions.editorIgnores,
-                ...u.exclusions.toolingIgnores,
-                ...u.exclusions.pkgIgnores,
-                ...u.exclusions.vcsIgnores,
-                ...u.exclusions.osIgnores,
-                ...u.exclusions.lockIgnores,
-                ...u.exclusions.distIgnores,
-                ...u.exclusions.sandboxIgnores,
-                ...u.exclusions.exampleIgnores,
+                ...u.omit.logIgnores, //
+                ...u.omit.backupIgnores,
+                ...u.omit.patchIgnores,
+                ...u.omit.editorIgnores,
+                ...u.omit.toolingIgnores,
+                ...u.omit.pkgIgnores,
+                ...u.omit.vcsIgnores,
+                ...u.omit.osIgnores,
+                ...u.omit.lockIgnores,
+                ...u.omit.distIgnores,
+                ...u.omit.sandboxIgnores,
+                ...u.omit.exampleIgnores,
             ]),
         ],
         plugins: ['stylelint-order'],
@@ -58,11 +58,11 @@ export default async () => {
 
         overrides: [
             {
-                files: ['**/*.' + u.extensions.asBracedGlob([...u.extensions.byVSCodeLang.css])],
+                files: ['**/*.' + u.exts.asBracedGlob([...u.exts.byVSCodeLang.css])],
                 customSyntax: 'postcss-safe-parser',
             },
             {
-                files: ['**/*.' + u.extensions.asBracedGlob([...u.extensions.byVSCodeLang.scss])],
+                files: ['**/*.' + u.exts.asBracedGlob([...u.exts.byVSCodeLang.scss])],
                 customSyntax: 'postcss-scss',
 
                 plugins: ['stylelint-scss'],

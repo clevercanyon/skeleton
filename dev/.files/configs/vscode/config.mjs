@@ -32,7 +32,7 @@ export default async () => {
     const extsByVSCodeLang = $path.extsByVSCodeLang();
 
     for (const [vsCodeLang, exts] of Object.entries(extsByVSCodeLang)) {
-        fileAssociations['**/*.' + u.extensions.asBracedGlob(exts)] = vsCodeLang;
+        fileAssociations['**/*.' + u.exts.asBracedGlob(exts)] = vsCodeLang;
     }
     const fileAssociationsOverrideExt = (ext) => {
         let currentExts = ''; // Initialize.
@@ -109,35 +109,35 @@ export default async () => {
 
         'files.associations': fileAssociations,
         'files.exclude': {
-            ...u.exclusions.asBoolProps(
-                [...u.exclusions.localIgnores] //
+            ...u.omit.asBoolProps(
+                [...u.omit.localIgnores] //
                     .filter((ignore) => !['**/.#*/**'].includes(ignore)),
                 { tailGreedy: false },
             ),
-            ...u.exclusions.asBoolProps(
-                [...u.exclusions.editorIgnores] //
+            ...u.omit.asBoolProps(
+                [...u.omit.editorIgnores] //
                     .filter((ignore) => !['**/*.code-*/**'].includes(ignore)),
                 { tailGreedy: false },
             ),
-            ...u.exclusions.asBoolProps([...u.exclusions.toolingIgnores], { tailGreedy: false }),
-            ...u.exclusions.asBoolProps([...u.exclusions.vcsIgnores], { tailGreedy: false }),
-            ...u.exclusions.asBoolProps([...u.exclusions.osIgnores], { tailGreedy: false }),
+            ...u.omit.asBoolProps([...u.omit.toolingIgnores], { tailGreedy: false }),
+            ...u.omit.asBoolProps([...u.omit.vcsIgnores], { tailGreedy: false }),
+            ...u.omit.asBoolProps([...u.omit.osIgnores], { tailGreedy: false }),
 
             // Plus these additional hidden files we control using ext: `PeterSchmalfeldt.explorer-exclude`.
             // These work together with the additional setting below for the extension: `explorerExclude.backup`.
 
             ...(!(await u.isPkgName('@clevercanyon/skeleton'))
                 ? {
-                      ...u.exclusions.asBoolProps(
-                          u.exclusions.asRelativeGlobs(
+                      ...u.omit.asBoolProps(
+                          u.omit.asRelativeGlobs(
                               u.projDir,
                               [
-                                  ...u.exclusions.dotIgnores, //
-                                  ...u.exclusions.configIgnores //
+                                  ...u.omit.dotIgnores, //
+                                  ...u.omit.configIgnores //
                                       .filter((ignore) => !['**/package.json/**'].includes(ignore)),
-                                  ...u.exclusions.devDotFileIgnores,
-                                  ...u.exclusions.pkgIgnores,
-                                  ...u.exclusions.lockIgnores,
+                                  ...u.omit.devDotFileIgnores,
+                                  ...u.omit.pkgIgnores,
+                                  ...u.omit.lockIgnores,
                               ],
                               { forceRelative: true, forceNoLeadingSlash: true },
                           ),
@@ -160,13 +160,13 @@ export default async () => {
 
             ...(!(await u.isPkgName('@clevercanyon/skeleton'))
                 ? {
-                      ...u.exclusions.asBoolProps(
-                          u.exclusions.asRootedRelativeGlobs(
+                      ...u.omit.asBoolProps(
+                          u.omit.asRootedRelativeGlobs(
                               u.projDir,
                               [
-                                  ...u.exclusions.dotIgnores, //
-                                  ...u.exclusions.configIgnores,
-                                  ...u.exclusions.devDotFileIgnores,
+                                  ...u.omit.dotIgnores, //
+                                  ...u.omit.configIgnores,
+                                  ...u.omit.devDotFileIgnores,
                               ],
                               { forceRelative: true },
                           ),
@@ -175,7 +175,7 @@ export default async () => {
                       '/LICENSE.txt': true,
                   }
                 : {}),
-            ...u.exclusions.asBoolProps([...u.exclusions.lockIgnores], { tailGreedy: false }),
+            ...u.omit.asBoolProps([...u.omit.lockIgnores], { tailGreedy: false }),
         },
 
         /**
@@ -224,21 +224,21 @@ export default async () => {
         'commentAnchors.tags.separators': [' ', ': '],
 
         // Comment Anchors uses minimatch, with `{ dot: false }`.
-        'commentAnchors.workspace.excludeFiles': u.exclusions.asBracedGlob(
+        'commentAnchors.workspace.excludeFiles': u.omit.asBracedGlob(
             [
                 ...(!(await u.isPkgName('@clevercanyon/skeleton')) //
-                    ? [...u.exclusions.devDotFileIgnores]
+                    ? [...u.omit.devDotFileIgnores]
                     : []),
-                ...u.exclusions.logIgnores,
-                ...u.exclusions.backupIgnores,
-                ...u.exclusions.patchIgnores,
-                ...u.exclusions.editorIgnores,
-                ...u.exclusions.toolingIgnores,
-                ...u.exclusions.pkgIgnores,
-                ...u.exclusions.vcsIgnores,
-                ...u.exclusions.osIgnores,
-                ...u.exclusions.lockIgnores,
-                ...u.exclusions.distIgnores,
+                ...u.omit.logIgnores,
+                ...u.omit.backupIgnores,
+                ...u.omit.patchIgnores,
+                ...u.omit.editorIgnores,
+                ...u.omit.toolingIgnores,
+                ...u.omit.pkgIgnores,
+                ...u.omit.vcsIgnores,
+                ...u.omit.osIgnores,
+                ...u.omit.lockIgnores,
+                ...u.omit.distIgnores,
             ],
             { dropExistingNegations: true, maybeDropExistingRelatives: true },
         ),
@@ -255,8 +255,8 @@ export default async () => {
          * @see https://github.com/StarlaneStudios/vscode-comment-anchors/issues/209
          */
         'commentAnchors.workspace.matchFiles': (await u.isPkgName('@clevercanyon/skeleton'))
-            ? '{**/,**/dev/.files/,**/dev/.files/**/}*.' + u.extensions.asBracedGlob([...u.extensions.commentAnchorsContent])
-            : '**/*.' + u.extensions.asBracedGlob([...u.extensions.commentAnchorsContent]),
+            ? '{**/,**/dev/.files/,**/dev/.files/**/}*.' + u.exts.asBracedGlob([...u.exts.commentAnchorsContent])
+            : '**/*.' + u.exts.asBracedGlob([...u.exts.commentAnchorsContent]),
 
         /**
          * Extension options.
@@ -351,17 +351,17 @@ export default async () => {
         'tailwindCSS.classAttributes': tailwindSettings.classAttributes,
         'tailwindCSS.includeLanguages': {}, // Defaults ok; {@see https://o5p.me/kaPo3F}.
         'tailwindCSS.files.exclude': [
-            ...(!(await u.isPkgName('@clevercanyon/skeleton')) ? [...u.exclusions.devDotFileIgnores] : []),
-            ...u.exclusions.logIgnores, //
-            ...u.exclusions.backupIgnores,
-            ...u.exclusions.patchIgnores,
-            ...u.exclusions.editorIgnores,
-            ...u.exclusions.toolingIgnores,
-            ...u.exclusions.pkgIgnores,
-            ...u.exclusions.vcsIgnores,
-            ...u.exclusions.osIgnores,
-            ...u.exclusions.lockIgnores,
-            ...u.exclusions.distIgnores,
+            ...(!(await u.isPkgName('@clevercanyon/skeleton')) ? [...u.omit.devDotFileIgnores] : []),
+            ...u.omit.logIgnores, //
+            ...u.omit.backupIgnores,
+            ...u.omit.patchIgnores,
+            ...u.omit.editorIgnores,
+            ...u.omit.toolingIgnores,
+            ...u.omit.pkgIgnores,
+            ...u.omit.vcsIgnores,
+            ...u.omit.osIgnores,
+            ...u.omit.lockIgnores,
+            ...u.omit.distIgnores,
         ],
 
         /**
