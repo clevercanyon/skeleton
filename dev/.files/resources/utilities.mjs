@@ -260,6 +260,8 @@ export default class u {
 
         u[__ + 'readmeFile'] = path.resolve(u[__ + 'projDir'], './README.md');
         u[__ + 'licenseFile'] = path.resolve(u[__ + 'projDir'], './LICENSE.txt');
+
+        fs.mkdirSync(u[__ + 'tmpDir'], { recursive: true, mode: 0o777 });
     }
 
     /*
