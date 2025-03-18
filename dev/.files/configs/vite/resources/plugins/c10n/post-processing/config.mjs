@@ -42,27 +42,15 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                 postProcessed = true; // Processing now.
 
                 /**
+                 * Filesystem routines.
+                 */
+
+                /**
                  * Recompiles `./package.json`.
                  */
-                if (!isSSRBuild && 'build' === command) {
+                if ('build' === command && !isSSRBuild) {
                     u.log($chalk.gray('Recompiling `./package.json`.'));
                     await u.updatePkg({ $set: pkgUpdates });
-                }
-
-                /**
-                 * Runs TypeScript type checks.
-                 */
-                if (!isSSRBuild && 'build' === command) {
-                    u.log($chalk.gray('Running TypeScript type checks.'));
-                    await u.spawn('npx', ['tsc']);
-                }
-
-                /**
-                 * Runs ESLint lint checks.
-                 */
-                if (!isSSRBuild && 'build' === command) {
-                    u.log($chalk.gray('Running ESLint lint checks.'));
-                    await u.spawn('npx', ['eslint']);
                 }
 
                 /**
@@ -73,12 +61,13 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                  * capable of serving their intended purpose; e.g., dev-only utilities, runners, sandbox files, etc.
                  *
                  * Regarding `node_modules`. There is an exception for the case of `node_modules/assets/a16s` used for
-                 * Cloudflare SSR-specific assets. See `../a16s/dir.mjs` for details. By default, `node_modules` is
-                 * pruned by this routine because it’s in our default `./.npmignore`, which is why we need the exception
-                 * below to bypass pruning of `dist/node_modules/assets/a16s` following an SSR build. We also bypass
-                 * pruning of files in `dist/node_modules/.cache` following an SSR build, as deployment handlers may
-                 * need these; e.g., Wrangler stores a few important-ish cache files there when deploying a `./dist`
-                 * directory.
+                 * Cloudflare SSR-specific assets. See `../../../helpers/dirs/config.mjs` for further details.
+                 *
+                 * By default, `node_modules` is pruned by this routine because it’s in our default `./.npmignore`,
+                 * which is why we need the exception below to bypass pruning of `dist/node_modules/assets/a16s`
+                 * following an SSR build. We also bypass pruning of files in `dist/node_modules/.cache` following an
+                 * SSR build, as deployment handlers may need these; e.g., Wrangler stores a few important-ish cache
+                 * files there when deploying a `./dist` directory.
                  *
                  * We intentionally use our 'default' NPM ignores when pruning; i.e., as opposed to using the current
                  * and potentially customized `./.npmignore` file in the current project directory. The reason is
@@ -154,9 +143,9 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                  * implementation to decide. If they do not exist, or do not contain replacement codes, we assume that
                  * nothing should occur. For example, it might be desirable in some cases for `./robots.txt`,
                  * `sitemap.xml`, or others to be served dynamically. In which case they may not exist in these
-                 * locations statically.
+                 * locations statically, but rather be handled by some sort of dynamics, such as a router.
                  */
-                if (!isSSRBuild && 'build' === command && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
+                if ('build' === command && !isSSRBuild && ['spa', 'mpa'].includes(appType) && ['cfp'].includes(targetEnv)) {
                     const isC10n = env.APP_IS_C10N || false,
                         baseURL = appBaseURL, // Shorter alternative.
                         brand = await u.brand({ mode, baseURL });
@@ -278,17 +267,45 @@ export default async ({ mode, wranglerMode, inProdLikeMode, command, isSSRBuild,
                 }
 
                 /**
+                 * Validation routines (after filesystem updates).
+                 */
+
+                /**
+                 * Runs TypeScript type checks.
+                 */
+                if ('build' === command && !isSSRBuild) {
+                    u.log($chalk.gray('Running TypeScript type checks.'));
+                    await u.spawn('npx', ['tsc']);
+                }
+
+                /**
+                 * Runs ESLint lint checks.
+                 */
+                if ('build' === command && !isSSRBuild) {
+                    u.log($chalk.gray('Running ESLint lint checks.'));
+                    await u.spawn('npx', ['eslint']);
+                }
+
+                /**
+                 * SSR build routines (after main build is complete).
+                 */
+
+                /**
                  * Generates SSR build on-the-fly internally.
                  */
-                if (!isSSRBuild && 'build' === command && u.pkgSSRBuildAppType) {
+                if ('build' === command && !isSSRBuild && u.pkgSSRBuildAppType) {
                     u.log($chalk.gray('Running secondary SSR build routine.'));
                     await u.spawn('npx', ['vite', 'build', '--mode', mode, '--ssr']);
                 }
 
                 /**
+                 * Distro routines (after both builds are complete).
+                 */
+
+                /**
                  * Generates a zip archive containing `./dist` directory.
                  */
-                if (!isSSRBuild && 'build' === command && 'dev' !== wranglerMode) {
+                if ('build' === command && !isSSRBuild && 'dev' !== wranglerMode) {
                     const zipFile = path.resolve(u.projDir, './.~dist.zip');
                     u.log($chalk.gray('Generating `' + path.relative(u.projDir, zipFile) + '`.'));
 
