@@ -29,7 +29,7 @@ export default async (/* {} */) => {
             order: 'pre',
             handler: (id) => {
                 if (id === resolvedVirtualId) {
-                    return 'export const __vitePreload = (dynamicImport) => dynamicImport();';
+                    return 'export const __vitePreload = (dynamicImport, preloadableDeps) => dynamicImport();';
                 }
             },
         },
