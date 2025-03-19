@@ -7,7 +7,12 @@
  * @note This entire file will be updated automatically.
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  *
- * @todo Is this still necessary? I have not seen `__vitePreload` in any dist lately.
+ * @review It is not clear what the future of `__vitePreload` will be. At this time, we are leaving this plugin in place,
+ * because the use of `__vitePreload` still exists in Vite, but in practice it would seem that `build.modulePreload` is
+ * respected better than it used to be. The remaining issue stems from the use of CSS imports, because even when setting
+ * `build.modulePreload` to `false`, CSS imports use the same underlying mechanism in Vite, and so they end up
+ * triggering `__vitePreload` anyway. However, in Vite 6 it seems that when setting `build.modulePreload` to `false`,
+ * Vite strips all CSS imports in order to honor the `build.modulePreload` request.
  */
 
 /**
