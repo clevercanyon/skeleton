@@ -8,6 +8,8 @@
  * @note Instead of editing here, please review <https://github.com/clevercanyon/skeleton>.
  */
 
+import { $str } from '../../../../../../../../node_modules/@clevercanyon/utilities/dist/index.js';
+
 /**
  * Configures module preload plugin.
  *
@@ -30,7 +32,10 @@ export default async ({ appType, isSSRBuild }) => {
             handler: (id) => {
                 if (id === resolvedVirtualId) {
                     if (['spa', 'mpa'].includes(appType) && !isSSRBuild) {
-                        return "export { vitePreload as __vitePreload } from '@clevercanyon/utilities/preact';";
+                        return $str.dedent(`
+                            import { vitePreload } from '@clevercanyon/utilities/preact/components/head';
+                            export const __vitePreload = vitePreload; // Preact module preloader.
+                        `);
                     } else {
                         return 'export const __vitePreload = (dynamicImportFn, deps) => dynamicImportFn();';
                     }
