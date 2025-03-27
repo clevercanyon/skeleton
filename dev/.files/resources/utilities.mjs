@@ -367,23 +367,12 @@ export default class u {
     }
 
     static async isPkgSkeleton() {
-        const { name } = await u.pkgOrigin();
+        const { name } = $app.pkgNameParts(u.pkgName);
         return 'skeleton' === name || name.startsWith('skeleton.');
     }
 
     static async isPkgDotfileLocked(relPath) {
         return u.pkgDotfileLocks.includes(path.resolve(u.projDir, relPath));
-    }
-
-    static async pkgOrigin() {
-        let m = null; // Initializes matches.
-
-        if ((m = /^(@[^/]+)\/([^/]+)$/iu.exec(u.pkgName))) {
-            return { org: m[1], name: m[2] };
-        } else if ((m = /^([^/]+)$/iu.exec(u.pkgName))) {
-            return { org: '', name: m[1] };
-        }
-        return { org: '', name: '' };
     }
 
     static async pkgIncrementVersion(opts = { dryRun: false }) {
@@ -1370,7 +1359,7 @@ export default class u {
     static async isNPMPkgOriginNPMJS() {
         try {
             return (
-                (await u.npmjsPkgOrigin()) && // Throws exception on failure.
+                (await u.npmjsPkgNameParts()) && // Throws exception on failure.
                 (await u.isNPMPkgRegistryNPMJS()) && // Confirms `https://registry.npmjs.org`.
                 // This command throws an exception on failure; e.g., if package is not published at npmjs.
                 (await u.spawn('npm', ['author', 'ls'], { quiet: true }).then(() => true)) // Published at npmjs?
@@ -1447,17 +1436,17 @@ export default class u {
      * NPM JS utilities.
      */
 
-    static async npmjsPkgOrigin() {
-        const { org, name } = await u.pkgOrigin();
+    static async npmjsPkgNameParts() {
+        const { org, name } = $app.pkgNameParts(u.pkgName);
 
         if (name /* Must at least have a package name. */) {
-            return { org, name }; // Valid npmjs origin.
+            return { org: org ? '@' + org : '', name }; // Valid npmjs origin.
         }
-        throw new Error('u.npmjsPkgOrigin: Package does not have an npmjs origin.');
+        throw new Error('u.npmjsPkgNameParts: Package does not have npmjs name parts.');
     }
 
     static async npmjsCheckPkgOrgWideStandards(opts = { dryRun: false }) {
-        const { org } = await u.npmjsPkgOrigin();
+        const { org } = await u.npmjsPkgNameParts();
 
         if ('@clevercanyon' !== org) {
             return; // Package not in the `@clevercanyon` organization.

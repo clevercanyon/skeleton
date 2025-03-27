@@ -52,20 +52,20 @@ export default {
                  */
                 u.log($chalk.green('Configuring project variables.'));
 
-                // @todo Can we use `u.projsDir` here?
-                const _parentDirBasename = path.basename(path.dirname(u.projDir));
-                const _dirBasename = path.basename(u.projDir);
+                const _projDirBasename = path.basename(u.projDir);
+                const _projsDirBasename = path.basename(u.projsDir);
 
-                const _maybeParentDirBrand = $fn.try(() => $brand.get('@' + _parentDirBasename + '/' + _dirBasename))();
-                const _parentDirOwner = $is.brand(_maybeParentDirBrand) ? _maybeParentDirBrand.org.slug : _parentDirBasename;
+                const _pkgNameBrand = $fn.try(() => $brand.get('@' + _projsDirBasename + '/' + _projDirBasename), undefined)();
+                const _pkgNameBrandOrg = ($is.brand(_pkgNameBrand) ? $app.pkgNameParts(_pkgNameBrand.org.pkgName).org : '') || _projsDirBasename;
 
-                const pkgName = args.pkgName || '@' + _parentDirOwner + '/' + _dirBasename;
-                const pkgSlug = $app.pkgSlug(pkgName); // Slug from `@org/[slug]` in a scoped package, or `slug` from an unscoped package.
+                const pkgName = args.pkgName || '@' + _pkgNameBrandOrg + '/' + _projDirBasename;
+                const pkgNameParts = $app.pkgNameParts(pkgName);
+                const pkgSlug = $app.pkgSlug(pkgName);
 
-                const repoOwner = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[0] : '') || _parentDirOwner;
-                const repoName = (/^@/u.test(pkgName) && /[^@/]\/[^@/]/u.test(pkgName) ? pkgName.replace(/^@/u, '').split('/')[1] : '') || _dirBasename;
+                const repoOwner = pkgNameParts.org || _pkgNameBrandOrg;
+                const repoName = pkgNameParts.name || _projDirBasename;
 
-                u.log($chalk.gray($json.stringify({ pkgName, pkgSlug, repoOwner, repoName }, { pretty: true })));
+                u.log($chalk.gray($json.stringify({ pkgName, pkgNameParts, pkgSlug, repoOwner, repoName }, { pretty: true })));
 
                 /**
                  * Updates `./package.json` file.
