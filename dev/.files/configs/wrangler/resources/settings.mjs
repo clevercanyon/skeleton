@@ -31,7 +31,7 @@ export default async () => {
         brandHostname = /^workers-o5p-org(?:$|-)/u.test(u.pkgSlug)
             ? o5pOrg.hostname // O5p.org brand hostname.
             : o5pMe.hostname; // O5p.me brand hostname.
-        brandDevZoneHostname = 'j5s' + '.workers.dev';
+        brandDevZoneHostname = '05p' + '.workers.dev';
         brandAccountId = '4cf0983a5f62681776b3bc8a8e35b104';
         brandSupportsLogpush = false; // Requires paid plan.
     }
